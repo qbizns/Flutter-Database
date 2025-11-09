@@ -72,8 +72,11 @@ cd postgres
 psql -U postgres -d pos_saas -f scripts/init_database.sql
 psql -U postgres -d pos_saas -f migrations/V001_20251109_create_core_tenant_tables.sql
 psql -U postgres -d pos_saas -f migrations/V002_20251109_create_pos_core_tables.sql
+psql -U postgres -d pos_saas -f migrations/V003_20251109_implement_row_level_security.sql
+psql -U postgres -d pos_saas -f migrations/V004_20251109_create_additional_pos_tables.sql
 psql -U postgres -d pos_saas -f seed_data/001_seed_core_data.sql
 psql -U postgres -d pos_saas -f seed_data/002_seed_pos_data.sql
+psql -U postgres -d pos_saas -f seed_data/003_seed_additional_pos_data.sql
 ```
 
 ### Database Structure
@@ -90,11 +93,20 @@ psql -U postgres -d pos_saas -f seed_data/002_seed_pos_data.sql
 #### POS Tables
 - **categories** - Hierarchical product categorization
 - **products** - Product catalog with pricing, inventory, and variants
+- **product_variants** - Product variations (size, color, etc.)
 - **customers** - Customer master with loyalty and credit management
 - **sales** - Sales transaction headers
 - **sale_items** - Transaction line items
 - **payments** - Payment records with multiple payment methods
 - **inventory_transactions** - Complete inventory movement audit trail
+- **suppliers** - Supplier/vendor master data
+- **purchase_orders** - Purchase orders for inventory procurement
+- **purchase_order_items** - Purchase order line items
+- **locations** - Store locations and branches for multi-location support
+- **promotions** - Promotions and discount campaigns
+- **promotion_usage** - Promotion usage tracking
+- **expenses** - Business expense tracking
+- **shifts** - Cashier shifts and cash register management
 
 ### Key Features
 
@@ -108,6 +120,42 @@ psql -U postgres -d pos_saas -f seed_data/002_seed_pos_data.sql
   - Granular permissions
   - System and custom roles
 
+✅ **Multi-Location Support**
+  - Store locations and branches
+  - Location-specific inventory and sales
+  - Warehouse management
+  - Location-based reporting
+
+✅ **Supplier & Procurement Management**
+  - Supplier master data
+  - Purchase orders with approval workflow
+  - Partial receives support
+  - Purchase tracking and history
+
+✅ **Product Variants**
+  - Size, color, and custom variations
+  - Variant-specific pricing and inventory
+  - Flexible attributes (JSONB)
+  - SKU and barcode per variant
+
+✅ **Promotions & Discounts**
+  - Multiple promotion types (percentage, fixed, BOGO)
+  - Product/category targeting
+  - Usage limits and tracking
+  - Date-based campaigns
+
+✅ **Expense Tracking**
+  - Business expense management
+  - Category classification
+  - Approval workflow
+  - Receipt attachments
+
+✅ **Shift Management**
+  - Cashier shift tracking
+  - Cash reconciliation
+  - Sales summary per shift
+  - Payment method breakdown
+
 ✅ **Flexible Schema Design**
   - JSONB fields for extensibility
   - Soft deletes for data preservation
@@ -115,6 +163,7 @@ psql -U postgres -d pos_saas -f seed_data/002_seed_pos_data.sql
 
 ✅ **Production-Ready**
   - UUID primary keys
+  - Comprehensive Row-Level Security (RLS)
   - Proper indexing strategy
   - Migration system
   - Seed data for testing
@@ -132,8 +181,15 @@ The seed data includes:
 - 5 system roles + custom roles
 - 23 granular permissions
 - 16 sample products across categories
+- 12 product variants (colors, sizes)
 - 10 customers
 - 8 complete sales transactions with payments
+- 6 suppliers across organizations
+- 6 store locations/branches
+- 7 promotional campaigns
+- 4 purchase orders with line items
+- 10 business expenses
+- 6 cashier shifts with reconciliation
 
 Test credentials: `admin@demoretail.com`, `manager@demoretail.com`, `cashier1@demoretail.com`
 

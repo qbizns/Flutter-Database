@@ -512,43 +512,273 @@ CREATE TRIGGER update_{table}_updated_at
 - Keep rollback scripts
 - Document breaking changes
 
+---
+
+### Additional POS Tables (Implemented in V004)
+
+#### 15. suppliers
+**Purpose**: Supplier/vendor master data
+**Key Fields**:
+- `supplier_code` - Unique supplier identifier
+- `name` - Supplier business name
+- `contact_person` - Primary contact name
+- `payment_terms` - Payment terms (e.g., Net 30)
+- `credit_limit` - Maximum credit allowed
+- `outstanding_balance` - Current balance owed
+
+**Features**:
+- Complete contact and address information
+- Tax number for business suppliers
+- Payment terms management
+- Credit limit tracking
+- Purchase statistics (total purchases, total orders)
+- Last order date tracking
+
+**Relationships**:
+- Belongs to: `organizations`
+- Has many: `purchase_orders`
+
+---
+
+#### 16. purchase_orders
+**Purpose**: Purchase orders for inventory procurement
+**Key Fields**:
+- `po_number` - Purchase order number
+- `supplier_id` - Reference to supplier
+- `po_date` - Order date
+- `expected_delivery_date` - Expected delivery
+- `status` - draft, pending, approved, ordered, partial, received, cancelled
+- `payment_status` - pending, partial, paid, overdue
+
+**Features**:
+- Multi-status workflow (draft → approved → ordered → received)
+- Financial tracking (subtotal, tax, discount, shipping)
+- Payment tracking
+- Approval workflow
+- Delivery date management
+
+**Relationships**:
+- Belongs to: `organizations`, `suppliers`
+- Has many: `purchase_order_items`
+
+---
+
+#### 17. purchase_order_items
+**Purpose**: Line items for purchase orders
+**Key Fields**:
+- `product_id` - Reference to product
+- `product_name`, `product_sku` - Product snapshot
+- `quantity_ordered` - Quantity ordered
+- `quantity_received` - Quantity received (partial receives)
+- `unit_cost` - Purchase cost per unit
+
+**Features**:
+- Product snapshot preservation
+- Partial receive tracking
+- Discount and tax per line item
+- Unit of measure support
+
+**Relationships**:
+- Belongs to: `purchase_orders`, `products`, `organizations`
+
+---
+
+#### 18. locations
+**Purpose**: Store locations and branches
+**Key Fields**:
+- `location_code` - Unique location identifier
+- `name` - Location name
+- `location_type` - store, warehouse, headquarters, kiosk, online, other
+- `manager_user_id` - Location manager
+- `is_primary` - Primary location flag
+- `allow_sales`, `allow_purchases` - Capability flags
+
+**Features**:
+- Multi-location support
+- Complete address information
+- Business hours tracking (JSONB)
+- Timezone support
+- Location-specific tax rates
+- Manager assignment
+
+**Relationships**:
+- Belongs to: `organizations`
+- Has many: `products`, `sales`, `expenses`, `shifts`
+- Belongs to: `users` (manager)
+
+---
+
+#### 19. product_variants
+**Purpose**: Product variations (size, color, etc.)
+**Key Fields**:
+- `product_id` - Parent product reference
+- `variant_name` - Variant display name
+- `sku`, `barcode` - Variant-specific identifiers
+- `attributes` - Variation attributes (JSONB, e.g., {"size": "L", "color": "Blue"})
+- `is_default` - Default variant flag
+
+**Features**:
+- Flexible attributes via JSONB
+- Variant-specific pricing (can override parent)
+- Independent inventory tracking per variant
+- Physical properties (weight, dimensions)
+- Variant-specific images
+- Sort order for display
+
+**Relationships**:
+- Belongs to: `products`, `organizations`
+- Has many: `sale_items`
+
+---
+
+#### 20. promotions
+**Purpose**: Promotions and discount campaigns
+**Key Fields**:
+- `promotion_code` - Unique promotion code
+- `promotion_type` - percentage, fixed_amount, buy_x_get_y, bundle, quantity_discount
+- `discount_value` - Discount amount or percentage
+- `applies_to` - all, specific_products, specific_categories, cart_total
+- `start_date`, `end_date` - Promotion validity period
+
+**Features**:
+- Multiple promotion types
+- Product/category targeting
+- Minimum purchase requirements
+- Usage limits (total and per customer)
+- Date range validation
+- Combinable promotions
+- Priority system for applying multiple promotions
+- Buy X Get Y rules
+
+**Relationships**:
+- Belongs to: `organizations`
+- Has many: `promotion_usage`
+
+---
+
+#### 21. promotion_usage
+**Purpose**: Track promotion usage per transaction
+**Key Fields**:
+- `promotion_id` - Reference to promotion
+- `sale_id` - Reference to sale
+- `customer_id` - Customer who used promotion
+- `discount_amount` - Actual discount applied
+- `used_at` - When promotion was used
+
+**Use Cases**:
+- Track promotion effectiveness
+- Enforce usage limits
+- Generate promotion reports
+- Customer promotion history
+
+**Relationships**:
+- Belongs to: `promotions`, `sales`, `customers`, `organizations`
+
+---
+
+#### 22. expenses
+**Purpose**: Business expense tracking
+**Key Fields**:
+- `expense_number` - Unique expense identifier
+- `expense_date` - Date of expense
+- `category` - Expense category (rent, utilities, salaries, supplies, marketing, other)
+- `payee_name` - Who was paid
+- `amount`, `tax_amount`, `total_amount` - Financial amounts
+- `status` - pending, approved, paid, rejected, cancelled
+
+**Features**:
+- Category and subcategory classification
+- Multiple payment methods
+- Approval workflow
+- Receipt and attachment tracking
+- Purchase order reference
+- Location-specific expenses
+
+**Relationships**:
+- Belongs to: `organizations`, `locations` (optional), `purchase_orders` (optional)
+- Has references: `users` (created_by, approved_by)
+
+---
+
+#### 23. shifts
+**Purpose**: Cashier shifts and cash register management
+**Key Fields**:
+- `shift_number` - Unique shift identifier
+- `user_id` - Cashier for this shift
+- `location_id` - Location where shift occurred
+- `start_time`, `end_time` - Shift time range
+- `status` - open, closed, suspended
+- `opening_cash`, `expected_cash`, `actual_cash` - Cash reconciliation
+- `cash_difference` - Difference between expected and actual
+
+**Features**:
+- Cash reconciliation tracking
+- Sales summary per shift
+- Payment method breakdown (JSONB)
+- Transaction statistics
+- Opening and closing notes
+- Shift management workflow
+
+**Relationships**:
+- Belongs to: `organizations`, `locations`, `users` (cashier and closed_by)
+- Has many: `sales` (via shift_id)
+
+**Use Cases**:
+- Cash register management
+- Cashier accountability
+- End-of-day reconciliation
+- Shift performance tracking
+
+---
+
+## Enhanced Relationships (V004 Updates)
+
+### New Foreign Key References
+The following foreign keys were added to existing tables:
+
+- `products.location_id` → `locations.id` - Track product location
+- `sales.location_id` → `locations.id` - Track sale location
+- `sales.shift_id` → `shifts.id` - Link sales to shifts
+- `sale_items.product_variant_id` → `product_variants.id` - Support variant sales
+
+---
+
 ## Future Enhancements
 
 ### Planned Features
-1. **Locations/Branches**
-   - Multi-location support
-   - Inter-location transfers
-   - Location-specific inventory
+1. **Inter-Location Transfers**
+   - Transfer inventory between locations
+   - Transfer orders and tracking
+   - In-transit inventory management
 
-2. **Suppliers**
-   - Supplier management
-   - Purchase orders
-   - Supplier pricing
-
-3. **Product Variants**
-   - Size, color variations
-   - Variant-specific SKUs
-   - Variant-specific pricing
-
-4. **Promotions**
-   - Discount rules
-   - Bundle pricing
-   - Time-based promotions
-
-5. **Reporting Tables**
+2. **Advanced Reporting Tables**
    - Materialized views for analytics
    - Pre-aggregated data
-   - Business intelligence
+   - Business intelligence dashboards
 
-6. **Integrations**
+3. **Integrations**
    - E-commerce platforms
-   - Accounting software
+   - Accounting software (QuickBooks, Xero)
    - Payment gateways
+   - Email/SMS notifications
 
-7. **Advanced Features**
+4. **Advanced Features**
    - Subscription products
    - Rental/lease management
    - Booking/reservations
+   - Service appointments
+
+5. **Customer Loyalty Program**
+   - Points redemption rules
+   - Loyalty tiers
+   - Rewards catalog
+   - Member benefits
+
+6. **Advanced Inventory**
+   - Serial number tracking
+   - Batch/lot tracking
+   - Expiration date management
+   - Cycle counting
 
 ## Appendix
 
