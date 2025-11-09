@@ -55,27 +55,104 @@ cd Flutter-Database
 flutter pub get
 ```
 
+## PostgreSQL Database
+
+The `postgres/` directory contains a production-ready PostgreSQL database schema for the POS SAAS system.
+
+### Quick Start
+
+```bash
+# Navigate to postgres directory
+cd postgres
+
+# Run the complete setup (creates database, runs migrations, seeds data)
+./scripts/run_all.sh pos_saas postgres
+
+# Or run individual steps:
+psql -U postgres -d pos_saas -f scripts/init_database.sql
+psql -U postgres -d pos_saas -f migrations/V001_20251109_create_core_tenant_tables.sql
+psql -U postgres -d pos_saas -f migrations/V002_20251109_create_pos_core_tables.sql
+psql -U postgres -d pos_saas -f seed_data/001_seed_core_data.sql
+psql -U postgres -d pos_saas -f seed_data/002_seed_pos_data.sql
+```
+
+### Database Structure
+
+#### Core System Tables (Multi-Tenancy)
+- **organizations** - Tenant/company management with subscription plans
+- **users** - System users with organization mapping
+- **roles** - RBAC role definitions (system and custom)
+- **permissions** - Granular permission system
+- **role_permissions** - Role-permission mapping
+- **user_roles** - User-role assignments
+- **audit_logs** - Complete system audit trail
+
+#### POS Tables
+- **categories** - Hierarchical product categorization
+- **products** - Product catalog with pricing, inventory, and variants
+- **customers** - Customer master with loyalty and credit management
+- **sales** - Sales transaction headers
+- **sale_items** - Transaction line items
+- **payments** - Payment records with multiple payment methods
+- **inventory_transactions** - Complete inventory movement audit trail
+
+### Key Features
+
+✅ **Multi-Tenant SAAS Architecture**
+  - Organization-based data isolation
+  - Subscription and quota management
+  - Flexible per-tenant schemas
+
+✅ **Comprehensive RBAC**
+  - Role-based access control
+  - Granular permissions
+  - System and custom roles
+
+✅ **Flexible Schema Design**
+  - JSONB fields for extensibility
+  - Soft deletes for data preservation
+  - Audit trails on all tables
+
+✅ **Production-Ready**
+  - UUID primary keys
+  - Proper indexing strategy
+  - Migration system
+  - Seed data for testing
+
+### Documentation
+
+- [Database README](postgres/README.md) - Setup and migration guide
+- [Schema Documentation](postgres/schemas/SCHEMA_DOCUMENTATION.md) - Complete schema reference
+
+### Test Data
+
+The seed data includes:
+- 3 organizations (Demo Retail Store, Coffee Corner, Tech Gadgets Pro)
+- 7 users with different roles
+- 5 system roles + custom roles
+- 23 granular permissions
+- 16 sample products across categories
+- 10 customers
+- 8 complete sales transactions with payments
+
+Test credentials: `admin@demoretail.com`, `manager@demoretail.com`, `cashier1@demoretail.com`
+
 ## Database Schema
 
-Detailed schema documentation will be added as development progresses.
-
-## Usage
-
-```dart
-// Example usage will be provided once implementation is complete
-```
+See [postgres/schemas/SCHEMA_DOCUMENTATION.md](postgres/schemas/SCHEMA_DOCUMENTATION.md) for complete schema documentation.
 
 ## Development Roadmap
 
-- [ ] Define database schema
-- [ ] Implement data models
-- [ ] Create database migrations
+- [x] Define database schema
+- [x] Create database migrations
+- [x] Add seed data for testing
+- [ ] Implement data models (Dart)
 - [ ] Build CRUD operations
 - [ ] Add data validation
 - [ ] Implement sync functionality
 - [ ] Add backup and restore features
 - [ ] Performance optimization
-- [ ] Documentation and examples
+- [ ] API layer development
 
 ## Contributing
 
