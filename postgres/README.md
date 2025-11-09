@@ -28,6 +28,7 @@ Migrations are executed in version order. Each migration should:
 - Have a clear rollback strategy
 - Be atomic (single transaction if possible)
 - Include comments explaining the changes
+- **ALWAYS include Row-Level Security (RLS) policies for new tables**
 
 ### Running Migrations
 
@@ -52,6 +53,59 @@ psql -U postgres -d pos_saas -f migrations/V001_20251109_create_core_tenant_tabl
 - **Audit trails**: Track who created/modified records
 - **Extensible**: JSON columns for custom fields
 - **Versioning**: Track schema versions
+
+### Row-Level Security (RLS) - MANDATORY
+
+**CRITICAL**: All tables MUST have Row-Level Security (RLS) enabled for data isolation.
+
+#### RLS Requirements
+- ✅ Every table with `organization_id` MUST have RLS policies
+- ✅ All migrations creating new tables MUST include RLS policies
+- ✅ Use helper functions: `current_user_organization_id()`, `is_super_admin()`
+- ✅ Set user context before queries: `SELECT set_user_context(user_id, org_id, is_admin)`
+
+#### Quick RLS Template
+```sql
+-- Enable RLS on your table
+ALTER TABLE your_table ENABLE ROW LEVEL SECURITY;
+
+-- Super admin bypass (ALWAYS include first)
+CREATE POLICY your_table_super_admin_all
+    ON your_table FOR ALL TO PUBLIC
+    USING (is_super_admin());
+
+-- Organization-scoped policies
+CREATE POLICY your_table_select_own_org
+    ON your_table FOR SELECT TO PUBLIC
+    USING (organization_id = current_user_organization_id());
+
+CREATE POLICY your_table_insert_own_org
+    ON your_table FOR INSERT TO PUBLIC
+    WITH CHECK (organization_id = current_user_organization_id());
+
+CREATE POLICY your_table_update_own_org
+    ON your_table FOR UPDATE TO PUBLIC
+    USING (organization_id = current_user_organization_id());
+
+CREATE POLICY your_table_delete_own_org
+    ON your_table FOR DELETE TO PUBLIC
+    USING (organization_id = current_user_organization_id());
+```
+
+#### Setting User Context in Application
+```sql
+-- At the start of each database session:
+SELECT set_user_context(
+    'user-uuid'::UUID,           -- current user ID
+    'organization-uuid'::UUID,   -- user's organization ID
+    FALSE                        -- is super admin (TRUE only for system admins)
+);
+
+-- Now all queries are automatically filtered by organization
+SELECT * FROM products;  -- Only returns user's organization products
+```
+
+**📖 For complete RLS documentation, see [schemas/RLS_POLICY_GUIDE.md](schemas/RLS_POLICY_GUIDE.md)**
 
 ### Key Tables Structure
 
