@@ -108,6 +108,15 @@ func ValidationBlocked(message string, details map[string]interface{}) *AppError
 	return New(CodeValidationBlocked, message, http.StatusUnprocessableEntity).WithDetails(details)
 }
 
+func AlreadyExists(resource, message string) *AppError {
+	if message == "" {
+		message = fmt.Sprintf("%s already exists", resource)
+	}
+	return New(CodeConflict, message, http.StatusConflict)
+}
+
+// Helper functions to check error types
+
 // IsAppError checks if an error is an AppError
 func IsAppError(err error) (*AppError, bool) {
 	if err == nil {
@@ -117,4 +126,20 @@ func IsAppError(err error) (*AppError, bool) {
 		return appErr, true
 	}
 	return nil, false
+}
+
+// IsNotFound checks if an error is a not found error
+func IsNotFound(err error) bool {
+	if appErr, ok := IsAppError(err); ok {
+		return appErr.Code == CodeNotFound
+	}
+	return false
+}
+
+// IsConflict checks if an error is a conflict error
+func IsConflict(err error) bool {
+	if appErr, ok := IsAppError(err); ok {
+		return appErr.Code == CodeConflict
+	}
+	return false
 }
