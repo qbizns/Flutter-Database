@@ -1,7 +1,6 @@
 package restaurant
 
 import (
-	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -104,7 +103,6 @@ func (r *Reservation) IsUpcoming() bool {
 	)
 
 	// Parse reservation_time (TIME format: HH:MM:SS)
-	parts := make([]int, 3)
 	if len(r.ReservationTime) > 0 {
 		// Simple parsing for TIME format
 		// In real implementation, parse properly

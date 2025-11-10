@@ -2,9 +2,9 @@ package loyalty
 
 import (
 	"context"
-	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -141,7 +141,7 @@ func (a StringArray) Value() (driver.Value, error) {
 func (a *StringArray) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {
-		return sql.ErrScanFailure
+		return fmt.Errorf("failed to scan value as []byte")
 	}
 	return json.Unmarshal(bytes, &a)
 }

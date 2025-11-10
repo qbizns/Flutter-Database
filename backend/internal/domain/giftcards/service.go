@@ -78,15 +78,15 @@ func (s *Service) ListGiftCards(ctx context.Context, orgID uuid.UUID, filters Gi
 func (s *Service) RedeemGiftCard(ctx context.Context, orgID uuid.UUID, cardID uuid.UUID, amount float64, saleID *uuid.UUID, userID *uuid.UUID, locationID *uuid.UUID) error {
 	card, err := s.repo.GetGiftCard(ctx, orgID, cardID)
 	if err != nil || card == nil {
-		return apperrors.NotFound("gift_card", "not found")
+		return apperrors.NotFound("gift_card")
 	}
 
 	if card.Status != "active" {
-		return apperrors.Invalid("gift_card", fmt.Sprintf("card status is %s", card.Status))
+		return apperrors.BadRequest(fmt.Sprintf("gift card status is %s", card.Status))
 	}
 
 	if card.CurrentBalance < amount {
-		return apperrors.Invalid("gift_card", "insufficient balance")
+		return apperrors.BadRequest("gift card has insufficient balance")
 	}
 
 	card.CurrentBalance -= amount
@@ -126,7 +126,7 @@ func (s *Service) RedeemGiftCard(ctx context.Context, orgID uuid.UUID, cardID uu
 func (s *Service) LoadGiftCard(ctx context.Context, orgID uuid.UUID, cardID uuid.UUID, amount float64, userID *uuid.UUID) error {
 	card, err := s.repo.GetGiftCard(ctx, orgID, cardID)
 	if err != nil || card == nil {
-		return apperrors.NotFound("gift_card", "not found")
+		return apperrors.NotFound("gift_card")
 	}
 
 	card.CurrentBalance += amount
@@ -192,15 +192,15 @@ func (s *Service) GetOrCreateStoreCreditAccount(ctx context.Context, orgID uuid.
 func (s *Service) RedeemStoreCredit(ctx context.Context, orgID uuid.UUID, customerID uuid.UUID, amount float64, saleID *uuid.UUID, userID *uuid.UUID) error {
 	account, err := s.repo.GetStoreCreditAccount(ctx, orgID, customerID)
 	if err != nil || account == nil {
-		return apperrors.NotFound("store_credit_account", "not found")
+		return apperrors.NotFound("store_credit_account")
 	}
 
 	if !account.IsActive {
-		return apperrors.Invalid("store_credit_account", "account is inactive")
+		return apperrors.BadRequest("store credit account is inactive")
 	}
 
 	if account.CurrentBalance < amount {
-		return apperrors.Invalid("store_credit_account", "insufficient balance")
+		return apperrors.BadRequest("store credit account has insufficient balance")
 	}
 
 	account.CurrentBalance -= amount
@@ -310,7 +310,7 @@ func (s *Service) ListSaleReturns(ctx context.Context, orgID uuid.UUID, filters 
 func (s *Service) ApproveSaleReturn(ctx context.Context, orgID uuid.UUID, returnID uuid.UUID, approvedBy uuid.UUID) error {
 	return_, err := s.repo.GetSaleReturn(ctx, orgID, returnID)
 	if err != nil || return_ == nil {
-		return apperrors.NotFound("sale_return", "not found")
+		return apperrors.NotFound("sale_return")
 	}
 
 	return_.Status = "approved"
@@ -331,7 +331,7 @@ func (s *Service) ApproveSaleReturn(ctx context.Context, orgID uuid.UUID, return
 func (s *Service) CompleteSaleReturn(ctx context.Context, orgID uuid.UUID, returnID uuid.UUID) error {
 	return_, err := s.repo.GetSaleReturn(ctx, orgID, returnID)
 	if err != nil || return_ == nil {
-		return apperrors.NotFound("sale_return", "not found")
+		return apperrors.NotFound("sale_return")
 	}
 
 	return_.Status = "completed"
@@ -362,26 +362,26 @@ func (s *Service) AddReturnItem(ctx context.Context, item *SaleReturnItem) error
 
 func (s *Service) validateGiftCard(card *GiftCard) error {
 	if card.OrganizationID == uuid.Nil {
-		return apperrors.Invalid("gift_card", "organization_id required")
+		return apperrors.BadRequest("gift card organization_id required")
 	}
 	if card.CardNumber == "" {
-		return apperrors.Invalid("gift_card", "card_number required")
+		return apperrors.BadRequest("gift card card_number required")
 	}
 	if card.OriginalValue <= 0 {
-		return apperrors.Invalid("gift_card", "original_value must be positive")
+		return apperrors.BadRequest("gift card original_value must be positive")
 	}
 	return nil
 }
 
 func (s *Service) validateSaleReturn(return_ *SaleReturn) error {
 	if return_.OrganizationID == uuid.Nil {
-		return apperrors.Invalid("sale_return", "organization_id required")
+		return apperrors.BadRequest("sale return organization_id required")
 	}
 	if return_.LocationID == uuid.Nil {
-		return apperrors.Invalid("sale_return", "location_id required")
+		return apperrors.BadRequest("sale return location_id required")
 	}
 	if return_.UserID == uuid.Nil {
-		return apperrors.Invalid("sale_return", "user_id required")
+		return apperrors.BadRequest("sale return user_id required")
 	}
 	return nil
 }

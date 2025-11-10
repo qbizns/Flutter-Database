@@ -1,6 +1,7 @@
 package monitoring
 
 import (
+	"fmt"
 	"context"
 	"time"
 
@@ -52,7 +53,7 @@ func (s *Service) LogError(ctx context.Context, errorLog *POSErrorLog) error {
 
 	if err := s.errorRepo.Create(ctx, errorLog); err != nil {
 		s.logger.Error("failed to create error log", zap.Error(err))
-		return apperrors.Internal("failed to create error log")
+		return apperrors.InternalError(fmt.Errorf("failed to create error log"))
 	}
 
 	return nil
@@ -72,7 +73,7 @@ func (s *Service) GetError(ctx context.Context, id uuid.UUID) (*POSErrorLog, err
 func (s *Service) ResolveError(ctx context.Context, id uuid.UUID, resolvedBy uuid.UUID, notes string) error {
 	if err := s.errorRepo.Resolve(ctx, id, resolvedBy, notes); err != nil {
 		s.logger.Error("failed to resolve error", zap.Error(err))
-		return apperrors.Internal("failed to resolve error")
+		return apperrors.InternalError(fmt.Errorf("failed to resolve error"))
 	}
 	return nil
 }
@@ -115,7 +116,7 @@ func (s *Service) RecordHealthCheck(ctx context.Context, health *SystemHealth) e
 
 	if err := s.healthRepo.Upsert(ctx, health); err != nil {
 		s.logger.Error("failed to record health check", zap.Error(err))
-		return apperrors.Internal("failed to record health check")
+		return apperrors.InternalError(fmt.Errorf("failed to record health check"))
 	}
 
 	return nil

@@ -2,7 +2,6 @@ package delivery
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"time"
 

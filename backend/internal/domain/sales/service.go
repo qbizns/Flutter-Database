@@ -1,6 +1,7 @@
 package sales
 
 import (
+	"fmt"
 	"context"
 	"time"
 
@@ -69,7 +70,7 @@ func (s *Service) Create(ctx context.Context, sale *Sale) error {
 
 	if err := s.repo.Create(ctx, sale); err != nil {
 		s.logger.Error("failed to create sale", zap.Error(err))
-		return apperrors.Internal("failed to create sale")
+		return apperrors.InternalError(fmt.Errorf("failed to create sale"))
 	}
 
 	return nil
@@ -127,7 +128,7 @@ func (s *Service) Update(ctx context.Context, sale *Sale) error {
 
 	if err := s.repo.Update(ctx, sale); err != nil {
 		s.logger.Error("failed to update sale", zap.Error(err))
-		return apperrors.Internal("failed to update sale")
+		return apperrors.InternalError(fmt.Errorf("failed to update sale"))
 	}
 
 	return nil
@@ -145,7 +146,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 
 	if err := s.repo.Delete(ctx, orgID, id); err != nil {
 		s.logger.Error("failed to delete sale", zap.Error(err))
-		return apperrors.Internal("failed to delete sale")
+		return apperrors.InternalError(fmt.Errorf("failed to delete sale"))
 	}
 
 	return nil

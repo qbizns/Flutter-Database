@@ -2,7 +2,6 @@ package restaurant
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 

@@ -55,13 +55,13 @@ func (s *EInvoicingService) CountDocuments(ctx context.Context, orgID uuid.UUID,
 // CreateDocument creates a new e-invoicing document
 func (s *EInvoicingService) CreateDocument(ctx context.Context, doc *EInvoicingDocument) error {
 	if doc.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id", "Organization ID is required")
+		return apperrors.ValidationFailed("Organization ID is required")
 	}
 	if doc.SourceTable == "" || doc.SourceID == uuid.Nil {
-		return apperrors.ValidationError("source", "Source table and ID are required")
+		return apperrors.ValidationFailed("Source table and ID are required")
 	}
 	if doc.Authority == "" {
-		return apperrors.ValidationError("authority", "Authority is required (ZATCA, ETA, OTHER)")
+		return apperrors.ValidationFailed("Authority is required (ZATCA, ETA, OTHER)")
 	}
 
 	doc.ID = uuid.New()
@@ -79,7 +79,8 @@ func (s *EInvoicingService) CreateDocument(ctx context.Context, doc *EInvoicingD
 	}
 
 	// Log creation event
-	_ = s.logEvent(ctx, doc.OrganizationID, doc.ID, "created", nil, doc.Status, "Document created")
+	status := doc.Status
+	_ = s.logEvent(ctx, doc.OrganizationID, doc.ID, "created", nil, &status, "Document created")
 	return nil
 }
 
@@ -91,7 +92,7 @@ func (s *EInvoicingService) GetDocument(ctx context.Context, orgID uuid.UUID, id
 		return nil, apperrors.DatabaseError(err)
 	}
 	if doc == nil {
-		return nil, apperrors.NotFound("e-invoicing document", id.String())
+		return nil, apperrors.NotFound("e-invoicing document")
 	}
 	return doc, nil
 }
@@ -205,10 +206,10 @@ func (s *EInvoicingService) logEvent(ctx context.Context, orgID uuid.UUID, docID
 // CreateSequence creates a new document sequence
 func (s *EInvoicingService) CreateSequence(ctx context.Context, seq *DocumentSequence) error {
 	if seq.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id", "Organization ID is required")
+		return apperrors.ValidationFailed("Organization ID is required")
 	}
 	if seq.DocumentType == "" {
-		return apperrors.ValidationError("document_type", "Document type is required")
+		return apperrors.ValidationFailed("Document type is required")
 	}
 
 	seq.ID = uuid.New()
@@ -243,7 +244,7 @@ func (s *EInvoicingService) GetSequence(ctx context.Context, orgID uuid.UUID, id
 		return nil, apperrors.DatabaseError(err)
 	}
 	if seq == nil {
-		return nil, apperrors.NotFound("document sequence", id.String())
+		return nil, apperrors.NotFound("document sequence")
 	}
 	return seq, nil
 }

@@ -1,6 +1,7 @@
 package integrations
 
 import (
+	"fmt"
 	"context"
 	"time"
 
@@ -59,7 +60,7 @@ func (s *Service) CreateChannel(ctx context.Context, channel *SalesChannel) erro
 
 	if err := s.channelRepo.Create(ctx, channel); err != nil {
 		s.logger.Error("failed to create sales channel", zap.Error(err))
-		return apperrors.Internal("failed to create sales channel")
+		return apperrors.InternalError(fmt.Errorf("failed to create sales channel"))
 	}
 
 	return nil
@@ -93,7 +94,7 @@ func (s *Service) UpdateChannel(ctx context.Context, channel *SalesChannel) erro
 
 	if err := s.channelRepo.Update(ctx, channel); err != nil {
 		s.logger.Error("failed to update sales channel", zap.Error(err))
-		return apperrors.Internal("failed to update sales channel")
+		return apperrors.InternalError(fmt.Errorf("failed to update sales channel"))
 	}
 
 	return nil
@@ -110,7 +111,7 @@ func (s *Service) DeleteChannel(ctx context.Context, orgID uuid.UUID, id uuid.UU
 
 	if err := s.channelRepo.Delete(ctx, orgID, id); err != nil {
 		s.logger.Error("failed to delete sales channel", zap.Error(err))
-		return apperrors.Internal("failed to delete sales channel")
+		return apperrors.InternalError(fmt.Errorf("failed to delete sales channel"))
 	}
 
 	return nil
@@ -151,7 +152,7 @@ func (s *Service) CreateMapping(ctx context.Context, mapping *ExternalOrderMappi
 
 	if err := s.mappingRepo.Create(ctx, mapping); err != nil {
 		s.logger.Error("failed to create external order mapping", zap.Error(err))
-		return apperrors.Internal("failed to create external order mapping")
+		return apperrors.InternalError(fmt.Errorf("failed to create external order mapping"))
 	}
 
 	return nil
@@ -182,7 +183,7 @@ func (s *Service) GetMappingBySaleID(ctx context.Context, orgID uuid.UUID, saleI
 func (s *Service) UpdateMappingSyncStatus(ctx context.Context, id uuid.UUID, status string, lastSyncAt time.Time) error {
 	if err := s.mappingRepo.UpdateSyncStatus(ctx, id, status, lastSyncAt); err != nil {
 		s.logger.Error("failed to update sync status", zap.Error(err))
-		return apperrors.Internal("failed to update sync status")
+		return apperrors.InternalError(fmt.Errorf("failed to update sync status"))
 	}
 	return nil
 }

@@ -2,7 +2,6 @@ package analytics
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"

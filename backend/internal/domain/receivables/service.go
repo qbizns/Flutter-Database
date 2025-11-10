@@ -88,7 +88,7 @@ func (s *Service) CreateCustomerInvoice(ctx context.Context, req *CreateCustomer
 		Description:        req.Description,
 		Notes:              req.Notes,
 		Memo:               req.Memo,
-		Metadata:           req.Metadata,
+		Metadata:           nil, // TODO: marshal req.Metadata to json.RawMessage
 		CreatedAt:          time.Now(),
 		UpdatedAt:          time.Now(),
 		CreatedBy:          &userID,
@@ -117,7 +117,7 @@ func (s *Service) CreateCustomerInvoice(ctx context.Context, req *CreateCustomer
 			TaxCode:            lineReq.TaxCode,
 			TaxAmount:          lineReq.TaxAmount,
 			ProductID:          lineReq.ProductID,
-			Metadata:           lineReq.Metadata,
+			Metadata:           nil, // TODO: marshal lineReq.Metadata
 			CreatedAt:          time.Now(),
 			UpdatedAt:          time.Now(),
 		}
@@ -205,7 +205,7 @@ func (s *Service) UpdateCustomerInvoice(ctx context.Context, invoiceID uuid.UUID
 		invoice.Status = *req.Status
 	}
 	if req.Metadata != nil {
-		invoice.Metadata = req.Metadata
+		invoice.Metadata = nil // TODO: marshal req.Metadata to json.RawMessage
 	}
 
 	invoice.UpdatedAt = time.Now()
@@ -283,7 +283,7 @@ func (s *Service) CreateCustomerPayment(ctx context.Context, req *CreateCustomer
 		AccountingPeriodID: req.AccountingPeriodID,
 		Memo:               req.Memo,
 		Notes:              req.Notes,
-		Metadata:           req.Metadata,
+		Metadata:           nil, // TODO: marshal req.Metadata to json.RawMessage
 		CreatedAt:          time.Now(),
 		UpdatedAt:          time.Now(),
 		CreatedBy:          &userID,
@@ -416,7 +416,7 @@ func (s *Service) UpdateCustomerPayment(ctx context.Context, paymentID uuid.UUID
 		payment.Notes = req.Notes
 	}
 	if req.Metadata != nil {
-		payment.Metadata = req.Metadata
+		payment.Metadata = nil // TODO: marshal req.Metadata to json.RawMessage
 	}
 
 	payment.UpdatedAt = time.Now()

@@ -87,7 +87,7 @@ func (s *Service) CreateVendorBill(ctx context.Context, req *CreateVendorBillReq
 		Description:      req.Description,
 		Notes:            req.Notes,
 		Memo:             req.Memo,
-		Metadata:         req.Metadata,
+		Metadata:         nil, // TODO: marshal req.Metadata to json.RawMessage
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 		CreatedBy:        &userID,
@@ -116,7 +116,7 @@ func (s *Service) CreateVendorBill(ctx context.Context, req *CreateVendorBillReq
 			TaxCode:          lineReq.TaxCode,
 			TaxAmount:        lineReq.TaxAmount,
 			ProductID:        lineReq.ProductID,
-			Metadata:         lineReq.Metadata,
+			Metadata:         nil, // TODO: marshal lineReq.Metadata
 			CreatedAt:        time.Now(),
 			UpdatedAt:        time.Now(),
 		}
@@ -204,7 +204,7 @@ func (s *Service) UpdateVendorBill(ctx context.Context, billID uuid.UUID, req *U
 		bill.Status = *req.Status
 	}
 	if req.Metadata != nil {
-		bill.Metadata = req.Metadata
+		bill.Metadata = nil // TODO: marshal req.Metadata to json.RawMessage
 	}
 
 	bill.UpdatedAt = time.Now()
@@ -282,7 +282,7 @@ func (s *Service) CreateVendorPayment(ctx context.Context, req *CreateVendorPaym
 		AccountingPeriodID: req.AccountingPeriodID,
 		Memo:               req.Memo,
 		Notes:              req.Notes,
-		Metadata:           req.Metadata,
+		Metadata:           nil, // TODO: marshal req.Metadata
 		CreatedAt:          time.Now(),
 		UpdatedAt:          time.Now(),
 		CreatedBy:          &userID,
@@ -415,7 +415,7 @@ func (s *Service) UpdateVendorPayment(ctx context.Context, paymentID uuid.UUID, 
 		payment.Notes = req.Notes
 	}
 	if req.Metadata != nil {
-		payment.Metadata = req.Metadata
+		payment.Metadata = nil // TODO: marshal req.Metadata to json.RawMessage
 	}
 
 	payment.UpdatedAt = time.Now()

@@ -1,11 +1,10 @@
 package receivables
 
 import (
-	"database/sql"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 // InvoiceStatus represents the status of a customer invoice
@@ -54,8 +53,8 @@ type CustomerInvoice struct {
 	Description        *string                   `json:"description"`
 	Notes              *string                   `json:"notes"`
 	Memo               *string                   `json:"memo"`
-	Attachments        pq.JSONBArray             `json:"attachments"`
-	Metadata           pq.JSONBMap               `json:"metadata"`
+	Attachments        json.RawMessage             `json:"attachments"`
+	Metadata           json.RawMessage               `json:"metadata"`
 	CreatedAt          time.Time                 `json:"created_at"`
 	UpdatedAt          time.Time                 `json:"updated_at"`
 	CreatedBy          *uuid.UUID                `json:"created_by"`
@@ -80,7 +79,7 @@ type CustomerInvoiceLine struct {
 	TaxCode         *string        `json:"tax_code"`
 	TaxAmount       float64        `json:"tax_amount"`
 	ProductID       *uuid.UUID     `json:"product_id"`
-	Metadata        pq.JSONBMap    `json:"metadata"`
+	Metadata        json.RawMessage    `json:"metadata"`
 	CreatedAt       time.Time      `json:"created_at"`
 	UpdatedAt       time.Time      `json:"updated_at"`
 	DeletedAt       *time.Time     `json:"deleted_at"`
@@ -102,7 +101,7 @@ type CustomerPayment struct {
 	IsPosted           bool           `json:"is_posted"`
 	Memo               *string        `json:"memo"`
 	Notes              *string        `json:"notes"`
-	Metadata           pq.JSONBMap    `json:"metadata"`
+	Metadata           json.RawMessage    `json:"metadata"`
 	CreatedAt          time.Time      `json:"created_at"`
 	UpdatedAt          time.Time      `json:"updated_at"`
 	CreatedBy          *uuid.UUID     `json:"created_by"`

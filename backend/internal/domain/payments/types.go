@@ -3,7 +3,6 @@ package payments
 import (
 	"context"
 	"database/sql/driver"
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"

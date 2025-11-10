@@ -225,7 +225,7 @@ func (s *Service) ListCurrencyRates(ctx context.Context, organizationID uuid.UUI
 // ConvertCurrency converts an amount from one currency to another
 func (s *Service) ConvertCurrency(ctx context.Context, organizationID uuid.UUID, req *CurrencyConversionRequest) (*CurrencyConversionResult, error) {
 	// Validate currencies exist
-	fromCurr, err := s.repo.GetCurrencyByCode(ctx, req.FromCurrency)
+	_, err := s.repo.GetCurrencyByCode(ctx, req.FromCurrency)
 	if err != nil {
 		return nil, fmt.Errorf("from currency not found: %w", err)
 	}

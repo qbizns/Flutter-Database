@@ -1,8 +1,6 @@
 package finance
 
 import (
-	"database/sql/driver"
-	"encoding/json"
 	"errors"
 	"math/big"
 	"time"
@@ -278,25 +276,28 @@ func FormatDecimal(f *big.Float, precision int) string {
 	return f.Text(byte(format[0]), precision)
 }
 
+// TODO: These methods need to be defined on a custom type (e.g., type DecimalString string)
+// not on the built-in string type
+
 // StringValue implements driver.Valuer for string amounts
-func (d string) Value() (driver.Value, error) {
-	return d, nil
-}
+// func (d string) Value() (driver.Value, error) {
+// 	return d, nil
+// }
 
 // Scan implements sql.Scanner for string amounts
-func (d *string) Scan(value interface{}) error {
-	if value == nil {
-		*d = "0"
-		return nil
-	}
-
-	switch v := value.(type) {
-	case string:
-		*d = v
-	case []byte:
-		*d = string(v)
-	default:
-		*d = "0"
-	}
-	return nil
-}
+// func (d *string) Scan(value interface{}) error {
+// 	if value == nil {
+// 		*d = "0"
+// 		return nil
+// 	}
+//
+// 	switch v := value.(type) {
+// 	case string:
+// 		*d = v
+// 	case []byte:
+// 		*d = string(v)
+// 	default:
+// 		*d = "0"
+// 	}
+// 	return nil
+// }

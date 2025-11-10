@@ -231,7 +231,7 @@ func (s *Service) ListAccountingPeriods(ctx context.Context, orgID, fiscalYearID
 // CreateChartOfAccount creates a chart of account entry
 func (s *Service) CreateChartOfAccount(ctx context.Context, orgID uuid.UUID, req *CreateChartOfAccountRequest, createdBy uuid.UUID) (*ChartOfAccount, error) {
 	// Get account type
-	accountType, err := s.repo.GetAccountType(ctx, req.AccountTypeID)
+	_, err := s.repo.GetAccountType(ctx, req.AccountTypeID)
 	if err != nil {
 		return nil, err
 	}

@@ -90,7 +90,7 @@ func (s *Service) ListAssetCategories(ctx context.Context, organizationID *uuid.
 
 // UpdateAssetCategory updates an asset category
 func (s *Service) UpdateAssetCategory(ctx context.Context, id uuid.UUID, updates map[string]interface{}) error {
-	category, err := s.GetAssetCategory(ctx, id)
+	_, err := s.GetAssetCategory(ctx, id)
 	if err != nil {
 		return err
 	}

@@ -1,12 +1,9 @@
 package tax
 
 import (
-	"database/sql/driver"
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 // ========================
@@ -252,15 +249,19 @@ func (f TaxReportLineFormulaType) String() string {
 	return string(f)
 }
 
-type UUIDArray pq.UUIDArray
+// UUIDArray is a custom type for []uuid.UUID
+// TODO: Implement proper Value/Scan methods if database serialization is needed
+/*
+type UUIDArray []uuid.UUID
 
 func (ua UUIDArray) Value() (driver.Value, error) {
-	return pq.UUIDArray(ua).Value()
+	return []uuid.UUID(ua).Value()
 }
 
 func (ua *UUIDArray) Scan(value interface{}) error {
-	return (*pq.UUIDArray)(ua).Scan(value)
+	return (*[]uuid.UUID)(ua).Scan(value)
 }
+*/
 
 type TaxReportLine struct {
 	ID                   uuid.UUID                  `db:"id" json:"id"`
@@ -271,9 +272,9 @@ type TaxReportLine struct {
 	ParentLineID         *uuid.UUID                 `db:"parent_line_id" json:"parent_line_id,omitempty"`
 	FormulaType          *TaxReportLineFormulaType  `db:"formula_type" json:"formula_type,omitempty"`
 	Formula              *string                    `db:"formula" json:"formula,omitempty"`
-	TaxGroupIDs          pq.UUIDArray               `db:"tax_group_ids" json:"tax_group_ids"`
-	AccountIDs           pq.UUIDArray               `db:"account_ids" json:"account_ids"`
-	TaxIDs               pq.UUIDArray               `db:"tax_ids" json:"tax_ids"`
+	TaxGroupIDs          []uuid.UUID               `db:"tax_group_ids" json:"tax_group_ids"`
+	AccountIDs           []uuid.UUID               `db:"account_ids" json:"account_ids"`
+	TaxIDs               []uuid.UUID               `db:"tax_ids" json:"tax_ids"`
 	IsSubtotal           bool                       `db:"is_subtotal" json:"is_subtotal"`
 	IsTotal              bool                       `db:"is_total" json:"is_total"`
 	Notes                *string                    `db:"notes" json:"notes,omitempty"`

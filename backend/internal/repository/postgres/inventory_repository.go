@@ -485,7 +485,7 @@ func (r *InventoryCostLayerRepository) List(ctx context.Context, orgID uuid.UUID
 		WHERE organization_id = $1 AND deleted_at IS NULL
 	`
 
-	var args []interface{}{orgID}
+	args := []interface{}{orgID}
 	argCount := 1
 
 	if productID != nil {

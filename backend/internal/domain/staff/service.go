@@ -911,23 +911,23 @@ func (s *Service) DeleteExpense(ctx context.Context, orgID, expenseID uuid.UUID)
 
 func (s *Service) validateSchedule(schedule *EmployeeSchedule) error {
 	if schedule.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if schedule.EmployeeID == uuid.Nil {
-		return apperrors.ValidationError("employee_id is required")
+		return apperrors.ValidationFailed("employee_id is required")
 	}
 
 	if schedule.ScheduleDate.IsZero() {
-		return apperrors.ValidationError("schedule_date is required")
+		return apperrors.ValidationFailed("schedule_date is required")
 	}
 
 	if schedule.ScheduledStartTime == "" {
-		return apperrors.ValidationError("scheduled_start_time is required")
+		return apperrors.ValidationFailed("scheduled_start_time is required")
 	}
 
 	if schedule.ScheduledEndTime == "" {
-		return apperrors.ValidationError("scheduled_end_time is required")
+		return apperrors.ValidationFailed("scheduled_end_time is required")
 	}
 
 	return nil
@@ -935,15 +935,15 @@ func (s *Service) validateSchedule(schedule *EmployeeSchedule) error {
 
 func (s *Service) validateClockEntry(entry *TimeClockEntry) error {
 	if entry.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if entry.EmployeeID == uuid.Nil {
-		return apperrors.ValidationError("employee_id is required")
+		return apperrors.ValidationFailed("employee_id is required")
 	}
 
 	if entry.EntryType == "" {
-		return apperrors.ValidationError("entry_type is required")
+		return apperrors.ValidationFailed("entry_type is required")
 	}
 
 	return nil
@@ -951,19 +951,19 @@ func (s *Service) validateClockEntry(entry *TimeClockEntry) error {
 
 func (s *Service) validateDevice(device *Device) error {
 	if device.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if device.DeviceCode == "" {
-		return apperrors.ValidationError("device_code is required")
+		return apperrors.ValidationFailed("device_code is required")
 	}
 
 	if device.DeviceName == "" {
-		return apperrors.ValidationError("device_name is required")
+		return apperrors.ValidationFailed("device_name is required")
 	}
 
 	if device.DeviceType == "" {
-		return apperrors.ValidationError("device_type is required")
+		return apperrors.ValidationFailed("device_type is required")
 	}
 
 	return nil
@@ -971,15 +971,15 @@ func (s *Service) validateDevice(device *Device) error {
 
 func (s *Service) validatePrinterConfig(config *PrinterConfiguration) error {
 	if config.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if config.PrinterDeviceID == uuid.Nil {
-		return apperrors.ValidationError("printer_device_id is required")
+		return apperrors.ValidationFailed("printer_device_id is required")
 	}
 
 	if config.DocumentType == "" {
-		return apperrors.ValidationError("document_type is required")
+		return apperrors.ValidationFailed("document_type is required")
 	}
 
 	return nil
@@ -987,19 +987,19 @@ func (s *Service) validatePrinterConfig(config *PrinterConfiguration) error {
 
 func (s *Service) validateTipPool(pool *TipPool) error {
 	if pool.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if pool.PoolName == "" {
-		return apperrors.ValidationError("pool_name is required")
+		return apperrors.ValidationFailed("pool_name is required")
 	}
 
 	if pool.PoolType == "" {
-		return apperrors.ValidationError("pool_type is required")
+		return apperrors.ValidationFailed("pool_type is required")
 	}
 
 	if pool.DistributionMethod == "" {
-		return apperrors.ValidationError("distribution_method is required")
+		return apperrors.ValidationFailed("distribution_method is required")
 	}
 
 	return nil
@@ -1007,19 +1007,19 @@ func (s *Service) validateTipPool(pool *TipPool) error {
 
 func (s *Service) validateTipDistribution(dist *TipDistribution) error {
 	if dist.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if dist.EmployeeID == uuid.Nil {
-		return apperrors.ValidationError("employee_id is required")
+		return apperrors.ValidationFailed("employee_id is required")
 	}
 
 	if dist.SourceType == "" {
-		return apperrors.ValidationError("source_type is required")
+		return apperrors.ValidationFailed("source_type is required")
 	}
 
 	if dist.TipAmount < 0 {
-		return apperrors.ValidationError("tip_amount must be greater than or equal to 0")
+		return apperrors.ValidationFailed("tip_amount must be greater than or equal to 0")
 	}
 
 	return nil
@@ -1027,19 +1027,19 @@ func (s *Service) validateTipDistribution(dist *TipDistribution) error {
 
 func (s *Service) validateCommission(comm *StaffCommission) error {
 	if comm.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if comm.EmployeeID == uuid.Nil {
-		return apperrors.ValidationError("employee_id is required")
+		return apperrors.ValidationFailed("employee_id is required")
 	}
 
 	if comm.SourceType == "" {
-		return apperrors.ValidationError("source_type is required")
+		return apperrors.ValidationFailed("source_type is required")
 	}
 
 	if comm.CommissionAmount < 0 {
-		return apperrors.ValidationError("commission_amount must be greater than or equal to 0")
+		return apperrors.ValidationFailed("commission_amount must be greater than or equal to 0")
 	}
 
 	return nil
@@ -1047,19 +1047,19 @@ func (s *Service) validateCommission(comm *StaffCommission) error {
 
 func (s *Service) validateShift(shift *Shift) error {
 	if shift.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if shift.UserID == uuid.Nil {
-		return apperrors.ValidationError("user_id is required")
+		return apperrors.ValidationFailed("user_id is required")
 	}
 
 	if shift.ShiftNumber == "" {
-		return apperrors.ValidationError("shift_number is required")
+		return apperrors.ValidationFailed("shift_number is required")
 	}
 
 	if shift.OpeningCash < 0 {
-		return apperrors.ValidationError("opening_cash must be greater than or equal to 0")
+		return apperrors.ValidationFailed("opening_cash must be greater than or equal to 0")
 	}
 
 	return nil
@@ -1067,27 +1067,27 @@ func (s *Service) validateShift(shift *Shift) error {
 
 func (s *Service) validateExpense(expense *Expense) error {
 	if expense.OrganizationID == uuid.Nil {
-		return apperrors.ValidationError("organization_id is required")
+		return apperrors.ValidationFailed("organization_id is required")
 	}
 
 	if expense.ExpenseNumber == "" {
-		return apperrors.ValidationError("expense_number is required")
+		return apperrors.ValidationFailed("expense_number is required")
 	}
 
 	if expense.Category == "" {
-		return apperrors.ValidationError("category is required")
+		return apperrors.ValidationFailed("category is required")
 	}
 
 	if expense.PayeeName == "" {
-		return apperrors.ValidationError("payee_name is required")
+		return apperrors.ValidationFailed("payee_name is required")
 	}
 
 	if expense.Amount < 0 {
-		return apperrors.ValidationError("amount must be greater than or equal to 0")
+		return apperrors.ValidationFailed("amount must be greater than or equal to 0")
 	}
 
 	if expense.TotalAmount < 0 {
-		return apperrors.ValidationError("total_amount must be greater than or equal to 0")
+		return apperrors.ValidationFailed("total_amount must be greater than or equal to 0")
 	}
 
 	return nil
