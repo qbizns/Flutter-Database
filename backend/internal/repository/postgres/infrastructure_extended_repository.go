@@ -1836,3 +1836,214 @@ func (r *IntegrationConfigRepositoryImpl) GetActive(ctx context.Context, orgID u
 
 	return configs, rows.Err()
 }
+
+// ============================================================================
+// IMMUTABILITY VIOLATIONS LOG REPOSITORY
+// ============================================================================
+
+type ImmutabilityViolationLogRepository struct {
+	db *DB
+}
+
+func NewImmutabilityViolationLogRepository(db *DB) *ImmutabilityViolationLogRepository {
+	return &ImmutabilityViolationLogRepository{db: db}
+}
+
+func (r *ImmutabilityViolationLogRepository) List(ctx context.Context, orgID *uuid.UUID, filters infrastructure.ImmutabilityViolationLogFilters) ([]infrastructure.ImmutabilityViolationLog, error) {
+	if orgID != nil {
+		if err := r.db.SetOrganizationContext(ctx, orgID.String()); err != nil {
+			return nil, err
+		}
+	}
+
+	query := `
+		SELECT id, organization_id, table_name, record_id, operation,
+		       attempted_by, attempted_at, error_message, blocked_data, metadata
+		FROM immutability_violations_log
+		WHERE 1=1
+	`
+
+	var args []interface{}
+	argCount := 0
+
+	if orgID != nil {
+		argCount++
+		query += fmt.Sprintf(" AND organization_id = $%d", argCount)
+		args = append(args, *orgID)
+	}
+
+	if filters.TableName != nil {
+		argCount++
+		query += fmt.Sprintf(" AND table_name = $%d", argCount)
+		args = append(args, *filters.TableName)
+	}
+
+	if filters.Operation != nil {
+		argCount++
+		query += fmt.Sprintf(" AND operation = $%d", argCount)
+		args = append(args, *filters.Operation)
+	}
+
+	if filters.AttemptedBy != nil {
+		argCount++
+		query += fmt.Sprintf(" AND attempted_by = $%d", argCount)
+		args = append(args, *filters.AttemptedBy)
+	}
+
+	if filters.StartDate != nil {
+		argCount++
+		query += fmt.Sprintf(" AND attempted_at >= $%d", argCount)
+		args = append(args, *filters.StartDate)
+	}
+
+	if filters.EndDate != nil {
+		argCount++
+		query += fmt.Sprintf(" AND attempted_at <= $%d", argCount)
+		args = append(args, *filters.EndDate)
+	}
+
+	query += " ORDER BY attempted_at DESC"
+
+	if filters.PageSize > 0 {
+		argCount++
+		query += fmt.Sprintf(" LIMIT $%d", argCount)
+		args = append(args, filters.PageSize)
+
+		if filters.Page > 1 {
+			argCount++
+			offset := (filters.Page - 1) * filters.PageSize
+			query += fmt.Sprintf(" OFFSET $%d", argCount)
+			args = append(args, offset)
+		}
+	}
+
+	rows, err := r.db.Pool.Query(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var logs []infrastructure.ImmutabilityViolationLog
+	for rows.Next() {
+		var log infrastructure.ImmutabilityViolationLog
+		err := rows.Scan(
+			&log.ID, &log.OrganizationID, &log.TableName, &log.RecordID, &log.Operation,
+			&log.AttemptedBy, &log.AttemptedAt, &log.ErrorMessage, &log.BlockedData, &log.Metadata,
+		)
+		if err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+	}
+
+	return logs, rows.Err()
+}
+
+func (r *ImmutabilityViolationLogRepository) Count(ctx context.Context, orgID *uuid.UUID, filters infrastructure.ImmutabilityViolationLogFilters) (int64, error) {
+	if orgID != nil {
+		if err := r.db.SetOrganizationContext(ctx, orgID.String()); err != nil {
+			return 0, err
+		}
+	}
+
+	query := "SELECT COUNT(*) FROM immutability_violations_log WHERE 1=1"
+	var args []interface{}
+	argCount := 0
+
+	if orgID != nil {
+		argCount++
+		query += fmt.Sprintf(" AND organization_id = $%d", argCount)
+		args = append(args, *orgID)
+	}
+
+	if filters.TableName != nil {
+		argCount++
+		query += fmt.Sprintf(" AND table_name = $%d", argCount)
+		args = append(args, *filters.TableName)
+	}
+
+	var count int64
+	err := r.db.Pool.QueryRow(ctx, query, args...).Scan(&count)
+	return count, err
+}
+
+func (r *ImmutabilityViolationLogRepository) Create(ctx context.Context, log *infrastructure.ImmutabilityViolationLog) error {
+	if log.OrganizationID != nil {
+		if err := r.db.SetOrganizationContext(ctx, log.OrganizationID.String()); err != nil {
+			return err
+		}
+	}
+
+	query := `
+		INSERT INTO immutability_violations_log (
+			id, organization_id, table_name, record_id, operation,
+			attempted_by, attempted_at, error_message, blocked_data, metadata
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	`
+
+	_, err := r.db.Pool.Exec(ctx, query,
+		log.ID, log.OrganizationID, log.TableName, log.RecordID, log.Operation,
+		log.AttemptedBy, log.AttemptedAt, log.ErrorMessage, log.BlockedData, log.Metadata,
+	)
+	return err
+}
+
+func (r *ImmutabilityViolationLogRepository) Get(ctx context.Context, id uuid.UUID) (*infrastructure.ImmutabilityViolationLog, error) {
+	query := `
+		SELECT id, organization_id, table_name, record_id, operation,
+		       attempted_by, attempted_at, error_message, blocked_data, metadata
+		FROM immutability_violations_log
+		WHERE id = $1
+	`
+
+	var log infrastructure.ImmutabilityViolationLog
+	err := r.db.Pool.QueryRow(ctx, query, id).Scan(
+		&log.ID, &log.OrganizationID, &log.TableName, &log.RecordID, &log.Operation,
+		&log.AttemptedBy, &log.AttemptedAt, &log.ErrorMessage, &log.BlockedData, &log.Metadata,
+	)
+
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &log, nil
+}
+
+func (r *ImmutabilityViolationLogRepository) GetByTableAndRecord(ctx context.Context, tableName string, recordID uuid.UUID) ([]infrastructure.ImmutabilityViolationLog, error) {
+	query := `
+		SELECT id, organization_id, table_name, record_id, operation,
+		       attempted_by, attempted_at, error_message, blocked_data, metadata
+		FROM immutability_violations_log
+		WHERE table_name = $1 AND record_id = $2
+		ORDER BY attempted_at DESC
+	`
+
+	rows, err := r.db.Pool.Query(ctx, query, tableName, recordID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var logs []infrastructure.ImmutabilityViolationLog
+	for rows.Next() {
+		var log infrastructure.ImmutabilityViolationLog
+		err := rows.Scan(
+			&log.ID, &log.OrganizationID, &log.TableName, &log.RecordID, &log.Operation,
+			&log.AttemptedBy, &log.AttemptedAt, &log.ErrorMessage, &log.BlockedData, &log.Metadata,
+		)
+		if err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+	}
+
+	return logs, rows.Err()
+}
+
+func (r *ImmutabilityViolationLogRepository) Cleanup(ctx context.Context, before time.Time) error {
+	query := "DELETE FROM immutability_violations_log WHERE attempted_at < $1"
+	_, err := r.db.Pool.Exec(ctx, query, before)
+	return err
+}

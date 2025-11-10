@@ -751,3 +751,43 @@ type IntegrationConfigRepository interface {
 	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
 	GetActive(ctx context.Context, orgID uuid.UUID, integrationType string) ([]IntegrationConfig, error)
 }
+}
+
+// ============================================================================
+// IMMUTABILITY VIOLATIONS LOG
+// ============================================================================
+
+// ImmutabilityViolationLog represents an attempt to modify immutable data
+type ImmutabilityViolationLog struct {
+	ID             uuid.UUID       `json:"id"`
+	OrganizationID *uuid.UUID      `json:"organization_id"`
+	TableName      string          `json:"table_name"`
+	RecordID       *uuid.UUID      `json:"record_id"`
+	Operation      string          `json:"operation"` // UPDATE, DELETE, INSERT
+	AttemptedBy    *uuid.UUID      `json:"attempted_by"`
+	AttemptedAt    time.Time       `json:"attempted_at"`
+	ErrorMessage   string          `json:"error_message"`
+	BlockedData    json.RawMessage `json:"blocked_data"` // What was attempted
+	Metadata       json.RawMessage `json:"metadata"`
+}
+
+// ImmutabilityViolationLogFilters represents filters for listing violations
+type ImmutabilityViolationLogFilters struct {
+	TableName   *string
+	Operation   *string
+	AttemptedBy *uuid.UUID
+	StartDate   *time.Time
+	EndDate     *time.Time
+	Page        int
+	PageSize    int
+}
+
+// ImmutabilityViolationLogRepository defines the immutability violations log data access interface
+type ImmutabilityViolationLogRepository interface {
+	List(ctx context.Context, orgID *uuid.UUID, filters ImmutabilityViolationLogFilters) ([]ImmutabilityViolationLog, error)
+	Count(ctx context.Context, orgID *uuid.UUID, filters ImmutabilityViolationLogFilters) (int64, error)
+	Create(ctx context.Context, log *ImmutabilityViolationLog) error
+	Get(ctx context.Context, id uuid.UUID) (*ImmutabilityViolationLog, error)
+	GetByTableAndRecord(ctx context.Context, tableName string, recordID uuid.UUID) ([]ImmutabilityViolationLog, error)
+	Cleanup(ctx context.Context, before time.Time) error
+}
