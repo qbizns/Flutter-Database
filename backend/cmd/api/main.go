@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/your-org/pos-backend/internal/auth"
 	"github.com/your-org/pos-backend/internal/config"
+	domainauth "github.com/your-org/pos-backend/internal/domain/auth"
 	"github.com/your-org/pos-backend/internal/http/rest"
 	"github.com/your-org/pos-backend/internal/logging"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
@@ -51,6 +52,15 @@ func main() {
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(cfg.JWT.Secret)
 
+	// Initialize auth repositories
+	userRepo := postgres.NewUserRepository(db)
+	roleRepo := postgres.NewRoleRepository(db)
+	userRoleRepo := postgres.NewUserRoleRepository(db)
+
+	// Initialize auth services
+	userService := domainauth.NewUserService(userRepo, roleRepo, userRoleRepo, logger)
+	tokenService := auth.NewTokenService(cfg)
+
 	// Initialize router
 	r := chi.NewRouter()
 
@@ -86,9 +96,10 @@ func main() {
 	r.Route("/api/v1", func(r chi.Router) {
 		// Public routes (no auth)
 		r.Group(func(r chi.Router) {
-			// TODO: Implement authentication handlers
-			// r.Post("/auth/login", rest.LoginHandler(cfg, db, logger))
-			// r.Post("/auth/register", rest.RegisterHandler(cfg, db, logger))
+			// Authentication
+			r.Post("/auth/login", rest.LoginHandler(cfg, userService, tokenService, logger))
+			r.Post("/auth/register", rest.RegisterHandler(cfg, userService, tokenService, logger))
+			r.Post("/auth/refresh", rest.RefreshTokenHandler(tokenService, logger))
 		})
 
 		// Protected routes (require auth)
