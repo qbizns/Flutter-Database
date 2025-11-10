@@ -106,11 +106,37 @@ func main() {
 				// Customers
 				r.Get("/customers", rest.ListCustomersHandler(db, logger))
 				r.Post("/customers", rest.CreateCustomerHandler(db, logger))
+				r.Get("/customers/{id}", rest.GetCustomerHandler(db, logger))
+				r.Patch("/customers/{id}", rest.UpdateCustomerHandler(db, logger))
+				r.Delete("/customers/{id}", rest.DeleteCustomerHandler(db, logger))
+
+				// Suppliers
+				r.Get("/suppliers", rest.ListSuppliersHandler(db, logger))
+				r.Post("/suppliers", rest.CreateSupplierHandler(db, logger))
+				r.Get("/suppliers/{id}", rest.GetSupplierHandler(db, logger))
+				r.Patch("/suppliers/{id}", rest.UpdateSupplierHandler(db, logger))
+				r.Delete("/suppliers/{id}", rest.DeleteSupplierHandler(db, logger))
+
+				// Categories
+				r.Get("/categories", rest.ListCategoriesHandler(db, logger))
+				r.Post("/categories", rest.CreateCategoryHandler(db, logger))
+				r.Get("/categories/{id}", rest.GetCategoryHandler(db, logger))
+				r.Patch("/categories/{id}", rest.UpdateCategoryHandler(db, logger))
+				r.Delete("/categories/{id}", rest.DeleteCategoryHandler(db, logger))
+
+				// Locations
+				r.Get("/locations", rest.ListLocationsHandler(db, logger))
+				r.Post("/locations", rest.CreateLocationHandler(db, logger))
+				r.Get("/locations/{id}", rest.GetLocationHandler(db, logger))
+				r.Patch("/locations/{id}", rest.UpdateLocationHandler(db, logger))
+				r.Delete("/locations/{id}", rest.DeleteLocationHandler(db, logger))
 
 				// Sales
 				r.Get("/sales", rest.ListSalesHandler(db, logger))
 				r.Post("/sales", rest.CreateSaleHandler(db, logger))
 				r.Get("/sales/{id}", rest.GetSaleHandler(db, logger))
+				r.Patch("/sales/{id}", rest.UpdateSaleHandler(db, logger))
+				r.Delete("/sales/{id}", rest.DeleteSaleHandler(db, logger))
 
 				// Posting Engine (CRITICAL)
 				r.Post("/posting/post", rest.PostDocumentHandler(db, logger))

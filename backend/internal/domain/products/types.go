@@ -57,3 +57,18 @@ type Repository interface {
 	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
 	UpdateStock(ctx context.Context, orgID uuid.UUID, productID uuid.UUID, quantity float64) error
 }
+
+// ValidationError represents a validation error
+type ValidationError struct {
+	Message string
+}
+
+// NewValidationError creates a new validation error
+func NewValidationError(message string) *ValidationError {
+	return &ValidationError{Message: message}
+}
+
+// Error implements the error interface
+func (e *ValidationError) Error() string {
+	return e.Message
+}
