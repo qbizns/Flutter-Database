@@ -44,6 +44,23 @@ The Accounting Module is built as an **optional plugin** that:
 - ✅ **Bank Reconciliation** (statement matching)
 - ✅ **Cash Management** (track all cash movements)
 
+### POS Integration (V004-V010)
+- ✅ **Account Mappings** (products, payment methods, discounts → GL accounts)
+- ✅ **Tax Mappings** (POS tax codes → accounting taxes)
+- ✅ **Posting Audit** (track which POS docs are posted to accounting)
+- ✅ **Inventory Valuation** (FIFO, weighted average, cost layers)
+- ✅ **COGS Calculation** (automatic cost recognition)
+- ✅ **Multi-Currency Support** (base currency, exchange rates)
+- ✅ **Document Sequences** (unified numbering system)
+- ✅ **E-Invoicing Links** (connect e-invoices to accounting records)
+
+### Data Integrity & Controls
+- ✅ **Immutability Triggers** (prevent modification of posted data)
+- ✅ **Fiscal Period Locking** (prevent posting to closed periods)
+- ✅ **Year-End Closing** (automated closing entries to retained earnings)
+- ✅ **Reversal Entries** (proper correction of posted transactions)
+- ✅ **Double-Entry Validation** (debits = credits enforcement)
+
 ## 🏗️ Architecture
 
 ### Plugin Design
@@ -87,18 +104,175 @@ accounting/
 ├── README.md                    # This file
 ├── migrations/                  # Database migrations (DDL)
 │   ├── V001_20251109_create_accounting_core.sql
-│   └── V002_20251109_create_ap_ar_assets.sql
+│   ├── V002_20251109_create_ap_ar_assets.sql
+│   ├── V003_20251110_create_odoo_extensions.sql
+│   ├── V004_20251110_create_pos_account_mappings.sql
+│   ├── V005_20251110_create_pos_posting_audit.sql
+│   ├── V006_20251110_create_inventory_valuation_settings.sql
+│   ├── V007_20251110_create_inventory_valuation_views.sql
+│   ├── V008_20251110_create_pos_tax_mappings.sql
+│   ├── V009_20251110_add_immutability_triggers.sql
+│   └── V010_20251110_add_closing_procedures.sql
 ├── seed_data/                   # Test data (DML)
 │   ├── 001_seed_chart_of_accounts.sql        # 80+ accounts
 │   ├── 002_seed_fiscal_year_and_transactions.sql  # Fiscal year setup
 │   ├── 003_seed_heavy_transactions.sql       # 182 journal entries
 │   ├── 004_seed_ap_ar_data.sql               # 48 bills, 60 invoices
-│   └── 005_seed_fixed_assets.sql             # 15 assets with depreciation
+│   ├── 005_seed_fixed_assets.sql             # 15 assets with depreciation
+│   ├── 006_seed_odoo_extensions.sql          # Odoo-style features data
+│   └── 007_seed_pos_integration.sql          # POS integration mappings
 ├── schemas/                     # Views and reports
-│   └── accounting_reports.sql               # 8 financial report views
+│   ├── accounting_reports.sql               # 8 financial report views
+│   └── odoo_reports.sql                    # 10 Odoo-style report views
 └── scripts/                     # Setup scripts
     ├── init_accounting.sql                  # Schema initialization
     └── run_all.sh                           # Complete setup script
+```
+
+## 🔗 POS Integration
+
+### Account Mapping System
+
+The account mapping system (`pos_account_mappings` table) allows flexible configuration of GL accounts for POS transactions:
+
+```sql
+-- Map product to revenue account
+INSERT INTO pos_account_mappings (organization_id, source_type, source_id, purpose, account_id)
+VALUES ('org-id', 'product', 'product-id', 'revenue', 'revenue-account-id');
+
+-- Map payment method to asset account
+INSERT INTO pos_account_mappings (organization_id, source_type, source_code, purpose, account_id)
+VALUES ('org-id', 'payment_method', 'CASH', 'asset', 'cash-account-id');
+
+-- Helper function to resolve accounts
+SELECT get_pos_gl_account('org-id', 'product', 'product-id', NULL, 'revenue');
+```
+
+**Mapping Hierarchy** (highest priority first):
+1. Specific product/payment method mapping
+2. Category/type default mapping
+3. Organization-wide default mapping
+
+### Tax Integration
+
+Bridge POS tax codes with accounting tax definitions:
+
+```sql
+-- Map POS tax code to accounting tax
+INSERT INTO pos_tax_mappings (
+    organization_id, pos_tax_code, tax_category_code,
+    accounting_tax_id, default_tax_account_id
+) VALUES (
+    'org-id', 'VAT_15', 'S', 'tax-id', 'vat-liability-account-id'
+);
+
+-- Resolve accounting tax from POS tax code
+SELECT get_accounting_tax_for_pos('org-id', 'VAT_15');
+```
+
+### Posting Workflow
+
+1. **POS Transaction Created** (e.g., sale)
+2. **Go Posting Engine**:
+   - Resolve GL accounts using `get_pos_gl_account()`
+   - Resolve taxes using `get_accounting_tax_for_pos()`
+   - Build journal entry with distribution
+3. **Create Journal Entry** → **Post to General Ledger**
+4. **Track in Posting Audit**:
+   ```sql
+   INSERT INTO pos_posting_audit (
+       organization_id, source_table, source_id,
+       posting_status, journal_entry_id
+   ) VALUES ('org-id', 'sales', 'sale-id', 'posted', 'je-id');
+   ```
+5. **Update Source Document**:
+   ```sql
+   UPDATE sales SET
+       accounting_posting_status = 'posted',
+       accounting_journal_entry_id = 'je-id',
+       posted_to_accounting_at = CURRENT_TIMESTAMP
+   WHERE id = 'sale-id';
+   ```
+
+### Inventory Valuation & COGS
+
+**Configuration** (`inventory_valuation_settings`):
+```sql
+-- Set organization valuation method
+INSERT INTO inventory_valuation_settings (
+    organization_id, valuation_method, cost_layer_granularity,
+    cogs_recognition_timing
+) VALUES (
+    'org-id', 'fifo', 'product_location', 'on_sale'
+);
+```
+
+**Cost Layers** (`inventory_cost_layers`):
+- Tracks unit cost per batch/lot
+- FIFO: oldest layers consumed first
+- Weighted average: calculated from all layers
+
+**Views**:
+- `view_inventory_valuation_by_product` - Current stock value
+- `view_cogs_by_period` - Cost of sales by period
+- `view_inventory_turnover` - Turnover ratios
+- `view_inventory_reconciliation` - GL vs. valuation comparison
+
+## 🔒 Data Integrity & Controls
+
+### Immutability Rules
+
+**General Ledger**: Completely immutable once posted
+```sql
+-- Any UPDATE or DELETE on general_ledger will fail
+-- Use reversal entries instead
+```
+
+**Journal Entries**: Posted entries are immutable
+```sql
+-- Only status changes and notes allowed on posted entries
+-- Financial fields are locked
+```
+
+**Fiscal Period Locking**:
+```sql
+-- Cannot post to closed/locked periods
+SELECT close_accounting_period('period-id', 'user-id');
+SELECT lock_accounting_period('period-id', 'user-id');
+```
+
+### Year-End Closing
+
+```sql
+-- Close fiscal year with automated closing entries
+SELECT close_fiscal_year('fiscal-year-id', 'user-id', TRUE);
+```
+
+**Closing Process**:
+1. Verify all periods are closed
+2. Calculate net income (Revenue - Expenses)
+3. Create closing journal entry
+4. Transfer net income to Retained Earnings
+5. Mark fiscal year as closed
+
+**Reopen if needed**:
+```sql
+SELECT reopen_accounting_period('period-id', 'user-id');
+```
+
+### Reversal Entries
+
+Never modify posted transactions. Instead, create reversals:
+
+```sql
+-- Manual reversal pattern
+INSERT INTO journal_entries (
+    organization_id, entry_number, description,
+    reference, reversal_of_entry_id
+) VALUES (
+    'org-id', 'JE-2024-REV-001', 'Reversal of JE-2024-001',
+    'ERROR_CORRECTION', 'original-je-id'
+);
 ```
 
 ## 🚀 Quick Start

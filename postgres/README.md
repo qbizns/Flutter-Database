@@ -131,6 +131,33 @@ SELECT * FROM products;  -- Only returns user's organization products
 - `e_invoicing_documents` - Central repository for all e-invoicing documents (ZATCA, ETA, etc.)
 - `e_invoicing_document_events` - Complete audit trail of e-invoicing events
 
+### Accounting Integration (V015-V022)
+
+**POS ↔ Accounting Bridge**: Seamless integration between POS and accounting modules
+
+- **Posting Status Tracking** - Track which POS documents have been posted to accounting
+- **Currency Support** - Multi-currency transactions with exchange rates
+- **UOM Integration** - Fully wired units of measure throughout POS
+- **Tax Code Mapping** - Bridge POS tax codes with accounting taxes
+- **Document Sequences** - Unified numbering system (invoices, POs, receipts, etc.)
+- **Feature Flags** - Per-organization module enablement (accounting, e-invoicing, etc.)
+
+**Key Tables**:
+- `document_sequences` - Configurable document numbering with prefixes/suffixes
+- `organization_features` - Feature flags for module enablement
+
+**New Columns**:
+- `sales.posted_to_accounting_at`, `accounting_posting_status`, `accounting_journal_entry_id`
+- `products.base_uom_id`, `pos_tax_code`, `tax_behavior`
+- `sales.currency_code`, `exchange_rate`, `base_currency_total`
+- `organizations.base_currency_code`, `features` (JSONB)
+
+**Helper Functions**:
+- `get_next_document_number()` - Thread-safe sequence generation
+- `preview_document_number()` - Preview next number without incrementing
+- `convert_uom_quantity()` - Convert between units of measure
+- `is_feature_enabled()` - Check if feature is enabled for organization
+
 ### E-Invoicing Integration (ZATCA & ETA)
 
 The system includes comprehensive support for electronic invoicing compliance with multiple tax authorities:
