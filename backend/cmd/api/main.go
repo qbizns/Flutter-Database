@@ -86,8 +86,9 @@ func main() {
 	r.Route("/api/v1", func(r chi.Router) {
 		// Public routes (no auth)
 		r.Group(func(r chi.Router) {
-			r.Post("/auth/login", rest.LoginHandler(cfg, db, logger))
-			r.Post("/auth/register", rest.RegisterHandler(cfg, db, logger))
+			// TODO: Implement authentication handlers
+			// r.Post("/auth/login", rest.LoginHandler(cfg, db, logger))
+			// r.Post("/auth/register", rest.RegisterHandler(cfg, db, logger))
 		})
 
 		// Protected routes (require auth)
@@ -138,19 +139,19 @@ func main() {
 				r.Patch("/sales/{id}", rest.UpdateSaleHandler(db, logger))
 				r.Delete("/sales/{id}", rest.DeleteSaleHandler(db, logger))
 
-				// Posting Engine (CRITICAL)
-				r.Post("/posting/post", rest.PostDocumentHandler(db, logger))
-				r.Get("/posting/rules", rest.GetPostingRulesHandler(db, logger))
-				r.Get("/posting/audit", rest.GetPostingAuditHandler(db, logger))
+				// TODO: Implement Posting Engine handlers (CRITICAL for Phase 3B)
+				// r.Post("/posting/post", rest.PostDocumentHandler(db, logger))
+				// r.Get("/posting/rules", rest.GetPostingRulesHandler(db, logger))
+				// r.Get("/posting/audit", rest.GetPostingAuditHandler(db, logger))
 
-				// Journal Entries
-				r.Get("/journal-entries", rest.ListJournalEntriesHandler(db, logger))
-				r.Post("/journal-entries", rest.CreateJournalEntryHandler(db, logger))
+				// TODO: Implement Journal Entry handlers (CRITICAL for Phase 3B)
+				// r.Get("/journal-entries", rest.ListJournalEntriesHandler(db, logger))
+				// r.Post("/journal-entries", rest.CreateJournalEntryHandler(db, logger))
 
-				// Reports
-				r.Get("/reports/balance-sheet", rest.BalanceSheetHandler(db, logger))
-				r.Get("/reports/income-statement", rest.IncomeStatementHandler(db, logger))
-				r.Get("/reports/trial-balance", rest.TrialBalanceHandler(db, logger))
+				// TODO: Implement Financial Report handlers (CRITICAL for Phase 3B)
+				// r.Get("/reports/balance-sheet", rest.BalanceSheetHandler(db, logger))
+				// r.Get("/reports/income-statement", rest.IncomeStatementHandler(db, logger))
+				// r.Get("/reports/trial-balance", rest.TrialBalanceHandler(db, logger))
 			})
 		})
 	})

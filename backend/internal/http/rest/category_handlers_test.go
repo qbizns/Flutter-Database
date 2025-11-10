@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,10 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/logging"
 	appctx "github.com/your-org/pos-backend/internal/pkg/context"
-	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"github.com/your-org/pos-backend/internal/testhelpers"
 )
 
@@ -22,9 +21,7 @@ func TestListCategoriesHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -94,9 +91,7 @@ func TestCreateCategoryHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -107,8 +102,8 @@ func TestCreateCategoryHandler(t *testing.T) {
 			Name:         "Electronics",
 			Description:  "Electronic items and accessories",
 			Color:        "#FF5733",
-			IconName:     "electronics",
-			DisplayOrder: 1,
+			Icon:       "electronics",
+			SortOrder:  1,
 			IsActive:     true,
 		}
 
@@ -235,9 +230,7 @@ func TestGetCategoryHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -252,7 +245,7 @@ func TestGetCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -271,7 +264,7 @@ func TestGetCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -289,7 +282,7 @@ func TestGetCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -308,9 +301,7 @@ func TestUpdateCategoryHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -332,7 +323,7 @@ func TestUpdateCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -354,7 +345,7 @@ func TestUpdateCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -382,7 +373,7 @@ func TestUpdateCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -408,7 +399,7 @@ func TestUpdateCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -427,9 +418,7 @@ func TestDeleteCategoryHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -444,7 +433,7 @@ func TestDeleteCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -463,7 +452,7 @@ func TestDeleteCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -481,7 +470,7 @@ func TestDeleteCategoryHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", categoryID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 

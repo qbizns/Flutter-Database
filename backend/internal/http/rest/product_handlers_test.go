@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -9,10 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/logging"
 	appctx "github.com/your-org/pos-backend/internal/pkg/context"
-	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"github.com/your-org/pos-backend/internal/testhelpers"
 )
 
@@ -23,9 +22,7 @@ func TestListProductsHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	// Create test organization
 	ctx := testDB.Context()
@@ -68,9 +65,7 @@ func TestCreateProductHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -196,9 +191,7 @@ func TestGetProductHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -214,7 +207,7 @@ func TestGetProductHandler(t *testing.T) {
 		// Add chi context for URL params
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", productID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -233,7 +226,7 @@ func TestGetProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -251,7 +244,7 @@ func TestGetProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", productID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -270,9 +263,7 @@ func TestUpdateProductHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -294,7 +285,7 @@ func TestUpdateProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", productID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -316,7 +307,7 @@ func TestUpdateProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", productID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -335,9 +326,7 @@ func TestDeleteProductHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -352,7 +341,7 @@ func TestDeleteProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", productID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -371,7 +360,7 @@ func TestDeleteProductHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 

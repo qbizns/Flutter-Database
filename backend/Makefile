@@ -1,4 +1,4 @@
-.PHONY: help build run test lint migrate clean docker-up docker-down
+.PHONY: help build run test lint migrate migrate-up migrate-down migrate-down-all migrate-status migrate-force migrate-goto clean docker-up docker-down
 
 # Variables
 APP_NAME=pos-backend
@@ -15,6 +15,12 @@ GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 GOFMT=$(GOCMD) fmt
 GOVET=$(GOCMD) vet
+
+# Migration parameters
+MIGRATE=~/go/bin/migrate
+MIGRATIONS_POSTGRES=./db/migrations-postgres
+MIGRATIONS_ACCOUNTING=./db/migrations-accounting
+DATABASE_URL?=postgres://postgres:postgres@localhost:5432/pos_saas?sslmode=disable
 
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -61,13 +67,40 @@ vet: ## Run go vet
 
 check: fmt vet lint test ## Run all checks
 
-migrate-up: ## Run database migrations up
-	@echo "Running migrations..."
-	psql -h localhost -U postgres -d pos_saas -f ../postgres/migrations/V*.sql
-	psql -h localhost -U postgres -d pos_saas -f ../accounting/migrations/V*.sql
+migrate-up: ## Run all database migrations up
+	@echo "Running PostgreSQL migrations..."
+	$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" up
+	@echo "Running Accounting migrations..."
+	$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" up
+	@echo "All migrations applied successfully!"
 
-migrate-down: ## Run database migrations down (careful!)
-	@echo "Rolling back migrations not implemented - manually drop tables if needed"
+migrate-down: ## Rollback last migration (careful!)
+	@echo "Rolling back Accounting migrations (last 1 step)..."
+	$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" down 1
+	@echo "Rolling back PostgreSQL migrations (last 1 step)..."
+	$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" down 1
+
+migrate-down-all: ## Rollback ALL migrations (DANGEROUS!)
+	@echo "WARNING: Rolling back ALL migrations..."
+	@read -p "Are you sure? Type 'yes' to continue: " confirm && [ "$$confirm" = "yes" ]
+	$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" down -all
+	$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" down -all
+
+migrate-status: ## Show migration status
+	@echo "PostgreSQL migrations status:"
+	@$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" version || echo "No migrations applied"
+	@echo "\nAccounting migrations status:"
+	@$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" version || echo "No migrations applied"
+
+migrate-force: ## Force migration version (use: make migrate-force VERSION=X)
+	@echo "Forcing migration version to $(VERSION)..."
+	$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" force $(VERSION)
+	$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" force $(VERSION)
+
+migrate-goto: ## Go to specific migration version (use: make migrate-goto VERSION=X)
+	@echo "Migrating to version $(VERSION)..."
+	$(MIGRATE) -path $(MIGRATIONS_POSTGRES) -database "$(DATABASE_URL)" goto $(VERSION)
+	$(MIGRATE) -path $(MIGRATIONS_ACCOUNTING) -database "$(DATABASE_URL)" goto $(VERSION)
 
 seed: ## Seed database with test data
 	psql -h localhost -U postgres -d pos_saas -f ../postgres/seed_data/*.sql

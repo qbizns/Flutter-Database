@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -9,10 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/logging"
 	appctx "github.com/your-org/pos-backend/internal/pkg/context"
-	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"github.com/your-org/pos-backend/internal/testhelpers"
 )
 
@@ -22,9 +21,7 @@ func TestListSuppliersHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -94,9 +91,7 @@ func TestCreateSupplierHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -264,9 +259,7 @@ func TestGetSupplierHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -281,7 +274,7 @@ func TestGetSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -300,7 +293,7 @@ func TestGetSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -318,7 +311,7 @@ func TestGetSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -337,9 +330,7 @@ func TestUpdateSupplierHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -361,7 +352,7 @@ func TestUpdateSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -383,7 +374,7 @@ func TestUpdateSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -411,7 +402,7 @@ func TestUpdateSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -437,7 +428,7 @@ func TestUpdateSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -456,9 +447,7 @@ func TestDeleteSupplierHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -473,7 +462,7 @@ func TestDeleteSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -492,7 +481,7 @@ func TestDeleteSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -510,7 +499,7 @@ func TestDeleteSupplierHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", supplierID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 

@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -9,10 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/logging"
 	appctx "github.com/your-org/pos-backend/internal/pkg/context"
-	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"github.com/your-org/pos-backend/internal/testhelpers"
 )
 
@@ -22,9 +21,7 @@ func TestListLocationsHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -79,9 +76,7 @@ func TestCreateLocationHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -204,9 +199,7 @@ func TestGetLocationHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -221,7 +214,7 @@ func TestGetLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -240,7 +233,7 @@ func TestGetLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -258,7 +251,7 @@ func TestGetLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -277,9 +270,7 @@ func TestUpdateLocationHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -301,7 +292,7 @@ func TestUpdateLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -323,7 +314,7 @@ func TestUpdateLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -342,9 +333,7 @@ func TestDeleteLocationHandler(t *testing.T) {
 	}
 
 	testDB := testhelpers.SetupTestDB(t)
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	ctx := testDB.Context()
 	orgID := testDB.CreateTestOrganization(ctx, "Test Org")
@@ -359,7 +348,7 @@ func TestDeleteLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -378,7 +367,7 @@ func TestDeleteLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", "invalid-uuid")
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 
@@ -396,7 +385,7 @@ func TestDeleteLocationHandler(t *testing.T) {
 
 		rctx := chi.NewRouteContext()
 		rctx.URLParams.Add("id", locationID.String())
-		req = req.WithContext(chi.NewRouteContext.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
 
 		rec := httptest.NewRecorder()
 

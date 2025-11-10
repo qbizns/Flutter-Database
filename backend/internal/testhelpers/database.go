@@ -19,6 +19,11 @@ type TestDB struct {
 	pool *pgxpool.Pool
 }
 
+// Context returns a background context for test operations
+func (tdb *TestDB) Context() context.Context {
+	return context.Background()
+}
+
 // SetupTestDB creates a test database connection
 func SetupTestDB(t *testing.T) *TestDB {
 	t.Helper()
