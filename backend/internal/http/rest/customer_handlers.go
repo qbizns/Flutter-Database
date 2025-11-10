@@ -17,7 +17,13 @@ import (
 func ListCustomersHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		repo := postgres.NewCustomerRepository(db)
 		service := customers.NewService(repo, logger)
@@ -43,8 +49,19 @@ func ListCustomersHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 func CreateCustomerHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		var req CreateCustomerRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

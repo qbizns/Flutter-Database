@@ -18,7 +18,13 @@ import (
 func ListProductsHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		// Create repository and service
 		repo := postgres.NewProductRepository(db)
@@ -46,8 +52,19 @@ func ListProductsHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFu
 func CreateProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		// Parse request body
 		var req CreateProductRequest
@@ -107,7 +124,13 @@ func CreateProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 func GetProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		// Parse product ID from URL
 		productID, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -135,8 +158,19 @@ func GetProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc
 func UpdateProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		// Parse product ID from URL
 		productID, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -242,7 +276,13 @@ func UpdateProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 func DeleteProductHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		// Parse product ID from URL
 		productID, err := uuid.Parse(chi.URLParam(r, "id"))
