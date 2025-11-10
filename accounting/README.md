@@ -1185,3 +1185,577 @@ For complete system documentation, see:
 
 **🎉 You now have a production-grade, Odoo-style accounting system with 45+ tables, 18 financial reports, and comprehensive multi-currency, multi-dimensional, multi-tenant capabilities!**
 
+---
+
+## 🧠 Configuration-Driven Posting Engine (V011-V013)
+
+The **Posting Engine** is the "brain" of the accounting system - a configuration-driven framework that automatically generates journal entries from business documents using concept-based templates. This eliminates hardcoded business logic and makes the accounting system adaptable to any business workflow.
+
+### 🎯 Core Philosophy
+
+**Traditional Approach** (hardcoded):
+```typescript
+// ❌ Business logic scattered in code
+if (sale.payment_method === "CASH") {
+    debit(CASH_ACCOUNT_ID, sale.total);
+    credit(REVENUE_ACCOUNT_ID, sale.subtotal);
+}
+```
+
+**Posting Engine Approach** (configuration-driven):
+```sql
+-- ✅ Business logic in database configuration
+-- Rule: POS_SALE_CASH automatically generates the journal entry
+-- Engine reads configuration and executes posting template
+```
+
+### 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                     Business Documents                        │
+│  (POS Sales, Vendor Bills, Payroll Runs, Check Payments)    │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+                            │ + Event (on_post, on_pay, on_settle)
+                            │
+                            ▼
+┌──────────────────────────────────────────────────────────────┐
+│                    Posting Engine Core                        │
+│                                                               │
+│  1. Identify Document Type (POS_SALE, VENDOR_BILL, etc.)    │
+│  2. Match Event (on_post, on_reverse, on_pay)               │
+│  3. Load Posting Rules (from posting_rules table)           │
+│  4. Evaluate Conditions (DSL expressions)                    │
+│  5. Build Journal Entry Lines (from posting_rule_lines)     │
+│  6. Resolve Accounts (via concept mappings)                 │
+│  7. Calculate Amounts (from document fields or expressions) │
+│  8. Validate (via posting_validation_rules)                 │
+│  9. Create Journal Entry + Post to GL                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### 📊 Key Components
+
+#### 1. Posting Concepts (Human-Friendly Vocabulary)
+
+Instead of account numbers, users work with logical concepts:
+
+```sql
+-- Concepts define what accounts represent
+INSERT INTO posting_concepts (concept_key, default_label, normal_side) VALUES
+    ('AR', 'Accounts Receivable', 'debit'),
+    ('REVENUE', 'Sales Revenue', 'credit'),
+    ('CASH', 'Cash', 'debit'),
+    ('TAX_OUTPUT', 'Tax Collected', 'credit'),
+    ('PAYROLL_EXPENSE', 'Payroll Expense', 'debit');
+```
+
+**Benefits**:
+- Non-accountants understand business terminology
+- Decouples posting logic from specific GL accounts
+- Enables easy account substitution per organization/location
+
+#### 2. Posting Account Mappings (Concept → GL Account)
+
+Maps concepts to actual GL accounts with context-awareness:
+
+```sql
+-- Map REVENUE concept to specific account
+INSERT INTO posting_account_mappings (
+    organization_id, concept_key, account_id,
+    product_category_id, location_id
+) VALUES
+    ('org-id', 'REVENUE', 'account-4000-id', NULL, NULL),           -- Default revenue
+    ('org-id', 'REVENUE', 'account-4100-id', 'category-A-id', NULL), -- Category A revenue
+    ('org-id', 'REVENUE', 'account-4200-id', NULL, 'location-B-id'); -- Location B revenue
+```
+
+**Resolution Priority**:
+1. Product-specific + Location-specific
+2. Product category + Location
+3. Organization default
+
+#### 3. Posting Profiles (Organization Configuration)
+
+Each organization can have multiple posting profiles (e.g., retail, wholesale, manufacturing):
+
+```sql
+-- Create posting profile
+INSERT INTO posting_profiles (
+    organization_id, code, name, is_default
+) VALUES
+    ('org-id', 'DEFAULT_PROFILE', 'Standard Posting Configuration', TRUE);
+```
+
+#### 4. Posting Document Types (Business Documents)
+
+Defines which business documents can be posted:
+
+```sql
+-- Register document types
+INSERT INTO posting_document_types (
+    code, name, source_schema, source_table, category
+) VALUES
+    ('POS_SALE', 'POS Sale', 'public', 'sales', 'sales'),
+    ('PAYROLL_RUN', 'Payroll Run', 'public', 'payroll_runs', 'payroll'),
+    ('VENDOR_BILL', 'Vendor Bill', 'public', 'vendor_bills', 'purchases'),
+    ('CHECK_ISSUE', 'Check Payment', 'public', 'checks', 'banking');
+```
+
+#### 5. Posting Rules (Templates)
+
+Rules define **when** and **how** to post:
+
+```sql
+-- Rule: POS cash sale posting
+INSERT INTO posting_rules (
+    posting_profile_document_id, rule_code, rule_name,
+    event, level, priority, condition_expression
+) VALUES (
+    'profile-doc-id',
+    'POS_SALE_CASH',
+    'POS Sale - Cash Payment',
+    'on_post',           -- When document is posted
+    'header',            -- Once per document (not per line)
+    100,                 -- Priority (lower = higher priority)
+    'doc.payment_method == "CASH"'  -- Only for cash sales
+);
+```
+
+**Events**:
+- `on_post`: When document is posted/approved
+- `on_reverse`: When document is reversed/cancelled
+- `on_pay`: When payment is made/received
+- `on_clear`: When cleared/reconciled
+- `on_settle`: When settled
+
+**Levels**:
+- `header`: One journal entry per document
+- `line`: One journal entry line per document line item
+
+#### 6. Posting Rule Lines (Journal Entry Templates)
+
+Each rule has multiple lines defining debits and credits:
+
+```sql
+-- Rule lines for POS_SALE_CASH
+INSERT INTO posting_rule_lines (
+    posting_rule_id, line_no, side, concept_key,
+    account_source, amount_source, amount_field_path, description_template
+) VALUES
+    -- Line 1: Debit CASH
+    ('rule-id', 1, 'debit', 'CASH',
+     'from_mapping', 'document_field', 'doc.total_amount',
+     'Cash sale {doc.sale_number}'),
+
+    -- Line 2: Credit REVENUE
+    ('rule-id', 2, 'credit', 'REVENUE',
+     'from_mapping', 'document_field', 'doc.subtotal_amount',
+     'Revenue from sale {doc.sale_number}'),
+
+    -- Line 3: Credit TAX_OUTPUT
+    ('rule-id', 3, 'credit', 'TAX_OUTPUT',
+     'from_mapping', 'document_field', 'doc.tax_amount',
+     'Tax on sale {doc.sale_number}');
+```
+
+**Account Sources**:
+- `from_mapping`: Resolve via concept mappings (most flexible)
+- `fixed`: Use a specific fixed account ID
+- `from_document`: Get account ID from document field (e.g., `doc.cash_account_id`)
+- `expression`: Evaluate DSL expression to get account ID
+
+**Amount Sources**:
+- `document_field`: Get from document field (e.g., `doc.total_amount`)
+- `line_field`: Get from line field (e.g., `line.amount`)
+- `expression`: Evaluate DSL (e.g., `doc.subtotal * 0.15`)
+
+#### 7. Posting Validation Rules (Quality Gates)
+
+Configuration-driven validation with DSL expressions:
+
+```sql
+-- Validation rules
+INSERT INTO posting_validation_rules (
+    organization_id, document_type_code, event, target,
+    code, expression, severity, is_blocking, message_template
+) VALUES
+    -- Global: Balanced journal entry
+    (NULL, NULL, NULL, 'journal_entry', 'BALANCED_ENTRY',
+     'abs(je.total_debit - je.total_credit) <= 0.005',
+     'error', TRUE, 'Journal entry must balance'),
+
+    -- Global: Open period check
+    (NULL, NULL, NULL, 'document', 'OPEN_PERIOD',
+     'period.status == "open"',
+     'error', TRUE, 'Cannot post to closed period'),
+
+    -- Org-specific: POS minimum amount
+    ('org-id', 'POS_SALE', 'on_post', 'document', 'MIN_SALE_AMOUNT',
+     'doc.total_amount >= 0.01',
+     'error', TRUE, 'Sale amount must be at least 0.01');
+```
+
+**Targets**:
+- `document`: Validates the source business document
+- `journal_entry`: Validates the generated journal entry
+- `journal_line`: Validates individual journal entry lines
+
+**Severities**:
+- `error`: Blocks posting if validation fails
+- `warning`: Allows posting but logs warning
+- `info`: Informational message only
+
+### 🔄 Posting Workflow
+
+**Example: POS Cash Sale**
+
+1. **User creates sale**:
+   ```sql
+   INSERT INTO sales (sale_number, payment_method, total_amount, subtotal_amount, tax_amount)
+   VALUES ('SALE-001', 'CASH', 115.00, 100.00, 15.00);
+   ```
+
+2. **Go Posting Engine invoked** (via API or trigger):
+   ```go
+   // Pseudo-code
+   PostingEngine.Post(documentType: "POS_SALE", documentID: "sale-id", event: "on_post")
+   ```
+
+3. **Engine execution**:
+   - Identify document: `POS_SALE`
+   - Match event: `on_post`
+   - Load rules: `POS_SALE_CASH` (condition matches: `payment_method == "CASH"`)
+   - Build lines:
+     - Line 1: Debit CASH (concept) → Account 1000 (via mapping) = $115.00
+     - Line 2: Credit REVENUE → Account 4000 = $100.00
+     - Line 3: Credit TAX_OUTPUT → Account 2100 = $15.00
+   - Validate: Check balanced, period open, minimum amount
+   - Create journal entry + post to GL
+
+4. **Result**: Journal entry automatically created:
+   ```
+   JE-2024-001 | 2024-12-15 | Posted
+   ──────────────────────────────────────────────
+   Line | Account      | Debit   | Credit  | Description
+   ──────────────────────────────────────────────
+   1    | 1000 Cash    | 115.00  |         | Cash sale SALE-001
+   2    | 4000 Revenue |         | 100.00  | Revenue from sale SALE-001
+   3    | 2100 Tax     |         | 15.00   | Tax on sale SALE-001
+   ──────────────────────────────────────────────
+   Total               | 115.00  | 115.00  | ✅ Balanced
+   ```
+
+### 📚 Configuration Examples
+
+#### Example 1: Payroll Posting
+
+```sql
+-- Document type
+INSERT INTO posting_document_types (code, name, source_table)
+VALUES ('PAYROLL_RUN', 'Payroll Run', 'payroll_runs');
+
+-- Rule
+INSERT INTO posting_rules (
+    rule_code, event, level, condition_expression
+) VALUES (
+    'PAYROLL_ACCRUAL', 'on_post', 'header', 'doc.status == "APPROVED"'
+);
+
+-- Lines
+INSERT INTO posting_rule_lines (posting_rule_id, line_no, side, concept_key, amount_field_path) VALUES
+    ('rule-id', 1, 'debit', 'PAYROLL_EXPENSE', 'doc.gross_salary_amount'),
+    ('rule-id', 2, 'credit', 'PAYROLL_LIABILITY', 'doc.gross_salary_amount');
+```
+
+**Result**:
+```
+Debit:  Payroll Expense     $50,000
+Credit: Wages Payable       $50,000
+```
+
+#### Example 2: Vendor Bill
+
+```sql
+-- Rule lines for vendor bill
+INSERT INTO posting_rule_lines (posting_rule_id, line_no, side, concept_key, amount_field_path) VALUES
+    ('rule-id', 1, 'debit', 'INVENTORY', 'doc.subtotal_amount'),
+    ('rule-id', 2, 'debit', 'TAX_INPUT', 'doc.tax_amount'),
+    ('rule-id', 3, 'credit', 'AP', 'doc.total_amount');
+```
+
+**Result**:
+```
+Debit:  Inventory           $10,000
+Debit:  Input Tax           $800
+Credit: Accounts Payable    $10,800
+```
+
+#### Example 3: Check Payment
+
+```sql
+-- Rule for check issue
+INSERT INTO posting_rule_lines (posting_rule_id, line_no, side, concept_key, amount_field_path) VALUES
+    ('rule-id', 1, 'debit', 'AP', 'doc.amount'),
+    ('rule-id', 2, 'credit', 'BANK', 'doc.amount');
+```
+
+**Result**:
+```
+Debit:  Accounts Payable    $5,000
+Credit: Bank Account        $5,000
+```
+
+### 🎨 Customization
+
+#### Add Organization-Specific Concept Labels
+
+```sql
+-- Override concept label for a specific organization
+INSERT INTO posting_concept_overrides (
+    organization_id, concept_key, label, description
+) VALUES (
+    'org-id', 'REVENUE', 'Sales Income',
+    'Income from product sales (customized label)'
+);
+
+-- Get label (respects organization overrides)
+SELECT get_concept_label('org-id', 'REVENUE');
+-- Returns: 'Sales Income' (not 'Sales Revenue')
+```
+
+#### Add Custom Posting Rule
+
+```sql
+-- Rule for layaway sales (payment over time)
+INSERT INTO posting_rules (
+    rule_code, event, condition_expression
+) VALUES (
+    'POS_SALE_LAYAWAY', 'on_post',
+    'doc.payment_method == "LAYAWAY" && doc.payment_schedule == "installment"'
+);
+
+-- Lines for layaway
+INSERT INTO posting_rule_lines (posting_rule_id, line_no, side, concept_key, amount_field_path) VALUES
+    ('rule-id', 1, 'debit', 'AR', 'doc.total_amount'),
+    ('rule-id', 2, 'credit', 'DEFERRED_REVENUE', 'doc.total_amount');
+```
+
+#### Add Custom Validation Rule
+
+```sql
+-- Require manager approval for large sales
+INSERT INTO posting_validation_rules (
+    organization_id, document_type_code, code, expression, severity, message_template
+) VALUES (
+    'org-id', 'POS_SALE', 'MANAGER_APPROVAL_REQUIRED',
+    'doc.total_amount <= 5000.00 || doc.approved_by != null',
+    'error',
+    'Sales over $5,000 require manager approval'
+);
+```
+
+### 🔍 Querying & Monitoring
+
+#### Get Posting Rules for Document
+
+```sql
+-- Find applicable posting rules
+SELECT * FROM get_posting_rules_for_document(
+    'org-id', 'POS_SALE', 'on_post'
+);
+```
+
+#### Check Validation Results
+
+```sql
+-- View validation failures
+SELECT * FROM view_posting_validation_results
+WHERE organization_id = 'org-id'
+  AND severity = 'error'
+  AND is_blocking = TRUE;
+
+-- View blocked documents
+SELECT * FROM view_blocked_postings
+WHERE organization_id = 'org-id';
+```
+
+#### Audit Concept Mappings
+
+```sql
+-- View all concept mappings with account details
+SELECT * FROM view_posting_account_mappings
+WHERE organization_id = 'org-id'
+ORDER BY concept_key, priority DESC;
+```
+
+### 📁 Database Schema
+
+**Tables Created**:
+- `posting_concepts` - Logical vocabulary (AR, REVENUE, CASH, etc.)
+- `posting_concept_overrides` - Organization-specific labels
+- `posting_account_mappings` - Concept → GL account mappings (with context)
+- `posting_profiles` - Organization posting configurations
+- `posting_document_types` - Business documents (POS_SALE, VENDOR_BILL, etc.)
+- `posting_profile_documents` - Profile → Document type links
+- `posting_rules` - Posting templates (event, level, conditions)
+- `posting_rule_lines` - Journal entry line templates
+- `posting_validation_rules` - Validation expressions
+- `posting_validation_results` - Validation execution log
+
+**Functions**:
+- `get_concept_label()` - Get concept label (respects overrides)
+- `get_concept_description()` - Get concept description
+- `get_posting_rules_for_document()` - Load applicable rules
+- `get_active_validation_rules()` - Load validation rules
+- `is_posting_blocked()` - Check if document can be posted
+- `clear_validation_results()` - Clear old validation results
+
+**Views**:
+- `view_posting_concepts_with_overrides` - All concepts with org labels
+- `view_posting_account_mappings` - Mappings with GL account details
+- `view_posting_validation_results` - Validation results with context
+- `view_blocked_postings` - Documents blocked by validation
+
+### 🚀 Usage in Applications
+
+**Go/Backend Integration**:
+```go
+// Posting Engine Service
+type PostingEngine struct {
+    db *sql.DB
+}
+
+func (pe *PostingEngine) Post(ctx context.Context, docType string, docID uuid.UUID, event PostingEvent) error {
+    // 1. Load posting rules
+    rules, err := pe.GetPostingRulesForDocument(ctx, orgID, docType, event)
+
+    // 2. For each rule, evaluate conditions
+    for _, rule := range rules {
+        if pe.EvaluateCondition(rule.ConditionExpression, docData) {
+            // 3. Build journal entry lines
+            lines := pe.BuildJournalLines(rule.Lines, docData)
+
+            // 4. Validate
+            validationResults := pe.Validate(docType, docID, event, lines)
+            if hasBlockingErrors(validationResults) {
+                return errors.New("validation failed")
+            }
+
+            // 5. Create journal entry + post
+            jeID := pe.CreateJournalEntry(ctx, orgID, lines)
+            pe.PostToGL(ctx, jeID)
+
+            // 6. Update document status
+            pe.UpdateDocumentPostingStatus(ctx, docType, docID, jeID)
+        }
+    }
+    return nil
+}
+```
+
+**Flutter/Frontend Integration**:
+```dart
+// Posting Engine API Client
+class PostingEngineService {
+  Future<void> postDocument(String docType, String docID, PostingEvent event) async {
+    final response = await http.post(
+      Uri.parse('/api/posting-engine/post'),
+      body: jsonEncode({
+        'document_type': docType,
+        'document_id': docID,
+        'event': event.name,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Document posted successfully');
+    } else {
+      final errors = jsonDecode(response.body)['validation_errors'];
+      throw PostingException(errors);
+    }
+  }
+}
+
+// Usage
+await postingEngine.postDocument('POS_SALE', saleId, PostingEvent.onPost);
+```
+
+### 📖 Migration Files
+
+**Migrations**:
+- `V011_20251110_create_posting_concepts.sql` - Concept layer
+- `V012_20251110_create_posting_validation.sql` - Validation rules
+- `V013_20251110_create_posting_engine_core.sql` - Core engine tables
+
+**Seed Data**:
+- `008_seed_posting_engine.sql` - Complete proof-of-concept with:
+  - 17 base posting concepts
+  - 11 concept → account mappings
+  - 1 default posting profile
+  - 6 document types (POS_SALE, PAYROLL_RUN, VENDOR_BILL, CHECK_ISSUE, etc.)
+  - 5 posting rules with 14 rule lines
+  - 7 validation rules
+
+### 🎯 Benefits
+
+**For Developers**:
+- ✅ No hardcoded business logic
+- ✅ Easy to test (all config in database)
+- ✅ Version control for posting rules (via migrations)
+- ✅ Add new document types without code changes
+
+**For Accountants**:
+- ✅ Configure posting rules via UI (no coding required)
+- ✅ Business terminology (not account numbers)
+- ✅ Test rules in sandbox before production
+- ✅ Audit trail for all configuration changes
+
+**For Organizations**:
+- ✅ Customize per location/department/product category
+- ✅ Support multiple business models (retail, wholesale, manufacturing)
+- ✅ Easy compliance (rules match regulatory requirements)
+- ✅ Scalable to any business size
+
+---
+
+## 📁 Complete Directory Structure (Updated)
+
+```
+accounting/
+├── README.md                                    # This file
+├── migrations/                                  # Database migrations (DDL)
+│   ├── V001_20251109_create_accounting_core.sql
+│   ├── V002_20251109_create_ap_ar_assets.sql
+│   ├── V003_20251110_create_odoo_extensions.sql
+│   ├── V004_20251110_create_pos_account_mappings.sql
+│   ├── V005_20251110_create_pos_posting_audit.sql
+│   ├── V006_20251110_create_inventory_valuation_settings.sql
+│   ├── V007_20251110_create_inventory_valuation_views.sql
+│   ├── V008_20251110_create_pos_tax_mappings.sql
+│   ├── V009_20251110_add_immutability_triggers.sql
+│   ├── V010_20251110_add_closing_procedures.sql
+│   ├── V011_20251110_create_posting_concepts.sql          # NEW: Concept layer
+│   ├── V012_20251110_create_posting_validation.sql        # NEW: Validation layer
+│   └── V013_20251110_create_posting_engine_core.sql       # NEW: Posting engine
+├── seed_data/                                   # Test data (DML)
+│   ├── 001_seed_chart_of_accounts.sql
+│   ├── 002_seed_fiscal_year_and_transactions.sql
+│   ├── 003_seed_heavy_transactions.sql
+│   ├── 004_seed_ap_ar_data.sql
+│   ├── 005_seed_fixed_assets.sql
+│   ├── 006_seed_odoo_extensions.sql
+│   ├── 007_seed_pos_integration.sql
+│   └── 008_seed_posting_engine.sql                        # NEW: Posting engine config
+├── schemas/                                     # Views and reports
+│   ├── accounting_reports.sql
+│   └── odoo_reports.sql
+└── scripts/                                     # Setup scripts
+    ├── init_accounting.sql
+    └── run_all.sh
+
+---
+
+**🎉 The Posting Engine transforms your accounting system from a static collection of tables into a living, breathing, self-configuring financial brain that adapts to any business workflow!**
+
