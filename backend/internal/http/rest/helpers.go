@@ -8,6 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/your-org/pos-backend/internal/logging"
+	appctx "github.com/your-org/pos-backend/internal/pkg/context"
 	apperrors "github.com/your-org/pos-backend/internal/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -137,4 +138,34 @@ func stringPtr(s string) *string {
 		return nil
 	}
 	return &s
+}
+
+// getUserID safely extracts user ID from request context
+func getUserID(r *http.Request) (uuid.UUID, error) {
+	userID, err := appctx.GetUserIDOrError(r.Context())
+	if err != nil {
+		return uuid.UUID{}, apperrors.Unauthorized("authentication required")
+	}
+	return userID, nil
+}
+
+// getOrganizationID safely extracts organization ID from request context
+func getOrganizationID(r *http.Request) (uuid.UUID, error) {
+	orgID, err := appctx.GetOrganizationIDOrError(r.Context())
+	if err != nil {
+		return uuid.UUID{}, apperrors.Unauthorized("organization context required")
+	}
+	return orgID, nil
+}
+
+// getOptionalUserID extracts user ID from context, returns zero UUID if not found
+func getOptionalUserID(r *http.Request) uuid.UUID {
+	userID, _ := appctx.GetUserID(r.Context())
+	return userID
+}
+
+// getOptionalOrganizationID extracts organization ID from context, returns zero UUID if not found
+func getOptionalOrganizationID(r *http.Request) uuid.UUID {
+	orgID, _ := appctx.GetOrganizationID(r.Context())
+	return orgID
 }

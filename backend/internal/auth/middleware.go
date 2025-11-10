@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -138,11 +139,17 @@ func (m *Middleware) RequireScope(scope string) func(http.Handler) http.Handler 
 func (m *Middleware) unauthorized(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnauthorized)
-	w.Write([]byte(`{"error": "` + message + `"}`))
+
+	// Proper JSON encoding to prevent injection
+	response := map[string]string{"error": message}
+	json.NewEncoder(w).Encode(response)
 }
 
 func (m *Middleware) forbidden(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusForbidden)
-	w.Write([]byte(`{"error": "` + message + `"}`))
+
+	// Proper JSON encoding to prevent injection
+	response := map[string]string{"error": message}
+	json.NewEncoder(w).Encode(response)
 }
