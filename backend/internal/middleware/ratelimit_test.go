@@ -14,9 +14,7 @@ import (
 
 func TestRateLimiter_Limit_WithoutRedis(t *testing.T) {
 	// Test that rate limiter fails open when Redis is unavailable
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	rl := NewRateLimiter(nil, config.RateLimitConfig{
 		RequestsPerMinute: 5,
@@ -124,9 +122,7 @@ func TestGetRealIP(t *testing.T) {
 }
 
 func TestRateLimiter_LimitAuth_StricterLimits(t *testing.T) {
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	// Create rate limiter without Redis (will fail open)
 	rl := NewRateLimiter(nil, config.RateLimitConfig{
@@ -156,9 +152,7 @@ func TestRateLimiter_LimitAuth_StricterLimits(t *testing.T) {
 }
 
 func TestCheckRateLimit_Logic(t *testing.T) {
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	t.Run("nil redis fails open", func(t *testing.T) {
 		rl := NewRateLimiter(nil, config.RateLimitConfig{}, logger)
@@ -200,9 +194,7 @@ func (m *mockRedisClient) Get(ctx context.Context, key string) *redis.StringCmd 
 }
 
 func TestGetRemainingRequests(t *testing.T) {
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	t.Run("with nil redis", func(t *testing.T) {
 		rl := NewRateLimiter(nil, config.RateLimitConfig{}, logger)
@@ -226,9 +218,7 @@ func TestGetRemainingRequests(t *testing.T) {
 }
 
 func TestRateLimiter_DifferentIPs(t *testing.T) {
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	rl := NewRateLimiter(nil, config.RateLimitConfig{
 		RequestsPerMinute: 5,
@@ -265,9 +255,7 @@ func TestRateLimiter_Integration(t *testing.T) {
 	// This would be an integration test with a real Redis instance
 	// For now, we just verify the structure and fail-open behavior
 
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	cfg := config.RateLimitConfig{
 		RequestsPerMinute: 10,
@@ -302,9 +290,7 @@ func BenchmarkGetRealIP(b *testing.B) {
 }
 
 func BenchmarkRateLimiter_NoRedis(b *testing.B) {
-	logger, _ := logging.NewLogger(&config.Config{
-		Server: config.ServerConfig{Env: "test"},
-	})
+	logger, _ := logging.NewLogger("info", "console")
 
 	rl := NewRateLimiter(nil, config.RateLimitConfig{
 		RequestsPerMinute: 60,
