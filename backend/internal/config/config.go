@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -38,9 +39,15 @@ type DatabaseConfig struct {
 	User            string
 	Password        string
 	DBName          string
+	SSLMode         string
+	SSLRootCert     string
+	SSLCert         string
+	SSLKey          string
 	MaxOpenConns    int
 	MaxIdleConns    int
 	ConnMaxLifetime time.Duration
+	ConnMaxIdleTime time.Duration
+	QueryTimeout    time.Duration
 }
 
 type RedisConfig struct {
@@ -124,9 +131,15 @@ func Load() (*Config, error) {
 			User:            getEnv("DB_USER", "postgres"),
 			Password:        getEnv("DB_PASSWORD", "postgres"),
 			DBName:          getEnv("DB_NAME", "pos_saas"),
+			SSLMode:         getEnv("DB_SSL_MODE", "require"),
+			SSLRootCert:     getEnv("DB_SSL_ROOT_CERT", ""),
+			SSLCert:         getEnv("DB_SSL_CERT", ""),
+			SSLKey:          getEnv("DB_SSL_KEY", ""),
 			MaxOpenConns:    getEnvAsInt("DB_MAX_OPEN_CONNS", 25),
 			MaxIdleConns:    getEnvAsInt("DB_MAX_IDLE_CONNS", 5),
 			ConnMaxLifetime: getEnvAsDuration("DB_CONN_MAX_LIFETIME", 5*time.Minute),
+			ConnMaxIdleTime: getEnvAsDuration("DB_CONN_MAX_IDLE_TIME", 10*time.Minute),
+			QueryTimeout:    getEnvAsDuration("DB_QUERY_TIMEOUT", 30*time.Second),
 		},
 		Redis: RedisConfig{
 			Host:     getEnv("REDIS_HOST", "localhost"),
@@ -202,9 +215,32 @@ func (c *Config) Validate() error {
 	if c.Database.DBName == "" {
 		return fmt.Errorf("DB_NAME is required")
 	}
-	if c.JWT.Secret == "your-secret-key-change-me" && c.Server.Env == "production" {
-		return fmt.Errorf("JWT_SECRET must be changed in production")
+
+	// Validate SSL mode
+	validSSLModes := map[string]bool{
+		"disable": true, "allow": true, "prefer": true,
+		"require": true, "verify-ca": true, "verify-full": true,
 	}
+	if !validSSLModes[c.Database.SSLMode] {
+		return fmt.Errorf("invalid DB_SSL_MODE: %s (valid: disable, allow, prefer, require, verify-ca, verify-full)", c.Database.SSLMode)
+	}
+
+	// Production security requirements
+	if c.Server.Env == "production" {
+		if c.JWT.Secret == "your-secret-key-change-me" {
+			return fmt.Errorf("JWT_SECRET must be changed in production")
+		}
+		if len(c.JWT.Secret) < 32 {
+			return fmt.Errorf("JWT_SECRET must be at least 32 characters in production")
+		}
+		if c.Database.SSLMode == "disable" {
+			return fmt.Errorf("DB_SSL_MODE cannot be 'disable' in production - use 'require' or higher")
+		}
+		if c.Database.SSLMode == "allow" || c.Database.SSLMode == "prefer" {
+			return fmt.Errorf("DB_SSL_MODE must be 'require' or higher in production (current: %s)", c.Database.SSLMode)
+		}
+	}
+
 	return nil
 }
 
@@ -268,14 +304,17 @@ func getEnvAsSlice(key string, defaultValue []string) []string {
 	if valueStr == "" {
 		return defaultValue
 	}
-	// Simple comma-separated parsing
+
+	// Parse comma-separated values properly
 	var result []string
-	for _, v := range []byte(valueStr) {
-		if v == ',' {
-			continue
+	parts := strings.Split(valueStr, ",")
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
 		}
-		result = append(result, string(v))
 	}
+
 	if len(result) == 0 {
 		return defaultValue
 	}

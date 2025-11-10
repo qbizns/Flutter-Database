@@ -2,8 +2,16 @@ package context
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
+)
+
+var (
+	// ErrUserIDNotFound is returned when user ID is not in context
+	ErrUserIDNotFound = errors.New("user_id not found in context")
+	// ErrOrganizationIDNotFound is returned when organization ID is not in context
+	ErrOrganizationIDNotFound = errors.New("organization_id not found in context")
 )
 
 type contextKey string
@@ -28,12 +36,22 @@ func GetUserID(ctx context.Context) (uuid.UUID, bool) {
 }
 
 // MustGetUserID retrieves user ID from context or panics
+// Deprecated: Use GetUserIDOrError instead for safer error handling
 func MustGetUserID(ctx context.Context) uuid.UUID {
 	userID, ok := GetUserID(ctx)
 	if !ok {
 		panic("user_id not found in context")
 	}
 	return userID
+}
+
+// GetUserIDOrError retrieves user ID from context or returns an error
+func GetUserIDOrError(ctx context.Context) (uuid.UUID, error) {
+	userID, ok := GetUserID(ctx)
+	if !ok {
+		return uuid.UUID{}, ErrUserIDNotFound
+	}
+	return userID, nil
 }
 
 // WithOrganizationID adds organization ID to context
@@ -48,12 +66,22 @@ func GetOrganizationID(ctx context.Context) (uuid.UUID, bool) {
 }
 
 // MustGetOrganizationID retrieves organization ID from context or panics
+// Deprecated: Use GetOrganizationIDOrError instead for safer error handling
 func MustGetOrganizationID(ctx context.Context) uuid.UUID {
 	orgID, ok := GetOrganizationID(ctx)
 	if !ok {
 		panic("organization_id not found in context")
 	}
 	return orgID
+}
+
+// GetOrganizationIDOrError retrieves organization ID from context or returns an error
+func GetOrganizationIDOrError(ctx context.Context) (uuid.UUID, error) {
+	orgID, ok := GetOrganizationID(ctx)
+	if !ok {
+		return uuid.UUID{}, ErrOrganizationIDNotFound
+	}
+	return orgID, nil
 }
 
 // WithRequestID adds request ID to context
