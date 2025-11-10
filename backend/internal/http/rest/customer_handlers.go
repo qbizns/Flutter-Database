@@ -112,7 +112,13 @@ func CreateCustomerHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func GetCustomerHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		customerID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -136,8 +142,19 @@ func GetCustomerHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFun
 func UpdateCustomerHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		customerID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -232,7 +249,13 @@ func UpdateCustomerHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func DeleteCustomerHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		customerID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {

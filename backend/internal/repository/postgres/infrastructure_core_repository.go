@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 
-	"pos-backend/internal/domain/infrastructure"
+	"github.com/your-org/pos-backend/internal/domain/infrastructure"
 )
 
 // ============================================================================

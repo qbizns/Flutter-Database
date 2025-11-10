@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 
-	"backend/internal/domain/accounting"
+	"github.com/your-org/pos-backend/internal/domain/accounting"
 )
 
 // AccountingRepository implements accounting.AccountingRepository

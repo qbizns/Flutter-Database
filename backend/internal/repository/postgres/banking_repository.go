@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 
-	"backend/internal/domain/banking"
+	"github.com/your-org/pos-backend/internal/domain/banking"
 )
 
 // BankingRepository implements banking.BankingRepository

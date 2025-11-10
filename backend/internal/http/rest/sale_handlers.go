@@ -18,7 +18,13 @@ import (
 func ListSalesHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		repo := postgres.NewSaleRepository(db)
 		service := sales.NewService(repo, logger)
@@ -94,8 +100,19 @@ func ListSalesHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc 
 func CreateSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		var req CreateSaleRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -165,7 +182,13 @@ func CreateSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc
 func GetSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		saleID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -190,8 +213,19 @@ func GetSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 func UpdateSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		saleID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -242,7 +276,13 @@ func UpdateSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc
 func DeleteSaleHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		saleID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {

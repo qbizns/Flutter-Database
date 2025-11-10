@@ -11,7 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
-	"github.com/yourusername/accounting-backend/internal/domain/receivables"
+	"github.com/your-org/pos-backend/internal/domain/receivables"
 )
 
 // ReceivablesRepository implements the receivables repository interface

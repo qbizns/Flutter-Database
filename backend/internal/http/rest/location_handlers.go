@@ -17,7 +17,13 @@ import (
 func ListLocationsHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		repo := postgres.NewLocationRepository(db)
 		service := locations.NewService(repo, logger)
@@ -43,8 +49,19 @@ func ListLocationsHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 func CreateLocationHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		var req CreateLocationRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -90,7 +107,13 @@ func CreateLocationHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func GetLocationHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		locationID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -114,8 +137,19 @@ func GetLocationHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFun
 func UpdateLocationHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		locationID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -195,7 +229,13 @@ func UpdateLocationHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func DeleteLocationHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		locationID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {

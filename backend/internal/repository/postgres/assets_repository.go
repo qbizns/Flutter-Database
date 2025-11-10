@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"internal/domain/assets"
+	"github.com/your-org/pos-backend/internal/domain/assets"
 )
 
 // AssetsRepository implements assets.Repository for PostgreSQL

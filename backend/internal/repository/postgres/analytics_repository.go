@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"internal/domain/analytics"
+	"github.com/your-org/pos-backend/internal/domain/analytics"
 )
 
 // AnalyticsRepository implements analytics.Repository for PostgreSQL

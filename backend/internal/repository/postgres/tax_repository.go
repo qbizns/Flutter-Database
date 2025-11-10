@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 
-	"backend/internal/domain/tax"
+	"github.com/your-org/pos-backend/internal/domain/tax"
 )
 
 // TaxRepository implements tax.TaxRepository

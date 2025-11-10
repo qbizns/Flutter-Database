@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
-	"backend/internal/domain/finance"
+	"github.com/your-org/pos-backend/internal/domain/finance"
 )
 
 // FinanceRepository implements finance.FinanceRepository

@@ -17,7 +17,13 @@ import (
 func ListCategoriesHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		repo := postgres.NewCategoryRepository(db)
 		service := categories.NewService(repo, logger)
@@ -49,8 +55,19 @@ func ListCategoriesHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func CreateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		var req CreateCategoryRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -91,7 +108,13 @@ func CreateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func GetCategoryHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		categoryID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -115,8 +138,19 @@ func GetCategoryHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFun
 func UpdateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
-		userID := appctx.MustGetUserID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
+
+		userID, err := getUserID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		categoryID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {
@@ -181,7 +215,13 @@ func UpdateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 func DeleteCategoryHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		orgID := appctx.MustGetOrganizationID(ctx)
+
+		// Safe context extraction
+		orgID, err := getOrganizationID(r)
+		if err != nil {
+			respondError(w, logger, err)
+			return
+		}
 
 		categoryID, err := uuid.Parse(chi.URLParam(r, "id"))
 		if err != nil {

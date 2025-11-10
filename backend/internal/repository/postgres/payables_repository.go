@@ -11,7 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
-	"github.com/yourusername/accounting-backend/internal/domain/payables"
+	"github.com/your-org/pos-backend/internal/domain/payables"
 )
 
 // PayablesRepository implements the payables repository interface
