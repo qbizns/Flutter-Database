@@ -34,7 +34,7 @@ func SetupTestDB(t *testing.T) *TestDB {
 	cfg.Server.Env = "test"
 
 	// Create logger
-	logger, err := logging.NewLogger(cfg)
+	logger, err := logging.NewLogger(cfg.Logging.Level, cfg.Logging.Format)
 	if err != nil {
 		t.Fatalf("failed to create logger: %v", err)
 	}
@@ -46,7 +46,7 @@ func SetupTestDB(t *testing.T) *TestDB {
 	}
 
 	// Connect to database
-	db, err := postgres.NewDB(ctx, cfg, logger)
+	db, err := postgres.New(cfg, logger)
 	if err != nil {
 		t.Fatalf("failed to connect to test database: %v", err)
 	}

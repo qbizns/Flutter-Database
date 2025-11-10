@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/your-org/pos-backend/internal/domain/customers"
 	"github.com/your-org/pos-backend/internal/logging"
-	appctx "github.com/your-org/pos-backend/internal/pkg/context"
 	apperrors "github.com/your-org/pos-backend/internal/pkg/errors"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"

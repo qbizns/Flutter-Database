@@ -242,8 +242,8 @@ type CreateCategoryRequest struct {
 	Description string     `json:"description"`
 	ParentID    *uuid.UUID `json:"parent_id"`
 	Color       string     `json:"color"`
-	IconName    string     `json:"icon_name"`
-	DisplayOrder int       `json:"display_order"`
+	Icon    string     `json:"icon_name"`
+	SortOrder int       `json:"display_order"`
 	IsActive    bool       `json:"is_active"`
 }
 
@@ -252,8 +252,8 @@ type UpdateCategoryRequest struct {
 	Description  *string    `json:"description"`
 	ParentID     *uuid.UUID `json:"parent_id"`
 	Color        *string    `json:"color"`
-	IconName     *string    `json:"icon_name"`
-	DisplayOrder *int       `json:"display_order"`
+	Icon     *string    `json:"icon_name"`
+	SortOrder *int       `json:"display_order"`
 	IsActive     *bool      `json:"is_active"`
 }
 

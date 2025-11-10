@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/your-org/pos-backend/internal/domain/locations"
 	"github.com/your-org/pos-backend/internal/logging"
-	appctx "github.com/your-org/pos-backend/internal/pkg/context"
 	apperrors "github.com/your-org/pos-backend/internal/pkg/errors"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"
@@ -80,16 +79,16 @@ func CreateLocationHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 		location := &locations.Location{
 			OrganizationID: orgID,
 			Name:           req.Name,
-			Code:           req.Code,
+			LocationCode:   req.Code,
 			LocationType:   req.LocationType,
-			AddressLine1:   req.AddressLine1,
-			AddressLine2:   req.AddressLine2,
-			City:           req.City,
-			State:          req.State,
-			PostalCode:     req.PostalCode,
-			Country:        req.Country,
-			Phone:          req.Phone,
-			Email:          req.Email,
+			AddressLine1:   stringPtr(req.AddressLine1),
+			AddressLine2:   stringPtr(req.AddressLine2),
+			City:           stringPtr(req.City),
+			State:          stringPtr(req.State),
+			PostalCode:     stringPtr(req.PostalCode),
+			Country:        stringPtr(req.Country),
+			Phone:          stringPtr(req.Phone),
+			Email:          stringPtr(req.Email),
 			IsActive:       req.IsActive,
 			CreatedBy:      userID,
 		}
@@ -182,34 +181,34 @@ func UpdateLocationHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 			location.Name = *req.Name
 		}
 		if req.Code != nil {
-			location.Code = *req.Code
+			location.LocationCode = *req.Code
 		}
 		if req.LocationType != nil {
 			location.LocationType = *req.LocationType
 		}
 		if req.AddressLine1 != nil {
-			location.AddressLine1 = *req.AddressLine1
+			location.AddressLine1 = req.AddressLine1
 		}
 		if req.AddressLine2 != nil {
-			location.AddressLine2 = *req.AddressLine2
+			location.AddressLine2 = req.AddressLine2
 		}
 		if req.City != nil {
-			location.City = *req.City
+			location.City = req.City
 		}
 		if req.State != nil {
-			location.State = *req.State
+			location.State = req.State
 		}
 		if req.PostalCode != nil {
-			location.PostalCode = *req.PostalCode
+			location.PostalCode = req.PostalCode
 		}
 		if req.Country != nil {
-			location.Country = *req.Country
+			location.Country = req.Country
 		}
 		if req.Phone != nil {
-			location.Phone = *req.Phone
+			location.Phone = req.Phone
 		}
 		if req.Email != nil {
-			location.Email = *req.Email
+			location.Email = req.Email
 		}
 		if req.IsActive != nil {
 			location.IsActive = *req.IsActive

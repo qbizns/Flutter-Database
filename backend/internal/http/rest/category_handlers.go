@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/your-org/pos-backend/internal/domain/categories"
 	"github.com/your-org/pos-backend/internal/logging"
-	appctx "github.com/your-org/pos-backend/internal/pkg/context"
 	apperrors "github.com/your-org/pos-backend/internal/pkg/errors"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"
@@ -89,8 +88,8 @@ func CreateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 			Description:    req.Description,
 			ParentID:       req.ParentID,
 			Color:          req.Color,
-			IconName:       req.IconName,
-			DisplayOrder:   req.DisplayOrder,
+			Icon:       req.Icon,
+			SortOrder:   req.SortOrder,
 			IsActive:       req.IsActive,
 			CreatedBy:      userID,
 		}
@@ -191,11 +190,11 @@ func UpdateCategoryHandler(db *postgres.DB, logger *logging.Logger) http.Handler
 		if req.Color != nil {
 			category.Color = *req.Color
 		}
-		if req.IconName != nil {
-			category.IconName = *req.IconName
+		if req.Icon != nil {
+			category.Icon = *req.Icon
 		}
-		if req.DisplayOrder != nil {
-			category.DisplayOrder = *req.DisplayOrder
+		if req.SortOrder != nil {
+			category.SortOrder = *req.SortOrder
 		}
 		if req.IsActive != nil {
 			category.IsActive = *req.IsActive
