@@ -130,3 +130,11 @@ func getPaginationParams(r *http.Request) (page, pageSize int) {
 
 	return page, pageSize
 }
+
+// stringPtr returns a pointer to the string if not empty, nil otherwise
+func stringPtr(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}
