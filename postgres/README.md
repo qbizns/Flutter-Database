@@ -127,6 +127,166 @@ SELECT * FROM products;  -- Only returns user's organization products
 - `inventory` - Stock management
 - `inventory_transactions` - Stock movement tracking
 
+#### E-Invoicing Tables (V014+)
+- `e_invoicing_documents` - Central repository for all e-invoicing documents (ZATCA, ETA, etc.)
+- `e_invoicing_document_events` - Complete audit trail of e-invoicing events
+
+### E-Invoicing Integration (ZATCA & ETA)
+
+The system includes comprehensive support for electronic invoicing compliance with multiple tax authorities:
+
+#### Supported Authorities
+- **ZATCA** (Saudi Arabia) - Standard & Simplified invoices with QR codes, hash chaining, and cryptographic stamps
+- **ETA** (Egypt) - JSON/XML format with CAdES-BES digital signatures
+- **Extensible** - Architecture supports additional authorities
+
+#### Key Features
+
+**Authority-Agnostic Design**
+- Polymorphic source references (works with `sales`, `customer_invoices`, or any invoice table)
+- Flexible metadata storage for authority-specific requirements
+- Unified status workflow across all authorities
+
+**ZATCA Features**
+- Invoice counter value (ICV) tracking
+- Hash chaining for blockchain-style verification
+- Cryptographic stamps and QR code generation
+- PIH (Previous Invoice Hash) compliance
+- Support for both Standard (B2B) and Simplified (B2C) invoices
+- Excise tax handling for tobacco, soft drinks, etc.
+
+**ETA Features**
+- Document type versioning
+- CAdES-BES digital signature support
+- Long ID assignment after acceptance
+- Receiver type classification (Business, Person, Foreigner)
+- Egyptian GS1/EGS item code tracking
+
+**Extended Tables**
+
+The following tables have been extended with e-invoicing fields:
+
+**Customers Table**
+```sql
+-- Tax Registration
+tax_registration_number
+tax_registration_type
+tax_registration_country
+is_tax_registered
+
+-- ZATCA-specific address fields
+zatca_building_number
+zatca_street_name
+zatca_district
+zatca_city_name
+zatca_postal_zone
+
+-- ETA-specific fields
+eta_receiver_type
+eta_receiver_id
+eta_governorate
+eta_region_city
+
+-- Flexible address storage
+structured_address JSONB
+```
+
+**Products Table**
+```sql
+-- Standard item codes
+standard_item_code
+standard_item_code_type  -- GS1, EGS, GTIN, etc.
+harmonized_system_code
+
+-- Standard UOM codes
+standard_uom_code  -- UN/ECE Recommendation 20
+standard_uom_name
+
+-- Tax classification
+tax_category_code  -- S, Z, E, O
+default_vat_rate
+tax_exemption_reason
+
+-- Authority-specific fields
+zatca_is_excise_taxable
+eta_gs1_code
+```
+
+**Sales Table**
+```sql
+-- E-invoicing status tracking
+is_e_invoice_required
+e_invoice_status
+e_invoice_document_id
+e_invoicing_metadata JSONB
+```
+
+#### Helper Views
+
+Five helper views are available for querying e-invoicing data:
+
+- `view_e_invoices_with_source` - E-invoices with resolved source details
+- `view_e_invoice_event_history` - Complete event history with user details
+- `view_zatca_invoices` - ZATCA-specific invoices with ZATCA fields
+- `view_eta_invoices` - ETA-specific invoices with ETA fields
+- `view_failed_e_invoices` - Failed invoices requiring attention/retry
+
+#### Usage Example
+
+```sql
+-- Create an e-invoicing document for a sale
+INSERT INTO e_invoicing_documents (
+    organization_id,
+    source_table,
+    source_id,
+    authority,
+    country_code,
+    document_type,
+    document_number,
+    status
+) VALUES (
+    'org-uuid',
+    'sales',
+    'sale-uuid',
+    'ZATCA',
+    'SAU',
+    'standard',
+    'INV-2024-001',
+    'pending'
+);
+
+-- Track submission event
+INSERT INTO e_invoicing_document_events (
+    organization_id,
+    e_invoicing_document_id,
+    event_type,
+    new_status,
+    event_description
+) VALUES (
+    'org-uuid',
+    'doc-uuid',
+    'submitted',
+    'submitted',
+    'Document submitted to ZATCA'
+);
+
+-- Query all pending invoices
+SELECT * FROM view_e_invoices_with_source
+WHERE status = 'pending' AND authority = 'ZATCA';
+
+-- Find failed invoices needing retry
+SELECT * FROM view_failed_e_invoices
+WHERE should_retry = true;
+```
+
+#### Implementation Notes
+
+- All changes are non-destructive and additive
+- Uses `IF NOT EXISTS` for idempotent migrations
+- RLS policies applied for multi-tenant isolation
+- Extensive seed data provided for testing (see `007_seed_e_invoicing_data.sql`)
+- Status workflow: draft → pending → submitted → accepted/rejected/cancelled
+
 ## Common Fields
 
 All tables include these standard fields:
