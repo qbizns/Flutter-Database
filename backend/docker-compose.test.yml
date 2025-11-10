@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Test PostgreSQL Database
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: pos-backend-test-db
+    environment:
+      POSTGRES_DB: pos_test
+      POSTGRES_USER: pos_test_user
+      POSTGRES_PASSWORD: pos_test_password
+      POSTGRES_INITDB_ARGS: "-A md5"
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pos_test_user -d pos_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # Test Redis (for rate limiting tests)
+  redis-test:
+    image: redis:7-alpine
+    container_name: pos-backend-test-redis
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+volumes:
+  postgres-test-data:
+
+networks:
+  test-network:
+    driver: bridge
