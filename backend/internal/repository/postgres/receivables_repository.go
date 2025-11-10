@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 	"github.com/your-org/pos-backend/internal/domain/receivables"
 )
 
@@ -72,8 +71,8 @@ func (r *ReceivablesRepository) GetCustomerInvoiceByID(ctx context.Context, orga
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var attachments pq.JSONBArray
-	var metadata pq.JSONBMap
+	var attachments json.RawMessage
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, invoiceID, organizationID).Scan(
 		&invoice.ID, &invoice.OrganizationID, &invoice.InvoiceNumber, &invoice.CustomerID,
@@ -111,8 +110,8 @@ func (r *ReceivablesRepository) GetCustomerInvoiceByNumber(ctx context.Context, 
 		WHERE invoice_number = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var attachments pq.JSONBArray
-	var metadata pq.JSONBMap
+	var attachments json.RawMessage
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, invoiceNumber, organizationID).Scan(
 		&invoice.ID, &invoice.OrganizationID, &invoice.InvoiceNumber, &invoice.CustomerID,
@@ -229,8 +228,8 @@ func (r *ReceivablesRepository) ListCustomerInvoices(ctx context.Context, organi
 
 	for rows.Next() {
 		invoice := receivables.CustomerInvoice{}
-		var attachments pq.JSONBArray
-		var metadata pq.JSONBMap
+		var attachments json.RawMessage
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&invoice.ID, &invoice.OrganizationID, &invoice.InvoiceNumber, &invoice.CustomerID,
@@ -352,7 +351,7 @@ func (r *ReceivablesRepository) GetCustomerInvoiceLineByID(ctx context.Context, 
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, lineID, organizationID).Scan(
 		&line.ID, &line.OrganizationID, &line.CustomerInvoiceID, &line.LineNumber, &line.RevenueAccountID,
@@ -394,7 +393,7 @@ func (r *ReceivablesRepository) ListCustomerInvoiceLines(ctx context.Context, or
 
 	for rows.Next() {
 		line := receivables.CustomerInvoiceLine{}
-		var metadata pq.JSONBMap
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&line.ID, &line.OrganizationID, &line.CustomerInvoiceID, &line.LineNumber, &line.RevenueAccountID,
@@ -518,7 +517,7 @@ func (r *ReceivablesRepository) GetCustomerPaymentByID(ctx context.Context, orga
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, paymentID, organizationID).Scan(
 		&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.CustomerID, &payment.PaymentDate,
@@ -551,7 +550,7 @@ func (r *ReceivablesRepository) GetCustomerPaymentByNumber(ctx context.Context, 
 		WHERE payment_number = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, paymentNumber, organizationID).Scan(
 		&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.CustomerID, &payment.PaymentDate,
@@ -651,7 +650,7 @@ func (r *ReceivablesRepository) ListCustomerPayments(ctx context.Context, organi
 
 	for rows.Next() {
 		payment := receivables.CustomerPayment{}
-		var metadata pq.JSONBMap
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.CustomerID, &payment.PaymentDate,
@@ -941,8 +940,8 @@ func (r *ReceivablesRepository) GetInvoicesByDueDate(ctx context.Context, organi
 
 	for rows.Next() {
 		invoice := receivables.CustomerInvoice{}
-		var attachments pq.JSONBArray
-		var metadata pq.JSONBMap
+		var attachments json.RawMessage
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&invoice.ID, &invoice.OrganizationID, &invoice.InvoiceNumber, &invoice.CustomerID,

@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -18,7 +17,7 @@ import (
 // ============================================================================
 
 // ListBackgroundJobs returns a list of background jobs
-func (r *PostgresDB) ListBackgroundJobs(ctx context.Context, orgID uuid.UUID, status *string, limit int, offset int) ([]infrastructure.BackgroundJob, error) {
+func (r *DB) ListBackgroundJobs(ctx context.Context, orgID uuid.UUID, status *string, limit int, offset int) ([]infrastructure.BackgroundJob, error) {
 	query := `
 		SELECT id, organization_id, job_type, job_name, queue_name, status,
 		       payload, result, error_message, error_details, attempts, max_attempts,
@@ -37,7 +36,7 @@ func (r *PostgresDB) ListBackgroundJobs(ctx context.Context, orgID uuid.UUID, st
 	query += " ORDER BY scheduled_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +62,7 @@ func (r *PostgresDB) ListBackgroundJobs(ctx context.Context, orgID uuid.UUID, st
 }
 
 // CreateBackgroundJob creates a new background job
-func (r *PostgresDB) CreateBackgroundJob(ctx context.Context, job *infrastructure.BackgroundJob) error {
+func (r *DB) CreateBackgroundJob(ctx context.Context, job *infrastructure.BackgroundJob) error {
 	job.ID = uuid.New()
 	job.CreatedAt = time.Now()
 	job.UpdatedAt = time.Now()
@@ -77,7 +76,7 @@ func (r *PostgresDB) CreateBackgroundJob(ctx context.Context, job *infrastructur
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		job.ID, job.OrganizationID, job.JobType, job.JobName, job.QueueName,
 		job.Status, job.Payload, job.Result, job.ErrorMessage, job.ErrorDetails,
 		job.Attempts, job.MaxAttempts, job.Priority, job.ScheduledAt,
@@ -87,7 +86,7 @@ func (r *PostgresDB) CreateBackgroundJob(ctx context.Context, job *infrastructur
 }
 
 // GetBackgroundJob retrieves a background job by ID
-func (r *PostgresDB) GetBackgroundJob(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.BackgroundJob, error) {
+func (r *DB) GetBackgroundJob(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.BackgroundJob, error) {
 	query := `
 		SELECT id, organization_id, job_type, job_name, queue_name, status,
 		       payload, result, error_message, error_details, attempts, max_attempts,
@@ -98,7 +97,7 @@ func (r *PostgresDB) GetBackgroundJob(ctx context.Context, orgID uuid.UUID, id u
 	`
 
 	job := &infrastructure.BackgroundJob{}
-	err := r.db.QueryRowContext(ctx, query, id, orgID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, orgID).Scan(
 		&job.ID, &job.OrganizationID, &job.JobType, &job.JobName, &job.QueueName,
 		&job.Status, &job.Payload, &job.Result, &job.ErrorMessage, &job.ErrorDetails,
 		&job.Attempts, &job.MaxAttempts, &job.Priority, &job.ScheduledAt,
@@ -117,7 +116,7 @@ func (r *PostgresDB) GetBackgroundJob(ctx context.Context, orgID uuid.UUID, id u
 }
 
 // UpdateBackgroundJob updates a background job
-func (r *PostgresDB) UpdateBackgroundJob(ctx context.Context, job *infrastructure.BackgroundJob) error {
+func (r *DB) UpdateBackgroundJob(ctx context.Context, job *infrastructure.BackgroundJob) error {
 	job.UpdatedAt = time.Now()
 
 	query := `
@@ -130,7 +129,7 @@ func (r *PostgresDB) UpdateBackgroundJob(ctx context.Context, job *infrastructur
 		WHERE id = $19 AND organization_id = $20
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		job.JobType, job.JobName, job.QueueName, job.Status, job.Payload, job.Result,
 		job.ErrorMessage, job.ErrorDetails, job.Attempts, job.MaxAttempts, job.Priority,
 		job.ScheduledAt, job.StartedAt, job.CompletedAt, job.FailedAt, job.WorkerID,
@@ -141,14 +140,14 @@ func (r *PostgresDB) UpdateBackgroundJob(ctx context.Context, job *infrastructur
 }
 
 // UpdateBackgroundJobStatus updates only the status of a background job
-func (r *PostgresDB) UpdateBackgroundJobStatus(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error {
+func (r *DB) UpdateBackgroundJobStatus(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error {
 	query := `
 		UPDATE background_jobs
 		SET status = $1, updated_at = $2
 		WHERE id = $3 AND organization_id = $4
 	`
 
-	_, err := r.db.ExecContext(ctx, query, status, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, status, time.Now(), id, orgID)
 	return err
 }
 
@@ -157,7 +156,7 @@ func (r *PostgresDB) UpdateBackgroundJobStatus(ctx context.Context, orgID uuid.U
 // ============================================================================
 
 // ListAPIKeys returns a list of API keys
-func (r *PostgresDB) ListAPIKeys(ctx context.Context, orgID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.APIKey, error) {
+func (r *DB) ListAPIKeys(ctx context.Context, orgID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.APIKey, error) {
 	query := `
 		SELECT id, organization_id, key_name, key_prefix, key_hash, scopes,
 		       allowed_ips, is_active, last_used_at, usage_count, rate_limit_per_minute,
@@ -175,7 +174,7 @@ func (r *PostgresDB) ListAPIKeys(ctx context.Context, orgID uuid.UUID, isActive 
 	query += " ORDER BY created_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +199,7 @@ func (r *PostgresDB) ListAPIKeys(ctx context.Context, orgID uuid.UUID, isActive 
 }
 
 // CreateAPIKey creates a new API key
-func (r *PostgresDB) CreateAPIKey(ctx context.Context, key *infrastructure.APIKey) error {
+func (r *DB) CreateAPIKey(ctx context.Context, key *infrastructure.APIKey) error {
 	key.ID = uuid.New()
 	key.CreatedAt = time.Now()
 	key.UpdatedAt = time.Now()
@@ -213,7 +212,7 @@ func (r *PostgresDB) CreateAPIKey(ctx context.Context, key *infrastructure.APIKe
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		key.ID, key.OrganizationID, key.KeyName, key.KeyPrefix, key.KeyHash,
 		pq.Array(key.Scopes), pq.Array(key.AllowedIPs), key.IsActive, key.LastUsedAt,
 		key.UsageCount, key.RateLimitPerMinute, key.RateLimitPerHour, key.ExpiresAt,
@@ -222,7 +221,7 @@ func (r *PostgresDB) CreateAPIKey(ctx context.Context, key *infrastructure.APIKe
 }
 
 // GetAPIKey retrieves an API key by ID
-func (r *PostgresDB) GetAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.APIKey, error) {
+func (r *DB) GetAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.APIKey, error) {
 	query := `
 		SELECT id, organization_id, key_name, key_prefix, key_hash, scopes,
 		       allowed_ips, is_active, last_used_at, usage_count, rate_limit_per_minute,
@@ -232,7 +231,7 @@ func (r *PostgresDB) GetAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUI
 	`
 
 	key := &infrastructure.APIKey{}
-	err := r.db.QueryRowContext(ctx, query, id, orgID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, orgID).Scan(
 		&key.ID, &key.OrganizationID, &key.KeyName, &key.KeyPrefix, &key.KeyHash,
 		&key.Scopes, &key.AllowedIPs, &key.IsActive, &key.LastUsedAt, &key.UsageCount,
 		&key.RateLimitPerMinute, &key.RateLimitPerHour, &key.ExpiresAt,
@@ -250,7 +249,7 @@ func (r *PostgresDB) GetAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUI
 }
 
 // GetAPIKeyByHash retrieves an API key by its hash
-func (r *PostgresDB) GetAPIKeyByHash(ctx context.Context, keyHash string) (*infrastructure.APIKey, error) {
+func (r *DB) GetAPIKeyByHash(ctx context.Context, keyHash string) (*infrastructure.APIKey, error) {
 	query := `
 		SELECT id, organization_id, key_name, key_prefix, key_hash, scopes,
 		       allowed_ips, is_active, last_used_at, usage_count, rate_limit_per_minute,
@@ -260,7 +259,7 @@ func (r *PostgresDB) GetAPIKeyByHash(ctx context.Context, keyHash string) (*infr
 	`
 
 	key := &infrastructure.APIKey{}
-	err := r.db.QueryRowContext(ctx, query, keyHash).Scan(
+	err := r.Pool.QueryRow(ctx, query, keyHash).Scan(
 		&key.ID, &key.OrganizationID, &key.KeyName, &key.KeyPrefix, &key.KeyHash,
 		&key.Scopes, &key.AllowedIPs, &key.IsActive, &key.LastUsedAt, &key.UsageCount,
 		&key.RateLimitPerMinute, &key.RateLimitPerHour, &key.ExpiresAt,
@@ -278,7 +277,7 @@ func (r *PostgresDB) GetAPIKeyByHash(ctx context.Context, keyHash string) (*infr
 }
 
 // UpdateAPIKey updates an API key
-func (r *PostgresDB) UpdateAPIKey(ctx context.Context, key *infrastructure.APIKey) error {
+func (r *DB) UpdateAPIKey(ctx context.Context, key *infrastructure.APIKey) error {
 	key.UpdatedAt = time.Now()
 
 	query := `
@@ -288,7 +287,7 @@ func (r *PostgresDB) UpdateAPIKey(ctx context.Context, key *infrastructure.APIKe
 		WHERE id = $9 AND organization_id = $10
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		key.KeyName, pq.Array(key.Scopes), pq.Array(key.AllowedIPs), key.IsActive,
 		key.RateLimitPerMinute, key.RateLimitPerHour, key.ExpiresAt, key.UpdatedAt,
 		key.ID, key.OrganizationID,
@@ -298,26 +297,26 @@ func (r *PostgresDB) UpdateAPIKey(ctx context.Context, key *infrastructure.APIKe
 }
 
 // UpdateAPIKeyUsage updates the usage count and last used time
-func (r *PostgresDB) UpdateAPIKeyUsage(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
+func (r *DB) UpdateAPIKeyUsage(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
 	query := `
 		UPDATE api_keys
 		SET usage_count = usage_count + 1, last_used_at = $1, updated_at = $1
 		WHERE id = $2 AND organization_id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, orgID)
 	return err
 }
 
 // DeleteAPIKey soft-deletes an API key
-func (r *PostgresDB) DeleteAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
+func (r *DB) DeleteAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
 	query := `
 		UPDATE api_keys
 		SET deleted_at = $1, updated_at = $1
 		WHERE id = $2 AND organization_id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, orgID)
 	return err
 }
 
@@ -326,7 +325,7 @@ func (r *PostgresDB) DeleteAPIKey(ctx context.Context, orgID uuid.UUID, id uuid.
 // ============================================================================
 
 // ListWebhooks returns a list of webhooks
-func (r *PostgresDB) ListWebhooks(ctx context.Context, orgID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.Webhook, error) {
+func (r *DB) ListWebhooks(ctx context.Context, orgID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.Webhook, error) {
 	query := `
 		SELECT id, organization_id, webhook_name, url, secret, events,
 		       http_method, headers, timeout_seconds, max_retries, retry_backoff_seconds,
@@ -346,7 +345,7 @@ func (r *PostgresDB) ListWebhooks(ctx context.Context, orgID uuid.UUID, isActive
 	query += " ORDER BY created_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -374,7 +373,7 @@ func (r *PostgresDB) ListWebhooks(ctx context.Context, orgID uuid.UUID, isActive
 }
 
 // CreateWebhook creates a new webhook
-func (r *PostgresDB) CreateWebhook(ctx context.Context, webhook *infrastructure.Webhook) error {
+func (r *DB) CreateWebhook(ctx context.Context, webhook *infrastructure.Webhook) error {
 	webhook.ID = uuid.New()
 	webhook.CreatedAt = time.Now()
 	webhook.UpdatedAt = time.Now()
@@ -388,7 +387,7 @@ func (r *PostgresDB) CreateWebhook(ctx context.Context, webhook *infrastructure.
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		webhook.ID, webhook.OrganizationID, webhook.WebhookName, webhook.URL, webhook.Secret,
 		pq.Array(webhook.Events), webhook.HTTPMethod, webhook.Headers, webhook.TimeoutSeconds,
 		webhook.MaxRetries, webhook.RetryBackoffSeconds, webhook.IsActive, webhook.IsVerified,
@@ -399,7 +398,7 @@ func (r *PostgresDB) CreateWebhook(ctx context.Context, webhook *infrastructure.
 }
 
 // GetWebhook retrieves a webhook by ID
-func (r *PostgresDB) GetWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.Webhook, error) {
+func (r *DB) GetWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.Webhook, error) {
 	query := `
 		SELECT id, organization_id, webhook_name, url, secret, events,
 		       http_method, headers, timeout_seconds, max_retries, retry_backoff_seconds,
@@ -411,7 +410,7 @@ func (r *PostgresDB) GetWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UU
 	`
 
 	webhook := &infrastructure.Webhook{}
-	err := r.db.QueryRowContext(ctx, query, id, orgID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, orgID).Scan(
 		&webhook.ID, &webhook.OrganizationID, &webhook.WebhookName, &webhook.URL,
 		&webhook.Secret, &webhook.Events, &webhook.HTTPMethod, &webhook.Headers,
 		&webhook.TimeoutSeconds, &webhook.MaxRetries, &webhook.RetryBackoffSeconds,
@@ -432,7 +431,7 @@ func (r *PostgresDB) GetWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UU
 }
 
 // UpdateWebhook updates a webhook
-func (r *PostgresDB) UpdateWebhook(ctx context.Context, webhook *infrastructure.Webhook) error {
+func (r *DB) UpdateWebhook(ctx context.Context, webhook *infrastructure.Webhook) error {
 	webhook.UpdatedAt = time.Now()
 
 	query := `
@@ -443,7 +442,7 @@ func (r *PostgresDB) UpdateWebhook(ctx context.Context, webhook *infrastructure.
 		WHERE id = $13 AND organization_id = $14
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		webhook.WebhookName, webhook.URL, webhook.Secret, pq.Array(webhook.Events),
 		webhook.HTTPMethod, webhook.Headers, webhook.TimeoutSeconds, webhook.MaxRetries,
 		webhook.RetryBackoffSeconds, webhook.IsActive, webhook.IsVerified, webhook.UpdatedAt,
@@ -454,7 +453,7 @@ func (r *PostgresDB) UpdateWebhook(ctx context.Context, webhook *infrastructure.
 }
 
 // UpdateWebhookStats updates webhook delivery statistics
-func (r *PostgresDB) UpdateWebhookStats(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error {
+func (r *DB) UpdateWebhookStats(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error {
 	query := `
 		UPDATE webhooks
 		SET total_deliveries = total_deliveries + 1,
@@ -470,19 +469,19 @@ func (r *PostgresDB) UpdateWebhookStats(ctx context.Context, orgID uuid.UUID, id
 
 	query += " WHERE id = $2 AND organization_id = $3"
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, orgID)
 	return err
 }
 
 // DeleteWebhook soft-deletes a webhook
-func (r *PostgresDB) DeleteWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
+func (r *DB) DeleteWebhook(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
 	query := `
 		UPDATE webhooks
 		SET deleted_at = $1, updated_at = $1
 		WHERE id = $2 AND organization_id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, orgID)
 	return err
 }
 
@@ -491,7 +490,7 @@ func (r *PostgresDB) DeleteWebhook(ctx context.Context, orgID uuid.UUID, id uuid
 // ============================================================================
 
 // ListWebhookDeliveries returns a list of webhook deliveries
-func (r *PostgresDB) ListWebhookDeliveries(ctx context.Context, orgID uuid.UUID, webhookID *uuid.UUID, status *string, limit int, offset int) ([]infrastructure.WebhookDelivery, error) {
+func (r *DB) ListWebhookDeliveries(ctx context.Context, orgID uuid.UUID, webhookID *uuid.UUID, status *string, limit int, offset int) ([]infrastructure.WebhookDelivery, error) {
 	query := `
 		SELECT id, organization_id, webhook_id, event_type, event_id, status,
 		       request_url, request_method, request_headers, request_body,
@@ -515,7 +514,7 @@ func (r *PostgresDB) ListWebhookDeliveries(ctx context.Context, orgID uuid.UUID,
 	query += " ORDER BY created_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -542,7 +541,7 @@ func (r *PostgresDB) ListWebhookDeliveries(ctx context.Context, orgID uuid.UUID,
 }
 
 // CreateWebhookDelivery creates a new webhook delivery record
-func (r *PostgresDB) CreateWebhookDelivery(ctx context.Context, delivery *infrastructure.WebhookDelivery) error {
+func (r *DB) CreateWebhookDelivery(ctx context.Context, delivery *infrastructure.WebhookDelivery) error {
 	delivery.ID = uuid.New()
 	delivery.CreatedAt = time.Now()
 
@@ -555,7 +554,7 @@ func (r *PostgresDB) CreateWebhookDelivery(ctx context.Context, delivery *infras
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		delivery.ID, delivery.OrganizationID, delivery.WebhookID, delivery.EventType,
 		delivery.EventID, delivery.Status, delivery.RequestURL, delivery.RequestMethod,
 		delivery.RequestHeaders, delivery.RequestBody, delivery.ResponseStatusCode,
@@ -566,7 +565,7 @@ func (r *PostgresDB) CreateWebhookDelivery(ctx context.Context, delivery *infras
 }
 
 // GetWebhookDelivery retrieves a webhook delivery by ID
-func (r *PostgresDB) GetWebhookDelivery(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.WebhookDelivery, error) {
+func (r *DB) GetWebhookDelivery(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.WebhookDelivery, error) {
 	query := `
 		SELECT id, organization_id, webhook_id, event_type, event_id, status,
 		       request_url, request_method, request_headers, request_body,
@@ -577,7 +576,7 @@ func (r *PostgresDB) GetWebhookDelivery(ctx context.Context, orgID uuid.UUID, id
 	`
 
 	delivery := &infrastructure.WebhookDelivery{}
-	err := r.db.QueryRowContext(ctx, query, id, orgID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, orgID).Scan(
 		&delivery.ID, &delivery.OrganizationID, &delivery.WebhookID, &delivery.EventType,
 		&delivery.EventID, &delivery.Status, &delivery.RequestURL, &delivery.RequestMethod,
 		&delivery.RequestHeaders, &delivery.RequestBody, &delivery.ResponseStatusCode,
@@ -597,7 +596,7 @@ func (r *PostgresDB) GetWebhookDelivery(ctx context.Context, orgID uuid.UUID, id
 }
 
 // UpdateWebhookDelivery updates a webhook delivery
-func (r *PostgresDB) UpdateWebhookDelivery(ctx context.Context, delivery *infrastructure.WebhookDelivery) error {
+func (r *DB) UpdateWebhookDelivery(ctx context.Context, delivery *infrastructure.WebhookDelivery) error {
 	query := `
 		UPDATE webhook_deliveries
 		SET status = $1, response_status_code = $2, response_headers = $3,
@@ -606,7 +605,7 @@ func (r *PostgresDB) UpdateWebhookDelivery(ctx context.Context, delivery *infras
 		WHERE id = $10 AND organization_id = $11
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		delivery.Status, delivery.ResponseStatusCode, delivery.ResponseHeaders,
 		delivery.ResponseBody, delivery.DurationMs, delivery.NextRetryAt,
 		delivery.ErrorMessage, delivery.DeliveredAt, delivery.AttemptNumber,
@@ -617,7 +616,7 @@ func (r *PostgresDB) UpdateWebhookDelivery(ctx context.Context, delivery *infras
 }
 
 // GetPendingWebhookDeliveries retrieves pending webhook deliveries
-func (r *PostgresDB) GetPendingWebhookDeliveries(ctx context.Context, limit int) ([]infrastructure.WebhookDelivery, error) {
+func (r *DB) GetPendingWebhookDeliveries(ctx context.Context, limit int) ([]infrastructure.WebhookDelivery, error) {
 	query := `
 		SELECT id, organization_id, webhook_id, event_type, event_id, status,
 		       request_url, request_method, request_headers, request_body,
@@ -629,7 +628,7 @@ func (r *PostgresDB) GetPendingWebhookDeliveries(ctx context.Context, limit int)
 		LIMIT $1
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, limit)
+	rows, err := r.Pool.Query(ctx, query, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -660,7 +659,7 @@ func (r *PostgresDB) GetPendingWebhookDeliveries(ctx context.Context, limit int)
 // ============================================================================
 
 // ListNotifications returns a list of notifications
-func (r *PostgresDB) ListNotifications(ctx context.Context, userID uuid.UUID, isRead *bool, limit int, offset int) ([]infrastructure.Notification, error) {
+func (r *DB) ListNotifications(ctx context.Context, userID uuid.UUID, isRead *bool, limit int, offset int) ([]infrastructure.Notification, error) {
 	query := `
 		SELECT id, organization_id, user_id, notification_type, category,
 		       title, message, action_url, action_label, channels, is_read,
@@ -678,7 +677,7 @@ func (r *PostgresDB) ListNotifications(ctx context.Context, userID uuid.UUID, is
 	query += " ORDER BY created_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -704,7 +703,7 @@ func (r *PostgresDB) ListNotifications(ctx context.Context, userID uuid.UUID, is
 }
 
 // CreateNotification creates a new notification
-func (r *PostgresDB) CreateNotification(ctx context.Context, notification *infrastructure.Notification) error {
+func (r *DB) CreateNotification(ctx context.Context, notification *infrastructure.Notification) error {
 	notification.ID = uuid.New()
 	notification.CreatedAt = time.Now()
 
@@ -716,7 +715,7 @@ func (r *PostgresDB) CreateNotification(ctx context.Context, notification *infra
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		notification.ID, notification.OrganizationID, notification.UserID,
 		notification.NotificationType, notification.Category, notification.Title,
 		notification.Message, notification.ActionURL, notification.ActionLabel,
@@ -727,7 +726,7 @@ func (r *PostgresDB) CreateNotification(ctx context.Context, notification *infra
 }
 
 // GetNotification retrieves a notification by ID
-func (r *PostgresDB) GetNotification(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.Notification, error) {
+func (r *DB) GetNotification(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*infrastructure.Notification, error) {
 	query := `
 		SELECT id, organization_id, user_id, notification_type, category,
 		       title, message, action_url, action_label, channels, is_read,
@@ -737,7 +736,7 @@ func (r *PostgresDB) GetNotification(ctx context.Context, orgID uuid.UUID, id uu
 	`
 
 	notif := &infrastructure.Notification{}
-	err := r.db.QueryRowContext(ctx, query, id, orgID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, orgID).Scan(
 		&notif.ID, &notif.OrganizationID, &notif.UserID, &notif.NotificationType,
 		&notif.Category, &notif.Title, &notif.Message, &notif.ActionURL,
 		&notif.ActionLabel, &notif.Channels, &notif.IsRead, &notif.ReadAt,
@@ -756,7 +755,7 @@ func (r *PostgresDB) GetNotification(ctx context.Context, orgID uuid.UUID, id uu
 }
 
 // UpdateNotification updates a notification
-func (r *PostgresDB) UpdateNotification(ctx context.Context, notification *infrastructure.Notification) error {
+func (r *DB) UpdateNotification(ctx context.Context, notification *infrastructure.Notification) error {
 	query := `
 		UPDATE notifications
 		SET notification_type = $1, category = $2, title = $3, message = $4,
@@ -765,7 +764,7 @@ func (r *PostgresDB) UpdateNotification(ctx context.Context, notification *infra
 		WHERE id = $12 AND organization_id = $13
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		notification.NotificationType, notification.Category, notification.Title,
 		notification.Message, notification.ActionURL, notification.ActionLabel,
 		pq.Array(notification.Channels), notification.IsRead, notification.ReadAt,
@@ -776,26 +775,26 @@ func (r *PostgresDB) UpdateNotification(ctx context.Context, notification *infra
 }
 
 // MarkNotificationAsRead marks a single notification as read
-func (r *PostgresDB) MarkNotificationAsRead(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
+func (r *DB) MarkNotificationAsRead(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
 	query := `
 		UPDATE notifications
 		SET is_read = TRUE, read_at = $1
 		WHERE id = $2 AND organization_id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, orgID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, orgID)
 	return err
 }
 
 // MarkAllNotificationsAsRead marks all notifications for a user as read
-func (r *PostgresDB) MarkAllNotificationsAsRead(ctx context.Context, userID uuid.UUID) error {
+func (r *DB) MarkAllNotificationsAsRead(ctx context.Context, userID uuid.UUID) error {
 	query := `
 		UPDATE notifications
 		SET is_read = TRUE, read_at = $1
 		WHERE user_id = $2 AND is_read = FALSE
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), userID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), userID)
 	return err
 }
 
@@ -804,7 +803,7 @@ func (r *PostgresDB) MarkAllNotificationsAsRead(ctx context.Context, userID uuid
 // ============================================================================
 
 // GetNotificationPreference retrieves notification preference by user and category
-func (r *PostgresDB) GetNotificationPreference(ctx context.Context, userID uuid.UUID, category string) (*infrastructure.NotificationPreference, error) {
+func (r *DB) GetNotificationPreference(ctx context.Context, userID uuid.UUID, category string) (*infrastructure.NotificationPreference, error) {
 	query := `
 		SELECT id, organization_id, user_id, category, in_app_enabled, email_enabled,
 		       sms_enabled, push_enabled, frequency, created_at, updated_at
@@ -813,7 +812,7 @@ func (r *PostgresDB) GetNotificationPreference(ctx context.Context, userID uuid.
 	`
 
 	pref := &infrastructure.NotificationPreference{}
-	err := r.db.QueryRowContext(ctx, query, userID, category).Scan(
+	err := r.Pool.QueryRow(ctx, query, userID, category).Scan(
 		&pref.ID, &pref.OrganizationID, &pref.UserID, &pref.Category,
 		&pref.InAppEnabled, &pref.EmailEnabled, &pref.SMSEnabled, &pref.PushEnabled,
 		&pref.Frequency, &pref.CreatedAt, &pref.UpdatedAt,
@@ -830,7 +829,7 @@ func (r *PostgresDB) GetNotificationPreference(ctx context.Context, userID uuid.
 }
 
 // GetAllNotificationPreferences retrieves all preferences for a user
-func (r *PostgresDB) GetAllNotificationPreferences(ctx context.Context, userID uuid.UUID) ([]infrastructure.NotificationPreference, error) {
+func (r *DB) GetAllNotificationPreferences(ctx context.Context, userID uuid.UUID) ([]infrastructure.NotificationPreference, error) {
 	query := `
 		SELECT id, organization_id, user_id, category, in_app_enabled, email_enabled,
 		       sms_enabled, push_enabled, frequency, created_at, updated_at
@@ -839,7 +838,7 @@ func (r *PostgresDB) GetAllNotificationPreferences(ctx context.Context, userID u
 		ORDER BY category ASC
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, userID)
+	rows, err := r.Pool.Query(ctx, query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -863,7 +862,7 @@ func (r *PostgresDB) GetAllNotificationPreferences(ctx context.Context, userID u
 }
 
 // UpsertNotificationPreference creates or updates a notification preference
-func (r *PostgresDB) UpsertNotificationPreference(ctx context.Context, pref *infrastructure.NotificationPreference) error {
+func (r *DB) UpsertNotificationPreference(ctx context.Context, pref *infrastructure.NotificationPreference) error {
 	pref.UpdatedAt = time.Now()
 
 	if pref.ID == uuid.Nil {
@@ -881,7 +880,7 @@ func (r *PostgresDB) UpsertNotificationPreference(ctx context.Context, pref *inf
 			push_enabled = $8, frequency = $9, updated_at = $11
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		pref.ID, pref.OrganizationID, pref.UserID, pref.Category,
 		pref.InAppEnabled, pref.EmailEnabled, pref.SMSEnabled, pref.PushEnabled,
 		pref.Frequency, pref.CreatedAt, pref.UpdatedAt,
@@ -891,13 +890,13 @@ func (r *PostgresDB) UpsertNotificationPreference(ctx context.Context, pref *inf
 }
 
 // DeleteNotificationPreference deletes a notification preference
-func (r *PostgresDB) DeleteNotificationPreference(ctx context.Context, userID uuid.UUID, category string) error {
+func (r *DB) DeleteNotificationPreference(ctx context.Context, userID uuid.UUID, category string) error {
 	query := `
 		DELETE FROM notification_preferences
 		WHERE user_id = $1 AND category = $2
 	`
 
-	_, err := r.db.ExecContext(ctx, query, userID, category)
+	_, err := r.Pool.Exec(ctx, query, userID, category)
 	return err
 }
 
@@ -906,7 +905,7 @@ func (r *PostgresDB) DeleteNotificationPreference(ctx context.Context, userID uu
 // ============================================================================
 
 // ListUserSessions returns a list of user sessions
-func (r *PostgresDB) ListUserSessions(ctx context.Context, userID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.UserSession, error) {
+func (r *DB) ListUserSessions(ctx context.Context, userID uuid.UUID, isActive *bool, limit int, offset int) ([]infrastructure.UserSession, error) {
 	query := `
 		SELECT id, user_id, organization_id, session_token, refresh_token, user_agent,
 		       ip_address, device_type, device_name, browser, os, country_code, city,
@@ -924,7 +923,7 @@ func (r *PostgresDB) ListUserSessions(ctx context.Context, userID uuid.UUID, isA
 	query += " ORDER BY last_activity_at DESC LIMIT $" + fmt.Sprintf("%d", len(args)+1) + " OFFSET $" + fmt.Sprintf("%d", len(args)+2)
 	args = append(args, limit, offset)
 
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.Pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -950,7 +949,7 @@ func (r *PostgresDB) ListUserSessions(ctx context.Context, userID uuid.UUID, isA
 }
 
 // CreateUserSession creates a new user session
-func (r *PostgresDB) CreateUserSession(ctx context.Context, session *infrastructure.UserSession) error {
+func (r *DB) CreateUserSession(ctx context.Context, session *infrastructure.UserSession) error {
 	session.ID = uuid.New()
 	session.CreatedAt = time.Now()
 	session.LastActivityAt = time.Now()
@@ -963,7 +962,7 @@ func (r *PostgresDB) CreateUserSession(ctx context.Context, session *infrastruct
 		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
 	`
 
-	return r.db.QueryRowContext(ctx, query,
+	return r.Pool.QueryRow(ctx, query,
 		session.ID, session.UserID, session.OrganizationID, session.SessionToken,
 		session.RefreshToken, session.UserAgent, session.IPAddress, session.DeviceType,
 		session.DeviceName, session.Browser, session.OS, session.CountryCode,
@@ -973,7 +972,7 @@ func (r *PostgresDB) CreateUserSession(ctx context.Context, session *infrastruct
 }
 
 // GetUserSession retrieves a user session by ID
-func (r *PostgresDB) GetUserSession(ctx context.Context, userID uuid.UUID, id uuid.UUID) (*infrastructure.UserSession, error) {
+func (r *DB) GetUserSession(ctx context.Context, userID uuid.UUID, id uuid.UUID) (*infrastructure.UserSession, error) {
 	query := `
 		SELECT id, user_id, organization_id, session_token, refresh_token, user_agent,
 		       ip_address, device_type, device_name, browser, os, country_code, city,
@@ -983,7 +982,7 @@ func (r *PostgresDB) GetUserSession(ctx context.Context, userID uuid.UUID, id uu
 	`
 
 	session := &infrastructure.UserSession{}
-	err := r.db.QueryRowContext(ctx, query, id, userID).Scan(
+	err := r.Pool.QueryRow(ctx, query, id, userID).Scan(
 		&session.ID, &session.UserID, &session.OrganizationID, &session.SessionToken,
 		&session.RefreshToken, &session.UserAgent, &session.IPAddress, &session.DeviceType,
 		&session.DeviceName, &session.Browser, &session.OS, &session.CountryCode,
@@ -1002,7 +1001,7 @@ func (r *PostgresDB) GetUserSession(ctx context.Context, userID uuid.UUID, id uu
 }
 
 // GetUserSessionByToken retrieves a user session by token
-func (r *PostgresDB) GetUserSessionByToken(ctx context.Context, token string) (*infrastructure.UserSession, error) {
+func (r *DB) GetUserSessionByToken(ctx context.Context, token string) (*infrastructure.UserSession, error) {
 	query := `
 		SELECT id, user_id, organization_id, session_token, refresh_token, user_agent,
 		       ip_address, device_type, device_name, browser, os, country_code, city,
@@ -1012,7 +1011,7 @@ func (r *PostgresDB) GetUserSessionByToken(ctx context.Context, token string) (*
 	`
 
 	session := &infrastructure.UserSession{}
-	err := r.db.QueryRowContext(ctx, query, token).Scan(
+	err := r.Pool.QueryRow(ctx, query, token).Scan(
 		&session.ID, &session.UserID, &session.OrganizationID, &session.SessionToken,
 		&session.RefreshToken, &session.UserAgent, &session.IPAddress, &session.DeviceType,
 		&session.DeviceName, &session.Browser, &session.OS, &session.CountryCode,
@@ -1031,7 +1030,7 @@ func (r *PostgresDB) GetUserSessionByToken(ctx context.Context, token string) (*
 }
 
 // UpdateUserSession updates a user session
-func (r *PostgresDB) UpdateUserSession(ctx context.Context, session *infrastructure.UserSession) error {
+func (r *DB) UpdateUserSession(ctx context.Context, session *infrastructure.UserSession) error {
 	session.LastActivityAt = time.Now()
 
 	query := `
@@ -1041,7 +1040,7 @@ func (r *PostgresDB) UpdateUserSession(ctx context.Context, session *infrastruct
 		WHERE id = $6 AND user_id = $7
 	`
 
-	_, err := r.db.ExecContext(ctx, query,
+	_, err := r.Pool.Exec(ctx, query,
 		session.SessionToken, session.RefreshToken, session.IsActive,
 		session.LastActivityAt, session.ExpiresAt, session.ID, session.UserID,
 	)
@@ -1050,36 +1049,36 @@ func (r *PostgresDB) UpdateUserSession(ctx context.Context, session *infrastruct
 }
 
 // RevokeUserSession revokes a single user session
-func (r *PostgresDB) RevokeUserSession(ctx context.Context, userID uuid.UUID, id uuid.UUID) error {
+func (r *DB) RevokeUserSession(ctx context.Context, userID uuid.UUID, id uuid.UUID) error {
 	query := `
 		UPDATE user_sessions
 		SET is_active = FALSE, revoked_at = $1
 		WHERE id = $2 AND user_id = $3
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), id, userID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), id, userID)
 	return err
 }
 
 // RevokeAllUserSessions revokes all user sessions
-func (r *PostgresDB) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error {
+func (r *DB) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error {
 	query := `
 		UPDATE user_sessions
 		SET is_active = FALSE, revoked_at = $1
 		WHERE user_id = $2 AND is_active = TRUE
 	`
 
-	_, err := r.db.ExecContext(ctx, query, time.Now(), userID)
+	_, err := r.Pool.Exec(ctx, query, time.Now(), userID)
 	return err
 }
 
 // CleanupExpiredUserSessions removes expired user sessions
-func (r *PostgresDB) CleanupExpiredUserSessions(ctx context.Context) error {
+func (r *DB) CleanupExpiredUserSessions(ctx context.Context) error {
 	query := `
 		DELETE FROM user_sessions
 		WHERE expires_at < NOW()
 	`
 
-	_, err := r.db.ExecContext(ctx, query)
+	_, err := r.Pool.Exec(ctx, query)
 	return err
 }

@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 	"github.com/your-org/pos-backend/internal/domain/payables"
 )
 
@@ -72,8 +71,8 @@ func (r *PayablesRepository) GetVendorBillByID(ctx context.Context, organization
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var attachments pq.JSONBArray
-	var metadata pq.JSONBMap
+	var attachments json.RawMessage
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, billID, organizationID).Scan(
 		&bill.ID, &bill.OrganizationID, &bill.BillNumber, &bill.VendorBillNumber, &bill.SupplierID,
@@ -111,8 +110,8 @@ func (r *PayablesRepository) GetVendorBillByNumber(ctx context.Context, organiza
 		WHERE bill_number = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var attachments pq.JSONBArray
-	var metadata pq.JSONBMap
+	var attachments json.RawMessage
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, billNumber, organizationID).Scan(
 		&bill.ID, &bill.OrganizationID, &bill.BillNumber, &bill.VendorBillNumber, &bill.SupplierID,
@@ -229,8 +228,8 @@ func (r *PayablesRepository) ListVendorBills(ctx context.Context, organizationID
 
 	for rows.Next() {
 		bill := payables.VendorBill{}
-		var attachments pq.JSONBArray
-		var metadata pq.JSONBMap
+		var attachments json.RawMessage
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&bill.ID, &bill.OrganizationID, &bill.BillNumber, &bill.VendorBillNumber, &bill.SupplierID,
@@ -352,7 +351,7 @@ func (r *PayablesRepository) GetVendorBillLineByID(ctx context.Context, organiza
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, lineID, organizationID).Scan(
 		&line.ID, &line.OrganizationID, &line.VendorBillID, &line.LineNumber, &line.ExpenseAccountID,
@@ -394,7 +393,7 @@ func (r *PayablesRepository) ListVendorBillLines(ctx context.Context, organizati
 
 	for rows.Next() {
 		line := payables.VendorBillLine{}
-		var metadata pq.JSONBMap
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&line.ID, &line.OrganizationID, &line.VendorBillID, &line.LineNumber, &line.ExpenseAccountID,
@@ -518,7 +517,7 @@ func (r *PayablesRepository) GetVendorPaymentByID(ctx context.Context, organizat
 		WHERE id = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, paymentID, organizationID).Scan(
 		&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.SupplierID, &payment.PaymentDate,
@@ -551,7 +550,7 @@ func (r *PayablesRepository) GetVendorPaymentByNumber(ctx context.Context, organ
 		WHERE payment_number = $1 AND organization_id = $2 AND deleted_at IS NULL
 	`
 
-	var metadata pq.JSONBMap
+	var metadata json.RawMessage
 
 	err := r.db.QueryRowContext(ctx, query, paymentNumber, organizationID).Scan(
 		&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.SupplierID, &payment.PaymentDate,
@@ -651,7 +650,7 @@ func (r *PayablesRepository) ListVendorPayments(ctx context.Context, organizatio
 
 	for rows.Next() {
 		payment := payables.VendorPayment{}
-		var metadata pq.JSONBMap
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&payment.ID, &payment.OrganizationID, &payment.PaymentNumber, &payment.SupplierID, &payment.PaymentDate,
@@ -941,8 +940,8 @@ func (r *PayablesRepository) GetBillsByDueDate(ctx context.Context, organization
 
 	for rows.Next() {
 		bill := payables.VendorBill{}
-		var attachments pq.JSONBArray
-		var metadata pq.JSONBMap
+		var attachments json.RawMessage
+		var metadata json.RawMessage
 
 		err := rows.Scan(
 			&bill.ID, &bill.OrganizationID, &bill.BillNumber, &bill.VendorBillNumber, &bill.SupplierID,

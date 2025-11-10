@@ -3,13 +3,11 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"github.com/lib/pq"
 
 	"github.com/your-org/pos-backend/internal/domain/accounting"
 )
@@ -873,7 +871,7 @@ func (r *AccountingRepository) CreateJournalEntry(ctx context.Context, je *accou
 		}
 	}
 
-	return tx.Commit().Error
+	return tx.Commit()
 }
 
 // GetJournalEntry retrieves a journal entry
@@ -1017,7 +1015,7 @@ func (r *AccountingRepository) UpdateJournalEntry(ctx context.Context, je *accou
 		return err
 	}
 
-	return tx.Commit().Error
+	return tx.Commit()
 }
 
 // DeleteJournalEntry soft deletes a journal entry
@@ -1294,7 +1292,7 @@ func (r *AccountingRepository) GetAccountBalance(ctx context.Context, organizati
 		WHERE organization_id = $1 AND account_id = $2 AND transaction_date <= $3
 	`
 
-	var debitVal, creditVal string
+	var _, _ string // Unused: debitVal, creditVal
 	err = r.db.GetContext(ctx, &struct {
 		Debit  sql.NullString
 		Credit sql.NullString

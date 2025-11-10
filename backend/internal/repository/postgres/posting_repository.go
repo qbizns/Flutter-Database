@@ -2,14 +2,11 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/your-org/pos-backend/internal/domain/posting"
 )
 
@@ -37,7 +34,7 @@ type PostingConcept struct {
 	ConceptCategory         *string
 	SortOrder               int
 	Notes                   *string
-	Metadata                pgtype.JSONB
+	Metadata                json.RawMessage
 	CreatedAt               time.Time
 	UpdatedAt               time.Time
 	DeletedAt               *time.Time
@@ -51,7 +48,7 @@ type PostingConceptOverride struct {
 	Description    *string
 	IsActive       bool
 	Notes          *string
-	Metadata       pgtype.JSONB
+	Metadata       json.RawMessage
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      *time.Time
@@ -205,7 +202,7 @@ type PostingRuleDB struct {
 	ConditionExpression     *string
 	IsActive                bool
 	Notes                   *string
-	Metadata                pgtype.JSONB
+	Metadata                json.RawMessage
 	CreatedAt               time.Time
 	UpdatedAt               time.Time
 	DeletedAt               *time.Time
@@ -226,11 +223,11 @@ type PostingRuleLineDB struct {
 	AmountSource        string // posting_amount_source enum
 	AmountFieldPath     *string
 	AmountExpression    *string
-	MappingContext      pgtype.JSONB
+	MappingContext      json.RawMessage
 	DescriptionTemplate *string
 	IsActive            bool
 	Notes               *string
-	Metadata            pgtype.JSONB
+	Metadata            json.RawMessage
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 	DeletedAt           *time.Time
@@ -399,7 +396,7 @@ type PostingProfileDB struct {
 	IsActive             bool
 	DefaultFiscalYearID  *uuid.UUID
 	Notes                *string
-	Metadata             pgtype.JSONB
+	Metadata             json.RawMessage
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 	DeletedAt            *time.Time
@@ -419,7 +416,7 @@ type PostingDocumentTypeDB struct {
 	IsActive        bool
 	IsSystem        bool
 	Notes           *string
-	Metadata        pgtype.JSONB
+	Metadata        json.RawMessage
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       *time.Time
@@ -431,7 +428,7 @@ type PostingProfileDocumentDB struct {
 	PostingDocumentTypeID     uuid.UUID
 	IsActive                  bool
 	Notes                     *string
-	Metadata                  pgtype.JSONB
+	Metadata                  json.RawMessage
 	CreatedAt                 time.Time
 	UpdatedAt                 time.Time
 	DeletedAt                 *time.Time
@@ -641,7 +638,7 @@ type PostingValidationRuleDB struct {
 	MessageTemplate   *string
 	Priority          int
 	Notes             *string
-	Metadata          pgtype.JSONB
+	Metadata          json.RawMessage
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         *time.Time
@@ -661,8 +658,8 @@ type PostingValidationResultDB struct {
 	MessageCode         string
 	Message             string
 	IsBlocking          bool
-	Context             pgtype.JSONB
-	Metadata            pgtype.JSONB
+	Context             json.RawMessage
+	Metadata            json.RawMessage
 	CreatedAt           time.Time
 	CreatedBy           *uuid.UUID
 }
@@ -777,12 +774,12 @@ type POSAccountMappingDB struct {
 	IsDefault        bool
 	IsActive         bool
 	Priority         int
-	Conditions       pgtype.JSONB
+	Conditions       json.RawMessage
 	EffectiveFrom    *time.Time
 	EffectiveTo      *time.Time
 	Description      *string
 	Notes            *string
-	Metadata         pgtype.JSONB
+	Metadata         json.RawMessage
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 	DeletedAt        *time.Time
@@ -805,7 +802,7 @@ type POSPostingAuditDB struct {
 	PostingMethod             string
 	ErrorCode                 *string
 	ErrorMessage              *string
-	ErrorDetails              pgtype.JSONB
+	ErrorDetails              json.RawMessage
 	RetryCount                int
 	LastRetryAt               *time.Time
 	MaxRetries                int
@@ -816,9 +813,9 @@ type POSPostingAuditDB struct {
 	TotalCredit               *float64
 	LineCount                 *int
 	CurrencyCode              *string
-	PostingContext            pgtype.JSONB
+	PostingContext            json.RawMessage
 	Notes                     *string
-	Metadata                  pgtype.JSONB
+	Metadata                  json.RawMessage
 	CreatedAt                 time.Time
 	UpdatedAt                 time.Time
 	DeletedAt                 *time.Time
@@ -845,7 +842,7 @@ type POSTaxMappingDB struct {
 	EffectiveTo                  *time.Time
 	Description                  *string
 	Notes                        *string
-	Metadata                     pgtype.JSONB
+	Metadata                     json.RawMessage
 	CreatedAt                    time.Time
 	UpdatedAt                    time.Time
 	DeletedAt                    *time.Time

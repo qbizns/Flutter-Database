@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/your-org/pos-backend/internal/domain/assets"
 )
@@ -380,7 +379,7 @@ func (r *AssetsRepository) ListFixedAssets(ctx context.Context, query assets.Ass
 	}
 	defer rows.Close()
 
-	var assets []*assets.FixedAsset
+	var assetsList []*assets.FixedAsset
 	for rows.Next() {
 		var asset assets.FixedAsset
 		var metadata sql.NullString
@@ -406,10 +405,10 @@ func (r *AssetsRepository) ListFixedAssets(ctx context.Context, query assets.Ass
 			asset.Metadata = json.RawMessage(metadata.String)
 		}
 
-		assets = append(assets, &asset)
+		assetsList = append(assetsList, &asset)
 	}
 
-	return assets, total, rows.Err()
+	return assetsList, total, rows.Err()
 }
 
 // UpdateFixedAsset updates a fixed asset

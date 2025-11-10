@@ -300,7 +300,7 @@ func (r *EmailQueueRepositoryImpl) List(ctx context.Context, orgID *uuid.UUID, f
 	for rows.Next() {
 		var e infrastructure.EmailQueue
 		var toAddrs, ccAddrs, bccAddrs pq.StringArray
-		var attachmentIds pq.UUIDArray
+		var attachmentIds []uuid.UUID
 		var templateData *json.RawMessage
 
 		err := rows.Scan(
@@ -388,7 +388,7 @@ func (r *EmailQueueRepositoryImpl) Get(ctx context.Context, id uuid.UUID) (*infr
 
 	var e infrastructure.EmailQueue
 	var toAddrs, ccAddrs, bccAddrs pq.StringArray
-	var attachmentIds pq.UUIDArray
+	var attachmentIds []uuid.UUID
 	var templateData *json.RawMessage
 
 	err := r.db.Pool.QueryRow(ctx, query, id).Scan(
@@ -458,7 +458,7 @@ func (r *EmailQueueRepositoryImpl) GetPendingEmails(ctx context.Context, limit i
 	for rows.Next() {
 		var e infrastructure.EmailQueue
 		var toAddrs, ccAddrs, bccAddrs pq.StringArray
-		var attachmentIds pq.UUIDArray
+		var attachmentIds []uuid.UUID
 		var templateData *json.RawMessage
 
 		err := rows.Scan(
