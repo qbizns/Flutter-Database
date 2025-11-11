@@ -29,8 +29,8 @@ func ListChartOfAccountsHandler(db *postgres.DB, logger *logging.Logger) http.Ha
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Parse query parameters
@@ -93,8 +93,8 @@ func CreateChartOfAccountHandler(db *postgres.DB, logger *logging.Logger) http.H
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Create account
@@ -132,8 +132,8 @@ func GetChartOfAccountHandler(db *postgres.DB, logger *logging.Logger) http.Hand
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get account
@@ -185,8 +185,8 @@ func UpdateChartOfAccountHandler(db *postgres.DB, logger *logging.Logger) http.H
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Update account
@@ -225,7 +225,7 @@ func DeleteChartOfAccountHandler(db *postgres.DB, logger *logging.Logger) http.H
 		}
 
 		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 
 		// Delete account
 		if err := repo.DeleteChartOfAccount(ctx, accountID, orgID); err != nil {
@@ -257,8 +257,8 @@ func ListFiscalYearsHandler(db *postgres.DB, logger *logging.Logger) http.Handle
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Parse query parameters
@@ -315,8 +315,8 @@ func CreateFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Create fiscal year
@@ -328,7 +328,7 @@ func CreateFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 
 		logger.Info("fiscal year created",
 			zap.String("fiscal_year_id", fiscalYear.ID.String()),
-			zap.Int("fiscal_year", fiscalYear.FiscalYear),
+			zap.String("fiscal_year", fiscalYear.FiscalYear),
 		)
 
 		respondJSON(w, http.StatusCreated, fiscalYear)
@@ -354,8 +354,8 @@ func GetFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get fiscal year
@@ -407,8 +407,8 @@ func UpdateFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Update fiscal year
@@ -420,7 +420,7 @@ func UpdateFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 
 		logger.Info("fiscal year updated",
 			zap.String("fiscal_year_id", fiscalYear.ID.String()),
-			zap.Int("fiscal_year", fiscalYear.FiscalYear),
+			zap.String("fiscal_year", fiscalYear.FiscalYear),
 		)
 
 		respondJSON(w, http.StatusOK, fiscalYear)
@@ -452,8 +452,8 @@ func CloseFiscalYearHandler(db *postgres.DB, logger *logging.Logger) http.Handle
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Close fiscal year
@@ -497,8 +497,8 @@ func ListAccountingPeriodsHandler(db *postgres.DB, logger *logging.Logger) http.
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get accounting periods
@@ -546,8 +546,8 @@ func CreateAccountingPeriodHandler(db *postgres.DB, logger *logging.Logger) http
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Create accounting period

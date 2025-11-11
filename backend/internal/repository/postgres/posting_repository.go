@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -22,6 +23,248 @@ type PostingRepository struct {
 // NewPostingRepository creates a new posting repository
 func NewPostingRepository(db *DB) posting.Repository {
 	return &PostingRepository{db: db}
+}
+
+// LoadDocument loads a document for posting
+func (r *PostingRepository) LoadDocument(ctx context.Context, documentType string, documentID uuid.UUID) (map[string]interface{}, error) {
+	// TODO: Implement document loading based on document type
+	// For now, return a basic implementation
+	return map[string]interface{}{
+		"id":   documentID,
+		"type": documentType,
+	}, nil
+}
+
+// UpdateDocumentPostingStatus updates the posting status of a document
+func (r *PostingRepository) UpdateDocumentPostingStatus(ctx context.Context, documentType string, documentID uuid.UUID, journalEntryID uuid.UUID, status string) error {
+	// TODO: Implement status update based on document type
+	// This would update fields like journal_entry_id, is_posted, posting_status
+	return nil
+}
+
+// GetPostingRules retrieves posting rules for a document type and event
+func (r *PostingRepository) GetPostingRules(ctx context.Context, orgID uuid.UUID, documentType, event string) ([]posting.PostingRule, error) {
+	query := `
+		SELECT id, rule_code, rule_name, event, level, priority, condition_expression, is_active
+		FROM posting_rules
+		WHERE organization_id = $1
+		  AND document_type = $2
+		  AND (event = $3 OR event = '*')
+		  AND is_active = true
+		  AND deleted_at IS NULL
+		ORDER BY priority ASC
+	`
+
+	rows, err := r.db.Pool.Query(ctx, query, orgID, documentType, event)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var rules []posting.PostingRule
+	for rows.Next() {
+		var rule posting.PostingRule
+		err := rows.Scan(
+			&rule.ID, &rule.RuleCode, &rule.RuleName,
+			&rule.Event, &rule.Level, &rule.Priority, &rule.ConditionExpression,
+			&rule.IsActive,
+		)
+		if err != nil {
+			return nil, err
+		}
+		rules = append(rules, rule)
+	}
+
+	return rules, rows.Err()
+}
+
+// GetPostingRuleLines retrieves lines for a posting rule
+func (r *PostingRepository) GetPostingRuleLines(ctx context.Context, ruleID uuid.UUID) ([]posting.PostingRuleLine, error) {
+	query := `
+		SELECT id, posting_rule_id, line_no, side, concept_key, account_source,
+		       amount_source, amount_field_path, amount_expression, description_template
+		FROM posting_rule_lines
+		WHERE posting_rule_id = $1
+		  AND deleted_at IS NULL
+		ORDER BY line_no ASC
+	`
+
+	rows, err := r.db.Pool.Query(ctx, query, ruleID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var lines []posting.PostingRuleLine
+	for rows.Next() {
+		var line posting.PostingRuleLine
+		err := rows.Scan(
+			&line.ID, &line.PostingRuleID, &line.LineNo, &line.Side,
+			&line.ConceptKey, &line.AccountSource, &line.AmountSource,
+			&line.AmountFieldPath, &line.AmountExpression, &line.DescriptionTemplate,
+		)
+		if err != nil {
+			return nil, err
+		}
+		lines = append(lines, line)
+	}
+
+	return lines, rows.Err()
+}
+
+// ResolveAccountFromConcept resolves a GL account from a posting concept
+func (r *PostingRepository) ResolveAccountFromConcept(ctx context.Context, orgID uuid.UUID, conceptKey string) (uuid.UUID, error) {
+	query := `
+		SELECT chart_of_account_id
+		FROM posting_concept_mappings
+		WHERE organization_id = $1 AND concept_key = $2
+	`
+
+	var accountID uuid.UUID
+	err := r.db.Pool.QueryRow(ctx, query, orgID, conceptKey).Scan(&accountID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return accountID, nil
+}
+
+// CreateJournalEntry creates a journal entry
+func (r *PostingRepository) CreateJournalEntry(ctx context.Context, je *posting.JournalEntry) error {
+	// TODO: This should integrate with the accounting repository's CreateJournalEntry
+	// For now, return success
+	return nil
+}
+
+// GetValidationRules retrieves validation rules
+func (r *PostingRepository) GetValidationRules(ctx context.Context, orgID uuid.UUID, documentType, event string) ([]posting.ValidationRule, error) {
+	query := `
+		SELECT id, code, expression, severity, is_blocking, message_template
+		FROM posting_validation_rules
+		WHERE organization_id = $1
+		  AND document_type = $2
+		  AND (event = $3 OR event = '*')
+		  AND is_active = true
+		  AND deleted_at IS NULL
+		ORDER BY code ASC
+	`
+
+	rows, err := r.db.Pool.Query(ctx, query, orgID, documentType, event)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var rules []posting.ValidationRule
+	for rows.Next() {
+		var rule posting.ValidationRule
+		err := rows.Scan(
+			&rule.ID, &rule.Code, &rule.Expression, &rule.Severity,
+			&rule.IsBlocking, &rule.MessageTemplate,
+		)
+		if err != nil {
+			return nil, err
+		}
+		rules = append(rules, rule)
+	}
+
+	return rules, rows.Err()
+}
+
+// LogValidationResult logs a validation result
+func (r *PostingRepository) LogValidationResult(ctx context.Context, result posting.ValidationResult) error {
+	query := `
+		INSERT INTO posting_validation_results (
+			id, organization_id, document_type, document_id, event,
+			validation_rule_id, severity, message, is_blocking, created_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	`
+
+	_, err := r.db.Pool.Exec(ctx, query,
+		uuid.New(), result.OrganizationID, result.DocumentType, result.DocumentID,
+		result.Event, result.ValidationRuleID, result.Severity, result.Message,
+		result.IsBlocking, time.Now(),
+	)
+
+	return err
+}
+
+// LogPostingAudit logs a posting audit entry
+func (r *PostingRepository) LogPostingAudit(ctx context.Context, audit posting.PostingAudit) error {
+	query := `
+		INSERT INTO posting_audit_log (
+			id, organization_id, source_table, source_id, journal_entry_id,
+			posting_status, event, error_message, posted_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	`
+
+	_, err := r.db.Pool.Exec(ctx, query,
+		uuid.New(), audit.OrganizationID, audit.SourceTable, audit.SourceID,
+		audit.JournalEntryID, audit.PostingStatus, audit.Event, audit.ErrorMessage,
+		time.Now(),
+	)
+
+	return err
+}
+
+// GetPostingAuditLogs retrieves posting audit logs with filtering
+func (r *PostingRepository) GetPostingAuditLogs(ctx context.Context, orgID uuid.UUID, filter map[string]interface{}) ([]posting.PostingAudit, error) {
+	query := `
+		SELECT id, organization_id, source_table, source_id, journal_entry_id,
+		       posting_status, event, error_message, posted_at
+		FROM posting_audit_log
+		WHERE organization_id = $1
+	`
+
+	args := []interface{}{orgID}
+	argIndex := 2
+
+	if sourceTable, ok := filter["source_table"].(string); ok && sourceTable != "" {
+		query += fmt.Sprintf(" AND source_table = $%d", argIndex)
+		args = append(args, sourceTable)
+		argIndex++
+	}
+
+	if sourceID, ok := filter["source_id"].(*uuid.UUID); ok && sourceID != nil {
+		query += fmt.Sprintf(" AND source_id = $%d", argIndex)
+		args = append(args, *sourceID)
+		argIndex++
+	}
+
+	query += " ORDER BY posted_at DESC"
+
+	if limit, ok := filter["limit"].(int); ok && limit > 0 {
+		query += fmt.Sprintf(" LIMIT $%d", argIndex)
+		args = append(args, limit)
+		argIndex++
+	}
+
+	if offset, ok := filter["offset"].(int); ok && offset > 0 {
+		query += fmt.Sprintf(" OFFSET $%d", argIndex)
+		args = append(args, offset)
+	}
+
+	rows, err := r.db.Pool.Query(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var audits []posting.PostingAudit
+	for rows.Next() {
+		var audit posting.PostingAudit
+		err := rows.Scan(
+			&audit.ID, &audit.OrganizationID, &audit.SourceTable, &audit.SourceID,
+			&audit.JournalEntryID, &audit.PostingStatus, &audit.Event,
+			&audit.ErrorMessage, &audit.PostedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		audits = append(audits, audit)
+	}
+
+	return audits, rows.Err()
 }
 
 // ============================================================================

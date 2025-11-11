@@ -29,8 +29,8 @@ func ListCustomerInvoicesHandler(db *postgres.DB, logger *logging.Logger) http.H
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Parse query parameters
@@ -97,8 +97,8 @@ func CreateCustomerInvoiceHandler(db *postgres.DB, logger *logging.Logger) http.
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Create invoice
@@ -136,8 +136,8 @@ func GetCustomerInvoiceHandler(db *postgres.DB, logger *logging.Logger) http.Han
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Get invoice
@@ -189,8 +189,8 @@ func UpdateCustomerInvoiceHandler(db *postgres.DB, logger *logging.Logger) http.
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Update invoice
@@ -227,8 +227,8 @@ func DeleteCustomerInvoiceHandler(db *postgres.DB, logger *logging.Logger) http.
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Delete invoice
@@ -261,8 +261,8 @@ func ListCustomerPaymentsHandler(db *postgres.DB, logger *logging.Logger) http.H
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Parse query parameters
@@ -326,8 +326,8 @@ func CreateCustomerPaymentHandler(db *postgres.DB, logger *logging.Logger) http.
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Create payment
@@ -365,8 +365,8 @@ func GetCustomerPaymentHandler(db *postgres.DB, logger *logging.Logger) http.Han
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewReceivablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewReceivablesRepository(db.GetStdlibDB())
 		service := receivables.NewService(repo)
 
 		// Get payment

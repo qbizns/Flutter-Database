@@ -37,8 +37,8 @@ func TrialBalanceHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFu
 			asOfDate = time.Now()
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get trial balance
@@ -129,8 +129,8 @@ func BalanceSheetHandler(db *postgres.DB, logger *logging.Logger) http.HandlerFu
 			asOfDate = time.Now()
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get chart of accounts
@@ -265,8 +265,8 @@ func IncomeStatementHandler(db *postgres.DB, logger *logging.Logger) http.Handle
 			endDate = time.Now()
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get chart of accounts

@@ -115,4 +115,5 @@ type Repository interface {
 
 	// Audit
 	LogPostingAudit(ctx context.Context, audit PostingAudit) error
+	GetPostingAuditLogs(ctx context.Context, orgID uuid.UUID, filter map[string]interface{}) ([]PostingAudit, error)
 }

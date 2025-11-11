@@ -29,8 +29,8 @@ func ListVendorBillsHandler(db *postgres.DB, logger *logging.Logger) http.Handle
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Parse query parameters
@@ -97,8 +97,8 @@ func CreateVendorBillHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Create bill
@@ -136,8 +136,8 @@ func GetVendorBillHandler(db *postgres.DB, logger *logging.Logger) http.HandlerF
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Get bill
@@ -189,8 +189,8 @@ func UpdateVendorBillHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Update bill
@@ -227,8 +227,8 @@ func DeleteVendorBillHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Delete bill
@@ -261,8 +261,8 @@ func ListVendorPaymentsHandler(db *postgres.DB, logger *logging.Logger) http.Han
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Parse query parameters
@@ -326,8 +326,8 @@ func CreateVendorPaymentHandler(db *postgres.DB, logger *logging.Logger) http.Ha
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Create payment
@@ -365,8 +365,8 @@ func GetVendorPaymentHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewPayablesRepository(db)
+		// Create repository and service using stdlib compatibility layer
+		repo := postgres.NewPayablesRepository(db.GetStdlibDB())
 		service := payables.NewService(repo)
 
 		// Get payment

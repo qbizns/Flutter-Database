@@ -25,8 +25,8 @@ func ListJournalEntriesHandler(db *postgres.DB, logger *logging.Logger) http.Han
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Parse query parameters
@@ -90,7 +90,7 @@ func CreateJournalEntryHandler(db *postgres.DB, logger *logging.Logger) http.Han
 		}
 
 		// Parse request body
-		var req CreateJournalEntryRequest
+		var req accounting.CreateJournalEntryRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			respondError(w, logger, apperrors.BadRequest("Invalid request body"))
 			return
@@ -102,8 +102,8 @@ func CreateJournalEntryHandler(db *postgres.DB, logger *logging.Logger) http.Han
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Create journal entry
@@ -141,8 +141,8 @@ func GetJournalEntryHandler(db *postgres.DB, logger *logging.Logger) http.Handle
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Get journal entry
@@ -191,8 +191,8 @@ func PostJournalEntryHandler(db *postgres.DB, logger *logging.Logger) http.Handl
 			return
 		}
 
-		// Create repository and service
-		repo := postgres.NewAccountingRepository(db)
+		// Create repository and service using sqlx compatibility layer
+		repo := postgres.NewAccountingRepository(db.GetSQLXDB())
 		service := accounting.NewService(repo)
 
 		// Post journal entry

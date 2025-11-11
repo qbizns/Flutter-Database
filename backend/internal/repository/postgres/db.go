@@ -2,12 +2,15 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/logging"
 	"go.uber.org/zap"
@@ -172,4 +175,19 @@ func (db *DB) GetExecutor(tx pgx.Tx) QueryExecutor {
 		return tx
 	}
 	return db.Pool
+}
+
+// GetStdlibDB returns a database/sql.DB wrapper around the pgxpool
+// This is a compatibility layer for repositories that haven't been migrated to pgx yet
+func (db *DB) GetStdlibDB() *sql.DB {
+	// Import stdlib at the top if not already: "database/sql"
+	// Import pgx stdlib: "github.com/jackc/pgx/v5/stdlib"
+	return stdlib.OpenDB(*db.Pool.Config().ConnConfig)
+}
+
+// GetSQLXDB returns a sqlx.DB wrapper around the stdlib DB
+// This is a compatibility layer for repositories that use sqlx
+func (db *DB) GetSQLXDB() *sqlx.DB {
+	stdDB := db.GetStdlibDB()
+	return sqlx.NewDb(stdDB, "pgx")
 }
