@@ -12,11 +12,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/your-org/pos-backend/internal/auth"
 	"github.com/your-org/pos-backend/internal/config"
 	domainauth "github.com/your-org/pos-backend/internal/domain/auth"
 	"github.com/your-org/pos-backend/internal/http/rest"
 	"github.com/your-org/pos-backend/internal/logging"
+	custommiddleware "github.com/your-org/pos-backend/internal/middleware"
+	"github.com/your-org/pos-backend/internal/metrics"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"
 )
@@ -61,6 +64,21 @@ func main() {
 	userService := domainauth.NewUserService(userRepo, roleRepo, userRoleRepo, logger)
 	tokenService := auth.NewTokenService(cfg)
 
+	// Initialize metrics collectors
+	metricsMiddleware := custommiddleware.NewMetricsMiddleware("pos_backend")
+	// Business metrics collector (for future use in domain services)
+	// metricsCollector := metrics.NewCollector("pos_backend")
+	dbMetricsCollector := metrics.NewDBCollector("pos_backend", db.Pool)
+
+	// Start collecting database pool metrics every 15 seconds
+	metricsCtx, metricsCancel := context.WithCancel(context.Background())
+	defer metricsCancel()
+	dbMetricsCollector.StartCollecting(metricsCtx, 15*time.Second)
+
+	logger.Info("metrics collection initialized",
+		zap.String("namespace", "pos_backend"),
+		zap.String("metrics_port", cfg.Metrics.MetricsPort))
+
 	// Initialize router
 	r := chi.NewRouter()
 
@@ -70,6 +88,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
+
+	// Metrics middleware (after logger, before business logic)
+	r.Use(metricsMiddleware.Handler)
 
 	// CORS
 	r.Use(cors.Handler(cors.Options{
@@ -91,6 +112,9 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status": "healthy"}`))
 	})
+
+	// Metrics endpoint (Prometheus scraping)
+	r.Handle("/metrics", promhttp.Handler())
 
 	// API routes
 	r.Route("/api/v1", func(r chi.Router) {
