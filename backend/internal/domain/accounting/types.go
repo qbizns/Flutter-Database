@@ -430,4 +430,6 @@ var (
 	ErrInvalidAccountLevel       = errors.New("invalid account level")
 	ErrCyclicAccountHierarchy    = errors.New("cannot create cyclic account hierarchy")
 	ErrSystemAccountModification = errors.New("cannot modify system accounts")
+	ErrDuplicateAccount          = errors.New("account code already exists")
+	ErrNotFound                  = errors.New("resource not found")
 )
