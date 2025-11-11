@@ -1,0 +1,1658 @@
+{
+	"info": {
+		"_postman_id": "pos-backend-api-v1",
+		"name": "POS Backend API - Complete Collection",
+		"description": "Comprehensive Postman collection for POS Backend API\n\n## Features\n- Organized folder structure\n- Pre-request scripts for authentication\n- Automated tests for all endpoints\n- Environment variable management\n- CSRF token handling\n\n## Setup\n1. Import this collection\n2. Import the environment file (POS_Backend.postman_environment.json)\n3. Run the Login request first to get access token\n4. All other requests will use the stored token automatically\n\n## Folder Organization\n- 🔐 Authentication\n- 💊 Health & Monitoring\n- 📦 Products\n- 👥 Customers\n- 🏢 Suppliers\n- 📂 Categories\n- 📍 Locations\n- 💰 Sales",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"description": "Authentication endpoints for login, register, and token refresh",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse response",
+									"const response = pm.response.json();",
+									"",
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has access_token\", function () {",
+									"    pm.expect(response).to.have.property('access_token');",
+									"});",
+									"",
+									"pm.test(\"Response has refresh_token\", function () {",
+									"    pm.expect(response).to.have.property('refresh_token');",
+									"});",
+									"",
+									"pm.test(\"Response has user object\", function () {",
+									"    pm.expect(response).to.have.property('user');",
+									"    pm.expect(response.user).to.have.property('id');",
+									"    pm.expect(response.user).to.have.property('email');",
+									"});",
+									"",
+									"// Store tokens in environment",
+									"if (response.access_token) {",
+									"    pm.environment.set(\"access_token\", response.access_token);",
+									"    console.log(\"Access token saved to environment\");",
+									"}",
+									"",
+									"if (response.refresh_token) {",
+									"    pm.environment.set(\"refresh_token\", response.refresh_token);",
+									"    console.log(\"Refresh token saved to environment\");",
+									"}",
+									"",
+									"// Store user info",
+									"if (response.user) {",
+									"    pm.environment.set(\"user_id\", response.user.id);",
+									"    pm.environment.set(\"user_email\", response.user.email);",
+									"}",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{test_user_email}}\",\n    \"password\": \"{{test_user_password}}\",\n    \"organization_id\": \"{{organization_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "login"]
+						},
+						"description": "Authenticate user and receive JWT tokens.\n\n**Rate Limit**: 5 requests/minute\n\n**Required Fields**:\n- email: User email address\n- password: User password (min 6 characters)\n- organization_id: Organization UUID\n\n**Response**:\n- access_token: JWT for API authentication (1 hour expiry)\n- refresh_token: Token for refreshing access (7 days expiry)\n- user: User information including roles"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has access_token\", function () {",
+									"    pm.expect(response).to.have.property('access_token');",
+									"});",
+									"",
+									"pm.test(\"User email matches request\", function () {",
+									"    const requestBody = JSON.parse(pm.request.body.raw);",
+									"    pm.expect(response.user.email).to.equal(requestBody.email);",
+									"});",
+									"",
+									"// Store tokens",
+									"if (response.access_token) {",
+									"    pm.environment.set(\"access_token\", response.access_token);",
+									"}",
+									"if (response.refresh_token) {",
+									"    pm.environment.set(\"refresh_token\", response.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"newuser@example.com\",\n    \"password\": \"SecurePassword123!\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"organization_id\": \"{{organization_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "register"]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"New access token received\", function () {",
+									"    pm.expect(response).to.have.property('access_token');",
+									"    pm.environment.set(\"access_token\", response.access_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "refresh"]
+						},
+						"description": "Get a new access token using refresh token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💊 Health & Monitoring",
+			"description": "Health check and metrics endpoints",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Service is healthy\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.equal('healthy');",
+									"});",
+									"",
+									"pm.test(\"Response time is fast\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Check API and database health status"
+					},
+					"response": []
+				},
+				{
+					"name": "Metrics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is text/plain\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", /text\\/plain/);",
+									"});",
+									"",
+									"pm.test(\"Metrics contain standard labels\", function () {",
+									"    const metrics = pm.response.text();",
+									"    pm.expect(metrics).to.include('http_requests_total');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/metrics",
+							"host": ["{{base_url}}"],
+							"path": ["metrics"]
+						},
+						"description": "Prometheus metrics endpoint"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📦 Products",
+			"description": "Product catalog management",
+			"item": [
+				{
+					"name": "List Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is paginated\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"    pm.expect(response).to.have.property('page');",
+									"    pm.expect(response).to.have.property('page_size');",
+									"    pm.expect(response).to.have.property('total_count');",
+									"});",
+									"",
+									"pm.test(\"Products are returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.data).to.be.an('array');",
+									"});",
+									"",
+									"// Store first product ID for other tests",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"product_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/products?page=1&page_size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "products"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "category_id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "is_active",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve paginated list of products with optional filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Product created with correct data\", function () {",
+									"    const response = pm.response.json();",
+									"    const requestBody = JSON.parse(pm.request.body.raw);",
+									"    ",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response.sku).to.equal(requestBody.sku);",
+									"    pm.expect(response.name).to.equal(requestBody.name);",
+									"    pm.expect(response.unit_price).to.equal(requestBody.unit_price);",
+									"});",
+									"",
+									"// Store created product ID",
+									"const response = pm.response.json();",
+									"if (response.id) {",
+									"    pm.environment.set(\"created_product_id\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-CSRF-Token",
+								"value": "{{csrf_token}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"PROD-{{$randomInt}}\",\n    \"name\": \"Test Product {{$randomProduct}}\",\n    \"description\": \"A test product created via Postman\",\n    \"category_id\": \"{{category_id}}\",\n    \"unit_price\": 29.99,\n    \"cost_price\": 15.00,\n    \"stock_quantity\": 100,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/products",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "products"]
+						},
+						"description": "Create a new product"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Product details returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('sku');",
+									"    pm.expect(response).to.have.property('name');",
+									"    pm.expect(response).to.have.property('unit_price');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/products/{{product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "products", "{{product_id}}"]
+						},
+						"description": "Get a specific product by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Product updated successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product Name\",\n    \"unit_price\": 39.99,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/products/{{product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "products", "{{product_id}}"]
+						},
+						"description": "Update an existing product"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Success message returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/products/{{created_product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "products", "{{created_product_id}}"]
+						},
+						"description": "Soft delete a product"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👥 Customers",
+			"description": "Customer management",
+			"item": [
+				{
+					"name": "List Customers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is paginated\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"    pm.expect(response).to.have.property('total_count');",
+									"});",
+									"",
+									"// Store first customer ID",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"customer_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/customers?page=1&page_size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "customers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "customer_type",
+									"value": "individual",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Customer created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.environment.set(\"created_customer_id\", response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"phone\": \"+1-555-{{$randomInt}}\",\n    \"customer_type\": \"individual\",\n    \"address_line_1\": \"{{$randomStreetAddress}}\",\n    \"city\": \"{{$randomCity}}\",\n    \"country\": \"USA\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/customers",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "customers"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Customer details returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('first_name');",
+									"    pm.expect(response).to.have.property('last_name');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/customers/{{customer_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "customers", "{{customer_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"+1-555-9999\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/customers/{{customer_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "customers", "{{customer_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/customers/{{created_customer_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "customers", "{{created_customer_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏢 Suppliers",
+			"description": "Supplier management",
+			"item": [
+				{
+					"name": "List Suppliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is paginated\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"    pm.expect(response).to.have.property('total_count');",
+									"});",
+									"",
+									"// Store first supplier ID",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"supplier_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/suppliers?page=1&page_size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "suppliers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve paginated list of suppliers"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Supplier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Supplier created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.environment.set(\"created_supplier_id\", response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_name\": \"{{$randomCompanyName}}\",\n    \"contact_person\": \"{{$randomFullName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"phone\": \"+1-555-{{$randomInt}}\",\n    \"address_line_1\": \"{{$randomStreetAddress}}\",\n    \"city\": \"{{$randomCity}}\",\n    \"country\": \"USA\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/suppliers",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "suppliers"]
+						},
+						"description": "Create a new supplier"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Supplier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Supplier details returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('company_name');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/suppliers/{{supplier_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "suppliers", "{{supplier_id}}"]
+						},
+						"description": "Get a specific supplier by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Supplier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contact_person\": \"New Contact Person\",\n    \"phone\": \"+1-555-8888\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/suppliers/{{supplier_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "suppliers", "{{supplier_id}}"]
+						},
+						"description": "Update an existing supplier"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Supplier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/suppliers/{{created_supplier_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "suppliers", "{{created_supplier_id}}"]
+						},
+						"description": "Soft delete a supplier"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📂 Categories",
+			"description": "Product category management",
+			"item": [
+				{
+					"name": "List Categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Categories list returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"    pm.expect(response.data).to.be.an('array');",
+									"});",
+									"",
+									"// Store first category ID",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"category_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/categories?page=1&page_size=50",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "categories"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "50"
+								},
+								{
+									"key": "parent_id",
+									"value": "",
+									"disabled": true,
+									"description": "Filter by parent category"
+								}
+							]
+						},
+						"description": "Retrieve list of product categories (supports hierarchical structure)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Category created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('name');",
+									"    pm.environment.set(\"created_category_id\", response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Category {{$randomInt}}\",\n    \"description\": \"A test category for products\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "categories"]
+						},
+						"description": "Create a new product category"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Category details returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('name');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "categories", "{{category_id}}"]
+						},
+						"description": "Get a specific category by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category Name\",\n    \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "categories", "{{category_id}}"]
+						},
+						"description": "Update an existing category"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/categories/{{created_category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "categories", "{{created_category_id}}"]
+						},
+						"description": "Soft delete a category"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📍 Locations",
+			"description": "Store location management",
+			"item": [
+				{
+					"name": "List Locations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Locations list returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"    pm.expect(response.data).to.be.an('array');",
+									"});",
+									"",
+									"// Store first location ID",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"location_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/locations?page=1&page_size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "locations"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "is_active",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve list of store locations"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Location created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('name');",
+									"    pm.environment.set(\"created_location_id\", response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Store {{$randomInt}}\",\n    \"code\": \"STORE-{{$randomInt}}\",\n    \"address_line_1\": \"{{$randomStreetAddress}}\",\n    \"city\": \"{{$randomCity}}\",\n    \"state\": \"CA\",\n    \"postal_code\": \"{{$randomInt}}\",\n    \"country\": \"USA\",\n    \"phone\": \"+1-555-{{$randomInt}}\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/locations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "locations"]
+						},
+						"description": "Create a new store location"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Location details returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('name');",
+									"    pm.expect(response).to.have.property('code');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/locations/{{location_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "locations", "{{location_id}}"]
+						},
+						"description": "Get a specific location by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Store Name\",\n    \"phone\": \"+1-555-9999\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/locations/{{location_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "locations", "{{location_id}}"]
+						},
+						"description": "Update an existing location"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/locations/{{created_location_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "locations", "{{created_location_id}}"]
+						},
+						"description": "Soft delete a location"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💰 Sales",
+			"description": "Sales transaction management",
+			"item": [
+				{
+					"name": "List Sales",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Sales list returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('data');",
+									"});",
+									"",
+									"// Store first sale ID",
+									"const response = pm.response.json();",
+									"if (response.data && response.data.length > 0) {",
+									"    pm.environment.set(\"sale_id\", response.data[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/sales?page=1&page_size=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "sales"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "20"
+								},
+								{
+									"key": "customer_id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "date_from",
+									"value": "2025-01-01",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2025-12-31",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sale",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Sale created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('total_amount');",
+									"    pm.environment.set(\"created_sale_id\", response.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": \"{{customer_id}}\",\n    \"location_id\": \"{{location_id}}\",\n    \"sale_date\": \"{{$isoTimestamp}}\",\n    \"subtotal\": 100.00,\n    \"tax_amount\": 8.00,\n    \"total_amount\": 108.00,\n    \"payment_method\": \"cash\",\n    \"status\": \"completed\",\n    \"items\": [\n        {\n            \"product_id\": \"{{product_id}}\",\n            \"quantity\": 2,\n            \"unit_price\": 50.00,\n            \"tax_rate\": 8.0,\n            \"line_total\": 100.00\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/sales",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "sales"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sale",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Sale details with items returned\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('items');",
+									"    pm.expect(response.items).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/sales/{{sale_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "organizations", "{{organization_id}}", "sales", "{{sale_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"// This runs before every request",
+					"",
+					"// Check if we have an access token (except for auth endpoints)",
+					"const isAuthEndpoint = pm.request.url.toString().includes('/auth/');",
+					"const isHealthEndpoint = pm.request.url.toString().includes('/health') || pm.request.url.toString().includes('/metrics');",
+					"",
+					"if (!isAuthEndpoint && !isHealthEndpoint) {",
+					"    const accessToken = pm.environment.get('access_token');",
+					"    ",
+					"    if (!accessToken) {",
+					"        console.warn('⚠️ No access token found. Please run the Login request first.');",
+					"    } else {",
+					"        console.log('✅ Access token found and will be used for authentication');",
+					"    }",
+					"}",
+					"",
+					"// Log request details",
+					"console.log(`🚀 ${pm.request.method} ${pm.request.url.toString()}`);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"// This runs after every request",
+					"",
+					"// Log response details",
+					"console.log(`📥 Response Status: ${pm.response.code} ${pm.response.status}`);",
+					"console.log(`⏱️ Response Time: ${pm.response.responseTime}ms`);",
+					"",
+					"// Check for common error scenarios",
+					"if (pm.response.code === 401) {",
+					"    console.error('🔒 Unauthorized - Access token may be expired. Try refreshing or logging in again.');",
+					"}",
+					"",
+					"if (pm.response.code === 403) {",
+					"    console.error('🚫 Forbidden - You do not have permission for this action.');",
+					"}",
+					"",
+					"if (pm.response.code === 429) {",
+					"    console.error('⏳ Rate Limited - Too many requests. Please wait before trying again.');",
+					"}",
+					"",
+					"// Parse and display error details if present",
+					"if (pm.response.code >= 400) {",
+					"    try {",
+					"        const error = pm.response.json();",
+					"        if (error.error && error.message) {",
+					"            console.error(`❌ Error: ${error.error} - ${error.message}`);",
+					"            if (error.details) {",
+					"                console.error('Details:', JSON.stringify(error.details, null, 2));",
+					"            }",
+					"        }",
+					"    } catch (e) {",
+					"        // Not JSON or couldn't parse",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "default"
+		}
+	]
+}
