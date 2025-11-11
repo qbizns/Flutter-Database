@@ -11,6 +11,20 @@ import (
 )
 
 // ============================================================================
+// POSTING ENGINE REPOSITORY
+// ============================================================================
+
+// PostingRepository implements posting.Repository interface
+type PostingRepository struct {
+	db *DB
+}
+
+// NewPostingRepository creates a new posting repository
+func NewPostingRepository(db *DB) posting.Repository {
+	return &PostingRepository{db: db}
+}
+
+// ============================================================================
 // POSTING CONCEPT REPOSITORY
 // ============================================================================
 
