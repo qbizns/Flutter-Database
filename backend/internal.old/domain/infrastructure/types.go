@@ -1,0 +1,793 @@
+package infrastructure
+
+import (
+	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/lib/pq"
+)
+
+// ============================================================================
+// BACKGROUND JOBS
+// ============================================================================
+
+// BackgroundJob represents a background job in the queue
+type BackgroundJob struct {
+	ID                 uuid.UUID          `json:"id"`
+	OrganizationID     uuid.UUID          `json:"organization_id"`
+	JobType            string             `json:"job_type"` // 'posting_engine', 'report_generation', 'export', 'email', 'import'
+	JobName            string             `json:"job_name"`
+	QueueName          string             `json:"queue_name"` // 'default', 'high_priority', 'low_priority'
+	Status             string             `json:"status"`     // 'pending', 'processing', 'completed', 'failed', 'cancelled', 'retrying'
+	Payload            json.RawMessage    `json:"payload"`
+	Result             *json.RawMessage   `json:"result"`
+	ErrorMessage       *string            `json:"error_message"`
+	ErrorDetails       *json.RawMessage   `json:"error_details"`
+	Attempts           int                `json:"attempts"`
+	MaxAttempts        int                `json:"max_attempts"`
+	Priority           int                `json:"priority"`
+	ScheduledAt        time.Time          `json:"scheduled_at"`
+	StartedAt          *time.Time         `json:"started_at"`
+	CompletedAt        *time.Time         `json:"completed_at"`
+	FailedAt           *time.Time         `json:"failed_at"`
+	WorkerID           *string            `json:"worker_id"`
+	ProcessingTimeout  int                `json:"processing_timeout"` // Seconds
+	CreatedBy          *uuid.UUID         `json:"created_by"`
+	CreatedAt          time.Time          `json:"created_at"`
+	UpdatedAt          time.Time          `json:"updated_at"`
+}
+
+// BackgroundJobFilters represents filters for listing background jobs
+type BackgroundJobFilters struct {
+	JobType   *string
+	Status    *string
+	QueueName *string
+	Page      int
+	PageSize  int
+}
+
+// ============================================================================
+// API KEYS
+// ============================================================================
+
+// APIKey represents an API key for programmatic access
+type APIKey struct {
+	ID                  uuid.UUID       `json:"id"`
+	OrganizationID      uuid.UUID       `json:"organization_id"`
+	KeyName             string          `json:"key_name"`
+	KeyPrefix           string          `json:"key_prefix"` // First 8 chars for display
+	KeyHash             string          `json:"key_hash"`   // Hashed full key
+	Scopes              pq.StringArray  `json:"scopes"`     // ['read', 'write', 'delete', 'admin']
+	AllowedIPs          pq.StringArray  `json:"allowed_ips"`
+	IsActive            bool            `json:"is_active"`
+	LastUsedAt          *time.Time      `json:"last_used_at"`
+	UsageCount          int             `json:"usage_count"`
+	RateLimitPerMinute  int             `json:"rate_limit_per_minute"`
+	RateLimitPerHour    int             `json:"rate_limit_per_hour"`
+	ExpiresAt           *time.Time      `json:"expires_at"`
+	CreatedBy           *uuid.UUID      `json:"created_by"`
+	CreatedAt           time.Time       `json:"created_at"`
+	UpdatedAt           time.Time       `json:"updated_at"`
+	DeletedAt           *time.Time      `json:"deleted_at"`
+}
+
+// APIKeyFilters represents filters for listing API keys
+type APIKeyFilters struct {
+	IsActive *bool
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// WEBHOOKS
+// ============================================================================
+
+// Webhook represents a webhook configuration
+type Webhook struct {
+	ID                   uuid.UUID      `json:"id"`
+	OrganizationID       uuid.UUID      `json:"organization_id"`
+	WebhookName          string         `json:"webhook_name"`
+	URL                  string         `json:"url"`
+	Secret               *string        `json:"secret"`
+	Events               pq.StringArray `json:"events"` // ['sale.created', 'payment.completed', ...]
+	HTTPMethod           string         `json:"http_method"`
+	Headers              json.RawMessage `json:"headers"`
+	TimeoutSeconds       int            `json:"timeout_seconds"`
+	MaxRetries           int            `json:"max_retries"`
+	RetryBackoffSeconds  int            `json:"retry_backoff_seconds"`
+	IsActive             bool           `json:"is_active"`
+	IsVerified           bool           `json:"is_verified"`
+	TotalDeliveries      int            `json:"total_deliveries"`
+	SuccessfulDeliveries int            `json:"successful_deliveries"`
+	FailedDeliveries     int            `json:"failed_deliveries"`
+	LastDeliveryAt       *time.Time     `json:"last_delivery_at"`
+	LastSuccessAt        *time.Time     `json:"last_success_at"`
+	LastFailureAt        *time.Time     `json:"last_failure_at"`
+	CreatedBy            *uuid.UUID     `json:"created_by"`
+	CreatedAt            time.Time      `json:"created_at"`
+	UpdatedAt            time.Time      `json:"updated_at"`
+	DeletedAt            *time.Time     `json:"deleted_at"`
+}
+
+// WebhookFilters represents filters for listing webhooks
+type WebhookFilters struct {
+	IsActive *bool
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// WEBHOOK DELIVERIES
+// ============================================================================
+
+// WebhookDelivery represents a webhook delivery attempt
+type WebhookDelivery struct {
+	ID                 uuid.UUID       `json:"id"`
+	OrganizationID     uuid.UUID       `json:"organization_id"`
+	WebhookID          uuid.UUID       `json:"webhook_id"`
+	EventType          string          `json:"event_type"`
+	EventID            uuid.UUID       `json:"event_id"`
+	Status             string          `json:"status"` // 'pending', 'success', 'failed', 'retrying'
+	RequestURL         string          `json:"request_url"`
+	RequestMethod      string          `json:"request_method"`
+	RequestHeaders     *json.RawMessage `json:"request_headers"`
+	RequestBody        *json.RawMessage `json:"request_body"`
+	ResponseStatusCode *int            `json:"response_status_code"`
+	ResponseHeaders    *json.RawMessage `json:"response_headers"`
+	ResponseBody       *string         `json:"response_body"`
+	AttemptNumber      int             `json:"attempt_number"`
+	DurationMs         *int            `json:"duration_ms"`
+	NextRetryAt        *time.Time      `json:"next_retry_at"`
+	ErrorMessage       *string         `json:"error_message"`
+	CreatedAt          time.Time       `json:"created_at"`
+	DeliveredAt        *time.Time      `json:"delivered_at"`
+}
+
+// WebhookDeliveryFilters represents filters for listing webhook deliveries
+type WebhookDeliveryFilters struct {
+	WebhookID *uuid.UUID
+	Status    *string
+	EventType *string
+	Page      int
+	PageSize  int
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+// Notification represents a user notification
+type Notification struct {
+	ID                 uuid.UUID      `json:"id"`
+	OrganizationID     uuid.UUID      `json:"organization_id"`
+	UserID             uuid.UUID      `json:"user_id"`
+	NotificationType   string         `json:"notification_type"` // 'info', 'success', 'warning', 'error'
+	Category           string         `json:"category"`          // 'sale', 'payment', 'inventory', 'system'
+	Title              string         `json:"title"`
+	Message            string         `json:"message"`
+	ActionURL          *string        `json:"action_url"`
+	ActionLabel        *string        `json:"action_label"`
+	Channels           pq.StringArray `json:"channels"` // ['in_app', 'email', 'sms', 'push']
+	IsRead             bool           `json:"is_read"`
+	ReadAt             *time.Time     `json:"read_at"`
+	RelatedEntityType  *string        `json:"related_entity_type"`
+	RelatedEntityID    *uuid.UUID     `json:"related_entity_id"`
+	Priority           string         `json:"priority"` // 'low', 'normal', 'high', 'urgent'
+	ExpiresAt          *time.Time     `json:"expires_at"`
+	CreatedAt          time.Time      `json:"created_at"`
+}
+
+// NotificationFilters represents filters for listing notifications
+type NotificationFilters struct {
+	UserID   uuid.UUID
+	IsRead   *bool
+	Category *string
+	Priority *string
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// NOTIFICATION PREFERENCES
+// ============================================================================
+
+// NotificationPreference represents user notification preferences
+type NotificationPreference struct {
+	ID                 uuid.UUID `json:"id"`
+	OrganizationID     uuid.UUID `json:"organization_id"`
+	UserID             uuid.UUID `json:"user_id"`
+	Category           string    `json:"category"` // 'sales', 'inventory', 'accounting', 'system'
+	InAppEnabled       bool      `json:"in_app_enabled"`
+	EmailEnabled       bool      `json:"email_enabled"`
+	SMSEnabled         bool      `json:"sms_enabled"`
+	PushEnabled        bool      `json:"push_enabled"`
+	Frequency          string    `json:"frequency"` // 'realtime', 'daily_digest', 'weekly_digest', 'disabled'
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+}
+
+// ============================================================================
+// FILE ATTACHMENTS
+// ============================================================================
+
+// FileAttachment represents a file attachment
+type FileAttachment struct {
+	ID               uuid.UUID  `json:"id"`
+	OrganizationID   uuid.UUID  `json:"organization_id"`
+	FileName         string     `json:"file_name"`
+	FileSize         int64      `json:"file_size"`
+	MimeType         string     `json:"mime_type"`
+	FileExtension    *string    `json:"file_extension"`
+	StorageProvider  string     `json:"storage_provider"` // 'local', 's3', 'gcs', 'azure'
+	StoragePath      string     `json:"storage_path"`
+	StorageURL       *string    `json:"storage_url"`
+	FileHash         *string    `json:"file_hash"` // SHA-256
+	EntityType       string     `json:"entity_type"`
+	EntityID         uuid.UUID  `json:"entity_id"`
+	Description      *string    `json:"description"`
+	Tags             pq.StringArray `json:"tags"`
+	IsPublic         bool       `json:"is_public"`
+	ImageWidth       *int       `json:"image_width"`
+	ImageHeight      *int       `json:"image_height"`
+	VirusScanStatus  string     `json:"virus_scan_status"` // 'pending', 'clean', 'infected', 'error'
+	VirusScanAt      *time.Time `json:"virus_scan_at"`
+	UploadedBy       *uuid.UUID `json:"uploaded_by"`
+	CreatedAt        time.Time  `json:"created_at"`
+	DeletedAt        *time.Time `json:"deleted_at"`
+}
+
+// FileAttachmentFilters represents filters for listing file attachments
+type FileAttachmentFilters struct {
+	EntityType *string
+	EntityID   *uuid.UUID
+	Page       int
+	PageSize   int
+}
+
+// ============================================================================
+// EMAIL QUEUE
+// ============================================================================
+
+// EmailQueue represents an email in the queue
+type EmailQueue struct {
+	ID                uuid.UUID      `json:"id"`
+	OrganizationID    *uuid.UUID     `json:"organization_id"`
+	ToAddresses       pq.StringArray `json:"to_addresses"`
+	CCAddresses       pq.StringArray `json:"cc_addresses"`
+	BCCAddresses      pq.StringArray `json:"bcc_addresses"`
+	FromAddress       *string        `json:"from_address"`
+	ReplyTo           *string        `json:"reply_to"`
+	Subject           string         `json:"subject"`
+	BodyHTML          *string        `json:"body_html"`
+	BodyText          *string        `json:"body_text"`
+	AttachmentIds     pq.UUIDArray   `json:"attachment_ids"`
+	TemplateName      *string        `json:"template_name"`
+	TemplateData      *json.RawMessage `json:"template_data"`
+	Status            string         `json:"status"` // 'pending', 'sending', 'sent', 'failed', 'cancelled'
+	Provider          *string        `json:"provider"`
+	ProviderMessageID *string        `json:"provider_message_id"`
+	Attempts          int            `json:"attempts"`
+	MaxAttempts       int            `json:"max_attempts"`
+	ErrorMessage      *string        `json:"error_message"`
+	Priority          int            `json:"priority"`
+	ScheduledAt       time.Time      `json:"scheduled_at"`
+	SentAt            *time.Time     `json:"sent_at"`
+	FailedAt          *time.Time     `json:"failed_at"`
+	CreatedAt         time.Time      `json:"created_at"`
+}
+
+// EmailQueueFilters represents filters for listing email queue items
+type EmailQueueFilters struct {
+	Status   *string
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// SMS QUEUE
+// ============================================================================
+
+// SMSQueue represents an SMS in the queue
+type SMSQueue struct {
+	ID              uuid.UUID  `json:"id"`
+	OrganizationID  *uuid.UUID `json:"organization_id"`
+	ToPhone         string     `json:"to_phone"`
+	FromPhone       *string    `json:"from_phone"`
+	Message         string     `json:"message"`
+	Status          string     `json:"status"` // 'pending', 'sending', 'sent', 'failed', 'cancelled'
+	Provider        *string    `json:"provider"`
+	ProviderMessageID *string  `json:"provider_message_id"`
+	Attempts        int        `json:"attempts"`
+	MaxAttempts     int        `json:"max_attempts"`
+	ErrorMessage    *string    `json:"error_message"`
+	CostAmount      *float64   `json:"cost_amount"`
+	CostCurrency    *string    `json:"cost_currency"`
+	ScheduledAt     time.Time  `json:"scheduled_at"`
+	SentAt          *time.Time `json:"sent_at"`
+	FailedAt        *time.Time `json:"failed_at"`
+	CreatedAt       time.Time  `json:"created_at"`
+}
+
+// SMSQueueFilters represents filters for listing SMS queue items
+type SMSQueueFilters struct {
+	Status   *string
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// RATE LIMITS
+// ============================================================================
+
+// RateLimit represents a rate limit window
+type RateLimit struct {
+	ID                   uuid.UUID `json:"id"`
+	IdentifierType       string    `json:"identifier_type"` // 'user', 'organization', 'api_key', 'ip'
+	IdentifierValue      string    `json:"identifier_value"`
+	EndpointPath         *string   `json:"endpoint_path"`
+	HTTPMethod           *string   `json:"http_method"`
+	WindowStart          time.Time `json:"window_start"`
+	WindowDurationSeconds int      `json:"window_duration_seconds"`
+	RequestCount         int       `json:"request_count"`
+	AllowedCount         int       `json:"allowed_count"`
+	IsBlocked            bool      `json:"is_blocked"`
+	BlockedUntil         *time.Time `json:"blocked_until"`
+	FirstRequestAt       time.Time `json:"first_request_at"`
+	LastRequestAt        time.Time `json:"last_request_at"`
+}
+
+// ============================================================================
+// USER SESSIONS
+// ============================================================================
+
+// UserSession represents a user session
+type UserSession struct {
+	ID               uuid.UUID  `json:"id"`
+	UserID           uuid.UUID  `json:"user_id"`
+	OrganizationID   *uuid.UUID `json:"organization_id"`
+	SessionToken     string     `json:"session_token"`
+	RefreshToken     *string    `json:"refresh_token"`
+	UserAgent        *string    `json:"user_agent"`
+	IPAddress        *string    `json:"ip_address"`
+	DeviceType       *string    `json:"device_type"` // 'desktop', 'mobile', 'tablet'
+	DeviceName       *string    `json:"device_name"`
+	Browser          *string    `json:"browser"`
+	OS               *string    `json:"os"`
+	CountryCode      *string    `json:"country_code"`
+	City             *string    `json:"city"`
+	IsActive         bool       `json:"is_active"`
+	LastActivityAt   time.Time  `json:"last_activity_at"`
+	ExpiresAt        time.Time  `json:"expires_at"`
+	CreatedAt        time.Time  `json:"created_at"`
+	RevokedAt        *time.Time `json:"revoked_at"`
+}
+
+// UserSessionFilters represents filters for listing user sessions
+type UserSessionFilters struct {
+	UserID   uuid.UUID
+	IsActive *bool
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// ORGANIZATION SETTINGS
+// ============================================================================
+
+// OrganizationSettings represents organization-specific settings
+type OrganizationSettings struct {
+	OrganizationID              uuid.UUID       `json:"organization_id"`
+	Timezone                    string          `json:"timezone"`
+	DateFormat                  string          `json:"date_format"`
+	TimeFormat                  string          `json:"time_format"`
+	NumberFormat                string          `json:"number_format"`
+	DefaultCurrency             string          `json:"default_currency"`
+	DefaultLanguage             string          `json:"default_language"`
+	BusinessType                *string         `json:"business_type"`
+	FiscalYearStart             string          `json:"fiscal_year_start"` // MM-DD
+	AutoPrintReceipts           bool            `json:"auto_print_receipts"`
+	AllowNegativeInventory      bool            `json:"allow_negative_inventory"`
+	RequireCustomerForSale      bool            `json:"require_customer_for_sale"`
+	EnablePriceOverride         bool            `json:"enable_price_override"`
+	AutoPostSales               bool            `json:"auto_post_sales"`
+	AutoPostPayments            bool            `json:"auto_post_payments"`
+	PostingFrequency            string          `json:"posting_frequency"`
+	SMTPHost                    *string         `json:"smtp_host"`
+	SMTPPort                    *int            `json:"smtp_port"`
+	SMTPUsername                *string         `json:"smtp_username"`
+	SMTPUseTLS                  bool            `json:"smtp_use_tls"`
+	EmailFromAddress            *string         `json:"email_from_address"`
+	EmailFromName               *string         `json:"email_from_name"`
+	EnableEmailNotifications    bool            `json:"enable_email_notifications"`
+	EnableSMSNotifications      bool            `json:"enable_sms_notifications"`
+	Require2FA                  bool            `json:"require_2fa"`
+	SessionTimeoutMinutes       int             `json:"session_timeout_minutes"`
+	PasswordMinLength           int             `json:"password_min_length"`
+	PasswordRequireSpecial      bool            `json:"password_require_special"`
+	APIEnabled                  bool            `json:"api_enabled"`
+	APIRateLimitPerMinute       int             `json:"api_rate_limit_per_minute"`
+	WebhookRetryMaxAttempts     int             `json:"webhook_retry_max_attempts"`
+	Features                    json.RawMessage `json:"features"`
+	CustomSettings              json.RawMessage `json:"custom_settings"`
+	UpdatedAt                   time.Time       `json:"updated_at"`
+	UpdatedBy                   *uuid.UUID      `json:"updated_by"`
+}
+
+// ============================================================================
+// USER SETTINGS
+// ============================================================================
+
+// UserSettings represents user-specific settings
+type UserSettings struct {
+	UserID              uuid.UUID       `json:"user_id"`
+	Theme               string          `json:"theme"` // 'light', 'dark', 'auto'
+	Language            string          `json:"language"`
+	Timezone            *string         `json:"timezone"`
+	DefaultDashboard    string          `json:"default_dashboard"`
+	DashboardLayout     json.RawMessage `json:"dashboard_layout"`
+	ItemsPerPage        int             `json:"items_per_page"`
+	DefaultView         string          `json:"default_view"` // 'grid', 'list', 'table'
+	DesktopNotifications bool           `json:"desktop_notifications"`
+	SoundNotifications  bool            `json:"sound_notifications"`
+	DefaultLocationID   *uuid.UUID      `json:"default_location_id"`
+	QuickActions        json.RawMessage `json:"quick_actions"`
+	CustomPreferences   json.RawMessage `json:"custom_preferences"`
+	UpdatedAt           time.Time       `json:"updated_at"`
+}
+
+// ============================================================================
+// DATA EXPORT REQUESTS
+// ============================================================================
+
+// DataExportRequest represents a data export job
+type DataExportRequest struct {
+	ID              uuid.UUID       `json:"id"`
+	OrganizationID  uuid.UUID       `json:"organization_id"`
+	ExportType      string          `json:"export_type"` // 'sales', 'products', 'customers', 'full_backup'
+	ExportFormat    string          `json:"export_format"` // 'csv', 'xlsx', 'json', 'pdf'
+	DateFrom        *time.Time      `json:"date_from"`
+	DateTo          *time.Time      `json:"date_to"`
+	Filters         json.RawMessage `json:"filters"`
+	Status          string          `json:"status"` // 'pending', 'processing', 'completed', 'failed', 'expired'
+	FileName        *string         `json:"file_name"`
+	FileSize        *int64          `json:"file_size"`
+	FilePath        *string         `json:"file_path"`
+	DownloadURL     *string         `json:"download_url"`
+	DownloadExpiresAt *time.Time    `json:"download_expires_at"`
+	TotalRecords    *int            `json:"total_records"`
+	ProcessedRecords *int           `json:"processed_records"`
+	ErrorMessage    *string         `json:"error_message"`
+	RequestedBy     *uuid.UUID      `json:"requested_by"`
+	RequestedAt     time.Time       `json:"requested_at"`
+	StartedAt       *time.Time      `json:"started_at"`
+	CompletedAt     *time.Time      `json:"completed_at"`
+}
+
+// DataExportRequestFilters represents filters for listing data export requests
+type DataExportRequestFilters struct {
+	Status   *string
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// SCHEDULED REPORTS
+// ============================================================================
+
+// ScheduledReport represents a scheduled report
+type ScheduledReport struct {
+	ID                   uuid.UUID       `json:"id"`
+	OrganizationID       uuid.UUID       `json:"organization_id"`
+	ReportName           string          `json:"report_name"`
+	ReportType           string          `json:"report_type"`
+	ScheduleFrequency    string          `json:"schedule_frequency"` // 'daily', 'weekly', 'monthly', 'quarterly'
+	ScheduleDayOfWeek    *int            `json:"schedule_day_of_week"`
+	ScheduleDayOfMonth   *int            `json:"schedule_day_of_month"`
+	ScheduleTime         time.Time       `json:"schedule_time"`
+	ScheduleTimezone     string          `json:"schedule_timezone"`
+	ReportParameters     json.RawMessage `json:"report_parameters"`
+	DeliveryMethod       string          `json:"delivery_method"` // 'email', 'webhook', 'sftp'
+	DeliveryRecipients   pq.StringArray  `json:"delivery_recipients"`
+	OutputFormat         string          `json:"output_format"` // 'pdf', 'xlsx', 'csv'
+	IsActive             bool            `json:"is_active"`
+	LastRunAt            *time.Time      `json:"last_run_at"`
+	LastRunStatus        *string         `json:"last_run_status"`
+	NextRunAt            *time.Time      `json:"next_run_at"`
+	CreatedBy            *uuid.UUID      `json:"created_by"`
+	CreatedAt            time.Time       `json:"created_at"`
+	UpdatedAt            time.Time       `json:"updated_at"`
+}
+
+// ScheduledReportFilters represents filters for listing scheduled reports
+type ScheduledReportFilters struct {
+	IsActive *bool
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// API REQUEST LOGS
+// ============================================================================
+
+// APIRequestLog represents an API request log
+type APIRequestLog struct {
+	ID               uuid.UUID       `json:"id"`
+	RequestID        *string         `json:"request_id"`
+	Method           string          `json:"method"`
+	Path             string          `json:"path"`
+	QueryParams      *json.RawMessage `json:"query_params"`
+	UserID           *uuid.UUID      `json:"user_id"`
+	OrganizationID   *uuid.UUID      `json:"organization_id"`
+	APIKeyID         *uuid.UUID      `json:"api_key_id"`
+	RequestHeaders   *json.RawMessage `json:"request_headers"`
+	RequestBody      *json.RawMessage `json:"request_body"`
+	IPAddress        *string         `json:"ip_address"`
+	UserAgent        *string         `json:"user_agent"`
+	StatusCode       int             `json:"status_code"`
+	ResponseHeaders  *json.RawMessage `json:"response_headers"`
+	ResponseBody     *json.RawMessage `json:"response_body"`
+	DurationMs       *int            `json:"duration_ms"`
+	ErrorMessage     *string         `json:"error_message"`
+	ErrorStack       *string         `json:"error_stack"`
+	CreatedAt        time.Time       `json:"created_at"`
+}
+
+// APIRequestLogFilters represents filters for listing API request logs
+type APIRequestLogFilters struct {
+	Path     *string
+	Method   *string
+	StatusCode *int
+	Page     int
+	PageSize int
+}
+
+// ============================================================================
+// INTEGRATION CONFIGS
+// ============================================================================
+
+// IntegrationConfig represents a third-party integration configuration
+type IntegrationConfig struct {
+	ID               uuid.UUID       `json:"id"`
+	OrganizationID   uuid.UUID       `json:"organization_id"`
+	IntegrationType  string          `json:"integration_type"` // 'payment_gateway', 'shipping', 'accounting', 'crm'
+	ProviderName     string          `json:"provider_name"`    // 'stripe', 'paypal', 'quickbooks', 'xero'
+	Credentials      json.RawMessage `json:"credentials"`
+	Settings         json.RawMessage `json:"settings"`
+	IsActive         bool            `json:"is_active"`
+	IsConnected      bool            `json:"is_connected"`
+	ConnectionStatus *string         `json:"connection_status"` // 'connected', 'error', 'pending'
+	LastSyncAt       *time.Time      `json:"last_sync_at"`
+	LastSyncStatus   *string         `json:"last_sync_status"`
+	SyncFrequency    string          `json:"sync_frequency"` // 'manual', 'hourly', 'daily'
+	WebhookURL       *string         `json:"webhook_url"`
+	WebhookSecret    *string         `json:"webhook_secret"`
+	CreatedBy        *uuid.UUID      `json:"created_by"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	DeletedAt        *time.Time      `json:"deleted_at"`
+}
+
+// IntegrationConfigFilters represents filters for listing integration configs
+type IntegrationConfigFilters struct {
+	IntegrationType *string
+	IsActive        *bool
+	Page            int
+	PageSize        int
+}
+
+// ============================================================================
+// Repository Interface
+// ============================================================================
+
+// BackgroundJobRepository defines the background job data access interface
+type BackgroundJobRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters BackgroundJobFilters) ([]BackgroundJob, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters BackgroundJobFilters) (int64, error)
+	Create(ctx context.Context, job *BackgroundJob) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*BackgroundJob, error)
+	Update(ctx context.Context, job *BackgroundJob) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	UpdateStatus(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error
+}
+
+// APIKeyRepository defines the API key data access interface
+type APIKeyRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters APIKeyFilters) ([]APIKey, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters APIKeyFilters) (int64, error)
+	Create(ctx context.Context, key *APIKey) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*APIKey, error)
+	GetByKeyHash(ctx context.Context, keyHash string) (*APIKey, error)
+	Update(ctx context.Context, key *APIKey) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	UpdateUsage(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+}
+
+// WebhookRepository defines the webhook data access interface
+type WebhookRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters WebhookFilters) ([]Webhook, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters WebhookFilters) (int64, error)
+	Create(ctx context.Context, webhook *Webhook) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*Webhook, error)
+	Update(ctx context.Context, webhook *Webhook) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	UpdateStats(ctx context.Context, orgID uuid.UUID, id uuid.UUID, status string) error
+}
+
+// WebhookDeliveryRepository defines the webhook delivery data access interface
+type WebhookDeliveryRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters WebhookDeliveryFilters) ([]WebhookDelivery, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters WebhookDeliveryFilters) (int64, error)
+	Create(ctx context.Context, delivery *WebhookDelivery) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*WebhookDelivery, error)
+	Update(ctx context.Context, delivery *WebhookDelivery) error
+	GetPendingDeliveries(ctx context.Context) ([]WebhookDelivery, error)
+}
+
+// NotificationRepository defines the notification data access interface
+type NotificationRepository interface {
+	List(ctx context.Context, filters NotificationFilters) ([]Notification, error)
+	Count(ctx context.Context, filters NotificationFilters) (int64, error)
+	Create(ctx context.Context, notification *Notification) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*Notification, error)
+	Update(ctx context.Context, notification *Notification) error
+	MarkAsRead(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	MarkAllAsRead(ctx context.Context, userID uuid.UUID) error
+}
+
+// NotificationPreferenceRepository defines the notification preference data access interface
+type NotificationPreferenceRepository interface {
+	Get(ctx context.Context, userID uuid.UUID, category string) (*NotificationPreference, error)
+	GetAll(ctx context.Context, userID uuid.UUID) ([]NotificationPreference, error)
+	Upsert(ctx context.Context, pref *NotificationPreference) error
+	Delete(ctx context.Context, userID uuid.UUID, category string) error
+}
+
+// FileAttachmentRepository defines the file attachment data access interface
+type FileAttachmentRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters FileAttachmentFilters) ([]FileAttachment, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters FileAttachmentFilters) (int64, error)
+	Create(ctx context.Context, attachment *FileAttachment) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*FileAttachment, error)
+	Update(ctx context.Context, attachment *FileAttachment) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	GetByHash(ctx context.Context, orgID uuid.UUID, hash string) (*FileAttachment, error)
+}
+
+// EmailQueueRepository defines the email queue data access interface
+type EmailQueueRepository interface {
+	List(ctx context.Context, orgID *uuid.UUID, filters EmailQueueFilters) ([]EmailQueue, error)
+	Count(ctx context.Context, orgID *uuid.UUID, filters EmailQueueFilters) (int64, error)
+	Create(ctx context.Context, email *EmailQueue) error
+	Get(ctx context.Context, id uuid.UUID) (*EmailQueue, error)
+	Update(ctx context.Context, email *EmailQueue) error
+	GetPendingEmails(ctx context.Context, limit int) ([]EmailQueue, error)
+}
+
+// SMSQueueRepository defines the SMS queue data access interface
+type SMSQueueRepository interface {
+	List(ctx context.Context, orgID *uuid.UUID, filters SMSQueueFilters) ([]SMSQueue, error)
+	Count(ctx context.Context, orgID *uuid.UUID, filters SMSQueueFilters) (int64, error)
+	Create(ctx context.Context, sms *SMSQueue) error
+	Get(ctx context.Context, id uuid.UUID) (*SMSQueue, error)
+	Update(ctx context.Context, sms *SMSQueue) error
+	GetPendingSMS(ctx context.Context, limit int) ([]SMSQueue, error)
+}
+
+// RateLimitRepository defines the rate limit data access interface
+type RateLimitRepository interface {
+	Get(ctx context.Context, identifierType, identifierValue, endpointPath, httpMethod string, windowStart time.Time) (*RateLimit, error)
+	Create(ctx context.Context, limit *RateLimit) error
+	Update(ctx context.Context, limit *RateLimit) error
+	Cleanup(ctx context.Context, before time.Time) error
+}
+
+// UserSessionRepository defines the user session data access interface
+type UserSessionRepository interface {
+	List(ctx context.Context, filters UserSessionFilters) ([]UserSession, error)
+	Count(ctx context.Context, filters UserSessionFilters) (int64, error)
+	Create(ctx context.Context, session *UserSession) error
+	Get(ctx context.Context, userID uuid.UUID, id uuid.UUID) (*UserSession, error)
+	GetByToken(ctx context.Context, token string) (*UserSession, error)
+	Update(ctx context.Context, session *UserSession) error
+	Revoke(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	RevokeAll(ctx context.Context, userID uuid.UUID) error
+	CleanupExpired(ctx context.Context) error
+}
+
+// OrganizationSettingsRepository defines the organization settings data access interface
+type OrganizationSettingsRepository interface {
+	Get(ctx context.Context, orgID uuid.UUID) (*OrganizationSettings, error)
+	Create(ctx context.Context, settings *OrganizationSettings) error
+	Update(ctx context.Context, settings *OrganizationSettings) error
+}
+
+// UserSettingsRepository defines the user settings data access interface
+type UserSettingsRepository interface {
+	Get(ctx context.Context, userID uuid.UUID) (*UserSettings, error)
+	Create(ctx context.Context, settings *UserSettings) error
+	Update(ctx context.Context, settings *UserSettings) error
+}
+
+// DataExportRequestRepository defines the data export request data access interface
+type DataExportRequestRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters DataExportRequestFilters) ([]DataExportRequest, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters DataExportRequestFilters) (int64, error)
+	Create(ctx context.Context, request *DataExportRequest) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*DataExportRequest, error)
+	Update(ctx context.Context, request *DataExportRequest) error
+	GetPendingExports(ctx context.Context) ([]DataExportRequest, error)
+}
+
+// ScheduledReportRepository defines the scheduled report data access interface
+type ScheduledReportRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters ScheduledReportFilters) ([]ScheduledReport, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters ScheduledReportFilters) (int64, error)
+	Create(ctx context.Context, report *ScheduledReport) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ScheduledReport, error)
+	Update(ctx context.Context, report *ScheduledReport) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	GetDueReports(ctx context.Context) ([]ScheduledReport, error)
+}
+
+// APIRequestLogRepository defines the API request log data access interface
+type APIRequestLogRepository interface {
+	Create(ctx context.Context, log *APIRequestLog) error
+	List(ctx context.Context, filters APIRequestLogFilters) ([]APIRequestLog, error)
+	Count(ctx context.Context, filters APIRequestLogFilters) (int64, error)
+	GetByRequestID(ctx context.Context, requestID string) (*APIRequestLog, error)
+	Cleanup(ctx context.Context, before time.Time) error
+}
+
+// IntegrationConfigRepository defines the integration config data access interface
+type IntegrationConfigRepository interface {
+	List(ctx context.Context, orgID uuid.UUID, filters IntegrationConfigFilters) ([]IntegrationConfig, error)
+	Count(ctx context.Context, orgID uuid.UUID, filters IntegrationConfigFilters) (int64, error)
+	Create(ctx context.Context, config *IntegrationConfig) error
+	Get(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*IntegrationConfig, error)
+	Update(ctx context.Context, config *IntegrationConfig) error
+	Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error
+	GetActive(ctx context.Context, orgID uuid.UUID, integrationType string) ([]IntegrationConfig, error)
+}
+}
+
+// ============================================================================
+// IMMUTABILITY VIOLATIONS LOG
+// ============================================================================
+
+// ImmutabilityViolationLog represents an attempt to modify immutable data
+type ImmutabilityViolationLog struct {
+	ID             uuid.UUID       `json:"id"`
+	OrganizationID *uuid.UUID      `json:"organization_id"`
+	TableName      string          `json:"table_name"`
+	RecordID       *uuid.UUID      `json:"record_id"`
+	Operation      string          `json:"operation"` // UPDATE, DELETE, INSERT
+	AttemptedBy    *uuid.UUID      `json:"attempted_by"`
+	AttemptedAt    time.Time       `json:"attempted_at"`
+	ErrorMessage   string          `json:"error_message"`
+	BlockedData    json.RawMessage `json:"blocked_data"` // What was attempted
+	Metadata       json.RawMessage `json:"metadata"`
+}
+
+// ImmutabilityViolationLogFilters represents filters for listing violations
+type ImmutabilityViolationLogFilters struct {
+	TableName   *string
+	Operation   *string
+	AttemptedBy *uuid.UUID
+	StartDate   *time.Time
+	EndDate     *time.Time
+	Page        int
+	PageSize    int
+}
+
+// ImmutabilityViolationLogRepository defines the immutability violations log data access interface
+type ImmutabilityViolationLogRepository interface {
+	List(ctx context.Context, orgID *uuid.UUID, filters ImmutabilityViolationLogFilters) ([]ImmutabilityViolationLog, error)
+	Count(ctx context.Context, orgID *uuid.UUID, filters ImmutabilityViolationLogFilters) (int64, error)
+	Create(ctx context.Context, log *ImmutabilityViolationLog) error
+	Get(ctx context.Context, id uuid.UUID) (*ImmutabilityViolationLog, error)
+	GetByTableAndRecord(ctx context.Context, tableName string, recordID uuid.UUID) ([]ImmutabilityViolationLog, error)
+	Cleanup(ctx context.Context, before time.Time) error
+}
