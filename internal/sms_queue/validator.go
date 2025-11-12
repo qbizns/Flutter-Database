@@ -1,0 +1,422 @@
+package sms_queue
+
+import (
+	"context"
+	"fmt"
+	"regexp"
+	"strings"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/your-org/pos-backend/internal/dto"
+)
+
+// Validator handles SmsQueue validation logic
+type Validator struct {
+	repo *Repository
+}
+
+// NewValidator creates a new SmsQueue validator
+func NewValidator(repo *Repository) *Validator {
+	return &Validator{
+		repo: repo,
+	}
+}
+
+// ValidateCreate validates a create request
+func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *dto.CreateSmsQueueRequest) error {
+	// Basic validation
+	if err := req.Validate(); err != nil {
+		return fmt.Errorf("validation failed: %w", err)
+	}
+
+	
+	// Validate ToPhone
+	
+	if err := v.validateToPhone(req.ToPhone); err != nil {
+		return err
+	}
+	
+	
+	
+	// Validate FromPhone
+	
+	
+	
+	// Validate Message
+	
+	if err := v.validateMessage(req.Message); err != nil {
+		return err
+	}
+	
+	
+	
+	// Validate Status
+	
+	
+	
+	// Validate Status
+	
+	
+	
+	// Validate Provider
+	
+	
+	
+	// Validate ProviderMessageId
+	
+	
+	if err := v.validateProviderMessageIdExists(ctx, tx, req.ProviderMessageId); err != nil {
+		return err
+	}
+	
+	
+	// Validate Attempts
+	
+	
+	
+	// Validate MaxAttempts
+	
+	
+	
+	// Validate ErrorMessage
+	
+	
+	
+	// Validate CostAmount
+	
+	
+	
+	// Validate CostCurrency
+	
+	
+	
+	// Validate ScheduledAt
+	
+	
+	
+	// Validate SentAt
+	
+	
+	
+	// Validate FailedAt
+	
+	
+	
+
+	// Cross-field validation
+	if err := v.validateCrossFields(ctx, tx, req); err != nil {
+		return err
+	}
+
+	// Business rules validation
+	if err := v.validateBusinessRules(ctx, tx, req); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateUpdate validates an update request
+func (v *Validator) ValidateUpdate(ctx context.Context, tx pgx.Tx, id uuid.UUID, req *dto.UpdateSmsQueueRequest) error {
+	// Basic validation
+	if err := req.Validate(); err != nil {
+		return fmt.Errorf("validation failed: %w", err)
+	}
+
+	// Check if entity exists
+	existing, err := v.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return fmt.Errorf("entity not found: %w", err)
+	}
+
+	
+	// Validate ToPhone if provided
+	
+	if req.ToPhone != nil {
+		if err := v.validateToPhone(*req.ToPhone); err != nil {
+			return err
+		}
+	}
+	
+	
+	
+	// Validate FromPhone if provided
+	
+	
+	
+	// Validate Message if provided
+	
+	if req.Message != nil {
+		if err := v.validateMessage(*req.Message); err != nil {
+			return err
+		}
+	}
+	
+	
+	
+	// Validate Status if provided
+	
+	
+	
+	// Validate Status if provided
+	
+	
+	
+	// Validate Provider if provided
+	
+	
+	
+	// Validate ProviderMessageId if provided
+	
+	
+	if req.ProviderMessageId != nil {
+		if err := v.validateProviderMessageIdExists(ctx, tx, *req.ProviderMessageId); err != nil {
+			return err
+		}
+	}
+	
+	
+	// Validate Attempts if provided
+	
+	
+	
+	// Validate MaxAttempts if provided
+	
+	
+	
+	// Validate ErrorMessage if provided
+	
+	
+	
+	// Validate CostAmount if provided
+	
+	
+	
+	// Validate CostCurrency if provided
+	
+	
+	
+	// Validate ScheduledAt if provided
+	
+	
+	
+	// Validate SentAt if provided
+	
+	
+	
+	// Validate FailedAt if provided
+	
+	
+	
+
+	// Business rules validation
+	if err := v.validateUpdateBusinessRules(ctx, tx, existing, req); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateDelete validates a delete request
+func (v *Validator) ValidateDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
+	// Check if entity exists
+	existing, err := v.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return fmt.Errorf("entity not found: %w", err)
+	}
+
+	// Check if entity can be deleted (no foreign key constraints)
+	if err := v.validateCanDelete(ctx, tx, existing); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+
+// validateToPhone validates to_phone field
+func (v *Validator) validateToPhone(value string) error {
+	
+	if !isValidPhone(value) {
+		return fmt.Errorf("invalid phone format for to_phone")
+	}
+	
+	return nil
+}
+
+
+
+
+
+
+
+
+
+// validateMessage validates message field
+func (v *Validator) validateMessage(value string) error {
+	
+	// Add custom validation for message
+	if strings.TrimSpace(value) == "" {
+		return fmt.Errorf("message cannot be empty")
+	}
+	
+	return nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// validateProviderMessageIdExists validates that provider_message_id exists
+func (v *Validator) validateProviderMessageIdExists(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
+	// TODO: Implement existence check for provider_message
+	// This should query the referenced table to ensure the ID exists
+	var exists bool
+	err := tx.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM provider_message WHERE id = $1)", id).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("failed to check provider_message existence: %w", err)
+	}
+	if !exists {
+		return fmt.Errorf("provider_message with id %s does not exist", id)
+	}
+	return nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// validateCrossFields validates relationships between fields
+func (v *Validator) validateCrossFields(ctx context.Context, tx pgx.Tx, req *dto.CreateSmsQueueRequest) error {
+	// Add cross-field validation logic here
+	// Example: start_date must be before end_date
+	// Example: price must be less than max_price
+	return nil
+}
+
+// validateBusinessRules validates business-specific rules
+func (v *Validator) validateBusinessRules(ctx context.Context, tx pgx.Tx, req *dto.CreateSmsQueueRequest) error {
+	// Add business rule validation here
+	// Example: check inventory levels
+	// Example: validate credit limits
+	// Example: check permission constraints
+	return nil
+}
+
+// validateUpdateBusinessRules validates business rules for updates
+func (v *Validator) validateUpdateBusinessRules(ctx context.Context, tx pgx.Tx, existing *SmsQueue, req *dto.UpdateSmsQueueRequest) error {
+	// Add update-specific business rule validation here
+	// Example: can't change status from 'completed' to 'pending'
+	// Example: can't reduce quantity below reserved amount
+	return nil
+}
+
+// validateCanDelete checks if entity can be safely deleted
+func (v *Validator) validateCanDelete(ctx context.Context, tx pgx.Tx, entity *SmsQueue) error {
+	// Add delete validation here
+	// Example: check for dependent records in other tables
+	// Example: prevent deletion of active/in-use entities
+	return nil
+}
+
+// Helper validation functions
+
+var (
+	emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	phoneRegex = regexp.MustCompile(`^\+?[1-9]\d{1,14}$`) // E.164 format
+	urlRegex   = regexp.MustCompile(`^https?://[^\s/$.?#].[^\s]*$`)
+)
+
+// isValidEmail validates email format
+func isValidEmail(email string) bool {
+	return emailRegex.MatchString(email)
+}
+
+// isValidPhone validates phone number format (E.164)
+func isValidPhone(phone string) bool {
+	return phoneRegex.MatchString(phone)
+}
+
+// isValidURL validates URL format
+func isValidURL(url string) bool {
+	return urlRegex.MatchString(url)
+}
+
+// isValidUUID validates UUID format
+func isValidUUID(id string) bool {
+	_, err := uuid.Parse(id)
+	return err == nil
+}
+
+// isValidDateRange validates date range
+func isValidDateRange(start, end time.Time) bool {
+	return start.Before(end)
+}
+
+// isPositive validates positive numbers
+func isPositive(value float64) bool {
+	return value > 0
+}
+
+// isNonNegative validates non-negative numbers
+func isNonNegative(value float64) bool {
+	return value >= 0
+}
+
+// isWithinRange validates value is within range
+func isWithinRange(value, min, max float64) bool {
+	return value >= min && value <= max
+}
+
+// isValidLength validates string length
+func isValidLength(value string, min, max int) bool {
+	length := len(value)
+	return length >= min && length <= max
+}

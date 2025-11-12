@@ -1,0 +1,306 @@
+package sale_return
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
+	"github.com/your-org/pos-backend/internal/dto/sale_return"
+	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/service/sale_return"
+	"go.uber.org/zap"
+)
+
+// Handler handles HTTP requests for SaleReturns
+type Handler struct {
+	service *sale_return.Service
+	logger  *logging.Logger
+}
+
+// NewHandler creates a new SaleReturns handler
+func NewHandler(service *sale_return.Service, logger *logging.Logger) *Handler {
+	return &Handler{
+		service: service,
+		logger:  logger,
+	}
+}
+
+// Create handles POST /api/v1/organizations/{orgID}/sale_returns
+// @Summary Create sale_returns
+// @Description Create a new sale_returns record
+// @Tags sale_returns
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param orgID path string true "Organization ID"
+// @Param request body dto.CreateSaleReturnsRequest true "SaleReturns data"
+// @Success 201 {object} dto.SaleReturnsResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /organizations/{orgID}/sale_returns [post]
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "orgID"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+	
+
+	// Parse request body
+	var req dto.CreateSaleReturnsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	
+	result, err := h.service.Create(ctx, orgID, &req)
+	
+	if err != nil {
+		h.logger.Error("failed to create sale_returns", zap.Error(err))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to create sale_returns", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusCreated, result)
+}
+
+// GetByID handles GET /api/v1/organizations/{orgID}/sale_returns/{id}
+// @Summary Get sale_returns by ID
+// @Description Retrieve a sale_returns by its ID
+// @Tags sale_returns
+// @Produce json
+// @Security BearerAuth
+// @Param orgID path string true "Organization ID"
+// @Param id path string true "SaleReturns ID"
+// @Success 200 {object} dto.SaleReturnsResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /organizations/{orgID}/sale_returns/{id} [get]
+func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "orgID"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+	
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid sale_returns ID", err)
+		return
+	}
+
+	// Call service
+	
+	result, err := h.service.GetByID(ctx, orgID, id)
+	
+	if err != nil {
+		h.logger.Error("failed to get sale_returns", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusNotFound, "sale_returns not found", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// List handles GET /api/v1/organizations/{orgID}/sale_returns
+// @Summary List sale_returns
+// @Description Retrieve a paginated list of sale_returns records
+// @Tags sale_returns
+// @Produce json
+// @Security BearerAuth
+// @Param orgID path string true "Organization ID"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Items per page" default(20)
+// @Success 200 {object} dto.SaleReturnsListResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /organizations/{orgID}/sale_returns [get]
+func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "orgID"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+	
+
+	// Get pagination parameters
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	if page < 1 {
+		page = 1
+	}
+
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	if limit < 1 || limit > 100 {
+		limit = 20
+	}
+
+	// Call service
+	
+	result, err := h.service.List(ctx, orgID, page, limit)
+	
+	if err != nil {
+		h.logger.Error("failed to list sale_returns", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to list sale_returns", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// Update handles PUT /api/v1/organizations/{orgID}/sale_returns/{id}
+// @Summary Update sale_returns
+// @Description Update an existing sale_returns record
+// @Tags sale_returns
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param orgID path string true "Organization ID"
+// @Param id path string true "SaleReturns ID"
+// @Param request body dto.UpdateSaleReturnsRequest true "SaleReturns data"
+// @Success 200 {object} dto.SaleReturnsResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /organizations/{orgID}/sale_returns/{id} [put]
+func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "orgID"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+	
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid sale_returns ID", err)
+		return
+	}
+
+	// Parse request body
+	var req dto.UpdateSaleReturnsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	
+	result, err := h.service.Update(ctx, orgID, id, &req)
+	
+	if err != nil {
+		h.logger.Error("failed to update sale_returns", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to update sale_returns", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// Delete handles DELETE /api/v1/organizations/{orgID}/sale_returns/{id}
+// @Summary Delete sale_returns
+// @Description Delete a sale_returns record
+// @Tags sale_returns
+// @Produce json
+// @Security BearerAuth
+// @Param orgID path string true "Organization ID"
+// @Param id path string true "SaleReturns ID"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /organizations/{orgID}/sale_returns/{id} [delete]
+func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "orgID"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+	
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid sale_returns ID", err)
+		return
+	}
+
+	// Call service
+	
+	err = h.service.Delete(ctx, orgID, id)
+	
+	if err != nil {
+		h.logger.Error("failed to delete sale_returns", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to delete sale_returns", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// respondJSON writes a JSON response
+func (h *Handler) respondJSON(w http.ResponseWriter, status int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	if data != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			h.logger.Error("failed to encode response", zap.Error(err))
+		}
+	}
+}
+
+// respondError writes an error response
+func (h *Handler) respondError(w http.ResponseWriter, status int, message string, err error) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	response := ErrorResponse{
+		Error:   message,
+		Message: err.Error(),
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		h.logger.Error("failed to encode error response", zap.Error(err))
+	}
+}
+
+// ErrorResponse represents an error response
+type ErrorResponse struct {
+	Error   string `json:"error"`
+	Message string `json:"message,omitempty"`
+}

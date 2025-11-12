@@ -1,0 +1,504 @@
+package modifier_group
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/your-org/pos-backend/internal/dto/modifier_group"
+	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/repository/modifier_group"
+	"go.uber.org/zap"
+)
+
+// Service handles business logic for ModifierGroups
+type Service struct {
+	repo   *modifier_group.Repository
+	db     *pgxpool.Pool
+	logger *logging.Logger
+}
+
+// NewService creates a new ModifierGroups service
+func NewService(repo *modifier_group.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+	return &Service{
+		repo:   repo,
+		db:     db,
+		logger: logger,
+	}
+}
+
+// Create creates a new modifier_groups
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateModifierGroupsRequest) (*dto.ModifierGroupsResponse, error) {
+	s.logger.Info("creating modifier_groups",
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Validate request
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("validation failed: %w", err)
+	}
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+	
+
+	// Convert DTO to entity
+	entity := &modifier_group.ModifierGroups{
+		OrganizationID: orgID,
+		
+		GroupName: req.GroupName,
+		
+		GroupCode: req.GroupCode,
+		
+		DisplayName: req.DisplayName,
+		
+		SelectionType: req.SelectionType,
+		
+		MinSelections: req.MinSelections,
+		
+		MaxSelections: req.MaxSelections,
+		
+		ExactSelections: req.ExactSelections,
+		
+		IsRequired: req.IsRequired,
+		
+		AffectsPrice: req.AffectsPrice,
+		
+		DisplayOrder: req.DisplayOrder,
+		
+		IsActive: req.IsActive,
+		
+		Description: req.Description,
+		
+		Notes: req.Notes,
+		
+		Metadata: req.Metadata,
+		
+		CreatedBy: req.CreatedBy,
+		
+		UpdatedBy: req.UpdatedBy,
+		
+		MinSelections: req.MinSelections,
+		
+		(maxSelections: req.(maxSelections,
+		
+		(exactSelections: req.(exactSelections,
+		
+	}
+
+	// Business logic validation
+	if err := s.validateBusinessRules(ctx, tx, entity); err != nil {
+		return nil, err
+	}
+
+	// Create in database
+	if err := s.repo.Create(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to create modifier_groups: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("created modifier_groups",
+		zap.String("id", entity.ID.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
+
+// GetByID retrieves a modifier_groups by ID
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ModifierGroupsResponse, error) {
+	s.logger.Debug("getting modifier_groups",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+	
+
+	// Get from database
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get modifier_groups: %w", err)
+	}
+
+	
+	// Verify ownership
+	if entity.OrganizationID != orgID {
+		return nil, fmt.Errorf("modifier_groups not found or access denied")
+	}
+	
+
+	return s.entityToResponse(entity), nil
+}
+
+// List retrieves a paginated list of modifier_groups records
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ModifierGroupsListResponse, error) {
+	s.logger.Debug("listing modifier_groups",
+		zap.String("organization_id", orgID.String()),
+		zap.Int("page", page),
+		zap.Int("limit", limit),
+	)
+
+	// Validate pagination
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 100 {
+		limit = 20
+	}
+
+	offset := (page - 1) * limit
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get from database (organization-scoped)
+	entities, total, err := s.repo.ListByOrganization(ctx, tx, orgID, limit, offset)
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to list modifier_groups: %w", err)
+	}
+
+	// Convert to response
+	items := make([]*dto.ModifierGroupsResponse, len(entities))
+	for i, entity := range entities {
+		items[i] = s.entityToResponse(entity)
+	}
+
+	totalPages := (total + limit - 1) / limit
+
+	return &dto.ModifierGroupsListResponse{
+		Items: items,
+		Pagination: dto.Pagination{
+			Page:       page,
+			Limit:      limit,
+			Total:      total,
+			TotalPages: totalPages,
+			HasNext:    page < totalPages,
+			HasPrev:    page > 1,
+		},
+	}, nil
+}
+
+// Update updates an existing modifier_groups
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateModifierGroupsRequest) (*dto.ModifierGroupsResponse, error) {
+	s.logger.Info("updating modifier_groups",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Validate request
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("validation failed: %w", err)
+	}
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+	
+
+	// Get existing entity
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get modifier_groups: %w", err)
+	}
+
+	
+	// Verify ownership
+	if entity.OrganizationID != orgID {
+		return nil, fmt.Errorf("modifier_groups not found or access denied")
+	}
+	
+
+	// Update fields
+	
+	if req.GroupName != nil {
+		entity.GroupName = *req.GroupName
+	}
+	
+	if req.GroupCode != nil {
+		entity.GroupCode = *req.GroupCode
+	}
+	
+	if req.DisplayName != nil {
+		entity.DisplayName = *req.DisplayName
+	}
+	
+	if req.SelectionType != nil {
+		entity.SelectionType = *req.SelectionType
+	}
+	
+	if req.MinSelections != nil {
+		entity.MinSelections = *req.MinSelections
+	}
+	
+	if req.MaxSelections != nil {
+		entity.MaxSelections = *req.MaxSelections
+	}
+	
+	if req.ExactSelections != nil {
+		entity.ExactSelections = *req.ExactSelections
+	}
+	
+	if req.IsRequired != nil {
+		entity.IsRequired = *req.IsRequired
+	}
+	
+	if req.AffectsPrice != nil {
+		entity.AffectsPrice = *req.AffectsPrice
+	}
+	
+	if req.DisplayOrder != nil {
+		entity.DisplayOrder = *req.DisplayOrder
+	}
+	
+	if req.IsActive != nil {
+		entity.IsActive = *req.IsActive
+	}
+	
+	if req.Description != nil {
+		entity.Description = *req.Description
+	}
+	
+	if req.Notes != nil {
+		entity.Notes = *req.Notes
+	}
+	
+	if req.Metadata != nil {
+		entity.Metadata = *req.Metadata
+	}
+	
+	if req.CreatedBy != nil {
+		entity.CreatedBy = *req.CreatedBy
+	}
+	
+	if req.UpdatedBy != nil {
+		entity.UpdatedBy = *req.UpdatedBy
+	}
+	
+	if req.MinSelections != nil {
+		entity.MinSelections = *req.MinSelections
+	}
+	
+	if req.(maxSelections != nil {
+		entity.(maxSelections = *req.(maxSelections
+	}
+	
+	if req.(exactSelections != nil {
+		entity.(exactSelections = *req.(exactSelections
+	}
+	
+
+	// Business logic validation
+	if err := s.validateBusinessRules(ctx, tx, entity); err != nil {
+		return nil, err
+	}
+
+	// Update in database
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to update modifier_groups: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("updated modifier_groups",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
+
+// Delete deletes a modifier_groups
+func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) error {
+	s.logger.Info("deleting modifier_groups",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return err
+	}
+
+	// Verify ownership
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return fmt.Errorf("failed to get modifier_groups: %w", err)
+	}
+
+	if entity.OrganizationID != orgID {
+		return fmt.Errorf("modifier_groups not found or access denied")
+	}
+	
+
+	// Check if can be deleted (business rules)
+	if err := s.canDelete(ctx, tx, id); err != nil {
+		return err
+	}
+
+	// Delete from database
+	if err := s.repo.Delete(ctx, tx, id); err != nil {
+		return fmt.Errorf("failed to delete modifier_groups: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("deleted modifier_groups",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return nil
+}
+
+// entityToResponse converts entity to response DTO
+func (s *Service) entityToResponse(entity *modifier_group.ModifierGroups) *dto.ModifierGroupsResponse {
+	return &dto.ModifierGroupsResponse{
+		
+		Id: entity.Id,
+		
+		OrganizationId: entity.OrganizationId,
+		
+		GroupName: entity.GroupName,
+		
+		GroupCode: entity.GroupCode,
+		
+		DisplayName: entity.DisplayName,
+		
+		SelectionType: entity.SelectionType,
+		
+		MinSelections: entity.MinSelections,
+		
+		MaxSelections: entity.MaxSelections,
+		
+		ExactSelections: entity.ExactSelections,
+		
+		IsRequired: entity.IsRequired,
+		
+		AffectsPrice: entity.AffectsPrice,
+		
+		DisplayOrder: entity.DisplayOrder,
+		
+		IsActive: entity.IsActive,
+		
+		Description: entity.Description,
+		
+		Notes: entity.Notes,
+		
+		Metadata: entity.Metadata,
+		
+		CreatedAt: entity.CreatedAt,
+		
+		UpdatedAt: entity.UpdatedAt,
+		
+		DeletedAt: entity.DeletedAt,
+		
+		CreatedBy: entity.CreatedBy,
+		
+		UpdatedBy: entity.UpdatedBy,
+		
+		MinSelections: entity.MinSelections,
+		
+		(maxSelections: entity.(maxSelections,
+		
+		(exactSelections: entity.(exactSelections,
+		
+	}
+}
+
+
+// setOrganizationContext sets the organization context for RLS
+func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) error {
+	_, err := tx.Exec(ctx, "SET LOCAL app.current_organization_id = $1", orgID)
+	if err != nil {
+		return fmt.Errorf("failed to set organization context: %w", err)
+	}
+	return nil
+}
+
+
+// validateBusinessRules validates business rules for modifier_groups
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *modifier_group.ModifierGroups) error {
+	// TODO: Add business rule validation
+	// Example:
+	// - Check for duplicate names within organization
+	// - Validate foreign key references exist
+	// - Check status transitions are valid
+	// - Validate amounts are positive
+	// - etc.
+
+	return nil
+}
+
+// canDelete checks if a modifier_groups can be deleted
+func (s *Service) canDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
+	// TODO: Add delete validation
+	// Example:
+	// - Check for dependent records
+	// - Verify not referenced by other entities
+	// - Check business rules allow deletion
+	// - etc.
+
+	return nil
+}
