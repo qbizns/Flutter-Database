@@ -347,10 +347,173 @@ func (sa *SchemaAnalyzer) PrintSummary() {
 	}
 }
 
+// CodeGenerator generates production-grade CRUD code
+type CodeGenerator struct {
+	analyzer  *SchemaAnalyzer
+	templates map[string]*template.Template
+	outputDir string
+}
+
+// NewCodeGenerator creates a new code generator
+func NewCodeGenerator(analyzer *SchemaAnalyzer, outputDir string) (*CodeGenerator, error) {
+	gen := &CodeGenerator{
+		analyzer:  analyzer,
+		templates: make(map[string]*template.Template),
+		outputDir: outputDir,
+	}
+
+	// Load templates
+	if err := gen.loadTemplates(); err != nil {
+		return nil, err
+	}
+
+	return gen, nil
+}
+
+// loadTemplates loads all code generation templates
+func (g *CodeGenerator) loadTemplates() error {
+	templateDir := "tools/crud-generator/templates"
+
+	// Define template files
+	templateFiles := map[string]string{
+		"repository": filepath.Join(templateDir, "repository.tmpl"),
+		"service":    filepath.Join(templateDir, "service.tmpl"),
+		"handler":    filepath.Join(templateDir, "handler.tmpl"),
+		"dto":        filepath.Join(templateDir, "dto.tmpl"),
+		"routes":     filepath.Join(templateDir, "routes.tmpl"),
+		"validator":  filepath.Join(templateDir, "validator.tmpl"),
+		"test":       filepath.Join(templateDir, "test.tmpl"),
+	}
+
+	// Load each template
+	for name, file := range templateFiles {
+		tmpl, err := template.New(filepath.Base(file)).Funcs(templateFuncs()).ParseFiles(file)
+		if err != nil {
+			return fmt.Errorf("failed to load template %s: %w", name, err)
+		}
+		g.templates[name] = tmpl
+	}
+
+	return nil
+}
+
+// templateFuncs returns custom template functions
+func templateFuncs() template.FuncMap {
+	return template.FuncMap{
+		"add": func(a, b int) int {
+			return a + b
+		},
+		"toGoName": toGoName,
+		"contains": strings.Contains,
+		"trimPrefix": strings.TrimPrefix,
+	}
+}
+
+// Generate generates code for all tables
+func (g *CodeGenerator) Generate() error {
+	tables := g.analyzer.GetTables()
+
+	fmt.Printf("\n=== Generating Code ===\n")
+	fmt.Printf("Total tables: %d\n", len(tables))
+	fmt.Printf("Output directory: %s\n\n", g.outputDir)
+
+	generated := 0
+	failed := 0
+
+	for tableName, table := range tables {
+		fmt.Printf("Generating %s... ", tableName)
+
+		if err := g.generateTable(table); err != nil {
+			fmt.Printf("❌ FAILED: %v\n", err)
+			failed++
+			continue
+		}
+
+		fmt.Printf("✅ SUCCESS\n")
+		generated++
+	}
+
+	fmt.Printf("\n=== Generation Summary ===\n")
+	fmt.Printf("✅ Success: %d tables\n", generated)
+	fmt.Printf("❌ Failed: %d tables\n", failed)
+	fmt.Printf("📁 Total files: %d\n", generated*7)
+
+	return nil
+}
+
+// generateTable generates all files for a single table
+func (g *CodeGenerator) generateTable(table *TableInfo) error {
+	// Create package directory
+	pkgDir := filepath.Join(g.outputDir, "internal", table.Package)
+	if err := os.MkdirAll(pkgDir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory: %w", err)
+	}
+
+	// Generate each file
+	files := map[string]string{
+		"repository": "repository.go",
+		"service":    "service.go",
+		"handler":    "handler.go",
+		"dto":        "dto.go",
+		"routes":     "routes.go",
+		"validator":  "validator.go",
+		"test":       "repository_test.go",
+	}
+
+	for templateName, filename := range files {
+		outputPath := filepath.Join(pkgDir, filename)
+		if err := g.generateFile(templateName, table, outputPath); err != nil {
+			return fmt.Errorf("failed to generate %s: %w", filename, err)
+		}
+	}
+
+	return nil
+}
+
+// generateFile generates a single file from a template
+func (g *CodeGenerator) generateFile(templateName string, table *TableInfo, outputPath string) error {
+	tmpl, ok := g.templates[templateName]
+	if !ok {
+		return fmt.Errorf("template %s not found", templateName)
+	}
+
+	// Create output file
+	file, err := os.Create(outputPath)
+	if err != nil {
+		return fmt.Errorf("failed to create file: %w", err)
+	}
+	defer file.Close()
+
+	// Execute template
+	if err := tmpl.Execute(file, table); err != nil {
+		return fmt.Errorf("failed to execute template: %w", err)
+	}
+
+	// Format code
+	if err := g.formatFile(outputPath); err != nil {
+		return fmt.Errorf("failed to format file: %w", err)
+	}
+
+	return nil
+}
+
+// formatFile formats a Go source file using gofmt
+func (g *CodeGenerator) formatFile(path string) error {
+	cmd := filepath.Join(filepath.Dir(path), "gofmt")
+	// Use system gofmt
+	return nil // Skip formatting for now - will be done in bulk
+}
+
 func main() {
 	fmt.Println("=== POS Backend CRUD Generator ===")
 	fmt.Println("Production-Grade Code Generator for 170+ Tables")
 	fmt.Println()
+
+	// Parse command line flags
+	outputDir := "."
+	if len(os.Args) > 1 {
+		outputDir = os.Args[1]
+	}
 
 	analyzer := NewSchemaAnalyzer()
 
@@ -368,14 +531,36 @@ func main() {
 
 	analyzer.PrintSummary()
 
-	fmt.Println("Schema analysis complete!")
-	fmt.Println()
-	fmt.Println("Next steps:")
-	fmt.Println("1. Generate repository layer")
-	fmt.Println("2. Generate service layer")
-	fmt.Println("3. Generate handler layer")
-	fmt.Println("4. Generate DTOs")
-	fmt.Println("5. Generate routes")
-	fmt.Println("6. Generate validators")
-	fmt.Println("7. Generate tests")
+	// Ask user to proceed
+	fmt.Println("\nReady to generate code for all tables.")
+	fmt.Print("Proceed? (y/n): ")
+
+	var response string
+	fmt.Scanln(&response)
+
+	if strings.ToLower(response) != "y" && strings.ToLower(response) != "yes" {
+		fmt.Println("Generation cancelled.")
+		os.Exit(0)
+	}
+
+	// Create code generator
+	generator, err := NewCodeGenerator(analyzer, outputDir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating generator: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Generate all code
+	if err := generator.Generate(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating code: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("\n=== Code Generation Complete! ===")
+	fmt.Println("\nNext steps:")
+	fmt.Println("1. Run: go fmt ./...")
+	fmt.Println("2. Run: go mod tidy")
+	fmt.Println("3. Run: go build ./...")
+	fmt.Println("4. Run: go test ./...")
+	fmt.Println("5. Review and customize generated code as needed")
 }

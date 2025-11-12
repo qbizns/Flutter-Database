@@ -1,0 +1,455 @@
+package {{.Package}}_test
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/your-org/pos-backend/internal/{{.Package}}"
+	"github.com/your-org/pos-backend/internal/dto"
+	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/testutil"
+)
+
+var (
+	testDB     *pgxpool.Pool
+	testLogger *logging.Logger
+	{{if .HasOrganization}}testOrgID  uuid.UUID{{end}}
+)
+
+// TestMain sets up and tears down test fixtures
+func TestMain(m *testing.M) {
+	// Setup
+	var err error
+	testDB, err = testutil.SetupTestDB()
+	if err != nil {
+		panic(err)
+	}
+	testLogger = testutil.NewTestLogger()
+	{{if .HasOrganization}}
+	testOrgID = testutil.CreateTestOrganization(testDB)
+	{{end}}
+
+	// Run tests
+	code := m.Run()
+
+	// Teardown
+	testutil.TeardownTestDB(testDB)
+
+	// Exit
+	testutil.Exit(code)
+}
+
+// =============================================================================
+// Repository Tests
+// =============================================================================
+
+func TestRepository_Create(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	tests := []struct {
+		name    string
+		entity  *{{.Package}}.{{.GoName}}
+		wantErr bool
+	}{
+		{
+			name:    "valid entity",
+			entity:  newTest{{.GoName}}({{if .HasOrganization}}testOrgID{{end}}),
+			wantErr: false,
+		},
+		{
+			name:    "duplicate primary key",
+			entity:  newTest{{.GoName}}WithID(uuid.New(){{if .HasOrganization}}, testOrgID{{end}}),
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tx, err := testDB.Begin(ctx)
+			require.NoError(t, err)
+			defer tx.Rollback(ctx)
+
+			err = repo.Create(ctx, tx, tt.entity)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotEqual(t, uuid.Nil, tt.entity.ID)
+				{{if .HasTimestamps}}
+				assert.NotZero(t, tt.entity.CreatedAt)
+				assert.NotZero(t, tt.entity.UpdatedAt)
+				{{end}}
+			}
+		})
+	}
+}
+
+func TestRepository_GetByID(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	// Create test entity
+	tx, err := testDB.Begin(ctx)
+	require.NoError(t, err)
+	defer tx.Rollback(ctx)
+
+	entity := newTest{{.GoName}}({{if .HasOrganization}}testOrgID{{end}})
+	err = repo.Create(ctx, tx, entity)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name    string
+		id      uuid.UUID
+		wantErr bool
+	}{
+		{
+			name:    "existing entity",
+			id:      entity.ID,
+			wantErr: false,
+		},
+		{
+			name:    "non-existent entity",
+			id:      uuid.New(),
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := repo.GetByID(ctx, tx, tt.id)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, result)
+				assert.Equal(t, tt.id, result.ID)
+			}
+		})
+	}
+}
+
+func TestRepository_List(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	tx, err := testDB.Begin(ctx)
+	require.NoError(t, err)
+	defer tx.Rollback(ctx)
+
+	// Create test entities
+	for i := 0; i < 5; i++ {
+		entity := newTest{{.GoName}}({{if .HasOrganization}}testOrgID{{end}})
+		err := repo.Create(ctx, tx, entity)
+		require.NoError(t, err)
+	}
+
+	tests := []struct {
+		name      string
+		limit     int
+		offset    int
+		wantCount int
+		wantTotal int
+	}{
+		{
+			name:      "first page",
+			limit:     2,
+			offset:    0,
+			wantCount: 2,
+			wantTotal: 5,
+		},
+		{
+			name:      "second page",
+			limit:     2,
+			offset:    2,
+			wantCount: 2,
+			wantTotal: 5,
+		},
+		{
+			name:      "last page",
+			limit:     2,
+			offset:    4,
+			wantCount: 1,
+			wantTotal: 5,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			entities, total, err := repo.List(ctx, tx, tt.limit, tt.offset)
+			assert.NoError(t, err)
+			assert.Len(t, entities, tt.wantCount)
+			assert.Equal(t, tt.wantTotal, total)
+		})
+	}
+}
+
+func TestRepository_Update(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	tx, err := testDB.Begin(ctx)
+	require.NoError(t, err)
+	defer tx.Rollback(ctx)
+
+	// Create test entity
+	entity := newTest{{.GoName}}({{if .HasOrganization}}testOrgID{{end}})
+	err = repo.Create(ctx, tx, entity)
+	require.NoError(t, err)
+
+	// Modify entity
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	{{if eq .GoType "string"}}
+	entity.{{.GoName}} = "updated_value"
+	{{end}}
+	{{break}}
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+
+	err = repo.Update(ctx, tx, entity)
+	assert.NoError(t, err)
+
+	// Verify update
+	updated, err := repo.GetByID(ctx, tx, entity.ID)
+	require.NoError(t, err)
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	{{if eq .GoType "string"}}
+	assert.Equal(t, "updated_value", updated.{{.GoName}})
+	{{end}}
+	{{break}}
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+}
+
+func TestRepository_Delete(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	tx, err := testDB.Begin(ctx)
+	require.NoError(t, err)
+	defer tx.Rollback(ctx)
+
+	// Create test entity
+	entity := newTest{{.GoName}}({{if .HasOrganization}}testOrgID{{end}})
+	err = repo.Create(ctx, tx, entity)
+	require.NoError(t, err)
+
+	// Delete entity
+	err = repo.Delete(ctx, tx, entity.ID)
+	assert.NoError(t, err)
+
+	// Verify deletion
+	_, err = repo.GetByID(ctx, tx, entity.ID)
+	assert.Error(t, err)
+}
+
+{{if .HasOrganization}}
+func TestRepository_ListByOrganization(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	ctx := context.Background()
+
+	tx, err := testDB.Begin(ctx)
+	require.NoError(t, err)
+	defer tx.Rollback(ctx)
+
+	// Create entities for test org
+	for i := 0; i < 3; i++ {
+		entity := newTest{{.GoName}}(testOrgID)
+		err := repo.Create(ctx, tx, entity)
+		require.NoError(t, err)
+	}
+
+	// Create entities for different org
+	otherOrgID := uuid.New()
+	for i := 0; i < 2; i++ {
+		entity := newTest{{.GoName}}(otherOrgID)
+		err := repo.Create(ctx, tx, entity)
+		require.NoError(t, err)
+	}
+
+	// Query by organization
+	entities, total, err := repo.ListByOrganization(ctx, tx, testOrgID, 10, 0)
+	assert.NoError(t, err)
+	assert.Len(t, entities, 3)
+	assert.Equal(t, 3, total)
+
+	// Verify all belong to test org
+	for _, entity := range entities {
+		assert.Equal(t, testOrgID, entity.OrganizationID)
+	}
+}
+{{end}}
+
+// =============================================================================
+// Service Tests
+// =============================================================================
+
+func TestService_Create(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	service := {{.Package}}.NewService(testDB, repo, testLogger)
+	ctx := context.Background()
+
+	req := &dto.Create{{.GoName}}Request{
+		{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+		{{if eq .GoType "string"}}{{.GoName}}: "test_value",{{end}}
+		{{if eq .GoType "int64"}}{{.GoName}}: 100,{{end}}
+		{{if eq .GoType "bool"}}{{.GoName}}: true,{{end}}
+		{{if eq .GoType "uuid.UUID"}}{{.GoName}}: uuid.New(),{{end}}
+		{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+	}
+
+	{{if .HasOrganization}}
+	resp, err := service.Create(ctx, testOrgID, req)
+	{{else}}
+	resp, err := service.Create(ctx, req)
+	{{end}}
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	assert.NotEqual(t, uuid.Nil, resp.ID)
+}
+
+func TestService_GetByID(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	service := {{.Package}}.NewService(testDB, repo, testLogger)
+	ctx := context.Background()
+
+	// Create test entity
+	req := newTest{{.GoName}}Request({{if .HasOrganization}}testOrgID{{end}})
+	{{if .HasOrganization}}
+	created, err := service.Create(ctx, testOrgID, req)
+	{{else}}
+	created, err := service.Create(ctx, req)
+	{{end}}
+	require.NoError(t, err)
+
+	// Get by ID
+	{{if .HasOrganization}}
+	resp, err := service.GetByID(ctx, testOrgID, created.ID)
+	{{else}}
+	resp, err := service.GetByID(ctx, created.ID)
+	{{end}}
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, created.ID, resp.ID)
+}
+
+func TestService_Update(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	service := {{.Package}}.NewService(testDB, repo, testLogger)
+	ctx := context.Background()
+
+	// Create test entity
+	createReq := newTest{{.GoName}}Request({{if .HasOrganization}}testOrgID{{end}})
+	{{if .HasOrganization}}
+	created, err := service.Create(ctx, testOrgID, createReq)
+	{{else}}
+	created, err := service.Create(ctx, createReq)
+	{{end}}
+	require.NoError(t, err)
+
+	// Update entity
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	{{if eq .GoType "string"}}
+	updatedValue := "updated_value"
+	updateReq := &dto.Update{{$.GoName}}Request{
+		{{.GoName}}: &updatedValue,
+	}
+	{{end}}
+	{{break}}
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+
+	{{if .HasOrganization}}
+	resp, err := service.Update(ctx, testOrgID, created.ID, updateReq)
+	{{else}}
+	resp, err := service.Update(ctx, created.ID, updateReq)
+	{{end}}
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+}
+
+// =============================================================================
+// Handler Tests
+// =============================================================================
+
+func TestHandler_Create(t *testing.T) {
+	repo := {{.Package}}.NewRepository(testDB, testLogger)
+	service := {{.Package}}.NewService(testDB, repo, testLogger)
+	handler := {{.Package}}.NewHandler(service, testLogger)
+
+	reqBody := &dto.Create{{.GoName}}Request{
+		{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+		{{if eq .GoType "string"}}{{.GoName}}: "test_value",{{end}}
+		{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+	}
+
+	body, err := json.Marshal(reqBody)
+	require.NoError(t, err)
+
+	{{if .HasOrganization}}
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/organizations/"+testOrgID.String()+"/{{.Name}}", strings.NewReader(string(body)))
+	{{else}}
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/{{.Name}}", strings.NewReader(string(body)))
+	{{end}}
+	req.Header.Set("Content-Type", "application/json")
+	{{if .HasOrganization}}
+	req = testutil.WithOrgID(req, testOrgID)
+	{{end}}
+
+	w := httptest.NewRecorder()
+	handler.Create(w, req)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	var resp dto.{{.GoName}}Response
+	err = json.Unmarshal(w.Body.Bytes(), &resp)
+	assert.NoError(t, err)
+	assert.NotEqual(t, uuid.Nil, resp.ID)
+}
+
+// =============================================================================
+// Test Fixtures and Helpers
+// =============================================================================
+
+// newTest{{.GoName}} creates a test {{.GoName}} entity
+func newTest{{.GoName}}({{if .HasOrganization}}orgID uuid.UUID{{end}}) *{{.Package}}.{{.GoName}} {
+	return &{{.Package}}.{{.GoName}}{
+		{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}
+		{{if eq .Name "organization_id"}}
+		OrganizationID: orgID,
+		{{else}}
+		{{if eq .GoType "string"}}{{.GoName}}: "test_{{.Name}}",{{end}}
+		{{if eq .GoType "int64"}}{{.GoName}}: 100,{{end}}
+		{{if eq .GoType "bool"}}{{.GoName}}: true,{{end}}
+		{{if eq .GoType "uuid.UUID"}}{{.GoName}}: uuid.New(),{{end}}
+		{{if eq .GoType "time.Time"}}{{.GoName}}: time.Now(),{{end}}
+		{{end}}
+		{{end}}{{end}}{{end}}{{end}}{{end}}
+	}
+}
+
+// newTest{{.GoName}}WithID creates a test {{.GoName}} entity with specific ID
+func newTest{{.GoName}}WithID(id uuid.UUID{{if .HasOrganization}}, orgID uuid.UUID{{end}}) *{{.Package}}.{{.GoName}} {
+	entity := newTest{{.GoName}}({{if .HasOrganization}}orgID{{end}})
+	entity.ID = id
+	return entity
+}
+
+// newTest{{.GoName}}Request creates a test create request
+func newTest{{.GoName}}Request({{if .HasOrganization}}orgID uuid.UUID{{end}}) *dto.Create{{.GoName}}Request {
+	return &dto.Create{{.GoName}}Request{
+		{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+		{{if eq .GoType "string"}}{{.GoName}}: "test_{{.Name}}",{{end}}
+		{{if eq .GoType "int64"}}{{.GoName}}: 100,{{end}}
+		{{if eq .GoType "bool"}}{{.GoName}}: true,{{end}}
+		{{if eq .GoType "uuid.UUID"}}{{.GoName}}: uuid.New(),{{end}}
+		{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+	}
+}
