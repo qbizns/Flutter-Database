@@ -149,15 +149,35 @@ func (sa *SchemaAnalyzer) parseCreateTable(sql string) {
 
 	// Parse columns
 	lines := strings.Split(sql, "\n")
+	inGeneratedColumn := false
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
+		upperLine := strings.ToUpper(line)
+
+		// Check if entering a GENERATED column definition
+		if strings.Contains(upperLine, "GENERATED ALWAYS AS") {
+			inGeneratedColumn = true
+		}
+
+		// Check if exiting a GENERATED column definition
+		if inGeneratedColumn && (strings.Contains(line, ") STORED") || strings.Contains(line, ") VIRTUAL")) {
+			inGeneratedColumn = false
+			continue
+		}
+
+		// Skip lines inside GENERATED column definitions
+		if inGeneratedColumn {
+			continue
+		}
 
 		// Skip CREATE TABLE line, constraints, and closing
-		if strings.HasPrefix(strings.ToUpper(line), "CREATE TABLE") ||
-			strings.HasPrefix(strings.ToUpper(line), "CONSTRAINT") ||
-			strings.HasPrefix(strings.ToUpper(line), "PRIMARY KEY") ||
-			strings.HasPrefix(strings.ToUpper(line), "FOREIGN KEY") ||
-			strings.HasPrefix(strings.ToUpper(line), "UNIQUE") ||
+		if strings.HasPrefix(upperLine, "CREATE TABLE") ||
+			strings.HasPrefix(upperLine, "CONSTRAINT") ||
+			strings.HasPrefix(upperLine, "PRIMARY KEY") ||
+			strings.HasPrefix(upperLine, "FOREIGN KEY") ||
+			strings.HasPrefix(upperLine, "UNIQUE") ||
+			strings.HasPrefix(upperLine, "CHECK") ||
 			strings.HasPrefix(line, ");") ||
 			line == "" {
 			continue
@@ -499,9 +519,8 @@ func (g *CodeGenerator) generateFile(templateName string, table *TableInfo, outp
 
 // formatFile formats a Go source file using gofmt
 func (g *CodeGenerator) formatFile(path string) error {
-	cmd := filepath.Join(filepath.Dir(path), "gofmt")
-	// Use system gofmt
-	return nil // Skip formatting for now - will be done in bulk
+	// Skip formatting for now - will be done in bulk with `go fmt ./...`
+	return nil
 }
 
 func main() {
