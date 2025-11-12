@@ -137,7 +137,7 @@ jobs:
           cat "$ARCHIVE.sha256"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.PROJECT_NAME }}-${{ matrix.os }}-${{ matrix.arch }}
           path: |
@@ -177,7 +177,7 @@ jobs:
           # TODO: Implement RPM packaging
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages-linux
           path: |
@@ -204,7 +204,7 @@ jobs:
           # TODO: Implement PKG packaging
 
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages-macos
           path: "*.pkg"
@@ -229,7 +229,7 @@ jobs:
           # TODO: Implement MSI packaging
 
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages-windows
           path: "*.msi"
