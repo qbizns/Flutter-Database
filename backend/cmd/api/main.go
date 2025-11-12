@@ -12,10 +12,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/redis/go-redis/v9"
 	"github.com/your-org/pos-backend/internal/auth"
 	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/http/rest"
 	"github.com/your-org/pos-backend/internal/logging"
+	custommw "github.com/your-org/pos-backend/internal/middleware"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"
 )
@@ -48,6 +50,25 @@ func main() {
 	}
 	defer db.Close()
 
+	// Initialize Redis for rate limiting
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port),
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	})
+	defer redisClient.Close()
+
+	// Test Redis connection
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		logger.Warn("Redis connection failed, rate limiting will be disabled", zap.Error(err))
+		redisClient = nil
+	} else {
+		logger.Info("Redis connection established")
+	}
+
+	// Initialize rate limiter
+	rateLimiter := custommw.NewRateLimiter(redisClient, cfg.RateLimit, logger)
+
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(cfg.JWT.Secret)
 
@@ -60,6 +81,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
+
+	// SECURITY: Apply rate limiting to all requests
+	r.Use(rateLimiter.Limit())
 
 	// CORS
 	r.Use(cors.Handler(cors.Options{
@@ -84,8 +108,9 @@ func main() {
 
 	// API routes
 	r.Route("/api/v1", func(r chi.Router) {
-		// Public routes (no auth)
+		// Public routes (no auth, but STRICTER rate limiting for auth endpoints)
 		r.Group(func(r chi.Router) {
+			r.Use(rateLimiter.LimitAuth())
 			r.Post("/auth/login", rest.LoginHandler(cfg, db, logger))
 			r.Post("/auth/register", rest.RegisterHandler(cfg, db, logger))
 		})
