@@ -193,6 +193,40 @@ var (
 			Help: "Memory allocated in bytes",
 		},
 	)
+
+	// Background Job Metrics
+	JobExecutionsTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "job_executions_total",
+			Help: "Total number of background job executions",
+		},
+		[]string{"job_type", "status"},
+	)
+
+	JobExecutionDuration = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "job_execution_duration_seconds",
+			Help:    "Background job execution duration in seconds",
+			Buckets: []float64{.1, .5, 1, 5, 10, 30, 60, 300, 600},
+		},
+		[]string{"job_type"},
+	)
+
+	JobQueueSize = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "job_queue_size",
+			Help: "Number of jobs waiting in queue",
+		},
+		[]string{"queue_name"},
+	)
+
+	JobRetries = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "job_retries_total",
+			Help: "Total number of job retries",
+		},
+		[]string{"job_type"},
+	)
 )
 
 // MetricsMiddleware wraps HTTP handlers to collect metrics
@@ -280,4 +314,20 @@ func UpdateDatabaseConnectionStats(active, idle, max int32) {
 	DatabaseConnectionsActive.Set(float64(active))
 	DatabaseConnectionsIdle.Set(float64(idle))
 	DatabaseConnectionsMax.Set(float64(max))
+}
+
+// RecordJobExecution records a background job execution
+func RecordJobExecution(jobType, status string, duration time.Duration) {
+	JobExecutionsTotal.WithLabelValues(jobType, status).Inc()
+	JobExecutionDuration.WithLabelValues(jobType).Observe(duration.Seconds())
+}
+
+// UpdateJobQueueSize updates the job queue size metric
+func UpdateJobQueueSize(queueName string, size int) {
+	JobQueueSize.WithLabelValues(queueName).Set(float64(size))
+}
+
+// RecordJobRetry records a job retry
+func RecordJobRetry(jobType string) {
+	JobRetries.WithLabelValues(jobType).Inc()
 }
