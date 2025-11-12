@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/bank_statement_line"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/bank_statement_line"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for BankStatementLines
 type Service struct {
-	repo   *bank_statement_line.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new BankStatementLines service
-func NewService(repo *bank_statement_line.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *bank_statement_line.Repository, db *pgxpool.Pool, logger *
 }
 
 // Create creates a new bank_statement_lines
-func (s *Service) Create(ctx context.Context, req *dto.CreateBankStatementLinesRequest) (*dto.BankStatementLinesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateBankStatementLinesRequest) (*BankStatementLinesResponse, error) {
 	s.logger.Info("creating bank_statement_lines",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateBankStatementLinesR
 	
 
 	// Convert DTO to entity
-	entity := &bank_statement_line.BankStatementLines{
+	entity := &BankStatementLines{
 		
 		
 		BankStatementId: req.BankStatementId,
@@ -107,7 +108,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateBankStatementLinesR
 }
 
 // GetByID retrieves a bank_statement_lines by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.BankStatementLinesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*BankStatementLinesResponse, error) {
 	s.logger.Debug("getting bank_statement_lines",
 		zap.String("id", id.String()),
 		
@@ -134,7 +135,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.BankStatement
 }
 
 // List retrieves a paginated list of bank_statement_lines records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.BankStatementLinesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*BankStatementLinesListResponse, error) {
 	s.logger.Debug("listing bank_statement_lines",
 		
 		zap.Int("page", page),
@@ -167,16 +168,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.BankStatement
 	}
 
 	// Convert to response
-	items := make([]*dto.BankStatementLinesResponse, len(entities))
+	items := make([]*BankStatementLinesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.BankStatementLinesListResponse{
+	return &BankStatementLinesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -188,7 +189,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.BankStatement
 }
 
 // Update updates an existing bank_statement_lines
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateBankStatementLinesRequest) (*dto.BankStatementLinesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBankStatementLinesRequest) (*BankStatementLinesResponse, error) {
 	s.logger.Info("updating bank_statement_lines",
 		zap.String("id", id.String()),
 		
@@ -338,8 +339,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *bank_statement_line.BankStatementLines) *dto.BankStatementLinesResponse {
-	return &dto.BankStatementLinesResponse{
+func (s *Service) entityToResponse(entity *BankStatementLines) *BankStatementLinesResponse {
+	return &BankStatementLinesResponse{
 		
 		Id: entity.Id,
 		
@@ -383,7 +384,7 @@ func (s *Service) entityToResponse(entity *bank_statement_line.BankStatementLine
 
 
 // validateBusinessRules validates business rules for bank_statement_lines
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *bank_statement_line.BankStatementLines) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *BankStatementLines) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/bank_reconciliation_item"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/bank_reconciliation_item"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for BankReconciliationItems
 type Service struct {
-	repo   *bank_reconciliation_item.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new BankReconciliationItems service
-func NewService(repo *bank_reconciliation_item.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *bank_reconciliation_item.Repository, db *pgxpool.Pool, log
 }
 
 // Create creates a new bank_reconciliation_items
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBankReconciliationItemsRequest) (*dto.BankReconciliationItemsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankReconciliationItemsRequest) (*BankReconciliationItemsResponse, error) {
 	s.logger.Info("creating bank_reconciliation_items",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBa
 	
 
 	// Convert DTO to entity
-	entity := &bank_reconciliation_item.BankReconciliationItems{
+	entity := &BankReconciliationItems{
 		OrganizationID: orgID,
 		
 		BankReconciliationId: req.BankReconciliationId,
@@ -96,7 +97,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBa
 }
 
 // GetByID retrieves a bank_reconciliation_items by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.BankReconciliationItemsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*BankReconciliationItemsResponse, error) {
 	s.logger.Debug("getting bank_reconciliation_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -133,7 +134,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of bank_reconciliation_items records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.BankReconciliationItemsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*BankReconciliationItemsListResponse, error) {
 	s.logger.Debug("listing bank_reconciliation_items",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -171,16 +172,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.BankReconciliationItemsResponse, len(entities))
+	items := make([]*BankReconciliationItemsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.BankReconciliationItemsListResponse{
+	return &BankReconciliationItemsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -192,7 +193,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing bank_reconciliation_items
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateBankReconciliationItemsRequest) (*dto.BankReconciliationItemsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateBankReconciliationItemsRequest) (*BankReconciliationItemsResponse, error) {
 	s.logger.Info("updating bank_reconciliation_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -335,8 +336,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *bank_reconciliation_item.BankReconciliationItems) *dto.BankReconciliationItemsResponse {
-	return &dto.BankReconciliationItemsResponse{
+func (s *Service) entityToResponse(entity *BankReconciliationItems) *BankReconciliationItemsResponse {
+	return &BankReconciliationItemsResponse{
 		
 		Id: entity.Id,
 		
@@ -371,7 +372,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for bank_reconciliation_items
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *bank_reconciliation_item.BankReconciliationItems) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *BankReconciliationItems) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

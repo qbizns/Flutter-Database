@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/store_credit_transaction"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/store_credit_transaction"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for StoreCreditTransactions
 type Handler struct {
-	service *store_credit_transaction.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new StoreCreditTransactions handler
-func NewHandler(service *store_credit_transaction.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *store_credit_transaction.Service, logger *logging.Logge
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateStoreCreditTransactionsRequest true "StoreCreditTransactions data"
-// @Success 201 {object} dto.StoreCreditTransactionsResponse
+// @Param request body CreateStoreCreditTransactionsRequest true "StoreCreditTransactions data"
+// @Success 201 {object} StoreCreditTransactionsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateStoreCreditTransactionsRequest
+	var req CreateStoreCreditTransactionsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "StoreCreditTransactions ID"
-// @Success 200 {object} dto.StoreCreditTransactionsResponse
+// @Success 200 {object} StoreCreditTransactionsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.StoreCreditTransactionsListResponse
+// @Success 200 {object} StoreCreditTransactionsListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "StoreCreditTransactions ID"
-// @Param request body dto.UpdateStoreCreditTransactionsRequest true "StoreCreditTransactions data"
-// @Success 200 {object} dto.StoreCreditTransactionsResponse
+// @Param request body UpdateStoreCreditTransactionsRequest true "StoreCreditTransactions data"
+// @Success 200 {object} StoreCreditTransactionsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateStoreCreditTransactionsRequest
+	var req UpdateStoreCreditTransactionsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

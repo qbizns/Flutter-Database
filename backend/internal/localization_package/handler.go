@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/localization_package"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/localization_package"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for LocalizationPackages
 type Handler struct {
-	service *localization_package.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new LocalizationPackages handler
-func NewHandler(service *localization_package.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *localization_package.Service, logger *logging.Logger) *
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateLocalizationPackagesRequest true "LocalizationPackages data"
-// @Success 201 {object} dto.LocalizationPackagesResponse
+// @Param request body CreateLocalizationPackagesRequest true "LocalizationPackages data"
+// @Success 201 {object} LocalizationPackagesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -48,7 +46,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateLocalizationPackagesRequest
+	var req CreateLocalizationPackagesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -75,7 +73,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "LocalizationPackages ID"
-// @Success 200 {object} dto.LocalizationPackagesResponse
+// @Success 200 {object} LocalizationPackagesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -115,7 +113,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.LocalizationPackagesListResponse
+// @Success 200 {object} LocalizationPackagesListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -158,8 +156,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "LocalizationPackages ID"
-// @Param request body dto.UpdateLocalizationPackagesRequest true "LocalizationPackages data"
-// @Success 200 {object} dto.LocalizationPackagesResponse
+// @Param request body UpdateLocalizationPackagesRequest true "LocalizationPackages data"
+// @Success 200 {object} LocalizationPackagesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -179,7 +177,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateLocalizationPackagesRequest
+	var req UpdateLocalizationPackagesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

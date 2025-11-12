@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/customer_store_credit_account"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/customer_store_credit_account"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for CustomerStoreCreditAccounts
 type Handler struct {
-	service *customer_store_credit_account.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new CustomerStoreCreditAccounts handler
-func NewHandler(service *customer_store_credit_account.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *customer_store_credit_account.Service, logger *logging.
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateCustomerStoreCreditAccountsRequest true "CustomerStoreCreditAccounts data"
-// @Success 201 {object} dto.CustomerStoreCreditAccountsResponse
+// @Param request body CreateCustomerStoreCreditAccountsRequest true "CustomerStoreCreditAccounts data"
+// @Success 201 {object} CustomerStoreCreditAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateCustomerStoreCreditAccountsRequest
+	var req CreateCustomerStoreCreditAccountsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "CustomerStoreCreditAccounts ID"
-// @Success 200 {object} dto.CustomerStoreCreditAccountsResponse
+// @Success 200 {object} CustomerStoreCreditAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.CustomerStoreCreditAccountsListResponse
+// @Success 200 {object} CustomerStoreCreditAccountsListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "CustomerStoreCreditAccounts ID"
-// @Param request body dto.UpdateCustomerStoreCreditAccountsRequest true "CustomerStoreCreditAccounts data"
-// @Success 200 {object} dto.CustomerStoreCreditAccountsResponse
+// @Param request body UpdateCustomerStoreCreditAccountsRequest true "CustomerStoreCreditAccounts data"
+// @Success 200 {object} CustomerStoreCreditAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateCustomerStoreCreditAccountsRequest
+	var req UpdateCustomerStoreCreditAccountsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

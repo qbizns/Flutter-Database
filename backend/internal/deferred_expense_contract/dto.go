@@ -1,4 +1,4 @@
-package dto
+package deferred_expense_contract
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package dto
+package inventory_cost_layer
 
 import (
 	"fmt"

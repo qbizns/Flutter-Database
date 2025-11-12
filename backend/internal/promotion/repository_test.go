@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/promotion"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := promotion.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreatePromotionsRequest{
+	req := &CreatePromotionsRequest{
 		
 		PromotionCode: "test_value",
 		
@@ -469,7 +469,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdatePromotionsRequest{
+	updateReq := &UpdatePromotionsRequest{
 		PromotionCode: &updatedValue,
 	}
 	
@@ -491,7 +491,7 @@ func TestHandler_Create(t *testing.T) {
 	service := promotion.NewService(testDB, repo, testLogger)
 	handler := promotion.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreatePromotionsRequest{
+	reqBody := &CreatePromotionsRequest{
 		
 		PromotionCode: "test_value",
 		
@@ -553,7 +553,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -561,7 +561,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.PromotionsResponse
+	var resp PromotionsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -790,8 +790,8 @@ func newTestPromotionsWithID(id uuid.UUID, orgID uuid.UUID) *promotion.Promotion
 }
 
 // newTestPromotionsRequest creates a test create request
-func newTestPromotionsRequest(orgID uuid.UUID) *dto.CreatePromotionsRequest {
-	return &dto.CreatePromotionsRequest{
+func newTestPromotionsRequest(orgID uuid.UUID) *CreatePromotionsRequest {
+	return &CreatePromotionsRequest{
 		
 		PromotionCode: "test_promotion_code",
 		

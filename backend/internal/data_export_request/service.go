@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/data_export_request"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/data_export_request"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for DataExportRequests
 type Service struct {
-	repo   *data_export_request.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new DataExportRequests service
-func NewService(repo *data_export_request.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *data_export_request.Repository, db *pgxpool.Pool, logger *
 }
 
 // Create creates a new data_export_requests
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDataExportRequestsRequest) (*dto.DataExportRequestsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDataExportRequestsRequest) (*DataExportRequestsResponse, error) {
 	s.logger.Info("creating data_export_requests",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDa
 	
 
 	// Convert DTO to entity
-	entity := &data_export_request.DataExportRequests{
+	entity := &DataExportRequests{
 		OrganizationID: orgID,
 		
 		ExportType: req.ExportType,
@@ -122,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDa
 }
 
 // GetByID retrieves a data_export_requests by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.DataExportRequestsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*DataExportRequestsResponse, error) {
 	s.logger.Debug("getting data_export_requests",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -159,7 +160,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of data_export_requests records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.DataExportRequestsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*DataExportRequestsListResponse, error) {
 	s.logger.Debug("listing data_export_requests",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -197,16 +198,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.DataExportRequestsResponse, len(entities))
+	items := make([]*DataExportRequestsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.DataExportRequestsListResponse{
+	return &DataExportRequestsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -218,7 +219,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing data_export_requests
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateDataExportRequestsRequest) (*dto.DataExportRequestsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateDataExportRequestsRequest) (*DataExportRequestsResponse, error) {
 	s.logger.Info("updating data_export_requests",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -413,8 +414,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *data_export_request.DataExportRequests) *dto.DataExportRequestsResponse {
-	return &dto.DataExportRequestsResponse{
+func (s *Service) entityToResponse(entity *DataExportRequests) *DataExportRequestsResponse {
+	return &DataExportRequestsResponse{
 		
 		Id: entity.Id,
 		
@@ -473,7 +474,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for data_export_requests
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *data_export_request.DataExportRequests) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *DataExportRequests) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

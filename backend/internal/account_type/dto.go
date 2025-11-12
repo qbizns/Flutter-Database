@@ -1,4 +1,4 @@
-package dto
+package account_type
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package dto
+package background_job
 
 import (
 	"fmt"

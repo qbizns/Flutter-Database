@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/sms_queue"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/sms_queue"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for SmsQueue
 type Service struct {
-	repo   *sms_queue.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new SmsQueue service
-func NewService(repo *sms_queue.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *sms_queue.Repository, db *pgxpool.Pool, logger *logging.Lo
 }
 
 // Create creates a new sms_queue
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSmsQueueRequest) (*dto.SmsQueueResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSmsQueueRequest) (*SmsQueueResponse, error) {
 	s.logger.Info("creating sms_queue",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSm
 	
 
 	// Convert DTO to entity
-	entity := &sms_queue.SmsQueue{
+	entity := &SmsQueue{
 		OrganizationID: orgID,
 		
 		ToPhone: req.ToPhone,
@@ -114,7 +115,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSm
 }
 
 // GetByID retrieves a sms_queue by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.SmsQueueResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*SmsQueueResponse, error) {
 	s.logger.Debug("getting sms_queue",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -151,7 +152,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of sms_queue records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.SmsQueueListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*SmsQueueListResponse, error) {
 	s.logger.Debug("listing sms_queue",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -189,16 +190,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.SmsQueueResponse, len(entities))
+	items := make([]*SmsQueueResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.SmsQueueListResponse{
+	return &SmsQueueListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -210,7 +211,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing sms_queue
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateSmsQueueRequest) (*dto.SmsQueueResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateSmsQueueRequest) (*SmsQueueResponse, error) {
 	s.logger.Info("updating sms_queue",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -389,8 +390,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *sms_queue.SmsQueue) *dto.SmsQueueResponse {
-	return &dto.SmsQueueResponse{
+func (s *Service) entityToResponse(entity *SmsQueue) *SmsQueueResponse {
+	return &SmsQueueResponse{
 		
 		Id: entity.Id,
 		
@@ -443,7 +444,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for sms_queue
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *sms_queue.SmsQueue) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *SmsQueue) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

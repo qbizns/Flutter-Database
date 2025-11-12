@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/posting_document_type"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/posting_document_type"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PostingDocumentTypes
 type Service struct {
-	repo   *posting_document_type.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PostingDocumentTypes service
-func NewService(repo *posting_document_type.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *posting_document_type.Repository, db *pgxpool.Pool, logger
 }
 
 // Create creates a new posting_document_types
-func (s *Service) Create(ctx context.Context, req *dto.CreatePostingDocumentTypesRequest) (*dto.PostingDocumentTypesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreatePostingDocumentTypesRequest) (*PostingDocumentTypesResponse, error) {
 	s.logger.Info("creating posting_document_types",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePostingDocumentType
 	
 
 	// Convert DTO to entity
-	entity := &posting_document_type.PostingDocumentTypes{
+	entity := &PostingDocumentTypes{
 		
 		
 		Code: req.Code,
@@ -101,7 +102,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePostingDocumentType
 }
 
 // GetByID retrieves a posting_document_types by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PostingDocumentTypesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*PostingDocumentTypesResponse, error) {
 	s.logger.Debug("getting posting_document_types",
 		zap.String("id", id.String()),
 		
@@ -128,7 +129,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PostingDocume
 }
 
 // List retrieves a paginated list of posting_document_types records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingDocumentTypesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*PostingDocumentTypesListResponse, error) {
 	s.logger.Debug("listing posting_document_types",
 		
 		zap.Int("page", page),
@@ -161,16 +162,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingDocume
 	}
 
 	// Convert to response
-	items := make([]*dto.PostingDocumentTypesResponse, len(entities))
+	items := make([]*PostingDocumentTypesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PostingDocumentTypesListResponse{
+	return &PostingDocumentTypesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -182,7 +183,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingDocume
 }
 
 // Update updates an existing posting_document_types
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdatePostingDocumentTypesRequest) (*dto.PostingDocumentTypesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingDocumentTypesRequest) (*PostingDocumentTypesResponse, error) {
 	s.logger.Info("updating posting_document_types",
 		zap.String("id", id.String()),
 		
@@ -320,8 +321,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *posting_document_type.PostingDocumentTypes) *dto.PostingDocumentTypesResponse {
-	return &dto.PostingDocumentTypesResponse{
+func (s *Service) entityToResponse(entity *PostingDocumentTypes) *PostingDocumentTypesResponse {
+	return &PostingDocumentTypesResponse{
 		
 		Id: entity.Id,
 		
@@ -359,7 +360,7 @@ func (s *Service) entityToResponse(entity *posting_document_type.PostingDocument
 
 
 // validateBusinessRules validates business rules for posting_document_types
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *posting_document_type.PostingDocumentTypes) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PostingDocumentTypes) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

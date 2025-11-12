@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/customer_address"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/customer_address"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for CustomerAddresses
 type Service struct {
-	repo   *customer_address.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new CustomerAddresses service
-func NewService(repo *customer_address.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *customer_address.Repository, db *pgxpool.Pool, logger *log
 }
 
 // Create creates a new customer_addresses
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCustomerAddressesRequest) (*dto.CustomerAddressesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustomerAddressesRequest) (*CustomerAddressesResponse, error) {
 	s.logger.Info("creating customer_addresses",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 	
 
 	// Convert DTO to entity
-	entity := &customer_address.CustomerAddresses{
+	entity := &CustomerAddresses{
 		OrganizationID: orgID,
 		
 		CustomerId: req.CustomerId,
@@ -118,7 +119,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 }
 
 // GetByID retrieves a customer_addresses by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.CustomerAddressesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*CustomerAddressesResponse, error) {
 	s.logger.Debug("getting customer_addresses",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -155,7 +156,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of customer_addresses records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.CustomerAddressesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*CustomerAddressesListResponse, error) {
 	s.logger.Debug("listing customer_addresses",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -193,16 +194,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.CustomerAddressesResponse, len(entities))
+	items := make([]*CustomerAddressesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.CustomerAddressesListResponse{
+	return &CustomerAddressesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -214,7 +215,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing customer_addresses
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateCustomerAddressesRequest) (*dto.CustomerAddressesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateCustomerAddressesRequest) (*CustomerAddressesResponse, error) {
 	s.logger.Info("updating customer_addresses",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -401,8 +402,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *customer_address.CustomerAddresses) *dto.CustomerAddressesResponse {
-	return &dto.CustomerAddressesResponse{
+func (s *Service) entityToResponse(entity *CustomerAddresses) *CustomerAddressesResponse {
+	return &CustomerAddressesResponse{
 		
 		Id: entity.Id,
 		
@@ -463,7 +464,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for customer_addresses
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *customer_address.CustomerAddresses) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *CustomerAddresses) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

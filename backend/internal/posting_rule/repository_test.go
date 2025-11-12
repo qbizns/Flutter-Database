@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/posting_rule"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := posting_rule.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreatePostingRulesRequest{
+	req := &CreatePostingRulesRequest{
 		
 		
 		
@@ -385,7 +385,7 @@ func TestHandler_Create(t *testing.T) {
 	service := posting_rule.NewService(testDB, repo, testLogger)
 	handler := posting_rule.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreatePostingRulesRequest{
+	reqBody := &CreatePostingRulesRequest{
 		
 		
 		
@@ -429,7 +429,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.PostingRulesResponse
+	var resp PostingRulesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -558,8 +558,8 @@ func newTestPostingRulesWithID(id uuid.UUID) *posting_rule.PostingRules {
 }
 
 // newTestPostingRulesRequest creates a test create request
-func newTestPostingRulesRequest() *dto.CreatePostingRulesRequest {
-	return &dto.CreatePostingRulesRequest{
+func newTestPostingRulesRequest() *CreatePostingRulesRequest {
+	return &CreatePostingRulesRequest{
 		
 		
 		

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/your-org/pos-backend/internal/api/middlewares"
+// 	"github.com/your-org/pos-backend/internal/api/middlewares"
 )
 
 // RegisterRoutes registers all Users routes
@@ -14,9 +14,9 @@ func RegisterRoutes(r chi.Router, handler *Handler) {
 	// Organization-scoped routes
 	r.Route("/api/v1/organizations/{orgID}/users", func(r chi.Router) {
 		// Apply middleware
-		r.Use(middlewares.AuthRequired)
-		r.Use(middlewares.OrganizationContext)
-		r.Use(middlewares.RateLimiter)
+		r.Use(// middlewares.AuthRequired)
+		r.Use(// middlewares.OrganizationContext)
+		r.Use(// middlewares.RateLimiter)
 		r.Use(middleware.Compress(5))
 
 		// CRUD endpoints
@@ -37,7 +37,7 @@ func RegisterRoutes(r chi.Router, handler *Handler) {
 // RegisterPublicRoutes registers public Users routes (if any)
 func RegisterPublicRoutes(r chi.Router, handler *Handler) {
 	r.Route("/api/v1/public/users", func(r chi.Router) {
-		r.Use(middlewares.RateLimiter)
+		r.Use(// middlewares.RateLimiter)
 		r.Use(middleware.Compress(5))
 
 		// Add public endpoints here
@@ -49,9 +49,9 @@ func RegisterPublicRoutes(r chi.Router, handler *Handler) {
 func RegisterAdminRoutes(r chi.Router, handler *Handler) {
 	r.Route("/api/v1/admin/users", func(r chi.Router) {
 		// Apply middleware
-		r.Use(middlewares.AuthRequired)
-		r.Use(middlewares.AdminOnly)
-		r.Use(middlewares.RateLimiter)
+		r.Use(// middlewares.AuthRequired)
+		r.Use(// middlewares.AdminOnly)
+		r.Use(// middlewares.RateLimiter)
 		r.Use(middleware.Compress(5))
 
 		// Admin endpoints

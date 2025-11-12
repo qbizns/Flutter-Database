@@ -1,4 +1,4 @@
-package dto
+package customer_invoice
 
 import (
 	"fmt"

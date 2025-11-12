@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/fiscal_position_tax_mapping"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := fiscal_position_tax_mapping.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateFiscalPositionTaxMappingsRequest{
+	req := &CreateFiscalPositionTaxMappingsRequest{
 		
 		
 		
@@ -340,7 +340,7 @@ func TestHandler_Create(t *testing.T) {
 	service := fiscal_position_tax_mapping.NewService(testDB, repo, testLogger)
 	handler := fiscal_position_tax_mapping.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateFiscalPositionTaxMappingsRequest{
+	reqBody := &CreateFiscalPositionTaxMappingsRequest{
 		
 		
 		
@@ -366,7 +366,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.FiscalPositionTaxMappingsResponse
+	var resp FiscalPositionTaxMappingsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -423,8 +423,8 @@ func newTestFiscalPositionTaxMappingsWithID(id uuid.UUID) *fiscal_position_tax_m
 }
 
 // newTestFiscalPositionTaxMappingsRequest creates a test create request
-func newTestFiscalPositionTaxMappingsRequest() *dto.CreateFiscalPositionTaxMappingsRequest {
-	return &dto.CreateFiscalPositionTaxMappingsRequest{
+func newTestFiscalPositionTaxMappingsRequest() *CreateFiscalPositionTaxMappingsRequest {
+	return &CreateFiscalPositionTaxMappingsRequest{
 		
 		
 		

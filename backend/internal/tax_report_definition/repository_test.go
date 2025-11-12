@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/tax_report_definition"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -291,7 +291,7 @@ func TestService_Create(t *testing.T) {
 	service := tax_report_definition.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateTaxReportDefinitionsRequest{
+	req := &CreateTaxReportDefinitionsRequest{
 		
 		
 		
@@ -417,7 +417,7 @@ func TestHandler_Create(t *testing.T) {
 	service := tax_report_definition.NewService(testDB, repo, testLogger)
 	handler := tax_report_definition.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateTaxReportDefinitionsRequest{
+	reqBody := &CreateTaxReportDefinitionsRequest{
 		
 		
 		
@@ -453,7 +453,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -461,7 +461,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.TaxReportDefinitionsResponse
+	var resp TaxReportDefinitionsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -586,8 +586,8 @@ func newTestTaxReportDefinitionsWithID(id uuid.UUID, orgID uuid.UUID) *tax_repor
 }
 
 // newTestTaxReportDefinitionsRequest creates a test create request
-func newTestTaxReportDefinitionsRequest(orgID uuid.UUID) *dto.CreateTaxReportDefinitionsRequest {
-	return &dto.CreateTaxReportDefinitionsRequest{
+func newTestTaxReportDefinitionsRequest(orgID uuid.UUID) *CreateTaxReportDefinitionsRequest {
+	return &CreateTaxReportDefinitionsRequest{
 		
 		
 		

@@ -1,4 +1,4 @@
-package dto
+package api_request_log
 
 import (
 	"fmt"

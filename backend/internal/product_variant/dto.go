@@ -1,4 +1,4 @@
-package dto
+package product_variant
 
 import (
 	"fmt"

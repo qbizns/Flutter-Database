@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/posting_profile"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/posting_profile"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PostingProfiles
 type Service struct {
-	repo   *posting_profile.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PostingProfiles service
-func NewService(repo *posting_profile.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *posting_profile.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new posting_profiles
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePostingProfilesRequest) (*dto.PostingProfilesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePostingProfilesRequest) (*PostingProfilesResponse, error) {
 	s.logger.Info("creating posting_profiles",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 	
 
 	// Convert DTO to entity
-	entity := &posting_profile.PostingProfiles{
+	entity := &PostingProfiles{
 		OrganizationID: orgID,
 		
 		Code: req.Code,
@@ -104,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 }
 
 // GetByID retrieves a posting_profiles by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.PostingProfilesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*PostingProfilesResponse, error) {
 	s.logger.Debug("getting posting_profiles",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -141,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of posting_profiles records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.PostingProfilesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*PostingProfilesListResponse, error) {
 	s.logger.Debug("listing posting_profiles",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -179,16 +180,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.PostingProfilesResponse, len(entities))
+	items := make([]*PostingProfilesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PostingProfilesListResponse{
+	return &PostingProfilesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -200,7 +201,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing posting_profiles
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdatePostingProfilesRequest) (*dto.PostingProfilesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdatePostingProfilesRequest) (*PostingProfilesResponse, error) {
 	s.logger.Info("updating posting_profiles",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -359,8 +360,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *posting_profile.PostingProfiles) *dto.PostingProfilesResponse {
-	return &dto.PostingProfilesResponse{
+func (s *Service) entityToResponse(entity *PostingProfiles) *PostingProfilesResponse {
+	return &PostingProfilesResponse{
 		
 		Id: entity.Id,
 		
@@ -407,7 +408,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for posting_profiles
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *posting_profile.PostingProfiles) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PostingProfiles) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

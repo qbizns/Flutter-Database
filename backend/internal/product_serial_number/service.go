@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/product_serial_number"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/product_serial_number"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ProductSerialNumbers
 type Service struct {
-	repo   *product_serial_number.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ProductSerialNumbers service
-func NewService(repo *product_serial_number.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *product_serial_number.Repository, db *pgxpool.Pool, logger
 }
 
 // Create creates a new product_serial_numbers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateProductSerialNumbersRequest) (*dto.ProductSerialNumbersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProductSerialNumbersRequest) (*ProductSerialNumbersResponse, error) {
 	s.logger.Info("creating product_serial_numbers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePr
 	
 
 	// Convert DTO to entity
-	entity := &product_serial_number.ProductSerialNumbers{
+	entity := &ProductSerialNumbers{
 		OrganizationID: orgID,
 		
 		ProductId: req.ProductId,
@@ -126,7 +127,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePr
 }
 
 // GetByID retrieves a product_serial_numbers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ProductSerialNumbersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ProductSerialNumbersResponse, error) {
 	s.logger.Debug("getting product_serial_numbers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -163,7 +164,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of product_serial_numbers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ProductSerialNumbersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ProductSerialNumbersListResponse, error) {
 	s.logger.Debug("listing product_serial_numbers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -201,16 +202,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ProductSerialNumbersResponse, len(entities))
+	items := make([]*ProductSerialNumbersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ProductSerialNumbersListResponse{
+	return &ProductSerialNumbersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -222,7 +223,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing product_serial_numbers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateProductSerialNumbersRequest) (*dto.ProductSerialNumbersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateProductSerialNumbersRequest) (*ProductSerialNumbersResponse, error) {
 	s.logger.Info("updating product_serial_numbers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -425,8 +426,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *product_serial_number.ProductSerialNumbers) *dto.ProductSerialNumbersResponse {
-	return &dto.ProductSerialNumbersResponse{
+func (s *Service) entityToResponse(entity *ProductSerialNumbers) *ProductSerialNumbersResponse {
+	return &ProductSerialNumbersResponse{
 		
 		Id: entity.Id,
 		
@@ -495,7 +496,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for product_serial_numbers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *product_serial_number.ProductSerialNumbers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ProductSerialNumbers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

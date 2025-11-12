@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/inventory_cost_layer"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/inventory_cost_layer"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for InventoryCostLayers
 type Service struct {
-	repo   *inventory_cost_layer.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new InventoryCostLayers service
-func NewService(repo *inventory_cost_layer.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *inventory_cost_layer.Repository, db *pgxpool.Pool, logger 
 }
 
 // Create creates a new inventory_cost_layers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateInventoryCostLayersRequest) (*dto.InventoryCostLayersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInventoryCostLayersRequest) (*InventoryCostLayersResponse, error) {
 	s.logger.Info("creating inventory_cost_layers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 	
 
 	// Convert DTO to entity
-	entity := &inventory_cost_layer.InventoryCostLayers{
+	entity := &InventoryCostLayers{
 		OrganizationID: orgID,
 		
 		ProductId: req.ProductId,
@@ -114,7 +115,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 }
 
 // GetByID retrieves a inventory_cost_layers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.InventoryCostLayersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*InventoryCostLayersResponse, error) {
 	s.logger.Debug("getting inventory_cost_layers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -151,7 +152,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of inventory_cost_layers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.InventoryCostLayersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*InventoryCostLayersListResponse, error) {
 	s.logger.Debug("listing inventory_cost_layers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -189,16 +190,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.InventoryCostLayersResponse, len(entities))
+	items := make([]*InventoryCostLayersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.InventoryCostLayersListResponse{
+	return &InventoryCostLayersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -210,7 +211,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing inventory_cost_layers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateInventoryCostLayersRequest) (*dto.InventoryCostLayersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateInventoryCostLayersRequest) (*InventoryCostLayersResponse, error) {
 	s.logger.Info("updating inventory_cost_layers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -389,8 +390,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *inventory_cost_layer.InventoryCostLayers) *dto.InventoryCostLayersResponse {
-	return &dto.InventoryCostLayersResponse{
+func (s *Service) entityToResponse(entity *InventoryCostLayers) *InventoryCostLayersResponse {
+	return &InventoryCostLayersResponse{
 		
 		Id: entity.Id,
 		
@@ -447,7 +448,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for inventory_cost_layers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *inventory_cost_layer.InventoryCostLayers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *InventoryCostLayers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

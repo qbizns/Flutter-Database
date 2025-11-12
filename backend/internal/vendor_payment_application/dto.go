@@ -1,4 +1,4 @@
-package dto
+package vendor_payment_application
 
 import (
 	"fmt"

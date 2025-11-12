@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/cash_movement"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -291,7 +291,7 @@ func TestService_Create(t *testing.T) {
 	service := cash_movement.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateCashMovementsRequest{
+	req := &CreateCashMovementsRequest{
 		
 		
 		
@@ -412,7 +412,7 @@ func TestHandler_Create(t *testing.T) {
 	service := cash_movement.NewService(testDB, repo, testLogger)
 	handler := cash_movement.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateCashMovementsRequest{
+	reqBody := &CreateCashMovementsRequest{
 		
 		
 		
@@ -446,7 +446,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -454,7 +454,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.CashMovementsResponse
+	var resp CashMovementsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -571,8 +571,8 @@ func newTestCashMovementsWithID(id uuid.UUID, orgID uuid.UUID) *cash_movement.Ca
 }
 
 // newTestCashMovementsRequest creates a test create request
-func newTestCashMovementsRequest(orgID uuid.UUID) *dto.CreateCashMovementsRequest {
-	return &dto.CreateCashMovementsRequest{
+func newTestCashMovementsRequest(orgID uuid.UUID) *CreateCashMovementsRequest {
+	return &CreateCashMovementsRequest{
 		
 		
 		

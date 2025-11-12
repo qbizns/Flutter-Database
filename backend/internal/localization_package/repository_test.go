@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/localization_package"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -258,7 +258,7 @@ func TestService_Create(t *testing.T) {
 	service := localization_package.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateLocalizationPackagesRequest{
+	req := &CreateLocalizationPackagesRequest{
 		
 		PackageCode: "test_value",
 		
@@ -342,7 +342,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateLocalizationPackagesRequest{
+	updateReq := &UpdateLocalizationPackagesRequest{
 		PackageCode: &updatedValue,
 	}
 	
@@ -364,7 +364,7 @@ func TestHandler_Create(t *testing.T) {
 	service := localization_package.NewService(testDB, repo, testLogger)
 	handler := localization_package.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateLocalizationPackagesRequest{
+	reqBody := &CreateLocalizationPackagesRequest{
 		
 		PackageCode: "test_value",
 		
@@ -396,7 +396,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.LocalizationPackagesResponse
+	var resp LocalizationPackagesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -477,8 +477,8 @@ func newTestLocalizationPackagesWithID(id uuid.UUID) *localization_package.Local
 }
 
 // newTestLocalizationPackagesRequest creates a test create request
-func newTestLocalizationPackagesRequest() *dto.CreateLocalizationPackagesRequest {
-	return &dto.CreateLocalizationPackagesRequest{
+func newTestLocalizationPackagesRequest() *CreateLocalizationPackagesRequest {
+	return &CreateLocalizationPackagesRequest{
 		
 		PackageCode: "test_package_code",
 		

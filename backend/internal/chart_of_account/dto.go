@@ -1,4 +1,4 @@
-package dto
+package chart_of_account
 
 import (
 	"fmt"

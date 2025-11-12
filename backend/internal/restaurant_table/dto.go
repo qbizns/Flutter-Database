@@ -1,4 +1,4 @@
-package dto
+package restaurant_table
 
 import (
 	"fmt"

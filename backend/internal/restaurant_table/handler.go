@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/restaurant_table"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/restaurant_table"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for RestaurantTables
 type Handler struct {
-	service *restaurant_table.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new RestaurantTables handler
-func NewHandler(service *restaurant_table.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *restaurant_table.Service, logger *logging.Logger) *Hand
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateRestaurantTablesRequest true "RestaurantTables data"
-// @Success 201 {object} dto.RestaurantTablesResponse
+// @Param request body CreateRestaurantTablesRequest true "RestaurantTables data"
+// @Success 201 {object} RestaurantTablesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateRestaurantTablesRequest
+	var req CreateRestaurantTablesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "RestaurantTables ID"
-// @Success 200 {object} dto.RestaurantTablesResponse
+// @Success 200 {object} RestaurantTablesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.RestaurantTablesListResponse
+// @Success 200 {object} RestaurantTablesListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "RestaurantTables ID"
-// @Param request body dto.UpdateRestaurantTablesRequest true "RestaurantTables data"
-// @Success 200 {object} dto.RestaurantTablesResponse
+// @Param request body UpdateRestaurantTablesRequest true "RestaurantTables data"
+// @Success 200 {object} RestaurantTablesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateRestaurantTablesRequest
+	var req UpdateRestaurantTablesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

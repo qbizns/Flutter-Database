@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/account_type"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/account_type"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for AccountTypes
 type Service struct {
-	repo   *account_type.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new AccountTypes service
-func NewService(repo *account_type.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *account_type.Repository, db *pgxpool.Pool, logger *logging
 }
 
 // Create creates a new account_types
-func (s *Service) Create(ctx context.Context, req *dto.CreateAccountTypesRequest) (*dto.AccountTypesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateAccountTypesRequest) (*AccountTypesResponse, error) {
 	s.logger.Info("creating account_types",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAccountTypesRequest
 	
 
 	// Convert DTO to entity
-	entity := &account_type.AccountTypes{
+	entity := &AccountTypes{
 		
 		
 		TypeCode: req.TypeCode,
@@ -95,7 +96,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAccountTypesRequest
 }
 
 // GetByID retrieves a account_types by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AccountTypesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*AccountTypesResponse, error) {
 	s.logger.Debug("getting account_types",
 		zap.String("id", id.String()),
 		
@@ -122,7 +123,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AccountTypesR
 }
 
 // List retrieves a paginated list of account_types records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountTypesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*AccountTypesListResponse, error) {
 	s.logger.Debug("listing account_types",
 		
 		zap.Int("page", page),
@@ -155,16 +156,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountTypesL
 	}
 
 	// Convert to response
-	items := make([]*dto.AccountTypesResponse, len(entities))
+	items := make([]*AccountTypesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.AccountTypesListResponse{
+	return &AccountTypesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -176,7 +177,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountTypesL
 }
 
 // Update updates an existing account_types
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateAccountTypesRequest) (*dto.AccountTypesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAccountTypesRequest) (*AccountTypesResponse, error) {
 	s.logger.Info("updating account_types",
 		zap.String("id", id.String()),
 		
@@ -302,8 +303,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *account_type.AccountTypes) *dto.AccountTypesResponse {
-	return &dto.AccountTypesResponse{
+func (s *Service) entityToResponse(entity *AccountTypes) *AccountTypesResponse {
+	return &AccountTypesResponse{
 		
 		Id: entity.Id,
 		
@@ -333,7 +334,7 @@ func (s *Service) entityToResponse(entity *account_type.AccountTypes) *dto.Accou
 
 
 // validateBusinessRules validates business rules for account_types
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *account_type.AccountTypes) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *AccountTypes) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

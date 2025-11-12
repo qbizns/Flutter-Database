@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/posting_concept_override"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/posting_concept_override"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PostingConceptOverrides
 type Service struct {
-	repo   *posting_concept_override.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PostingConceptOverrides service
-func NewService(repo *posting_concept_override.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *posting_concept_override.Repository, db *pgxpool.Pool, log
 }
 
 // Create creates a new posting_concept_overrides
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePostingConceptOverridesRequest) (*dto.PostingConceptOverridesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePostingConceptOverridesRequest) (*PostingConceptOverridesResponse, error) {
 	s.logger.Info("creating posting_concept_overrides",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 	
 
 	// Convert DTO to entity
-	entity := &posting_concept_override.PostingConceptOverrides{
+	entity := &PostingConceptOverrides{
 		OrganizationID: orgID,
 		
 		ConceptKey: req.ConceptKey,
@@ -100,7 +101,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 }
 
 // GetByID retrieves a posting_concept_overrides by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.PostingConceptOverridesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*PostingConceptOverridesResponse, error) {
 	s.logger.Debug("getting posting_concept_overrides",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -137,7 +138,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of posting_concept_overrides records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.PostingConceptOverridesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*PostingConceptOverridesListResponse, error) {
 	s.logger.Debug("listing posting_concept_overrides",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -175,16 +176,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.PostingConceptOverridesResponse, len(entities))
+	items := make([]*PostingConceptOverridesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PostingConceptOverridesListResponse{
+	return &PostingConceptOverridesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -196,7 +197,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing posting_concept_overrides
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdatePostingConceptOverridesRequest) (*dto.PostingConceptOverridesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdatePostingConceptOverridesRequest) (*PostingConceptOverridesResponse, error) {
 	s.logger.Info("updating posting_concept_overrides",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -347,8 +348,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *posting_concept_override.PostingConceptOverrides) *dto.PostingConceptOverridesResponse {
-	return &dto.PostingConceptOverridesResponse{
+func (s *Service) entityToResponse(entity *PostingConceptOverrides) *PostingConceptOverridesResponse {
+	return &PostingConceptOverridesResponse{
 		
 		Id: entity.Id,
 		
@@ -391,7 +392,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for posting_concept_overrides
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *posting_concept_override.PostingConceptOverrides) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PostingConceptOverrides) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/fiscal_position"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/fiscal_position"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for FiscalPositions
 type Service struct {
-	repo   *fiscal_position.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new FiscalPositions service
-func NewService(repo *fiscal_position.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *fiscal_position.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new fiscal_positions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFiscalPositionsRequest) (*dto.FiscalPositionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFiscalPositionsRequest) (*FiscalPositionsResponse, error) {
 	s.logger.Info("creating fiscal_positions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 	
 
 	// Convert DTO to entity
-	entity := &fiscal_position.FiscalPositions{
+	entity := &FiscalPositions{
 		OrganizationID: orgID,
 		
 		PositionCode: req.PositionCode,
@@ -104,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 }
 
 // GetByID retrieves a fiscal_positions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.FiscalPositionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*FiscalPositionsResponse, error) {
 	s.logger.Debug("getting fiscal_positions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -141,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of fiscal_positions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.FiscalPositionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*FiscalPositionsListResponse, error) {
 	s.logger.Debug("listing fiscal_positions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -179,16 +180,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.FiscalPositionsResponse, len(entities))
+	items := make([]*FiscalPositionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.FiscalPositionsListResponse{
+	return &FiscalPositionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -200,7 +201,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing fiscal_positions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateFiscalPositionsRequest) (*dto.FiscalPositionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateFiscalPositionsRequest) (*FiscalPositionsResponse, error) {
 	s.logger.Info("updating fiscal_positions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -359,8 +360,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *fiscal_position.FiscalPositions) *dto.FiscalPositionsResponse {
-	return &dto.FiscalPositionsResponse{
+func (s *Service) entityToResponse(entity *FiscalPositions) *FiscalPositionsResponse {
+	return &FiscalPositionsResponse{
 		
 		Id: entity.Id,
 		
@@ -407,7 +408,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for fiscal_positions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *fiscal_position.FiscalPositions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *FiscalPositions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -1,4 +1,4 @@
-package dto
+package asset_category
 
 import (
 	"fmt"

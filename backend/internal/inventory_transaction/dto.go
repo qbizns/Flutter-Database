@@ -1,4 +1,4 @@
-package dto
+package inventory_transaction
 
 import (
 	"fmt"

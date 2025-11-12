@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/organization_feature"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/organization_feature"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for OrganizationFeatures
 type Service struct {
-	repo   *organization_feature.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new OrganizationFeatures service
-func NewService(repo *organization_feature.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *organization_feature.Repository, db *pgxpool.Pool, logger 
 }
 
 // Create creates a new organization_features
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOrganizationFeaturesRequest) (*dto.OrganizationFeaturesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrganizationFeaturesRequest) (*OrganizationFeaturesResponse, error) {
 	s.logger.Info("creating organization_features",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 	
 
 	// Convert DTO to entity
-	entity := &organization_feature.OrganizationFeatures{
+	entity := &OrganizationFeatures{
 		OrganizationID: orgID,
 		
 		FeatureKey: req.FeatureKey,
@@ -108,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 }
 
 // GetByID retrieves a organization_features by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.OrganizationFeaturesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*OrganizationFeaturesResponse, error) {
 	s.logger.Debug("getting organization_features",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -145,7 +146,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of organization_features records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.OrganizationFeaturesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*OrganizationFeaturesListResponse, error) {
 	s.logger.Debug("listing organization_features",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -183,16 +184,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.OrganizationFeaturesResponse, len(entities))
+	items := make([]*OrganizationFeaturesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.OrganizationFeaturesListResponse{
+	return &OrganizationFeaturesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -204,7 +205,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing organization_features
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateOrganizationFeaturesRequest) (*dto.OrganizationFeaturesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateOrganizationFeaturesRequest) (*OrganizationFeaturesResponse, error) {
 	s.logger.Info("updating organization_features",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -371,8 +372,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *organization_feature.OrganizationFeatures) *dto.OrganizationFeaturesResponse {
-	return &dto.OrganizationFeaturesResponse{
+func (s *Service) entityToResponse(entity *OrganizationFeatures) *OrganizationFeaturesResponse {
+	return &OrganizationFeaturesResponse{
 		
 		Id: entity.Id,
 		
@@ -423,7 +424,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for organization_features
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *organization_feature.OrganizationFeatures) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *OrganizationFeatures) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

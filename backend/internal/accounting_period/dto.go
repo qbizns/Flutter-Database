@@ -1,4 +1,4 @@
-package dto
+package accounting_period
 
 import (
 	"fmt"

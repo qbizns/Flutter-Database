@@ -1,4 +1,4 @@
-package dto
+package external_order_mapping
 
 import (
 	"fmt"

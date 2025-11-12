@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/webhook_delivery"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/webhook_delivery"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for WebhookDeliveries
 type Handler struct {
-	service *webhook_delivery.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new WebhookDeliveries handler
-func NewHandler(service *webhook_delivery.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *webhook_delivery.Service, logger *logging.Logger) *Hand
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateWebhookDeliveriesRequest true "WebhookDeliveries data"
-// @Success 201 {object} dto.WebhookDeliveriesResponse
+// @Param request body CreateWebhookDeliveriesRequest true "WebhookDeliveries data"
+// @Success 201 {object} WebhookDeliveriesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateWebhookDeliveriesRequest
+	var req CreateWebhookDeliveriesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "WebhookDeliveries ID"
-// @Success 200 {object} dto.WebhookDeliveriesResponse
+// @Success 200 {object} WebhookDeliveriesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.WebhookDeliveriesListResponse
+// @Success 200 {object} WebhookDeliveriesListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "WebhookDeliveries ID"
-// @Param request body dto.UpdateWebhookDeliveriesRequest true "WebhookDeliveries data"
-// @Success 200 {object} dto.WebhookDeliveriesResponse
+// @Param request body UpdateWebhookDeliveriesRequest true "WebhookDeliveries data"
+// @Success 200 {object} WebhookDeliveriesResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateWebhookDeliveriesRequest
+	var req UpdateWebhookDeliveriesRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/vendor_payment_application"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/vendor_payment_application"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for VendorPaymentApplications
 type Service struct {
-	repo   *vendor_payment_application.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new VendorPaymentApplications service
-func NewService(repo *vendor_payment_application.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *vendor_payment_application.Repository, db *pgxpool.Pool, l
 }
 
 // Create creates a new vendor_payment_applications
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateVendorPaymentApplicationsRequest) (*dto.VendorPaymentApplicationsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateVendorPaymentApplicationsRequest) (*VendorPaymentApplicationsResponse, error) {
 	s.logger.Info("creating vendor_payment_applications",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateVe
 	
 
 	// Convert DTO to entity
-	entity := &vendor_payment_application.VendorPaymentApplications{
+	entity := &VendorPaymentApplications{
 		OrganizationID: orgID,
 		
 		VendorPaymentId: req.VendorPaymentId,
@@ -90,7 +91,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateVe
 }
 
 // GetByID retrieves a vendor_payment_applications by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.VendorPaymentApplicationsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*VendorPaymentApplicationsResponse, error) {
 	s.logger.Debug("getting vendor_payment_applications",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -127,7 +128,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of vendor_payment_applications records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.VendorPaymentApplicationsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*VendorPaymentApplicationsListResponse, error) {
 	s.logger.Debug("listing vendor_payment_applications",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -165,16 +166,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.VendorPaymentApplicationsResponse, len(entities))
+	items := make([]*VendorPaymentApplicationsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.VendorPaymentApplicationsListResponse{
+	return &VendorPaymentApplicationsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -186,7 +187,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing vendor_payment_applications
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateVendorPaymentApplicationsRequest) (*dto.VendorPaymentApplicationsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateVendorPaymentApplicationsRequest) (*VendorPaymentApplicationsResponse, error) {
 	s.logger.Info("updating vendor_payment_applications",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -317,8 +318,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *vendor_payment_application.VendorPaymentApplications) *dto.VendorPaymentApplicationsResponse {
-	return &dto.VendorPaymentApplicationsResponse{
+func (s *Service) entityToResponse(entity *VendorPaymentApplications) *VendorPaymentApplicationsResponse {
+	return &VendorPaymentApplicationsResponse{
 		
 		Id: entity.Id,
 		
@@ -349,7 +350,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for vendor_payment_applications
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *vendor_payment_application.VendorPaymentApplications) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *VendorPaymentApplications) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

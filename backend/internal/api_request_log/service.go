@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/api_request_log"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/api_request_log"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ApiRequestLogs
 type Service struct {
-	repo   *api_request_log.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ApiRequestLogs service
-func NewService(repo *api_request_log.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *api_request_log.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new api_request_logs
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateApiRequestLogsRequest) (*dto.ApiRequestLogsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateApiRequestLogsRequest) (*ApiRequestLogsResponse, error) {
 	s.logger.Info("creating api_request_logs",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateAp
 	
 
 	// Convert DTO to entity
-	entity := &api_request_log.ApiRequestLogs{
+	entity := &ApiRequestLogs{
 		OrganizationID: orgID,
 		
 		RequestId: req.RequestId,
@@ -116,7 +117,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateAp
 }
 
 // GetByID retrieves a api_request_logs by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ApiRequestLogsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ApiRequestLogsResponse, error) {
 	s.logger.Debug("getting api_request_logs",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -153,7 +154,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of api_request_logs records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ApiRequestLogsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ApiRequestLogsListResponse, error) {
 	s.logger.Debug("listing api_request_logs",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -191,16 +192,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ApiRequestLogsResponse, len(entities))
+	items := make([]*ApiRequestLogsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ApiRequestLogsListResponse{
+	return &ApiRequestLogsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -212,7 +213,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing api_request_logs
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateApiRequestLogsRequest) (*dto.ApiRequestLogsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateApiRequestLogsRequest) (*ApiRequestLogsResponse, error) {
 	s.logger.Info("updating api_request_logs",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -395,8 +396,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *api_request_log.ApiRequestLogs) *dto.ApiRequestLogsResponse {
-	return &dto.ApiRequestLogsResponse{
+func (s *Service) entityToResponse(entity *ApiRequestLogs) *ApiRequestLogsResponse {
+	return &ApiRequestLogsResponse{
 		
 		Id: entity.Id,
 		
@@ -451,7 +452,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for api_request_logs
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *api_request_log.ApiRequestLogs) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ApiRequestLogs) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

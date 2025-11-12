@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/user_role"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/user_role"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for UserRoles
 type Service struct {
-	repo   *user_role.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new UserRoles service
-func NewService(repo *user_role.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *user_role.Repository, db *pgxpool.Pool, logger *logging.Lo
 }
 
 // Create creates a new user_roles
-func (s *Service) Create(ctx context.Context, req *dto.CreateUserRolesRequest) (*dto.UserRolesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateUserRolesRequest) (*UserRolesResponse, error) {
 	s.logger.Info("creating user_roles",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateUserRolesRequest) (
 	
 
 	// Convert DTO to entity
-	entity := &user_role.UserRoles{
+	entity := &UserRoles{
 		
 		
 		UserId: req.UserId,
@@ -85,7 +86,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateUserRolesRequest) (
 }
 
 // GetByID retrieves a user_roles by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.UserRolesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*UserRolesResponse, error) {
 	s.logger.Debug("getting user_roles",
 		zap.String("id", id.String()),
 		
@@ -112,7 +113,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.UserRolesResp
 }
 
 // List retrieves a paginated list of user_roles records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.UserRolesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*UserRolesListResponse, error) {
 	s.logger.Debug("listing user_roles",
 		
 		zap.Int("page", page),
@@ -145,16 +146,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.UserRolesList
 	}
 
 	// Convert to response
-	items := make([]*dto.UserRolesResponse, len(entities))
+	items := make([]*UserRolesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.UserRolesListResponse{
+	return &UserRolesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -166,7 +167,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.UserRolesList
 }
 
 // Update updates an existing user_roles
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateUserRolesRequest) (*dto.UserRolesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUserRolesRequest) (*UserRolesResponse, error) {
 	s.logger.Info("updating user_roles",
 		zap.String("id", id.String()),
 		
@@ -272,8 +273,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *user_role.UserRoles) *dto.UserRolesResponse {
-	return &dto.UserRolesResponse{
+func (s *Service) entityToResponse(entity *UserRoles) *UserRolesResponse {
+	return &UserRolesResponse{
 		
 		Id: entity.Id,
 		
@@ -291,7 +292,7 @@ func (s *Service) entityToResponse(entity *user_role.UserRoles) *dto.UserRolesRe
 
 
 // validateBusinessRules validates business rules for user_roles
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *user_role.UserRoles) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *UserRoles) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

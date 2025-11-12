@@ -1,4 +1,4 @@
-package dto
+package role_permission
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/time_clock_entry"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/time_clock_entry"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for TimeClockEntries
 type Service struct {
-	repo   *time_clock_entry.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new TimeClockEntries service
-func NewService(repo *time_clock_entry.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *time_clock_entry.Repository, db *pgxpool.Pool, logger *log
 }
 
 // Create creates a new time_clock_entries
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTimeClockEntriesRequest) (*dto.TimeClockEntriesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTimeClockEntriesRequest) (*TimeClockEntriesResponse, error) {
 	s.logger.Info("creating time_clock_entries",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTi
 	
 
 	// Convert DTO to entity
-	entity := &time_clock_entry.TimeClockEntries{
+	entity := &TimeClockEntries{
 		OrganizationID: orgID,
 		
 		LocationId: req.LocationId,
@@ -132,7 +133,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTi
 }
 
 // GetByID retrieves a time_clock_entries by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.TimeClockEntriesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*TimeClockEntriesResponse, error) {
 	s.logger.Debug("getting time_clock_entries",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -169,7 +170,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of time_clock_entries records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.TimeClockEntriesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*TimeClockEntriesListResponse, error) {
 	s.logger.Debug("listing time_clock_entries",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -207,16 +208,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.TimeClockEntriesResponse, len(entities))
+	items := make([]*TimeClockEntriesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.TimeClockEntriesListResponse{
+	return &TimeClockEntriesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -228,7 +229,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing time_clock_entries
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateTimeClockEntriesRequest) (*dto.TimeClockEntriesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateTimeClockEntriesRequest) (*TimeClockEntriesResponse, error) {
 	s.logger.Info("updating time_clock_entries",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -443,8 +444,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *time_clock_entry.TimeClockEntries) *dto.TimeClockEntriesResponse {
-	return &dto.TimeClockEntriesResponse{
+func (s *Service) entityToResponse(entity *TimeClockEntries) *TimeClockEntriesResponse {
+	return &TimeClockEntriesResponse{
 		
 		Id: entity.Id,
 		
@@ -519,7 +520,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for time_clock_entries
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *time_clock_entry.TimeClockEntries) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *TimeClockEntries) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

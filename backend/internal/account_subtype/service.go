@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/account_subtype"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/account_subtype"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for AccountSubtypes
 type Service struct {
-	repo   *account_subtype.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new AccountSubtypes service
-func NewService(repo *account_subtype.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *account_subtype.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new account_subtypes
-func (s *Service) Create(ctx context.Context, req *dto.CreateAccountSubtypesRequest) (*dto.AccountSubtypesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateAccountSubtypesRequest) (*AccountSubtypesResponse, error) {
 	s.logger.Info("creating account_subtypes",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAccountSubtypesRequ
 	
 
 	// Convert DTO to entity
-	entity := &account_subtype.AccountSubtypes{
+	entity := &AccountSubtypes{
 		
 		
 		AccountTypeId: req.AccountTypeId,
@@ -89,7 +90,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAccountSubtypesRequ
 }
 
 // GetByID retrieves a account_subtypes by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AccountSubtypesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*AccountSubtypesResponse, error) {
 	s.logger.Debug("getting account_subtypes",
 		zap.String("id", id.String()),
 		
@@ -116,7 +117,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AccountSubtyp
 }
 
 // List retrieves a paginated list of account_subtypes records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountSubtypesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*AccountSubtypesListResponse, error) {
 	s.logger.Debug("listing account_subtypes",
 		
 		zap.Int("page", page),
@@ -149,16 +150,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountSubtyp
 	}
 
 	// Convert to response
-	items := make([]*dto.AccountSubtypesResponse, len(entities))
+	items := make([]*AccountSubtypesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.AccountSubtypesListResponse{
+	return &AccountSubtypesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -170,7 +171,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AccountSubtyp
 }
 
 // Update updates an existing account_subtypes
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateAccountSubtypesRequest) (*dto.AccountSubtypesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAccountSubtypesRequest) (*AccountSubtypesResponse, error) {
 	s.logger.Info("updating account_subtypes",
 		zap.String("id", id.String()),
 		
@@ -284,8 +285,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *account_subtype.AccountSubtypes) *dto.AccountSubtypesResponse {
-	return &dto.AccountSubtypesResponse{
+func (s *Service) entityToResponse(entity *AccountSubtypes) *AccountSubtypesResponse {
+	return &AccountSubtypesResponse{
 		
 		Id: entity.Id,
 		
@@ -309,7 +310,7 @@ func (s *Service) entityToResponse(entity *account_subtype.AccountSubtypes) *dto
 
 
 // validateBusinessRules validates business rules for account_subtypes
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *account_subtype.AccountSubtypes) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *AccountSubtypes) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

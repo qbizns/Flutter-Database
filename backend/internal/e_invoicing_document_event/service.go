@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/e_invoicing_document_event"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/e_invoicing_document_event"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for EInvoicingDocumentEvents
 type Service struct {
-	repo   *e_invoicing_document_event.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new EInvoicingDocumentEvents service
-func NewService(repo *e_invoicing_document_event.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *e_invoicing_document_event.Repository, db *pgxpool.Pool, l
 }
 
 // Create creates a new e_invoicing_document_events
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEInvoicingDocumentEventsRequest) (*dto.EInvoicingDocumentEventsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEInvoicingDocumentEventsRequest) (*EInvoicingDocumentEventsResponse, error) {
 	s.logger.Info("creating e_invoicing_document_events",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEI
 	
 
 	// Convert DTO to entity
-	entity := &e_invoicing_document_event.EInvoicingDocumentEvents{
+	entity := &EInvoicingDocumentEvents{
 		OrganizationID: orgID,
 		
 		EInvoicingDocumentId: req.EInvoicingDocumentId,
@@ -136,7 +137,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEI
 }
 
 // GetByID retrieves a e_invoicing_document_events by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.EInvoicingDocumentEventsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*EInvoicingDocumentEventsResponse, error) {
 	s.logger.Debug("getting e_invoicing_document_events",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -173,7 +174,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of e_invoicing_document_events records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.EInvoicingDocumentEventsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*EInvoicingDocumentEventsListResponse, error) {
 	s.logger.Debug("listing e_invoicing_document_events",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -211,16 +212,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.EInvoicingDocumentEventsResponse, len(entities))
+	items := make([]*EInvoicingDocumentEventsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.EInvoicingDocumentEventsListResponse{
+	return &EInvoicingDocumentEventsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -232,7 +233,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing e_invoicing_document_events
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateEInvoicingDocumentEventsRequest) (*dto.EInvoicingDocumentEventsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateEInvoicingDocumentEventsRequest) (*EInvoicingDocumentEventsResponse, error) {
 	s.logger.Info("updating e_invoicing_document_events",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -455,8 +456,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *e_invoicing_document_event.EInvoicingDocumentEvents) *dto.EInvoicingDocumentEventsResponse {
-	return &dto.EInvoicingDocumentEventsResponse{
+func (s *Service) entityToResponse(entity *EInvoicingDocumentEvents) *EInvoicingDocumentEventsResponse {
+	return &EInvoicingDocumentEventsResponse{
 		
 		Id: entity.Id,
 		
@@ -531,7 +532,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for e_invoicing_document_events
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *e_invoicing_document_event.EInvoicingDocumentEvents) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *EInvoicingDocumentEvents) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/batch_transaction"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/batch_transaction"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for BatchTransactions
 type Service struct {
-	repo   *batch_transaction.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new BatchTransactions service
-func NewService(repo *batch_transaction.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *batch_transaction.Repository, db *pgxpool.Pool, logger *lo
 }
 
 // Create creates a new batch_transactions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBatchTransactionsRequest) (*dto.BatchTransactionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBatchTransactionsRequest) (*BatchTransactionsResponse, error) {
 	s.logger.Info("creating batch_transactions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBa
 	
 
 	// Convert DTO to entity
-	entity := &batch_transaction.BatchTransactions{
+	entity := &BatchTransactions{
 		OrganizationID: orgID,
 		
 		BatchId: req.BatchId,
@@ -106,7 +107,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateBa
 }
 
 // GetByID retrieves a batch_transactions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.BatchTransactionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*BatchTransactionsResponse, error) {
 	s.logger.Debug("getting batch_transactions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -143,7 +144,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of batch_transactions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.BatchTransactionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*BatchTransactionsListResponse, error) {
 	s.logger.Debug("listing batch_transactions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -181,16 +182,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.BatchTransactionsResponse, len(entities))
+	items := make([]*BatchTransactionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.BatchTransactionsListResponse{
+	return &BatchTransactionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -202,7 +203,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing batch_transactions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateBatchTransactionsRequest) (*dto.BatchTransactionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateBatchTransactionsRequest) (*BatchTransactionsResponse, error) {
 	s.logger.Info("updating batch_transactions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -365,8 +366,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *batch_transaction.BatchTransactions) *dto.BatchTransactionsResponse {
-	return &dto.BatchTransactionsResponse{
+func (s *Service) entityToResponse(entity *BatchTransactions) *BatchTransactionsResponse {
+	return &BatchTransactionsResponse{
 		
 		Id: entity.Id,
 		
@@ -409,7 +410,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for batch_transactions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *batch_transaction.BatchTransactions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *BatchTransactions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

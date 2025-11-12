@@ -1,4 +1,4 @@
-package dto
+package promotion
 
 import (
 	"fmt"

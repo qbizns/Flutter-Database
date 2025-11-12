@@ -1,4 +1,4 @@
-package dto
+package order
 
 import (
 	"fmt"

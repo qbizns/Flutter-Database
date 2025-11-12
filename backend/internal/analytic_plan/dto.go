@@ -1,4 +1,4 @@
-package dto
+package analytic_plan
 
 import (
 	"fmt"

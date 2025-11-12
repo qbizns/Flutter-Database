@@ -1,4 +1,4 @@
-package dto
+package sale_return_item
 
 import (
 	"fmt"

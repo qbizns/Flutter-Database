@@ -1,4 +1,4 @@
-package dto
+package sale
 
 import (
 	"fmt"

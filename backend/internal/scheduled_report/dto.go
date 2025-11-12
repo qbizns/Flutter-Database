@@ -1,4 +1,4 @@
-package dto
+package scheduled_report
 
 import (
 	"fmt"

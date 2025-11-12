@@ -1,4 +1,4 @@
-package dto
+package pos_tax_mapping
 
 import (
 	"fmt"

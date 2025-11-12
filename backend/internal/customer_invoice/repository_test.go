@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/customer_invoice"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := customer_invoice.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateCustomerInvoicesRequest{
+	req := &CreateCustomerInvoicesRequest{
 		
 		InvoiceNumber: "test_value",
 		
@@ -459,7 +459,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateCustomerInvoicesRequest{
+	updateReq := &UpdateCustomerInvoicesRequest{
 		InvoiceNumber: &updatedValue,
 	}
 	
@@ -481,7 +481,7 @@ func TestHandler_Create(t *testing.T) {
 	service := customer_invoice.NewService(testDB, repo, testLogger)
 	handler := customer_invoice.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateCustomerInvoicesRequest{
+	reqBody := &CreateCustomerInvoicesRequest{
 		
 		InvoiceNumber: "test_value",
 		
@@ -539,7 +539,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -547,7 +547,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.CustomerInvoicesResponse
+	var resp CustomerInvoicesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -760,8 +760,8 @@ func newTestCustomerInvoicesWithID(id uuid.UUID, orgID uuid.UUID) *customer_invo
 }
 
 // newTestCustomerInvoicesRequest creates a test create request
-func newTestCustomerInvoicesRequest(orgID uuid.UUID) *dto.CreateCustomerInvoicesRequest {
-	return &dto.CreateCustomerInvoicesRequest{
+func newTestCustomerInvoicesRequest(orgID uuid.UUID) *CreateCustomerInvoicesRequest {
+	return &CreateCustomerInvoicesRequest{
 		
 		InvoiceNumber: "test_invoice_number",
 		

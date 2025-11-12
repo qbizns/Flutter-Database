@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/account_subtype"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := account_subtype.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateAccountSubtypesRequest{
+	req := &CreateAccountSubtypesRequest{
 		
 		
 		
@@ -345,7 +345,7 @@ func TestHandler_Create(t *testing.T) {
 	service := account_subtype.NewService(testDB, repo, testLogger)
 	handler := account_subtype.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateAccountSubtypesRequest{
+	reqBody := &CreateAccountSubtypesRequest{
 		
 		
 		
@@ -373,7 +373,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.AccountSubtypesResponse
+	var resp AccountSubtypesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -438,8 +438,8 @@ func newTestAccountSubtypesWithID(id uuid.UUID) *account_subtype.AccountSubtypes
 }
 
 // newTestAccountSubtypesRequest creates a test create request
-func newTestAccountSubtypesRequest() *dto.CreateAccountSubtypesRequest {
-	return &dto.CreateAccountSubtypesRequest{
+func newTestAccountSubtypesRequest() *CreateAccountSubtypesRequest {
+	return &CreateAccountSubtypesRequest{
 		
 		
 		

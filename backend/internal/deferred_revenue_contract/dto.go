@@ -1,4 +1,4 @@
-package dto
+package deferred_revenue_contract
 
 import (
 	"fmt"

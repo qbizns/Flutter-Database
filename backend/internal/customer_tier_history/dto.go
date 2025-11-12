@@ -1,4 +1,4 @@
-package dto
+package customer_tier_history
 
 import (
 	"fmt"

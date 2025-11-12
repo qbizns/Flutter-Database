@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/order_item_modifier"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/order_item_modifier"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for OrderItemModifiers
 type Service struct {
-	repo   *order_item_modifier.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new OrderItemModifiers service
-func NewService(repo *order_item_modifier.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *order_item_modifier.Repository, db *pgxpool.Pool, logger *
 }
 
 // Create creates a new order_item_modifiers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOrderItemModifiersRequest) (*dto.OrderItemModifiersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderItemModifiersRequest) (*OrderItemModifiersResponse, error) {
 	s.logger.Info("creating order_item_modifiers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 	
 
 	// Convert DTO to entity
-	entity := &order_item_modifier.OrderItemModifiers{
+	entity := &OrderItemModifiers{
 		OrganizationID: orgID,
 		
 		OrderItemId: req.OrderItemId,
@@ -104,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 }
 
 // GetByID retrieves a order_item_modifiers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.OrderItemModifiersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*OrderItemModifiersResponse, error) {
 	s.logger.Debug("getting order_item_modifiers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -141,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of order_item_modifiers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.OrderItemModifiersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*OrderItemModifiersListResponse, error) {
 	s.logger.Debug("listing order_item_modifiers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -179,16 +180,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.OrderItemModifiersResponse, len(entities))
+	items := make([]*OrderItemModifiersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.OrderItemModifiersListResponse{
+	return &OrderItemModifiersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -200,7 +201,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing order_item_modifiers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateOrderItemModifiersRequest) (*dto.OrderItemModifiersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateOrderItemModifiersRequest) (*OrderItemModifiersResponse, error) {
 	s.logger.Info("updating order_item_modifiers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -359,8 +360,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *order_item_modifier.OrderItemModifiers) *dto.OrderItemModifiersResponse {
-	return &dto.OrderItemModifiersResponse{
+func (s *Service) entityToResponse(entity *OrderItemModifiers) *OrderItemModifiersResponse {
+	return &OrderItemModifiersResponse{
 		
 		Id: entity.Id,
 		
@@ -407,7 +408,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for order_item_modifiers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *order_item_modifier.OrderItemModifiers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *OrderItemModifiers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

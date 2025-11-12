@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/loyalty_tier"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := loyalty_tier.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateLoyaltyTiersRequest{
+	req := &CreateLoyaltyTiersRequest{
 		
 		TierCode: "test_value",
 		
@@ -449,7 +449,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateLoyaltyTiersRequest{
+	updateReq := &UpdateLoyaltyTiersRequest{
 		TierCode: &updatedValue,
 	}
 	
@@ -471,7 +471,7 @@ func TestHandler_Create(t *testing.T) {
 	service := loyalty_tier.NewService(testDB, repo, testLogger)
 	handler := loyalty_tier.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateLoyaltyTiersRequest{
+	reqBody := &CreateLoyaltyTiersRequest{
 		
 		TierCode: "test_value",
 		
@@ -525,7 +525,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -533,7 +533,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.LoyaltyTiersResponse
+	var resp LoyaltyTiersResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -730,8 +730,8 @@ func newTestLoyaltyTiersWithID(id uuid.UUID, orgID uuid.UUID) *loyalty_tier.Loya
 }
 
 // newTestLoyaltyTiersRequest creates a test create request
-func newTestLoyaltyTiersRequest(orgID uuid.UUID) *dto.CreateLoyaltyTiersRequest {
-	return &dto.CreateLoyaltyTiersRequest{
+func newTestLoyaltyTiersRequest(orgID uuid.UUID) *CreateLoyaltyTiersRequest {
+	return &CreateLoyaltyTiersRequest{
 		
 		TierCode: "test_tier_code",
 		

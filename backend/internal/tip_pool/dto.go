@@ -1,4 +1,4 @@
-package dto
+package tip_pool
 
 import (
 	"fmt"

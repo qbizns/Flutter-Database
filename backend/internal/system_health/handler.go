@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/system_health"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/system_health"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for SystemHealth
 type Handler struct {
-	service *system_health.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new SystemHealth handler
-func NewHandler(service *system_health.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *system_health.Service, logger *logging.Logger) *Handler
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateSystemHealthRequest true "SystemHealth data"
-// @Success 201 {object} dto.SystemHealthResponse
+// @Param request body CreateSystemHealthRequest true "SystemHealth data"
+// @Success 201 {object} SystemHealthResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateSystemHealthRequest
+	var req CreateSystemHealthRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "SystemHealth ID"
-// @Success 200 {object} dto.SystemHealthResponse
+// @Success 200 {object} SystemHealthResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.SystemHealthListResponse
+// @Success 200 {object} SystemHealthListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "SystemHealth ID"
-// @Param request body dto.UpdateSystemHealthRequest true "SystemHealth data"
-// @Success 200 {object} dto.SystemHealthResponse
+// @Param request body UpdateSystemHealthRequest true "SystemHealth data"
+// @Success 200 {object} SystemHealthResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateSystemHealthRequest
+	var req UpdateSystemHealthRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

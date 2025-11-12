@@ -1,4 +1,4 @@
-package dto
+package tip_distribution
 
 import (
 	"fmt"

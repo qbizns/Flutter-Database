@@ -1,4 +1,4 @@
-package dto
+package file_attachment
 
 import (
 	"fmt"

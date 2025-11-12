@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/reservation"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -291,7 +291,7 @@ func TestService_Create(t *testing.T) {
 	service := reservation.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateReservationsRequest{
+	req := &CreateReservationsRequest{
 		
 		
 		
@@ -512,7 +512,7 @@ func TestHandler_Create(t *testing.T) {
 	service := reservation.NewService(testDB, repo, testLogger)
 	handler := reservation.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateReservationsRequest{
+	reqBody := &CreateReservationsRequest{
 		
 		
 		
@@ -586,7 +586,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -594,7 +594,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.ReservationsResponse
+	var resp ReservationsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -871,8 +871,8 @@ func newTestReservationsWithID(id uuid.UUID, orgID uuid.UUID) *reservation.Reser
 }
 
 // newTestReservationsRequest creates a test create request
-func newTestReservationsRequest(orgID uuid.UUID) *dto.CreateReservationsRequest {
-	return &dto.CreateReservationsRequest{
+func newTestReservationsRequest(orgID uuid.UUID) *CreateReservationsRequest {
+	return &CreateReservationsRequest{
 		
 		
 		

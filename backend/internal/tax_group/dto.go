@@ -1,4 +1,4 @@
-package dto
+package tax_group
 
 import (
 	"fmt"

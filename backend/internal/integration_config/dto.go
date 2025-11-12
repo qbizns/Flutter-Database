@@ -1,4 +1,4 @@
-package dto
+package integration_config
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package dto
+package e_invoicing_document_event
 
 import (
 	"fmt"

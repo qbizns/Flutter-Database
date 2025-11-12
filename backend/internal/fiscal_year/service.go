@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/fiscal_year"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/fiscal_year"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for FiscalYears
 type Service struct {
-	repo   *fiscal_year.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new FiscalYears service
-func NewService(repo *fiscal_year.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *fiscal_year.Repository, db *pgxpool.Pool, logger *logging.
 }
 
 // Create creates a new fiscal_years
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFiscalYearsRequest) (*dto.FiscalYearsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFiscalYearsRequest) (*FiscalYearsResponse, error) {
 	s.logger.Info("creating fiscal_years",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 	
 
 	// Convert DTO to entity
-	entity := &fiscal_year.FiscalYears{
+	entity := &FiscalYears{
 		OrganizationID: orgID,
 		
 		FiscalYear: req.FiscalYear,
@@ -106,7 +107,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 }
 
 // GetByID retrieves a fiscal_years by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.FiscalYearsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*FiscalYearsResponse, error) {
 	s.logger.Debug("getting fiscal_years",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -143,7 +144,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of fiscal_years records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.FiscalYearsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*FiscalYearsListResponse, error) {
 	s.logger.Debug("listing fiscal_years",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -181,16 +182,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.FiscalYearsResponse, len(entities))
+	items := make([]*FiscalYearsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.FiscalYearsListResponse{
+	return &FiscalYearsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -202,7 +203,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing fiscal_years
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateFiscalYearsRequest) (*dto.FiscalYearsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateFiscalYearsRequest) (*FiscalYearsResponse, error) {
 	s.logger.Info("updating fiscal_years",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -365,8 +366,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *fiscal_year.FiscalYears) *dto.FiscalYearsResponse {
-	return &dto.FiscalYearsResponse{
+func (s *Service) entityToResponse(entity *FiscalYears) *FiscalYearsResponse {
+	return &FiscalYearsResponse{
 		
 		Id: entity.Id,
 		
@@ -415,7 +416,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for fiscal_years
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *fiscal_year.FiscalYears) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *FiscalYears) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

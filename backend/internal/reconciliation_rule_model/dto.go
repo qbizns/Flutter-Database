@@ -1,4 +1,4 @@
-package dto
+package reconciliation_rule_model
 
 import (
 	"fmt"

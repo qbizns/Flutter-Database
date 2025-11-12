@@ -1,4 +1,4 @@
-package dto
+package audit_log
 
 import (
 	"fmt"

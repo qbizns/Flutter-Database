@@ -1,4 +1,4 @@
-package dto
+package table_section
 
 import (
 	"fmt"

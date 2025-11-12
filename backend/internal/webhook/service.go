@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/webhook"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/webhook"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Webhooks
 type Service struct {
-	repo   *webhook.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Webhooks service
-func NewService(repo *webhook.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *webhook.Repository, db *pgxpool.Pool, logger *logging.Logg
 }
 
 // Create creates a new webhooks
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateWebhooksRequest) (*dto.WebhooksResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateWebhooksRequest) (*WebhooksResponse, error) {
 	s.logger.Info("creating webhooks",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateWe
 	
 
 	// Convert DTO to entity
-	entity := &webhook.Webhooks{
+	entity := &Webhooks{
 		OrganizationID: orgID,
 		
 		WebhookName: req.WebhookName,
@@ -120,7 +121,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateWe
 }
 
 // GetByID retrieves a webhooks by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.WebhooksResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*WebhooksResponse, error) {
 	s.logger.Debug("getting webhooks",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -157,7 +158,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of webhooks records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.WebhooksListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*WebhooksListResponse, error) {
 	s.logger.Debug("listing webhooks",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -195,16 +196,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.WebhooksResponse, len(entities))
+	items := make([]*WebhooksResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.WebhooksListResponse{
+	return &WebhooksListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -216,7 +217,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing webhooks
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateWebhooksRequest) (*dto.WebhooksResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateWebhooksRequest) (*WebhooksResponse, error) {
 	s.logger.Info("updating webhooks",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -407,8 +408,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *webhook.Webhooks) *dto.WebhooksResponse {
-	return &dto.WebhooksResponse{
+func (s *Service) entityToResponse(entity *Webhooks) *WebhooksResponse {
+	return &WebhooksResponse{
 		
 		Id: entity.Id,
 		
@@ -471,7 +472,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for webhooks
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *webhook.Webhooks) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Webhooks) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

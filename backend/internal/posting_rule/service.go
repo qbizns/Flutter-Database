@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/posting_rule"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/posting_rule"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PostingRules
 type Service struct {
-	repo   *posting_rule.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PostingRules service
-func NewService(repo *posting_rule.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *posting_rule.Repository, db *pgxpool.Pool, logger *logging
 }
 
 // Create creates a new posting_rules
-func (s *Service) Create(ctx context.Context, req *dto.CreatePostingRulesRequest) (*dto.PostingRulesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreatePostingRulesRequest) (*PostingRulesResponse, error) {
 	s.logger.Info("creating posting_rules",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePostingRulesRequest
 	
 
 	// Convert DTO to entity
-	entity := &posting_rule.PostingRules{
+	entity := &PostingRules{
 		
 		
 		PostingProfileDocumentId: req.PostingProfileDocumentId,
@@ -105,7 +106,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePostingRulesRequest
 }
 
 // GetByID retrieves a posting_rules by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PostingRulesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*PostingRulesResponse, error) {
 	s.logger.Debug("getting posting_rules",
 		zap.String("id", id.String()),
 		
@@ -132,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PostingRulesR
 }
 
 // List retrieves a paginated list of posting_rules records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingRulesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*PostingRulesListResponse, error) {
 	s.logger.Debug("listing posting_rules",
 		
 		zap.Int("page", page),
@@ -165,16 +166,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingRulesL
 	}
 
 	// Convert to response
-	items := make([]*dto.PostingRulesResponse, len(entities))
+	items := make([]*PostingRulesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PostingRulesListResponse{
+	return &PostingRulesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -186,7 +187,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PostingRulesL
 }
 
 // Update updates an existing posting_rules
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdatePostingRulesRequest) (*dto.PostingRulesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRulesRequest) (*PostingRulesResponse, error) {
 	s.logger.Info("updating posting_rules",
 		zap.String("id", id.String()),
 		
@@ -332,8 +333,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *posting_rule.PostingRules) *dto.PostingRulesResponse {
-	return &dto.PostingRulesResponse{
+func (s *Service) entityToResponse(entity *PostingRules) *PostingRulesResponse {
+	return &PostingRulesResponse{
 		
 		Id: entity.Id,
 		
@@ -375,7 +376,7 @@ func (s *Service) entityToResponse(entity *posting_rule.PostingRules) *dto.Posti
 
 
 // validateBusinessRules validates business rules for posting_rules
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *posting_rule.PostingRules) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PostingRules) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

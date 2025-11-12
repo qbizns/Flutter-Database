@@ -1,4 +1,4 @@
-package dto
+package posting_validation_result
 
 import (
 	"fmt"

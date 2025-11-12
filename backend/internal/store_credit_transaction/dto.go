@@ -1,4 +1,4 @@
-package dto
+package store_credit_transaction
 
 import (
 	"fmt"

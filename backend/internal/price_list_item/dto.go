@@ -1,4 +1,4 @@
-package dto
+package price_list_item
 
 import (
 	"fmt"

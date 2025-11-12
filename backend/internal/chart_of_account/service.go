@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/chart_of_account"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/chart_of_account"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ChartOfAccounts
 type Service struct {
-	repo   *chart_of_account.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ChartOfAccounts service
-func NewService(repo *chart_of_account.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *chart_of_account.Repository, db *pgxpool.Pool, logger *log
 }
 
 // Create creates a new chart_of_accounts
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateChartOfAccountsRequest) (*dto.ChartOfAccountsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateChartOfAccountsRequest) (*ChartOfAccountsResponse, error) {
 	s.logger.Info("creating chart_of_accounts",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCh
 	
 
 	// Convert DTO to entity
-	entity := &chart_of_account.ChartOfAccounts{
+	entity := &ChartOfAccounts{
 		OrganizationID: orgID,
 		
 		AccountCode: req.AccountCode,
@@ -136,7 +137,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCh
 }
 
 // GetByID retrieves a chart_of_accounts by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ChartOfAccountsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ChartOfAccountsResponse, error) {
 	s.logger.Debug("getting chart_of_accounts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -173,7 +174,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of chart_of_accounts records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ChartOfAccountsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ChartOfAccountsListResponse, error) {
 	s.logger.Debug("listing chart_of_accounts",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -211,16 +212,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ChartOfAccountsResponse, len(entities))
+	items := make([]*ChartOfAccountsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ChartOfAccountsListResponse{
+	return &ChartOfAccountsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -232,7 +233,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing chart_of_accounts
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateChartOfAccountsRequest) (*dto.ChartOfAccountsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateChartOfAccountsRequest) (*ChartOfAccountsResponse, error) {
 	s.logger.Info("updating chart_of_accounts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -455,8 +456,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *chart_of_account.ChartOfAccounts) *dto.ChartOfAccountsResponse {
-	return &dto.ChartOfAccountsResponse{
+func (s *Service) entityToResponse(entity *ChartOfAccounts) *ChartOfAccountsResponse {
+	return &ChartOfAccountsResponse{
 		
 		Id: entity.Id,
 		
@@ -535,7 +536,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for chart_of_accounts
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *chart_of_account.ChartOfAccounts) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ChartOfAccounts) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/role_permission"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := role_permission.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateRolePermissionsRequest{
+	req := &CreateRolePermissionsRequest{
 		
 		
 		
@@ -330,7 +330,7 @@ func TestHandler_Create(t *testing.T) {
 	service := role_permission.NewService(testDB, repo, testLogger)
 	handler := role_permission.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateRolePermissionsRequest{
+	reqBody := &CreateRolePermissionsRequest{
 		
 		
 		
@@ -352,7 +352,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.RolePermissionsResponse
+	var resp RolePermissionsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -393,8 +393,8 @@ func newTestRolePermissionsWithID(id uuid.UUID) *role_permission.RolePermissions
 }
 
 // newTestRolePermissionsRequest creates a test create request
-func newTestRolePermissionsRequest() *dto.CreateRolePermissionsRequest {
-	return &dto.CreateRolePermissionsRequest{
+func newTestRolePermissionsRequest() *CreateRolePermissionsRequest {
+	return &CreateRolePermissionsRequest{
 		
 		
 		

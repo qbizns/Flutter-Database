@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/shift"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/shift"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Shifts
 type Service struct {
-	repo   *shift.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Shifts service
-func NewService(repo *shift.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *shift.Repository, db *pgxpool.Pool, logger *logging.Logger
 }
 
 // Create creates a new shifts
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateShiftsRequest) (*dto.ShiftsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateShiftsRequest) (*ShiftsResponse, error) {
 	s.logger.Info("creating shifts",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSh
 	
 
 	// Convert DTO to entity
-	entity := &shift.Shifts{
+	entity := &Shifts{
 		OrganizationID: orgID,
 		
 		LocationId: req.LocationId,
@@ -132,7 +133,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSh
 }
 
 // GetByID retrieves a shifts by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ShiftsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ShiftsResponse, error) {
 	s.logger.Debug("getting shifts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -169,7 +170,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of shifts records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ShiftsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ShiftsListResponse, error) {
 	s.logger.Debug("listing shifts",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -207,16 +208,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ShiftsResponse, len(entities))
+	items := make([]*ShiftsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ShiftsListResponse{
+	return &ShiftsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -228,7 +229,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing shifts
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateShiftsRequest) (*dto.ShiftsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateShiftsRequest) (*ShiftsResponse, error) {
 	s.logger.Info("updating shifts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -443,8 +444,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *shift.Shifts) *dto.ShiftsResponse {
-	return &dto.ShiftsResponse{
+func (s *Service) entityToResponse(entity *Shifts) *ShiftsResponse {
+	return &ShiftsResponse{
 		
 		Id: entity.Id,
 		
@@ -517,7 +518,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for shifts
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *shift.Shifts) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Shifts) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

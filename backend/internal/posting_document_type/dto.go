@@ -1,4 +1,4 @@
-package dto
+package posting_document_type
 
 import (
 	"fmt"

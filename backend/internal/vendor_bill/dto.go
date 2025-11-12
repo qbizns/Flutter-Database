@@ -1,4 +1,4 @@
-package dto
+package vendor_bill
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/journal_entry"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/journal_entry"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for JournalEntries
 type Service struct {
-	repo   *journal_entry.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new JournalEntries service
-func NewService(repo *journal_entry.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *journal_entry.Repository, db *pgxpool.Pool, logger *loggin
 }
 
 // Create creates a new journal_entries
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateJournalEntriesRequest) (*dto.JournalEntriesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateJournalEntriesRequest) (*JournalEntriesResponse, error) {
 	s.logger.Info("creating journal_entries",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateJo
 	
 
 	// Convert DTO to entity
-	entity := &journal_entry.JournalEntries{
+	entity := &JournalEntries{
 		OrganizationID: orgID,
 		
 		EntryNumber: req.EntryNumber,
@@ -142,7 +143,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateJo
 }
 
 // GetByID retrieves a journal_entries by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.JournalEntriesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*JournalEntriesResponse, error) {
 	s.logger.Debug("getting journal_entries",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -179,7 +180,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of journal_entries records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.JournalEntriesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*JournalEntriesListResponse, error) {
 	s.logger.Debug("listing journal_entries",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -217,16 +218,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.JournalEntriesResponse, len(entities))
+	items := make([]*JournalEntriesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.JournalEntriesListResponse{
+	return &JournalEntriesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -238,7 +239,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing journal_entries
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateJournalEntriesRequest) (*dto.JournalEntriesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateJournalEntriesRequest) (*JournalEntriesResponse, error) {
 	s.logger.Info("updating journal_entries",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -473,8 +474,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *journal_entry.JournalEntries) *dto.JournalEntriesResponse {
-	return &dto.JournalEntriesResponse{
+func (s *Service) entityToResponse(entity *JournalEntries) *JournalEntriesResponse {
+	return &JournalEntriesResponse{
 		
 		Id: entity.Id,
 		
@@ -559,7 +560,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for journal_entries
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *journal_entry.JournalEntries) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *JournalEntries) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

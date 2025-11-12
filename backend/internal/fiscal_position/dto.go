@@ -1,4 +1,4 @@
-package dto
+package fiscal_position
 
 import (
 	"fmt"

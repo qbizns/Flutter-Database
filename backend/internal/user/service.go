@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/user"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/user"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Users
 type Service struct {
-	repo   *user.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Users service
-func NewService(repo *user.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *user.Repository, db *pgxpool.Pool, logger *logging.Logger)
 }
 
 // Create creates a new users
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateUsersRequest) (*dto.UsersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateUsersRequest) (*UsersResponse, error) {
 	s.logger.Info("creating users",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateUs
 	
 
 	// Convert DTO to entity
-	entity := &user.Users{
+	entity := &Users{
 		OrganizationID: orgID,
 		
 		Email: req.Email,
@@ -122,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateUs
 }
 
 // GetByID retrieves a users by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.UsersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*UsersResponse, error) {
 	s.logger.Debug("getting users",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -159,7 +160,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of users records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.UsersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*UsersListResponse, error) {
 	s.logger.Debug("listing users",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -197,16 +198,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.UsersResponse, len(entities))
+	items := make([]*UsersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.UsersListResponse{
+	return &UsersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -218,7 +219,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing users
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateUsersRequest) (*dto.UsersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateUsersRequest) (*UsersResponse, error) {
 	s.logger.Info("updating users",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -413,8 +414,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *user.Users) *dto.UsersResponse {
-	return &dto.UsersResponse{
+func (s *Service) entityToResponse(entity *Users) *UsersResponse {
+	return &UsersResponse{
 		
 		Id: entity.Id,
 		
@@ -479,7 +480,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for users
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *user.Users) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Users) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -1,4 +1,4 @@
-package dto
+package stock_adjustment_reason
 
 import (
 	"fmt"

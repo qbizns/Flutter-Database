@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/employee_schedule"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/employee_schedule"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for EmployeeSchedules
 type Service struct {
-	repo   *employee_schedule.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new EmployeeSchedules service
-func NewService(repo *employee_schedule.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *employee_schedule.Repository, db *pgxpool.Pool, logger *lo
 }
 
 // Create creates a new employee_schedules
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEmployeeSchedulesRequest) (*dto.EmployeeSchedulesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEmployeeSchedulesRequest) (*EmployeeSchedulesResponse, error) {
 	s.logger.Info("creating employee_schedules",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEm
 	
 
 	// Convert DTO to entity
-	entity := &employee_schedule.EmployeeSchedules{
+	entity := &EmployeeSchedules{
 		OrganizationID: orgID,
 		
 		LocationId: req.LocationId,
@@ -122,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEm
 }
 
 // GetByID retrieves a employee_schedules by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.EmployeeSchedulesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*EmployeeSchedulesResponse, error) {
 	s.logger.Debug("getting employee_schedules",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -159,7 +160,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of employee_schedules records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.EmployeeSchedulesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*EmployeeSchedulesListResponse, error) {
 	s.logger.Debug("listing employee_schedules",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -197,16 +198,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.EmployeeSchedulesResponse, len(entities))
+	items := make([]*EmployeeSchedulesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.EmployeeSchedulesListResponse{
+	return &EmployeeSchedulesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -218,7 +219,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing employee_schedules
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateEmployeeSchedulesRequest) (*dto.EmployeeSchedulesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateEmployeeSchedulesRequest) (*EmployeeSchedulesResponse, error) {
 	s.logger.Info("updating employee_schedules",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -413,8 +414,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *employee_schedule.EmployeeSchedules) *dto.EmployeeSchedulesResponse {
-	return &dto.EmployeeSchedulesResponse{
+func (s *Service) entityToResponse(entity *EmployeeSchedules) *EmployeeSchedulesResponse {
+	return &EmployeeSchedulesResponse{
 		
 		Id: entity.Id,
 		
@@ -479,7 +480,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for employee_schedules
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *employee_schedule.EmployeeSchedules) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *EmployeeSchedules) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -1,4 +1,4 @@
-package dto
+package cycle_count
 
 import (
 	"fmt"

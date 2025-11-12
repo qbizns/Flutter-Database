@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/tax_group"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/tax_group"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for TaxGroups
 type Service struct {
-	repo   *tax_group.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new TaxGroups service
-func NewService(repo *tax_group.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *tax_group.Repository, db *pgxpool.Pool, logger *logging.Lo
 }
 
 // Create creates a new tax_groups
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTaxGroupsRequest) (*dto.TaxGroupsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTaxGroupsRequest) (*TaxGroupsResponse, error) {
 	s.logger.Info("creating tax_groups",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTa
 	
 
 	// Convert DTO to entity
-	entity := &tax_group.TaxGroups{
+	entity := &TaxGroups{
 		OrganizationID: orgID,
 		
 		GroupCode: req.GroupCode,
@@ -96,7 +97,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTa
 }
 
 // GetByID retrieves a tax_groups by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.TaxGroupsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*TaxGroupsResponse, error) {
 	s.logger.Debug("getting tax_groups",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -133,7 +134,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of tax_groups records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.TaxGroupsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*TaxGroupsListResponse, error) {
 	s.logger.Debug("listing tax_groups",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -171,16 +172,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.TaxGroupsResponse, len(entities))
+	items := make([]*TaxGroupsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.TaxGroupsListResponse{
+	return &TaxGroupsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -192,7 +193,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing tax_groups
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateTaxGroupsRequest) (*dto.TaxGroupsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateTaxGroupsRequest) (*TaxGroupsResponse, error) {
 	s.logger.Info("updating tax_groups",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -335,8 +336,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *tax_group.TaxGroups) *dto.TaxGroupsResponse {
-	return &dto.TaxGroupsResponse{
+func (s *Service) entityToResponse(entity *TaxGroups) *TaxGroupsResponse {
+	return &TaxGroupsResponse{
 		
 		Id: entity.Id,
 		
@@ -375,7 +376,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for tax_groups
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *tax_group.TaxGroups) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *TaxGroups) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/tip_distribution"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/tip_distribution"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for TipDistributions
 type Service struct {
-	repo   *tip_distribution.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new TipDistributions service
-func NewService(repo *tip_distribution.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *tip_distribution.Repository, db *pgxpool.Pool, logger *log
 }
 
 // Create creates a new tip_distributions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTipDistributionsRequest) (*dto.TipDistributionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTipDistributionsRequest) (*TipDistributionsResponse, error) {
 	s.logger.Info("creating tip_distributions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTi
 	
 
 	// Convert DTO to entity
-	entity := &tip_distribution.TipDistributions{
+	entity := &TipDistributions{
 		OrganizationID: orgID,
 		
 		LocationId: req.LocationId,
@@ -132,7 +133,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateTi
 }
 
 // GetByID retrieves a tip_distributions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.TipDistributionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*TipDistributionsResponse, error) {
 	s.logger.Debug("getting tip_distributions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -169,7 +170,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of tip_distributions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.TipDistributionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*TipDistributionsListResponse, error) {
 	s.logger.Debug("listing tip_distributions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -207,16 +208,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.TipDistributionsResponse, len(entities))
+	items := make([]*TipDistributionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.TipDistributionsListResponse{
+	return &TipDistributionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -228,7 +229,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing tip_distributions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateTipDistributionsRequest) (*dto.TipDistributionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateTipDistributionsRequest) (*TipDistributionsResponse, error) {
 	s.logger.Info("updating tip_distributions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -443,8 +444,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *tip_distribution.TipDistributions) *dto.TipDistributionsResponse {
-	return &dto.TipDistributionsResponse{
+func (s *Service) entityToResponse(entity *TipDistributions) *TipDistributionsResponse {
+	return &TipDistributionsResponse{
 		
 		Id: entity.Id,
 		
@@ -519,7 +520,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for tip_distributions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *tip_distribution.TipDistributions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *TipDistributions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

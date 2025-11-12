@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/user_role"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := user_role.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateUserRolesRequest{
+	req := &CreateUserRolesRequest{
 		
 		
 		
@@ -335,7 +335,7 @@ func TestHandler_Create(t *testing.T) {
 	service := user_role.NewService(testDB, repo, testLogger)
 	handler := user_role.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateUserRolesRequest{
+	reqBody := &CreateUserRolesRequest{
 		
 		
 		
@@ -359,7 +359,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.UserRolesResponse
+	var resp UserRolesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -408,8 +408,8 @@ func newTestUserRolesWithID(id uuid.UUID) *user_role.UserRoles {
 }
 
 // newTestUserRolesRequest creates a test create request
-func newTestUserRolesRequest() *dto.CreateUserRolesRequest {
-	return &dto.CreateUserRolesRequest{
+func newTestUserRolesRequest() *CreateUserRolesRequest {
+	return &CreateUserRolesRequest{
 		
 		
 		

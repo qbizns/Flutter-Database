@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/payment_term_line"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/payment_term_line"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PaymentTermLines
 type Service struct {
-	repo   *payment_term_line.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PaymentTermLines service
-func NewService(repo *payment_term_line.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *payment_term_line.Repository, db *pgxpool.Pool, logger *lo
 }
 
 // Create creates a new payment_term_lines
-func (s *Service) Create(ctx context.Context, req *dto.CreatePaymentTermLinesRequest) (*dto.PaymentTermLinesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreatePaymentTermLinesRequest) (*PaymentTermLinesResponse, error) {
 	s.logger.Info("creating payment_term_lines",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePaymentTermLinesReq
 	
 
 	// Convert DTO to entity
-	entity := &payment_term_line.PaymentTermLines{
+	entity := &PaymentTermLines{
 		
 		
 		PaymentTermId: req.PaymentTermId,
@@ -95,7 +96,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePaymentTermLinesReq
 }
 
 // GetByID retrieves a payment_term_lines by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PaymentTermLinesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*PaymentTermLinesResponse, error) {
 	s.logger.Debug("getting payment_term_lines",
 		zap.String("id", id.String()),
 		
@@ -122,7 +123,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PaymentTermLi
 }
 
 // List retrieves a paginated list of payment_term_lines records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.PaymentTermLinesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*PaymentTermLinesListResponse, error) {
 	s.logger.Debug("listing payment_term_lines",
 		
 		zap.Int("page", page),
@@ -155,16 +156,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PaymentTermLi
 	}
 
 	// Convert to response
-	items := make([]*dto.PaymentTermLinesResponse, len(entities))
+	items := make([]*PaymentTermLinesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PaymentTermLinesListResponse{
+	return &PaymentTermLinesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -176,7 +177,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PaymentTermLi
 }
 
 // Update updates an existing payment_term_lines
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdatePaymentTermLinesRequest) (*dto.PaymentTermLinesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePaymentTermLinesRequest) (*PaymentTermLinesResponse, error) {
 	s.logger.Info("updating payment_term_lines",
 		zap.String("id", id.String()),
 		
@@ -302,8 +303,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *payment_term_line.PaymentTermLines) *dto.PaymentTermLinesResponse {
-	return &dto.PaymentTermLinesResponse{
+func (s *Service) entityToResponse(entity *PaymentTermLines) *PaymentTermLinesResponse {
+	return &PaymentTermLinesResponse{
 		
 		Id: entity.Id,
 		
@@ -333,7 +334,7 @@ func (s *Service) entityToResponse(entity *payment_term_line.PaymentTermLines) *
 
 
 // validateBusinessRules validates business rules for payment_term_lines
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *payment_term_line.PaymentTermLines) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PaymentTermLines) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

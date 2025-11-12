@@ -1,4 +1,4 @@
-package dto
+package goods_receipt_item
 
 import (
 	"fmt"

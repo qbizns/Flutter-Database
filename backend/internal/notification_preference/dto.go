@@ -1,4 +1,4 @@
-package dto
+package notification_preference
 
 import (
 	"fmt"

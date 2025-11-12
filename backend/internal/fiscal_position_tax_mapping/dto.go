@@ -1,4 +1,4 @@
-package dto
+package fiscal_position_tax_mapping
 
 import (
 	"fmt"

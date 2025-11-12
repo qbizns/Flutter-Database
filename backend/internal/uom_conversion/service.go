@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/uom_conversion"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/uom_conversion"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for UomConversions
 type Service struct {
-	repo   *uom_conversion.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new UomConversions service
-func NewService(repo *uom_conversion.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *uom_conversion.Repository, db *pgxpool.Pool, logger *loggi
 }
 
 // Create creates a new uom_conversions
-func (s *Service) Create(ctx context.Context, req *dto.CreateUomConversionsRequest) (*dto.UomConversionsResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateUomConversionsRequest) (*UomConversionsResponse, error) {
 	s.logger.Info("creating uom_conversions",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateUomConversionsReque
 	
 
 	// Convert DTO to entity
-	entity := &uom_conversion.UomConversions{
+	entity := &UomConversions{
 		
 		
 		FromUomId: req.FromUomId,
@@ -85,7 +86,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateUomConversionsReque
 }
 
 // GetByID retrieves a uom_conversions by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.UomConversionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*UomConversionsResponse, error) {
 	s.logger.Debug("getting uom_conversions",
 		zap.String("id", id.String()),
 		
@@ -112,7 +113,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.UomConversion
 }
 
 // List retrieves a paginated list of uom_conversions records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.UomConversionsListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*UomConversionsListResponse, error) {
 	s.logger.Debug("listing uom_conversions",
 		
 		zap.Int("page", page),
@@ -145,16 +146,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.UomConversion
 	}
 
 	// Convert to response
-	items := make([]*dto.UomConversionsResponse, len(entities))
+	items := make([]*UomConversionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.UomConversionsListResponse{
+	return &UomConversionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -166,7 +167,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.UomConversion
 }
 
 // Update updates an existing uom_conversions
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateUomConversionsRequest) (*dto.UomConversionsResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUomConversionsRequest) (*UomConversionsResponse, error) {
 	s.logger.Info("updating uom_conversions",
 		zap.String("id", id.String()),
 		
@@ -272,8 +273,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *uom_conversion.UomConversions) *dto.UomConversionsResponse {
-	return &dto.UomConversionsResponse{
+func (s *Service) entityToResponse(entity *UomConversions) *UomConversionsResponse {
+	return &UomConversionsResponse{
 		
 		Id: entity.Id,
 		
@@ -293,7 +294,7 @@ func (s *Service) entityToResponse(entity *uom_conversion.UomConversions) *dto.U
 
 
 // validateBusinessRules validates business rules for uom_conversions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *uom_conversion.UomConversions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *UomConversions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

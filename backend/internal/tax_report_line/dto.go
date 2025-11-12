@@ -1,4 +1,4 @@
-package dto
+package tax_report_line
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/permission"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/permission"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Permissions
 type Service struct {
-	repo   *permission.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Permissions service
-func NewService(repo *permission.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *permission.Repository, db *pgxpool.Pool, logger *logging.L
 }
 
 // Create creates a new permissions
-func (s *Service) Create(ctx context.Context, req *dto.CreatePermissionsRequest) (*dto.PermissionsResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreatePermissionsRequest) (*PermissionsResponse, error) {
 	s.logger.Info("creating permissions",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePermissionsRequest)
 	
 
 	// Convert DTO to entity
-	entity := &permission.Permissions{
+	entity := &Permissions{
 		
 		
 		Name: req.Name,
@@ -91,7 +92,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePermissionsRequest)
 }
 
 // GetByID retrieves a permissions by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PermissionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*PermissionsResponse, error) {
 	s.logger.Debug("getting permissions",
 		zap.String("id", id.String()),
 		
@@ -118,7 +119,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PermissionsRe
 }
 
 // List retrieves a paginated list of permissions records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.PermissionsListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*PermissionsListResponse, error) {
 	s.logger.Debug("listing permissions",
 		
 		zap.Int("page", page),
@@ -151,16 +152,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PermissionsLi
 	}
 
 	// Convert to response
-	items := make([]*dto.PermissionsResponse, len(entities))
+	items := make([]*PermissionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PermissionsListResponse{
+	return &PermissionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -172,7 +173,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PermissionsLi
 }
 
 // Update updates an existing permissions
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdatePermissionsRequest) (*dto.PermissionsResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePermissionsRequest) (*PermissionsResponse, error) {
 	s.logger.Info("updating permissions",
 		zap.String("id", id.String()),
 		
@@ -290,8 +291,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *permission.Permissions) *dto.PermissionsResponse {
-	return &dto.PermissionsResponse{
+func (s *Service) entityToResponse(entity *Permissions) *PermissionsResponse {
+	return &PermissionsResponse{
 		
 		Id: entity.Id,
 		
@@ -317,7 +318,7 @@ func (s *Service) entityToResponse(entity *permission.Permissions) *dto.Permissi
 
 
 // validateBusinessRules validates business rules for permissions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *permission.Permissions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Permissions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/chart_of_account"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/chart_of_account"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for ChartOfAccounts
 type Handler struct {
-	service *chart_of_account.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new ChartOfAccounts handler
-func NewHandler(service *chart_of_account.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *chart_of_account.Service, logger *logging.Logger) *Hand
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateChartOfAccountsRequest true "ChartOfAccounts data"
-// @Success 201 {object} dto.ChartOfAccountsResponse
+// @Param request body CreateChartOfAccountsRequest true "ChartOfAccounts data"
+// @Success 201 {object} ChartOfAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateChartOfAccountsRequest
+	var req CreateChartOfAccountsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "ChartOfAccounts ID"
-// @Success 200 {object} dto.ChartOfAccountsResponse
+// @Success 200 {object} ChartOfAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.ChartOfAccountsListResponse
+// @Success 200 {object} ChartOfAccountsListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "ChartOfAccounts ID"
-// @Param request body dto.UpdateChartOfAccountsRequest true "ChartOfAccounts data"
-// @Success 200 {object} dto.ChartOfAccountsResponse
+// @Param request body UpdateChartOfAccountsRequest true "ChartOfAccounts data"
+// @Success 200 {object} ChartOfAccountsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateChartOfAccountsRequest
+	var req UpdateChartOfAccountsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

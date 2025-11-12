@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/restaurant_table"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/restaurant_table"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for RestaurantTables
 type Service struct {
-	repo   *restaurant_table.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new RestaurantTables service
-func NewService(repo *restaurant_table.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *restaurant_table.Repository, db *pgxpool.Pool, logger *log
 }
 
 // Create creates a new restaurant_tables
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRestaurantTablesRequest) (*dto.RestaurantTablesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateRestaurantTablesRequest) (*RestaurantTablesResponse, error) {
 	s.logger.Info("creating restaurant_tables",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 	
 
 	// Convert DTO to entity
-	entity := &restaurant_table.RestaurantTables{
+	entity := &RestaurantTables{
 		OrganizationID: orgID,
 		
 		LocationId: req.LocationId,
@@ -134,7 +135,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 }
 
 // GetByID retrieves a restaurant_tables by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.RestaurantTablesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*RestaurantTablesResponse, error) {
 	s.logger.Debug("getting restaurant_tables",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -171,7 +172,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of restaurant_tables records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.RestaurantTablesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*RestaurantTablesListResponse, error) {
 	s.logger.Debug("listing restaurant_tables",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -209,16 +210,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.RestaurantTablesResponse, len(entities))
+	items := make([]*RestaurantTablesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.RestaurantTablesListResponse{
+	return &RestaurantTablesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -230,7 +231,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing restaurant_tables
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateRestaurantTablesRequest) (*dto.RestaurantTablesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateRestaurantTablesRequest) (*RestaurantTablesResponse, error) {
 	s.logger.Info("updating restaurant_tables",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -449,8 +450,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *restaurant_table.RestaurantTables) *dto.RestaurantTablesResponse {
-	return &dto.RestaurantTablesResponse{
+func (s *Service) entityToResponse(entity *RestaurantTables) *RestaurantTablesResponse {
+	return &RestaurantTablesResponse{
 		
 		Id: entity.Id,
 		
@@ -527,7 +528,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for restaurant_tables
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *restaurant_table.RestaurantTables) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *RestaurantTables) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

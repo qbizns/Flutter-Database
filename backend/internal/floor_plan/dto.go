@@ -1,4 +1,4 @@
-package dto
+package floor_plan
 
 import (
 	"fmt"

@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/sale_return"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/sale_return"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for SaleReturns
 type Handler struct {
-	service *sale_return.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new SaleReturns handler
-func NewHandler(service *sale_return.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *sale_return.Service, logger *logging.Logger) *Handler {
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateSaleReturnsRequest true "SaleReturns data"
-// @Success 201 {object} dto.SaleReturnsResponse
+// @Param request body CreateSaleReturnsRequest true "SaleReturns data"
+// @Success 201 {object} SaleReturnsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -55,7 +53,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateSaleReturnsRequest
+	var req CreateSaleReturnsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -82,7 +80,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "SaleReturns ID"
-// @Success 200 {object} dto.SaleReturnsResponse
+// @Success 200 {object} SaleReturnsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -129,7 +127,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.SaleReturnsListResponse
+// @Success 200 {object} SaleReturnsListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -179,8 +177,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "SaleReturns ID"
-// @Param request body dto.UpdateSaleReturnsRequest true "SaleReturns data"
-// @Success 200 {object} dto.SaleReturnsResponse
+// @Param request body UpdateSaleReturnsRequest true "SaleReturns data"
+// @Success 200 {object} SaleReturnsResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -207,7 +205,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateSaleReturnsRequest
+	var req UpdateSaleReturnsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

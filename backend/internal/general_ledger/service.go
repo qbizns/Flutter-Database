@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/general_ledger"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/general_ledger"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for GeneralLedger
 type Service struct {
-	repo   *general_ledger.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new GeneralLedger service
-func NewService(repo *general_ledger.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *general_ledger.Repository, db *pgxpool.Pool, logger *loggi
 }
 
 // Create creates a new general_ledger
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGeneralLedgerRequest) (*dto.GeneralLedgerResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGeneralLedgerRequest) (*GeneralLedgerResponse, error) {
 	s.logger.Info("creating general_ledger",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGe
 	
 
 	// Convert DTO to entity
-	entity := &general_ledger.GeneralLedger{
+	entity := &GeneralLedger{
 		OrganizationID: orgID,
 		
 		JournalEntryId: req.JournalEntryId,
@@ -138,7 +139,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGe
 }
 
 // GetByID retrieves a general_ledger by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.GeneralLedgerResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*GeneralLedgerResponse, error) {
 	s.logger.Debug("getting general_ledger",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -175,7 +176,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of general_ledger records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.GeneralLedgerListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*GeneralLedgerListResponse, error) {
 	s.logger.Debug("listing general_ledger",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -213,16 +214,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.GeneralLedgerResponse, len(entities))
+	items := make([]*GeneralLedgerResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.GeneralLedgerListResponse{
+	return &GeneralLedgerListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -234,7 +235,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing general_ledger
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateGeneralLedgerRequest) (*dto.GeneralLedgerResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateGeneralLedgerRequest) (*GeneralLedgerResponse, error) {
 	s.logger.Info("updating general_ledger",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -461,8 +462,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *general_ledger.GeneralLedger) *dto.GeneralLedgerResponse {
-	return &dto.GeneralLedgerResponse{
+func (s *Service) entityToResponse(entity *GeneralLedger) *GeneralLedgerResponse {
+	return &GeneralLedgerResponse{
 		
 		Id: entity.Id,
 		
@@ -539,7 +540,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for general_ledger
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *general_ledger.GeneralLedger) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *GeneralLedger) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

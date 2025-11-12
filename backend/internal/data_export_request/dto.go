@@ -1,4 +1,4 @@
-package dto
+package data_export_request
 
 import (
 	"fmt"

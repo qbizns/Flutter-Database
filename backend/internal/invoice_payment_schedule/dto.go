@@ -1,4 +1,4 @@
-package dto
+package invoice_payment_schedule
 
 import (
 	"fmt"

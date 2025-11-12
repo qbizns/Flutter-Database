@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/localization_package"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/localization_package"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for LocalizationPackages
 type Service struct {
-	repo   *localization_package.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new LocalizationPackages service
-func NewService(repo *localization_package.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *localization_package.Repository, db *pgxpool.Pool, logger 
 }
 
 // Create creates a new localization_packages
-func (s *Service) Create(ctx context.Context, req *dto.CreateLocalizationPackagesRequest) (*dto.LocalizationPackagesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateLocalizationPackagesRequest) (*LocalizationPackagesResponse, error) {
 	s.logger.Info("creating localization_packages",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateLocalizationPackage
 	
 
 	// Convert DTO to entity
-	entity := &localization_package.LocalizationPackages{
+	entity := &LocalizationPackages{
 		
 		
 		PackageCode: req.PackageCode,
@@ -93,7 +94,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateLocalizationPackage
 }
 
 // GetByID retrieves a localization_packages by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.LocalizationPackagesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*LocalizationPackagesResponse, error) {
 	s.logger.Debug("getting localization_packages",
 		zap.String("id", id.String()),
 		
@@ -120,7 +121,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.LocalizationP
 }
 
 // List retrieves a paginated list of localization_packages records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.LocalizationPackagesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*LocalizationPackagesListResponse, error) {
 	s.logger.Debug("listing localization_packages",
 		
 		zap.Int("page", page),
@@ -153,16 +154,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.LocalizationP
 	}
 
 	// Convert to response
-	items := make([]*dto.LocalizationPackagesResponse, len(entities))
+	items := make([]*LocalizationPackagesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.LocalizationPackagesListResponse{
+	return &LocalizationPackagesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -174,7 +175,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.LocalizationP
 }
 
 // Update updates an existing localization_packages
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateLocalizationPackagesRequest) (*dto.LocalizationPackagesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateLocalizationPackagesRequest) (*LocalizationPackagesResponse, error) {
 	s.logger.Info("updating localization_packages",
 		zap.String("id", id.String()),
 		
@@ -296,8 +297,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *localization_package.LocalizationPackages) *dto.LocalizationPackagesResponse {
-	return &dto.LocalizationPackagesResponse{
+func (s *Service) entityToResponse(entity *LocalizationPackages) *LocalizationPackagesResponse {
+	return &LocalizationPackagesResponse{
 		
 		Id: entity.Id,
 		
@@ -327,7 +328,7 @@ func (s *Service) entityToResponse(entity *localization_package.LocalizationPack
 
 
 // validateBusinessRules validates business rules for localization_packages
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *localization_package.LocalizationPackages) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *LocalizationPackages) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

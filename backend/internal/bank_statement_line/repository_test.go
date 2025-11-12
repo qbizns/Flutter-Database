@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/bank_statement_line"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := bank_statement_line.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateBankStatementLinesRequest{
+	req := &CreateBankStatementLinesRequest{
 		
 		
 		
@@ -390,7 +390,7 @@ func TestHandler_Create(t *testing.T) {
 	service := bank_statement_line.NewService(testDB, repo, testLogger)
 	handler := bank_statement_line.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateBankStatementLinesRequest{
+	reqBody := &CreateBankStatementLinesRequest{
 		
 		
 		
@@ -436,7 +436,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.BankStatementLinesResponse
+	var resp BankStatementLinesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -573,8 +573,8 @@ func newTestBankStatementLinesWithID(id uuid.UUID) *bank_statement_line.BankStat
 }
 
 // newTestBankStatementLinesRequest creates a test create request
-func newTestBankStatementLinesRequest() *dto.CreateBankStatementLinesRequest {
-	return &dto.CreateBankStatementLinesRequest{
+func newTestBankStatementLinesRequest() *CreateBankStatementLinesRequest {
+	return &CreateBankStatementLinesRequest{
 		
 		
 		

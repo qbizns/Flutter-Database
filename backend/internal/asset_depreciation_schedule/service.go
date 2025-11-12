@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/asset_depreciation_schedule"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/asset_depreciation_schedule"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for AssetDepreciationSchedule
 type Service struct {
-	repo   *asset_depreciation_schedule.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new AssetDepreciationSchedule service
-func NewService(repo *asset_depreciation_schedule.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *asset_depreciation_schedule.Repository, db *pgxpool.Pool, 
 }
 
 // Create creates a new asset_depreciation_schedule
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateAssetDepreciationScheduleRequest) (*dto.AssetDepreciationScheduleResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAssetDepreciationScheduleRequest) (*AssetDepreciationScheduleResponse, error) {
 	s.logger.Info("creating asset_depreciation_schedule",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateAs
 	
 
 	// Convert DTO to entity
-	entity := &asset_depreciation_schedule.AssetDepreciationSchedule{
+	entity := &AssetDepreciationSchedule{
 		OrganizationID: orgID,
 		
 		FixedAssetId: req.FixedAssetId,
@@ -110,7 +111,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateAs
 }
 
 // GetByID retrieves a asset_depreciation_schedule by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.AssetDepreciationScheduleResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*AssetDepreciationScheduleResponse, error) {
 	s.logger.Debug("getting asset_depreciation_schedule",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -147,7 +148,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of asset_depreciation_schedule records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.AssetDepreciationScheduleListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*AssetDepreciationScheduleListResponse, error) {
 	s.logger.Debug("listing asset_depreciation_schedule",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -185,16 +186,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.AssetDepreciationScheduleResponse, len(entities))
+	items := make([]*AssetDepreciationScheduleResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.AssetDepreciationScheduleListResponse{
+	return &AssetDepreciationScheduleListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -206,7 +207,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing asset_depreciation_schedule
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateAssetDepreciationScheduleRequest) (*dto.AssetDepreciationScheduleResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateAssetDepreciationScheduleRequest) (*AssetDepreciationScheduleResponse, error) {
 	s.logger.Info("updating asset_depreciation_schedule",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -377,8 +378,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *asset_depreciation_schedule.AssetDepreciationSchedule) *dto.AssetDepreciationScheduleResponse {
-	return &dto.AssetDepreciationScheduleResponse{
+func (s *Service) entityToResponse(entity *AssetDepreciationSchedule) *AssetDepreciationScheduleResponse {
+	return &AssetDepreciationScheduleResponse{
 		
 		Id: entity.Id,
 		
@@ -427,7 +428,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for asset_depreciation_schedule
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *asset_depreciation_schedule.AssetDepreciationSchedule) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *AssetDepreciationSchedule) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

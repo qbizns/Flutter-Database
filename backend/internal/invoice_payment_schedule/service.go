@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/invoice_payment_schedule"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/invoice_payment_schedule"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for InvoicePaymentSchedules
 type Service struct {
-	repo   *invoice_payment_schedule.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new InvoicePaymentSchedules service
-func NewService(repo *invoice_payment_schedule.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *invoice_payment_schedule.Repository, db *pgxpool.Pool, log
 }
 
 // Create creates a new invoice_payment_schedules
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateInvoicePaymentSchedulesRequest) (*dto.InvoicePaymentSchedulesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvoicePaymentSchedulesRequest) (*InvoicePaymentSchedulesResponse, error) {
 	s.logger.Info("creating invoice_payment_schedules",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 	
 
 	// Convert DTO to entity
-	entity := &invoice_payment_schedule.InvoicePaymentSchedules{
+	entity := &InvoicePaymentSchedules{
 		OrganizationID: orgID,
 		
 		SourceType: req.SourceType,
@@ -98,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 }
 
 // GetByID retrieves a invoice_payment_schedules by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.InvoicePaymentSchedulesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*InvoicePaymentSchedulesResponse, error) {
 	s.logger.Debug("getting invoice_payment_schedules",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -135,7 +136,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of invoice_payment_schedules records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.InvoicePaymentSchedulesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*InvoicePaymentSchedulesListResponse, error) {
 	s.logger.Debug("listing invoice_payment_schedules",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -173,16 +174,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.InvoicePaymentSchedulesResponse, len(entities))
+	items := make([]*InvoicePaymentSchedulesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.InvoicePaymentSchedulesListResponse{
+	return &InvoicePaymentSchedulesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -194,7 +195,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing invoice_payment_schedules
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateInvoicePaymentSchedulesRequest) (*dto.InvoicePaymentSchedulesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateInvoicePaymentSchedulesRequest) (*InvoicePaymentSchedulesResponse, error) {
 	s.logger.Info("updating invoice_payment_schedules",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -341,8 +342,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *invoice_payment_schedule.InvoicePaymentSchedules) *dto.InvoicePaymentSchedulesResponse {
-	return &dto.InvoicePaymentSchedulesResponse{
+func (s *Service) entityToResponse(entity *InvoicePaymentSchedules) *InvoicePaymentSchedulesResponse {
+	return &InvoicePaymentSchedulesResponse{
 		
 		Id: entity.Id,
 		
@@ -383,7 +384,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for invoice_payment_schedules
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *invoice_payment_schedule.InvoicePaymentSchedules) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *InvoicePaymentSchedules) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

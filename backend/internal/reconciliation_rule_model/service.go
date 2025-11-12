@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/reconciliation_rule_model"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/reconciliation_rule_model"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ReconciliationRuleModels
 type Service struct {
-	repo   *reconciliation_rule_model.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ReconciliationRuleModels service
-func NewService(repo *reconciliation_rule_model.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *reconciliation_rule_model.Repository, db *pgxpool.Pool, lo
 }
 
 // Create creates a new reconciliation_rule_models
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateReconciliationRuleModelsRequest) (*dto.ReconciliationRuleModelsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReconciliationRuleModelsRequest) (*ReconciliationRuleModelsResponse, error) {
 	s.logger.Info("creating reconciliation_rule_models",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 	
 
 	// Convert DTO to entity
-	entity := &reconciliation_rule_model.ReconciliationRuleModels{
+	entity := &ReconciliationRuleModels{
 		OrganizationID: orgID,
 		
 		RuleName: req.RuleName,
@@ -118,7 +119,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 }
 
 // GetByID retrieves a reconciliation_rule_models by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ReconciliationRuleModelsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ReconciliationRuleModelsResponse, error) {
 	s.logger.Debug("getting reconciliation_rule_models",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -155,7 +156,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of reconciliation_rule_models records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ReconciliationRuleModelsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ReconciliationRuleModelsListResponse, error) {
 	s.logger.Debug("listing reconciliation_rule_models",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -193,16 +194,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ReconciliationRuleModelsResponse, len(entities))
+	items := make([]*ReconciliationRuleModelsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ReconciliationRuleModelsListResponse{
+	return &ReconciliationRuleModelsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -214,7 +215,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing reconciliation_rule_models
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateReconciliationRuleModelsRequest) (*dto.ReconciliationRuleModelsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateReconciliationRuleModelsRequest) (*ReconciliationRuleModelsResponse, error) {
 	s.logger.Info("updating reconciliation_rule_models",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -401,8 +402,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *reconciliation_rule_model.ReconciliationRuleModels) *dto.ReconciliationRuleModelsResponse {
-	return &dto.ReconciliationRuleModelsResponse{
+func (s *Service) entityToResponse(entity *ReconciliationRuleModels) *ReconciliationRuleModelsResponse {
+	return &ReconciliationRuleModelsResponse{
 		
 		Id: entity.Id,
 		
@@ -463,7 +464,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for reconciliation_rule_models
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *reconciliation_rule_model.ReconciliationRuleModels) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ReconciliationRuleModels) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

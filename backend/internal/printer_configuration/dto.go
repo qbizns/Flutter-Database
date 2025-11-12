@@ -1,4 +1,4 @@
-package dto
+package printer_configuration
 
 import (
 	"fmt"

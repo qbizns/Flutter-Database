@@ -1,4 +1,4 @@
-package dto
+package document_sequence
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/inventory_transfer_item"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/inventory_transfer_item"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for InventoryTransferItems
 type Service struct {
-	repo   *inventory_transfer_item.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new InventoryTransferItems service
-func NewService(repo *inventory_transfer_item.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *inventory_transfer_item.Repository, db *pgxpool.Pool, logg
 }
 
 // Create creates a new inventory_transfer_items
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateInventoryTransferItemsRequest) (*dto.InventoryTransferItemsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInventoryTransferItemsRequest) (*InventoryTransferItemsResponse, error) {
 	s.logger.Info("creating inventory_transfer_items",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 	
 
 	// Convert DTO to entity
-	entity := &inventory_transfer_item.InventoryTransferItems{
+	entity := &InventoryTransferItems{
 		OrganizationID: orgID,
 		
 		InventoryTransferId: req.InventoryTransferId,
@@ -130,7 +131,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 }
 
 // GetByID retrieves a inventory_transfer_items by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.InventoryTransferItemsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*InventoryTransferItemsResponse, error) {
 	s.logger.Debug("getting inventory_transfer_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -167,7 +168,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of inventory_transfer_items records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.InventoryTransferItemsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*InventoryTransferItemsListResponse, error) {
 	s.logger.Debug("listing inventory_transfer_items",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -205,16 +206,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.InventoryTransferItemsResponse, len(entities))
+	items := make([]*InventoryTransferItemsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.InventoryTransferItemsListResponse{
+	return &InventoryTransferItemsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -226,7 +227,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing inventory_transfer_items
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateInventoryTransferItemsRequest) (*dto.InventoryTransferItemsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateInventoryTransferItemsRequest) (*InventoryTransferItemsResponse, error) {
 	s.logger.Info("updating inventory_transfer_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -437,8 +438,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *inventory_transfer_item.InventoryTransferItems) *dto.InventoryTransferItemsResponse {
-	return &dto.InventoryTransferItemsResponse{
+func (s *Service) entityToResponse(entity *InventoryTransferItems) *InventoryTransferItemsResponse {
+	return &InventoryTransferItemsResponse{
 		
 		Id: entity.Id,
 		
@@ -509,7 +510,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for inventory_transfer_items
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *inventory_transfer_item.InventoryTransferItems) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *InventoryTransferItems) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

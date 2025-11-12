@@ -1,4 +1,4 @@
-package dto
+package cash_drawer_session
 
 import (
 	"fmt"

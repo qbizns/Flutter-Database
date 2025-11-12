@@ -1,4 +1,4 @@
-package dto
+package pos_error_log
 
 import (
 	"fmt"

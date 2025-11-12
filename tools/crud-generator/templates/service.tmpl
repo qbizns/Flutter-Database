@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/{{.Package}}"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/{{.Package}}"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for {{.GoName}}
 type Service struct {
-	repo   *{{.Package}}.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new {{.GoName}} service
-func NewService(repo *{{.Package}}.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *{{.Package}}.Repository, db *pgxpool.Pool, logger *logging
 }
 
 // Create creates a new {{.Name}}
-func (s *Service) Create(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}req *dto.Create{{.GoName}}Request) (*dto.{{.GoName}}Response, error) {
+func (s *Service) Create(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}req *Create{{.GoName}}Request) (*{{.GoName}}Response, error) {
 	s.logger.Info("creating {{.Name}}",
 		{{if .HasOrganization}}zap.String("organization_id", orgID.String()),{{end}}
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, {{if .HasOrganization}}orgID uuid.
 	{{end}}
 
 	// Convert DTO to entity
-	entity := &{{.Package}}.{{.GoName}}{
+	entity := &{{.GoName}}{
 		{{if .HasOrganization}}OrganizationID: orgID,{{end}}
 		{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
 		{{.GoName}}: req.{{.GoName}},
@@ -86,7 +87,7 @@ func (s *Service) Create(ctx context.Context, {{if .HasOrganization}}orgID uuid.
 }
 
 // GetByID retrieves a {{.Name}} by ID
-func (s *Service) GetByID(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}id uuid.UUID) (*dto.{{.GoName}}Response, error) {
+func (s *Service) GetByID(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}id uuid.UUID) (*{{.GoName}}Response, error) {
 	s.logger.Debug("getting {{.Name}}",
 		zap.String("id", id.String()),
 		{{if .HasOrganization}}zap.String("organization_id", orgID.String()),{{end}}
@@ -123,7 +124,7 @@ func (s *Service) GetByID(ctx context.Context, {{if .HasOrganization}}orgID uuid
 }
 
 // List retrieves a paginated list of {{.Name}} records
-func (s *Service) List(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}page, limit int) (*dto.{{.GoName}}ListResponse, error) {
+func (s *Service) List(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}page, limit int) (*{{.GoName}}ListResponse, error) {
 	s.logger.Debug("listing {{.Name}}",
 		{{if .HasOrganization}}zap.String("organization_id", orgID.String()),{{end}}
 		zap.Int("page", page),
@@ -164,16 +165,16 @@ func (s *Service) List(ctx context.Context, {{if .HasOrganization}}orgID uuid.UU
 	}
 
 	// Convert to response
-	items := make([]*dto.{{.GoName}}Response, len(entities))
+	items := make([]*{{.GoName}}Response, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.{{.GoName}}ListResponse{
+	return &{{.GoName}}ListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -185,7 +186,7 @@ func (s *Service) List(ctx context.Context, {{if .HasOrganization}}orgID uuid.UU
 }
 
 // Update updates an existing {{.Name}}
-func (s *Service) Update(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}id uuid.UUID, req *dto.Update{{.GoName}}Request) (*dto.{{.GoName}}Response, error) {
+func (s *Service) Update(ctx context.Context, {{if .HasOrganization}}orgID uuid.UUID, {{end}}id uuid.UUID, req *Update{{.GoName}}Request) (*{{.GoName}}Response, error) {
 	s.logger.Info("updating {{.Name}}",
 		zap.String("id", id.String()),
 		{{if .HasOrganization}}zap.String("organization_id", orgID.String()),{{end}}
@@ -308,8 +309,8 @@ func (s *Service) Delete(ctx context.Context, {{if .HasOrganization}}orgID uuid.
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *{{.Package}}.{{.GoName}}) *dto.{{.GoName}}Response {
-	return &dto.{{.GoName}}Response{
+func (s *Service) entityToResponse(entity *{{.GoName}}) *{{.GoName}}Response {
+	return &{{.GoName}}Response{
 		{{range .Columns}}
 		{{.GoName}}: entity.{{.GoName}},
 		{{end}}
@@ -328,7 +329,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 {{end}}
 
 // validateBusinessRules validates business rules for {{.Name}}
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *{{.Package}}.{{.GoName}}) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *{{.GoName}}) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

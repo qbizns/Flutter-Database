@@ -1,4 +1,4 @@
-package dto
+package immutability_violations_log
 
 import (
 	"fmt"

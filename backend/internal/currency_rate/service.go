@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/currency_rate"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/currency_rate"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for CurrencyRates
 type Service struct {
-	repo   *currency_rate.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new CurrencyRates service
-func NewService(repo *currency_rate.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *currency_rate.Repository, db *pgxpool.Pool, logger *loggin
 }
 
 // Create creates a new currency_rates
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCurrencyRatesRequest) (*dto.CurrencyRatesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCurrencyRatesRequest) (*CurrencyRatesResponse, error) {
 	s.logger.Info("creating currency_rates",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 	
 
 	// Convert DTO to entity
-	entity := &currency_rate.CurrencyRates{
+	entity := &CurrencyRates{
 		OrganizationID: orgID,
 		
 		CurrencyCode: req.CurrencyCode,
@@ -94,7 +95,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 }
 
 // GetByID retrieves a currency_rates by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.CurrencyRatesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*CurrencyRatesResponse, error) {
 	s.logger.Debug("getting currency_rates",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -131,7 +132,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of currency_rates records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.CurrencyRatesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*CurrencyRatesListResponse, error) {
 	s.logger.Debug("listing currency_rates",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -169,16 +170,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.CurrencyRatesResponse, len(entities))
+	items := make([]*CurrencyRatesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.CurrencyRatesListResponse{
+	return &CurrencyRatesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -190,7 +191,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing currency_rates
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateCurrencyRatesRequest) (*dto.CurrencyRatesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateCurrencyRatesRequest) (*CurrencyRatesResponse, error) {
 	s.logger.Info("updating currency_rates",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -329,8 +330,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *currency_rate.CurrencyRates) *dto.CurrencyRatesResponse {
-	return &dto.CurrencyRatesResponse{
+func (s *Service) entityToResponse(entity *CurrencyRates) *CurrencyRatesResponse {
+	return &CurrencyRatesResponse{
 		
 		Id: entity.Id,
 		
@@ -365,7 +366,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for currency_rates
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *currency_rate.CurrencyRates) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *CurrencyRates) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

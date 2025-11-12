@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/deferred_expense_contract"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/deferred_expense_contract"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for DeferredExpenseContracts
 type Service struct {
-	repo   *deferred_expense_contract.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new DeferredExpenseContracts service
-func NewService(repo *deferred_expense_contract.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *deferred_expense_contract.Repository, db *pgxpool.Pool, lo
 }
 
 // Create creates a new deferred_expense_contracts
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDeferredExpenseContractsRequest) (*dto.DeferredExpenseContractsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDeferredExpenseContractsRequest) (*DeferredExpenseContractsResponse, error) {
 	s.logger.Info("creating deferred_expense_contracts",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDe
 	
 
 	// Convert DTO to entity
-	entity := &deferred_expense_contract.DeferredExpenseContracts{
+	entity := &DeferredExpenseContracts{
 		OrganizationID: orgID,
 		
 		VendorBillId: req.VendorBillId,
@@ -114,7 +115,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDe
 }
 
 // GetByID retrieves a deferred_expense_contracts by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.DeferredExpenseContractsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*DeferredExpenseContractsResponse, error) {
 	s.logger.Debug("getting deferred_expense_contracts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -151,7 +152,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of deferred_expense_contracts records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.DeferredExpenseContractsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*DeferredExpenseContractsListResponse, error) {
 	s.logger.Debug("listing deferred_expense_contracts",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -189,16 +190,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.DeferredExpenseContractsResponse, len(entities))
+	items := make([]*DeferredExpenseContractsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.DeferredExpenseContractsListResponse{
+	return &DeferredExpenseContractsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -210,7 +211,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing deferred_expense_contracts
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateDeferredExpenseContractsRequest) (*dto.DeferredExpenseContractsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateDeferredExpenseContractsRequest) (*DeferredExpenseContractsResponse, error) {
 	s.logger.Info("updating deferred_expense_contracts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -389,8 +390,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *deferred_expense_contract.DeferredExpenseContracts) *dto.DeferredExpenseContractsResponse {
-	return &dto.DeferredExpenseContractsResponse{
+func (s *Service) entityToResponse(entity *DeferredExpenseContracts) *DeferredExpenseContractsResponse {
+	return &DeferredExpenseContractsResponse{
 		
 		Id: entity.Id,
 		
@@ -447,7 +448,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for deferred_expense_contracts
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *deferred_expense_contract.DeferredExpenseContracts) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *DeferredExpenseContracts) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

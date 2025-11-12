@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/integration_config"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/integration_config"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for IntegrationConfigs
 type Service struct {
-	repo   *integration_config.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new IntegrationConfigs service
-func NewService(repo *integration_config.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *integration_config.Repository, db *pgxpool.Pool, logger *l
 }
 
 // Create creates a new integration_configs
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIntegrationConfigsRequest) (*dto.IntegrationConfigsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateIntegrationConfigsRequest) (*IntegrationConfigsResponse, error) {
 	s.logger.Info("creating integration_configs",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 	
 
 	// Convert DTO to entity
-	entity := &integration_config.IntegrationConfigs{
+	entity := &IntegrationConfigs{
 		OrganizationID: orgID,
 		
 		IntegrationType: req.IntegrationType,
@@ -110,7 +111,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateIn
 }
 
 // GetByID retrieves a integration_configs by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.IntegrationConfigsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*IntegrationConfigsResponse, error) {
 	s.logger.Debug("getting integration_configs",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -147,7 +148,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of integration_configs records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.IntegrationConfigsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*IntegrationConfigsListResponse, error) {
 	s.logger.Debug("listing integration_configs",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -185,16 +186,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.IntegrationConfigsResponse, len(entities))
+	items := make([]*IntegrationConfigsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.IntegrationConfigsListResponse{
+	return &IntegrationConfigsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -206,7 +207,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing integration_configs
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateIntegrationConfigsRequest) (*dto.IntegrationConfigsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateIntegrationConfigsRequest) (*IntegrationConfigsResponse, error) {
 	s.logger.Info("updating integration_configs",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -377,8 +378,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *integration_config.IntegrationConfigs) *dto.IntegrationConfigsResponse {
-	return &dto.IntegrationConfigsResponse{
+func (s *Service) entityToResponse(entity *IntegrationConfigs) *IntegrationConfigsResponse {
+	return &IntegrationConfigsResponse{
 		
 		Id: entity.Id,
 		
@@ -431,7 +432,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for integration_configs
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *integration_config.IntegrationConfigs) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *IntegrationConfigs) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

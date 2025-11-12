@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/supplier"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/supplier"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Suppliers
 type Service struct {
-	repo   *supplier.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Suppliers service
-func NewService(repo *supplier.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *supplier.Repository, db *pgxpool.Pool, logger *logging.Log
 }
 
 // Create creates a new suppliers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSuppliersRequest) (*dto.SuppliersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSuppliersRequest) (*SuppliersResponse, error) {
 	s.logger.Info("creating suppliers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSu
 	
 
 	// Convert DTO to entity
-	entity := &supplier.Suppliers{
+	entity := &Suppliers{
 		OrganizationID: orgID,
 		
 		SupplierCode: req.SupplierCode,
@@ -128,7 +129,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSu
 }
 
 // GetByID retrieves a suppliers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.SuppliersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*SuppliersResponse, error) {
 	s.logger.Debug("getting suppliers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -165,7 +166,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of suppliers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.SuppliersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*SuppliersListResponse, error) {
 	s.logger.Debug("listing suppliers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -203,16 +204,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.SuppliersResponse, len(entities))
+	items := make([]*SuppliersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.SuppliersListResponse{
+	return &SuppliersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -224,7 +225,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing suppliers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateSuppliersRequest) (*dto.SuppliersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateSuppliersRequest) (*SuppliersResponse, error) {
 	s.logger.Info("updating suppliers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -431,8 +432,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *supplier.Suppliers) *dto.SuppliersResponse {
-	return &dto.SuppliersResponse{
+func (s *Service) entityToResponse(entity *Suppliers) *SuppliersResponse {
+	return &SuppliersResponse{
 		
 		Id: entity.Id,
 		
@@ -503,7 +504,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for suppliers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *supplier.Suppliers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Suppliers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -1,4 +1,4 @@
-package dto
+package currency_rate
 
 import (
 	"fmt"

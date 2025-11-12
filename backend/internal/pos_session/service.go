@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/pos_session"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/pos_session"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PosSessions
 type Service struct {
-	repo   *pos_session.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PosSessions service
-func NewService(repo *pos_session.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *pos_session.Repository, db *pgxpool.Pool, logger *logging.
 }
 
 // Create creates a new pos_sessions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePosSessionsRequest) (*dto.PosSessionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosSessionsRequest) (*PosSessionsResponse, error) {
 	s.logger.Info("creating pos_sessions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 	
 
 	// Convert DTO to entity
-	entity := &pos_session.PosSessions{
+	entity := &PosSessions{
 		OrganizationID: orgID,
 		
 		SessionNumber: req.SessionNumber,
@@ -134,7 +135,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 }
 
 // GetByID retrieves a pos_sessions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.PosSessionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*PosSessionsResponse, error) {
 	s.logger.Debug("getting pos_sessions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -171,7 +172,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of pos_sessions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.PosSessionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*PosSessionsListResponse, error) {
 	s.logger.Debug("listing pos_sessions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -209,16 +210,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.PosSessionsResponse, len(entities))
+	items := make([]*PosSessionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PosSessionsListResponse{
+	return &PosSessionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -230,7 +231,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing pos_sessions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdatePosSessionsRequest) (*dto.PosSessionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdatePosSessionsRequest) (*PosSessionsResponse, error) {
 	s.logger.Info("updating pos_sessions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -449,8 +450,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *pos_session.PosSessions) *dto.PosSessionsResponse {
-	return &dto.PosSessionsResponse{
+func (s *Service) entityToResponse(entity *PosSessions) *PosSessionsResponse {
+	return &PosSessionsResponse{
 		
 		Id: entity.Id,
 		
@@ -527,7 +528,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for pos_sessions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *pos_session.PosSessions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PosSessions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

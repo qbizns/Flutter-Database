@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/loyalty_tier"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/loyalty_tier"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for LoyaltyTiers
 type Service struct {
-	repo   *loyalty_tier.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new LoyaltyTiers service
-func NewService(repo *loyalty_tier.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *loyalty_tier.Repository, db *pgxpool.Pool, logger *logging
 }
 
 // Create creates a new loyalty_tiers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateLoyaltyTiersRequest) (*dto.LoyaltyTiersResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyaltyTiersRequest) (*LoyaltyTiersResponse, error) {
 	s.logger.Info("creating loyalty_tiers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateLo
 	
 
 	// Convert DTO to entity
-	entity := &loyalty_tier.LoyaltyTiers{
+	entity := &LoyaltyTiers{
 		OrganizationID: orgID,
 		
 		TierCode: req.TierCode,
@@ -126,7 +127,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateLo
 }
 
 // GetByID retrieves a loyalty_tiers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.LoyaltyTiersResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*LoyaltyTiersResponse, error) {
 	s.logger.Debug("getting loyalty_tiers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -163,7 +164,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of loyalty_tiers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.LoyaltyTiersListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*LoyaltyTiersListResponse, error) {
 	s.logger.Debug("listing loyalty_tiers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -201,16 +202,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.LoyaltyTiersResponse, len(entities))
+	items := make([]*LoyaltyTiersResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.LoyaltyTiersListResponse{
+	return &LoyaltyTiersListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -222,7 +223,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing loyalty_tiers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateLoyaltyTiersRequest) (*dto.LoyaltyTiersResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateLoyaltyTiersRequest) (*LoyaltyTiersResponse, error) {
 	s.logger.Info("updating loyalty_tiers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -425,8 +426,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *loyalty_tier.LoyaltyTiers) *dto.LoyaltyTiersResponse {
-	return &dto.LoyaltyTiersResponse{
+func (s *Service) entityToResponse(entity *LoyaltyTiers) *LoyaltyTiersResponse {
+	return &LoyaltyTiersResponse{
 		
 		Id: entity.Id,
 		
@@ -495,7 +496,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for loyalty_tiers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *loyalty_tier.LoyaltyTiers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *LoyaltyTiers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

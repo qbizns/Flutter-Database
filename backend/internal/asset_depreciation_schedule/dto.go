@@ -1,4 +1,4 @@
-package dto
+package asset_depreciation_schedule
 
 import (
 	"fmt"

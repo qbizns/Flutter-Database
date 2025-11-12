@@ -1,4 +1,4 @@
-package dto
+package inventory_valuation_setting
 
 import (
 	"fmt"

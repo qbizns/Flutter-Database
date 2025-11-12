@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/sale_return"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/sale_return"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for SaleReturns
 type Service struct {
-	repo   *sale_return.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new SaleReturns service
-func NewService(repo *sale_return.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *sale_return.Repository, db *pgxpool.Pool, logger *logging.
 }
 
 // Create creates a new sale_returns
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSaleReturnsRequest) (*dto.SaleReturnsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSaleReturnsRequest) (*SaleReturnsResponse, error) {
 	s.logger.Info("creating sale_returns",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSa
 	
 
 	// Convert DTO to entity
-	entity := &sale_return.SaleReturns{
+	entity := &SaleReturns{
 		OrganizationID: orgID,
 		
 		ReturnNumber: req.ReturnNumber,
@@ -116,7 +117,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateSa
 }
 
 // GetByID retrieves a sale_returns by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.SaleReturnsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*SaleReturnsResponse, error) {
 	s.logger.Debug("getting sale_returns",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -153,7 +154,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of sale_returns records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.SaleReturnsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*SaleReturnsListResponse, error) {
 	s.logger.Debug("listing sale_returns",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -191,16 +192,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.SaleReturnsResponse, len(entities))
+	items := make([]*SaleReturnsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.SaleReturnsListResponse{
+	return &SaleReturnsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -212,7 +213,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing sale_returns
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateSaleReturnsRequest) (*dto.SaleReturnsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateSaleReturnsRequest) (*SaleReturnsResponse, error) {
 	s.logger.Info("updating sale_returns",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -395,8 +396,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *sale_return.SaleReturns) *dto.SaleReturnsResponse {
-	return &dto.SaleReturnsResponse{
+func (s *Service) entityToResponse(entity *SaleReturns) *SaleReturnsResponse {
+	return &SaleReturnsResponse{
 		
 		Id: entity.Id,
 		
@@ -455,7 +456,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for sale_returns
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *sale_return.SaleReturns) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *SaleReturns) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

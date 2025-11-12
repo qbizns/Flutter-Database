@@ -1,4 +1,4 @@
-package dto
+package journal_entry_type
 
 import (
 	"fmt"

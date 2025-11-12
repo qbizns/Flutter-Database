@@ -1,4 +1,4 @@
-package dto
+package inventory_transfer_item
 
 import (
 	"fmt"

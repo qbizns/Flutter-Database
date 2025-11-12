@@ -1,4 +1,4 @@
-package dto
+package system_health
 
 import (
 	"fmt"

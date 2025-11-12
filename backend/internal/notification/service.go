@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/notification"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/notification"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Notifications
 type Service struct {
-	repo   *notification.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Notifications service
-func NewService(repo *notification.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *notification.Repository, db *pgxpool.Pool, logger *logging
 }
 
 // Create creates a new notifications
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNotificationsRequest) (*dto.NotificationsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateNotificationsRequest) (*NotificationsResponse, error) {
 	s.logger.Info("creating notifications",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNo
 	
 
 	// Convert DTO to entity
-	entity := &notification.Notifications{
+	entity := &Notifications{
 		OrganizationID: orgID,
 		
 		UserId: req.UserId,
@@ -112,7 +113,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNo
 }
 
 // GetByID retrieves a notifications by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.NotificationsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*NotificationsResponse, error) {
 	s.logger.Debug("getting notifications",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -149,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of notifications records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.NotificationsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*NotificationsListResponse, error) {
 	s.logger.Debug("listing notifications",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -187,16 +188,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.NotificationsResponse, len(entities))
+	items := make([]*NotificationsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.NotificationsListResponse{
+	return &NotificationsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -208,7 +209,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing notifications
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateNotificationsRequest) (*dto.NotificationsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateNotificationsRequest) (*NotificationsResponse, error) {
 	s.logger.Info("updating notifications",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -383,8 +384,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *notification.Notifications) *dto.NotificationsResponse {
-	return &dto.NotificationsResponse{
+func (s *Service) entityToResponse(entity *Notifications) *NotificationsResponse {
+	return &NotificationsResponse{
 		
 		Id: entity.Id,
 		
@@ -435,7 +436,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for notifications
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *notification.Notifications) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Notifications) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

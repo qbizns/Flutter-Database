@@ -1,4 +1,4 @@
-package dto
+package modifier_group
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/payment"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/payment"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Payments
 type Service struct {
-	repo   *payment.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Payments service
-func NewService(repo *payment.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *payment.Repository, db *pgxpool.Pool, logger *logging.Logg
 }
 
 // Create creates a new payments
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePaymentsRequest) (*dto.PaymentsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePaymentsRequest) (*PaymentsResponse, error) {
 	s.logger.Info("creating payments",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePa
 	
 
 	// Convert DTO to entity
-	entity := &payment.Payments{
+	entity := &Payments{
 		OrganizationID: orgID,
 		
 		SaleId: req.SaleId,
@@ -114,7 +115,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePa
 }
 
 // GetByID retrieves a payments by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.PaymentsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*PaymentsResponse, error) {
 	s.logger.Debug("getting payments",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -151,7 +152,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of payments records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.PaymentsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*PaymentsListResponse, error) {
 	s.logger.Debug("listing payments",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -189,16 +190,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.PaymentsResponse, len(entities))
+	items := make([]*PaymentsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PaymentsListResponse{
+	return &PaymentsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -210,7 +211,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing payments
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdatePaymentsRequest) (*dto.PaymentsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdatePaymentsRequest) (*PaymentsResponse, error) {
 	s.logger.Info("updating payments",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -389,8 +390,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *payment.Payments) *dto.PaymentsResponse {
-	return &dto.PaymentsResponse{
+func (s *Service) entityToResponse(entity *Payments) *PaymentsResponse {
+	return &PaymentsResponse{
 		
 		Id: entity.Id,
 		
@@ -445,7 +446,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for payments
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *payment.Payments) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Payments) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

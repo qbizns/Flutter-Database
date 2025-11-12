@@ -1,4 +1,4 @@
-package dto
+package cash_movement
 
 import (
 	"fmt"

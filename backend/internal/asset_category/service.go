@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/asset_category"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/asset_category"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for AssetCategories
 type Service struct {
-	repo   *asset_category.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new AssetCategories service
-func NewService(repo *asset_category.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *asset_category.Repository, db *pgxpool.Pool, logger *loggi
 }
 
 // Create creates a new asset_categories
-func (s *Service) Create(ctx context.Context, req *dto.CreateAssetCategoriesRequest) (*dto.AssetCategoriesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateAssetCategoriesRequest) (*AssetCategoriesResponse, error) {
 	s.logger.Info("creating asset_categories",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAssetCategoriesRequ
 	
 
 	// Convert DTO to entity
-	entity := &asset_category.AssetCategories{
+	entity := &AssetCategories{
 		
 		
 		CategoryCode: req.CategoryCode,
@@ -97,7 +98,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateAssetCategoriesRequ
 }
 
 // GetByID retrieves a asset_categories by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AssetCategoriesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*AssetCategoriesResponse, error) {
 	s.logger.Debug("getting asset_categories",
 		zap.String("id", id.String()),
 		
@@ -124,7 +125,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.AssetCategori
 }
 
 // List retrieves a paginated list of asset_categories records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.AssetCategoriesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*AssetCategoriesListResponse, error) {
 	s.logger.Debug("listing asset_categories",
 		
 		zap.Int("page", page),
@@ -157,16 +158,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AssetCategori
 	}
 
 	// Convert to response
-	items := make([]*dto.AssetCategoriesResponse, len(entities))
+	items := make([]*AssetCategoriesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.AssetCategoriesListResponse{
+	return &AssetCategoriesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -178,7 +179,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.AssetCategori
 }
 
 // Update updates an existing asset_categories
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateAssetCategoriesRequest) (*dto.AssetCategoriesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAssetCategoriesRequest) (*AssetCategoriesResponse, error) {
 	s.logger.Info("updating asset_categories",
 		zap.String("id", id.String()),
 		
@@ -308,8 +309,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *asset_category.AssetCategories) *dto.AssetCategoriesResponse {
-	return &dto.AssetCategoriesResponse{
+func (s *Service) entityToResponse(entity *AssetCategories) *AssetCategoriesResponse {
+	return &AssetCategoriesResponse{
 		
 		Id: entity.Id,
 		
@@ -341,7 +342,7 @@ func (s *Service) entityToResponse(entity *asset_category.AssetCategories) *dto.
 
 
 // validateBusinessRules validates business rules for asset_categories
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *asset_category.AssetCategories) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *AssetCategories) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

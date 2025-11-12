@@ -1,4 +1,4 @@
-package dto
+package posting_profile_document
 
 import (
 	"fmt"

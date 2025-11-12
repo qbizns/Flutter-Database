@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/price_list_item"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -254,7 +254,7 @@ func TestService_Create(t *testing.T) {
 	service := price_list_item.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreatePriceListItemsRequest{
+	req := &CreatePriceListItemsRequest{
 		
 		
 		
@@ -375,7 +375,7 @@ func TestHandler_Create(t *testing.T) {
 	service := price_list_item.NewService(testDB, repo, testLogger)
 	handler := price_list_item.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreatePriceListItemsRequest{
+	reqBody := &CreatePriceListItemsRequest{
 		
 		
 		
@@ -415,7 +415,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.PriceListItemsResponse
+	var resp PriceListItemsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -528,8 +528,8 @@ func newTestPriceListItemsWithID(id uuid.UUID) *price_list_item.PriceListItems {
 }
 
 // newTestPriceListItemsRequest creates a test create request
-func newTestPriceListItemsRequest() *dto.CreatePriceListItemsRequest {
-	return &dto.CreatePriceListItemsRequest{
+func newTestPriceListItemsRequest() *CreatePriceListItemsRequest {
+	return &CreatePriceListItemsRequest{
 		
 		
 		

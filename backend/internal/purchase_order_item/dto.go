@@ -1,4 +1,4 @@
-package dto
+package purchase_order_item
 
 import (
 	"fmt"

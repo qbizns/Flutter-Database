@@ -1,4 +1,4 @@
-package dto
+package pos_posting_audit
 
 import (
 	"fmt"

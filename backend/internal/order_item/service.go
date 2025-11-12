@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/order_item"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/order_item"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for OrderItems
 type Service struct {
-	repo   *order_item.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new OrderItems service
-func NewService(repo *order_item.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *order_item.Repository, db *pgxpool.Pool, logger *logging.L
 }
 
 // Create creates a new order_items
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOrderItemsRequest) (*dto.OrderItemsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderItemsRequest) (*OrderItemsResponse, error) {
 	s.logger.Info("creating order_items",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 	
 
 	// Convert DTO to entity
-	entity := &order_item.OrderItems{
+	entity := &OrderItems{
 		OrganizationID: orgID,
 		
 		OrderId: req.OrderId,
@@ -146,7 +147,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 }
 
 // GetByID retrieves a order_items by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.OrderItemsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*OrderItemsResponse, error) {
 	s.logger.Debug("getting order_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -183,7 +184,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of order_items records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.OrderItemsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*OrderItemsListResponse, error) {
 	s.logger.Debug("listing order_items",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -221,16 +222,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.OrderItemsResponse, len(entities))
+	items := make([]*OrderItemsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.OrderItemsListResponse{
+	return &OrderItemsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -242,7 +243,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing order_items
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateOrderItemsRequest) (*dto.OrderItemsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateOrderItemsRequest) (*OrderItemsResponse, error) {
 	s.logger.Info("updating order_items",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -485,8 +486,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *order_item.OrderItems) *dto.OrderItemsResponse {
-	return &dto.OrderItemsResponse{
+func (s *Service) entityToResponse(entity *OrderItems) *OrderItemsResponse {
+	return &OrderItemsResponse{
 		
 		Id: entity.Id,
 		
@@ -575,7 +576,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for order_items
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *order_item.OrderItems) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *OrderItems) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

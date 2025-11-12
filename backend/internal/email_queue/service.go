@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/email_queue"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/email_queue"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for EmailQueue
 type Service struct {
-	repo   *email_queue.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new EmailQueue service
-func NewService(repo *email_queue.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *email_queue.Repository, db *pgxpool.Pool, logger *logging.
 }
 
 // Create creates a new email_queue
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEmailQueueRequest) (*dto.EmailQueueResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEmailQueueRequest) (*EmailQueueResponse, error) {
 	s.logger.Info("creating email_queue",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEm
 	
 
 	// Convert DTO to entity
-	entity := &email_queue.EmailQueue{
+	entity := &EmailQueue{
 		OrganizationID: orgID,
 		
 		ToAddresses: req.ToAddresses,
@@ -128,7 +129,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEm
 }
 
 // GetByID retrieves a email_queue by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.EmailQueueResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*EmailQueueResponse, error) {
 	s.logger.Debug("getting email_queue",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -165,7 +166,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of email_queue records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.EmailQueueListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*EmailQueueListResponse, error) {
 	s.logger.Debug("listing email_queue",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -203,16 +204,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.EmailQueueResponse, len(entities))
+	items := make([]*EmailQueueResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.EmailQueueListResponse{
+	return &EmailQueueListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -224,7 +225,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing email_queue
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateEmailQueueRequest) (*dto.EmailQueueResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateEmailQueueRequest) (*EmailQueueResponse, error) {
 	s.logger.Info("updating email_queue",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -431,8 +432,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *email_queue.EmailQueue) *dto.EmailQueueResponse {
-	return &dto.EmailQueueResponse{
+func (s *Service) entityToResponse(entity *EmailQueue) *EmailQueueResponse {
+	return &EmailQueueResponse{
 		
 		Id: entity.Id,
 		
@@ -499,7 +500,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for email_queue
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *email_queue.EmailQueue) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *EmailQueue) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

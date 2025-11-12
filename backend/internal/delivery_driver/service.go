@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/delivery_driver"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/delivery_driver"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for DeliveryDrivers
 type Service struct {
-	repo   *delivery_driver.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new DeliveryDrivers service
-func NewService(repo *delivery_driver.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *delivery_driver.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new delivery_drivers
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDeliveryDriversRequest) (*dto.DeliveryDriversResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDeliveryDriversRequest) (*DeliveryDriversResponse, error) {
 	s.logger.Info("creating delivery_drivers",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDe
 	
 
 	// Convert DTO to entity
-	entity := &delivery_driver.DeliveryDrivers{
+	entity := &DeliveryDrivers{
 		OrganizationID: orgID,
 		
 		UserId: req.UserId,
@@ -156,7 +157,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateDe
 }
 
 // GetByID retrieves a delivery_drivers by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.DeliveryDriversResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*DeliveryDriversResponse, error) {
 	s.logger.Debug("getting delivery_drivers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -193,7 +194,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of delivery_drivers records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.DeliveryDriversListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*DeliveryDriversListResponse, error) {
 	s.logger.Debug("listing delivery_drivers",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -231,16 +232,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.DeliveryDriversResponse, len(entities))
+	items := make([]*DeliveryDriversResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.DeliveryDriversListResponse{
+	return &DeliveryDriversListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -252,7 +253,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing delivery_drivers
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateDeliveryDriversRequest) (*dto.DeliveryDriversResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateDeliveryDriversRequest) (*DeliveryDriversResponse, error) {
 	s.logger.Info("updating delivery_drivers",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -515,8 +516,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *delivery_driver.DeliveryDrivers) *dto.DeliveryDriversResponse {
-	return &dto.DeliveryDriversResponse{
+func (s *Service) entityToResponse(entity *DeliveryDrivers) *DeliveryDriversResponse {
+	return &DeliveryDriversResponse{
 		
 		Id: entity.Id,
 		
@@ -615,7 +616,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for delivery_drivers
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *delivery_driver.DeliveryDrivers) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *DeliveryDrivers) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

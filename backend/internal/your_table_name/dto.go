@@ -1,4 +1,4 @@
-package dto
+package your_table_name
 
 import (
 	"fmt"

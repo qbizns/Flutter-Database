@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/posting_validation_result"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/posting_validation_result"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PostingValidationResults
 type Service struct {
-	repo   *posting_validation_result.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PostingValidationResults service
-func NewService(repo *posting_validation_result.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *posting_validation_result.Repository, db *pgxpool.Pool, lo
 }
 
 // Create creates a new posting_validation_results
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePostingValidationResultsRequest) (*dto.PostingValidationResultsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePostingValidationResultsRequest) (*PostingValidationResultsResponse, error) {
 	s.logger.Info("creating posting_validation_results",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 	
 
 	// Convert DTO to entity
-	entity := &posting_validation_result.PostingValidationResults{
+	entity := &PostingValidationResults{
 		OrganizationID: orgID,
 		
 		DocumentTypeCode: req.DocumentTypeCode,
@@ -108,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreatePo
 }
 
 // GetByID retrieves a posting_validation_results by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.PostingValidationResultsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*PostingValidationResultsResponse, error) {
 	s.logger.Debug("getting posting_validation_results",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -145,7 +146,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of posting_validation_results records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.PostingValidationResultsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*PostingValidationResultsListResponse, error) {
 	s.logger.Debug("listing posting_validation_results",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -183,16 +184,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.PostingValidationResultsResponse, len(entities))
+	items := make([]*PostingValidationResultsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PostingValidationResultsListResponse{
+	return &PostingValidationResultsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -204,7 +205,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing posting_validation_results
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdatePostingValidationResultsRequest) (*dto.PostingValidationResultsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdatePostingValidationResultsRequest) (*PostingValidationResultsResponse, error) {
 	s.logger.Info("updating posting_validation_results",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -371,8 +372,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *posting_validation_result.PostingValidationResults) *dto.PostingValidationResultsResponse {
-	return &dto.PostingValidationResultsResponse{
+func (s *Service) entityToResponse(entity *PostingValidationResults) *PostingValidationResultsResponse {
+	return &PostingValidationResultsResponse{
 		
 		Id: entity.Id,
 		
@@ -419,7 +420,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for posting_validation_results
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *posting_validation_result.PostingValidationResults) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PostingValidationResults) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

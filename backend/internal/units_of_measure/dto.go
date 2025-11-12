@@ -1,4 +1,4 @@
-package dto
+package units_of_measure
 
 import (
 	"fmt"

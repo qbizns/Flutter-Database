@@ -1,4 +1,4 @@
-package dto
+package product_component
 
 import (
 	"fmt"

@@ -7,20 +7,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-org/pos-backend/internal/dto/deferred_expense_schedule"
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/service/deferred_expense_schedule"
 	"go.uber.org/zap"
 )
 
 // Handler handles HTTP requests for DeferredExpenseSchedule
 type Handler struct {
-	service *deferred_expense_schedule.Service
+	service *Service
 	logger  *logging.Logger
 }
 
 // NewHandler creates a new DeferredExpenseSchedule handler
-func NewHandler(service *deferred_expense_schedule.Service, logger *logging.Logger) *Handler {
+func NewHandler(service *Service, logger *logging.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -35,8 +33,8 @@ func NewHandler(service *deferred_expense_schedule.Service, logger *logging.Logg
 // @Produce json
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
-// @Param request body dto.CreateDeferredExpenseScheduleRequest true "DeferredExpenseSchedule data"
-// @Success 201 {object} dto.DeferredExpenseScheduleResponse
+// @Param request body CreateDeferredExpenseScheduleRequest true "DeferredExpenseSchedule data"
+// @Success 201 {object} DeferredExpenseScheduleResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 422 {object} ErrorResponse
@@ -48,7 +46,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	
 
 	// Parse request body
-	var req dto.CreateDeferredExpenseScheduleRequest
+	var req CreateDeferredExpenseScheduleRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return
@@ -75,7 +73,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "DeferredExpenseSchedule ID"
-// @Success 200 {object} dto.DeferredExpenseScheduleResponse
+// @Success 200 {object} DeferredExpenseScheduleResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -115,7 +113,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 // @Param orgID path string true "Organization ID"
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} dto.DeferredExpenseScheduleListResponse
+// @Success 200 {object} DeferredExpenseScheduleListResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
@@ -158,8 +156,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 // @Security BearerAuth
 // @Param orgID path string true "Organization ID"
 // @Param id path string true "DeferredExpenseSchedule ID"
-// @Param request body dto.UpdateDeferredExpenseScheduleRequest true "DeferredExpenseSchedule data"
-// @Success 200 {object} dto.DeferredExpenseScheduleResponse
+// @Param request body UpdateDeferredExpenseScheduleRequest true "DeferredExpenseSchedule data"
+// @Success 200 {object} DeferredExpenseScheduleResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -179,7 +177,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse request body
-	var req dto.UpdateDeferredExpenseScheduleRequest
+	var req UpdateDeferredExpenseScheduleRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
 		return

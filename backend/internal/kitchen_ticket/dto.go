@@ -1,4 +1,4 @@
-package dto
+package kitchen_ticket
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/file_attachment"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/file_attachment"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for FileAttachments
 type Service struct {
-	repo   *file_attachment.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new FileAttachments service
-func NewService(repo *file_attachment.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *file_attachment.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new file_attachments
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFileAttachmentsRequest) (*dto.FileAttachmentsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFileAttachmentsRequest) (*FileAttachmentsResponse, error) {
 	s.logger.Info("creating file_attachments",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 	
 
 	// Convert DTO to entity
-	entity := &file_attachment.FileAttachments{
+	entity := &FileAttachments{
 		OrganizationID: orgID,
 		
 		FileName: req.FileName,
@@ -120,7 +121,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateFi
 }
 
 // GetByID retrieves a file_attachments by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.FileAttachmentsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*FileAttachmentsResponse, error) {
 	s.logger.Debug("getting file_attachments",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -157,7 +158,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of file_attachments records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.FileAttachmentsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*FileAttachmentsListResponse, error) {
 	s.logger.Debug("listing file_attachments",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -195,16 +196,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.FileAttachmentsResponse, len(entities))
+	items := make([]*FileAttachmentsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.FileAttachmentsListResponse{
+	return &FileAttachmentsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -216,7 +217,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing file_attachments
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateFileAttachmentsRequest) (*dto.FileAttachmentsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateFileAttachmentsRequest) (*FileAttachmentsResponse, error) {
 	s.logger.Info("updating file_attachments",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -407,8 +408,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *file_attachment.FileAttachments) *dto.FileAttachmentsResponse {
-	return &dto.FileAttachmentsResponse{
+func (s *Service) entityToResponse(entity *FileAttachments) *FileAttachmentsResponse {
+	return &FileAttachmentsResponse{
 		
 		Id: entity.Id,
 		
@@ -469,7 +470,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for file_attachments
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *file_attachment.FileAttachments) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *FileAttachments) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

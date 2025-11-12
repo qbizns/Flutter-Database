@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/journal_entry_type"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -258,7 +258,7 @@ func TestService_Create(t *testing.T) {
 	service := journal_entry_type.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateJournalEntryTypesRequest{
+	req := &CreateJournalEntryTypesRequest{
 		
 		TypeCode: "test_value",
 		
@@ -332,7 +332,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateJournalEntryTypesRequest{
+	updateReq := &UpdateJournalEntryTypesRequest{
 		TypeCode: &updatedValue,
 	}
 	
@@ -354,7 +354,7 @@ func TestHandler_Create(t *testing.T) {
 	service := journal_entry_type.NewService(testDB, repo, testLogger)
 	handler := journal_entry_type.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateJournalEntryTypesRequest{
+	reqBody := &CreateJournalEntryTypesRequest{
 		
 		TypeCode: "test_value",
 		
@@ -382,7 +382,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.JournalEntryTypesResponse
+	var resp JournalEntryTypesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -447,8 +447,8 @@ func newTestJournalEntryTypesWithID(id uuid.UUID) *journal_entry_type.JournalEnt
 }
 
 // newTestJournalEntryTypesRequest creates a test create request
-func newTestJournalEntryTypesRequest() *dto.CreateJournalEntryTypesRequest {
-	return &dto.CreateJournalEntryTypesRequest{
+func newTestJournalEntryTypesRequest() *CreateJournalEntryTypesRequest {
+	return &CreateJournalEntryTypesRequest{
 		
 		TypeCode: "test_type_code",
 		

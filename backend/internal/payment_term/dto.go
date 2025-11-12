@@ -1,4 +1,4 @@
-package dto
+package payment_term
 
 import (
 	"fmt"

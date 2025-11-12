@@ -1,4 +1,4 @@
-package dto
+package loyalty_reward
 
 import (
 	"fmt"

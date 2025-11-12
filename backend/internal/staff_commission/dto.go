@@ -1,4 +1,4 @@
-package dto
+package staff_commission
 
 import (
 	"fmt"

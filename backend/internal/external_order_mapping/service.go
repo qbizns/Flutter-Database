@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/external_order_mapping"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/external_order_mapping"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ExternalOrderMappings
 type Service struct {
-	repo   *external_order_mapping.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ExternalOrderMappings service
-func NewService(repo *external_order_mapping.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *external_order_mapping.Repository, db *pgxpool.Pool, logge
 }
 
 // Create creates a new external_order_mappings
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateExternalOrderMappingsRequest) (*dto.ExternalOrderMappingsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateExternalOrderMappingsRequest) (*ExternalOrderMappingsResponse, error) {
 	s.logger.Info("creating external_order_mappings",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEx
 	
 
 	// Convert DTO to entity
-	entity := &external_order_mapping.ExternalOrderMappings{
+	entity := &ExternalOrderMappings{
 		OrganizationID: orgID,
 		
 		SaleId: req.SaleId,
@@ -100,7 +101,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateEx
 }
 
 // GetByID retrieves a external_order_mappings by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ExternalOrderMappingsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ExternalOrderMappingsResponse, error) {
 	s.logger.Debug("getting external_order_mappings",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -137,7 +138,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of external_order_mappings records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ExternalOrderMappingsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ExternalOrderMappingsListResponse, error) {
 	s.logger.Debug("listing external_order_mappings",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -175,16 +176,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ExternalOrderMappingsResponse, len(entities))
+	items := make([]*ExternalOrderMappingsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ExternalOrderMappingsListResponse{
+	return &ExternalOrderMappingsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -196,7 +197,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing external_order_mappings
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateExternalOrderMappingsRequest) (*dto.ExternalOrderMappingsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateExternalOrderMappingsRequest) (*ExternalOrderMappingsResponse, error) {
 	s.logger.Info("updating external_order_mappings",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -347,8 +348,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *external_order_mapping.ExternalOrderMappings) *dto.ExternalOrderMappingsResponse {
-	return &dto.ExternalOrderMappingsResponse{
+func (s *Service) entityToResponse(entity *ExternalOrderMappings) *ExternalOrderMappingsResponse {
+	return &ExternalOrderMappingsResponse{
 		
 		Id: entity.Id,
 		
@@ -391,7 +392,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for external_order_mappings
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *external_order_mapping.ExternalOrderMappings) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ExternalOrderMappings) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/category"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/category"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for Categories
 type Service struct {
-	repo   *category.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new Categories service
-func NewService(repo *category.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *category.Repository, db *pgxpool.Pool, logger *logging.Log
 }
 
 // Create creates a new categories
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCategoriesRequest) (*dto.CategoriesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCategoriesRequest) (*CategoriesResponse, error) {
 	s.logger.Info("creating categories",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCa
 	
 
 	// Convert DTO to entity
-	entity := &category.Categories{
+	entity := &Categories{
 		OrganizationID: orgID,
 		
 		Name: req.Name,
@@ -112,7 +113,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCa
 }
 
 // GetByID retrieves a categories by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.CategoriesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*CategoriesResponse, error) {
 	s.logger.Debug("getting categories",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -149,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of categories records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.CategoriesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*CategoriesListResponse, error) {
 	s.logger.Debug("listing categories",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -187,16 +188,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.CategoriesResponse, len(entities))
+	items := make([]*CategoriesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.CategoriesListResponse{
+	return &CategoriesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -208,7 +209,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing categories
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateCategoriesRequest) (*dto.CategoriesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateCategoriesRequest) (*CategoriesResponse, error) {
 	s.logger.Info("updating categories",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -383,8 +384,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *category.Categories) *dto.CategoriesResponse {
-	return &dto.CategoriesResponse{
+func (s *Service) entityToResponse(entity *Categories) *CategoriesResponse {
+	return &CategoriesResponse{
 		
 		Id: entity.Id,
 		
@@ -439,7 +440,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for categories
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *category.Categories) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Categories) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

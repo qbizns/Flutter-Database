@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/price_list_item"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/price_list_item"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for PriceListItems
 type Service struct {
-	repo   *price_list_item.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new PriceListItems service
-func NewService(repo *price_list_item.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *price_list_item.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new price_list_items
-func (s *Service) Create(ctx context.Context, req *dto.CreatePriceListItemsRequest) (*dto.PriceListItemsResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreatePriceListItemsRequest) (*PriceListItemsResponse, error) {
 	s.logger.Info("creating price_list_items",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePriceListItemsReque
 	
 
 	// Convert DTO to entity
-	entity := &price_list_item.PriceListItems{
+	entity := &PriceListItems{
 		
 		
 		PriceListId: req.PriceListId,
@@ -101,7 +102,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreatePriceListItemsReque
 }
 
 // GetByID retrieves a price_list_items by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PriceListItemsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*PriceListItemsResponse, error) {
 	s.logger.Debug("getting price_list_items",
 		zap.String("id", id.String()),
 		
@@ -128,7 +129,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.PriceListItem
 }
 
 // List retrieves a paginated list of price_list_items records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.PriceListItemsListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*PriceListItemsListResponse, error) {
 	s.logger.Debug("listing price_list_items",
 		
 		zap.Int("page", page),
@@ -161,16 +162,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PriceListItem
 	}
 
 	// Convert to response
-	items := make([]*dto.PriceListItemsResponse, len(entities))
+	items := make([]*PriceListItemsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.PriceListItemsListResponse{
+	return &PriceListItemsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -182,7 +183,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.PriceListItem
 }
 
 // Update updates an existing price_list_items
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdatePriceListItemsRequest) (*dto.PriceListItemsResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePriceListItemsRequest) (*PriceListItemsResponse, error) {
 	s.logger.Info("updating price_list_items",
 		zap.String("id", id.String()),
 		
@@ -320,8 +321,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *price_list_item.PriceListItems) *dto.PriceListItemsResponse {
-	return &dto.PriceListItemsResponse{
+func (s *Service) entityToResponse(entity *PriceListItems) *PriceListItemsResponse {
+	return &PriceListItemsResponse{
 		
 		Id: entity.Id,
 		
@@ -359,7 +360,7 @@ func (s *Service) entityToResponse(entity *price_list_item.PriceListItems) *dto.
 
 
 // validateBusinessRules validates business rules for price_list_items
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *price_list_item.PriceListItems) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *PriceListItems) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

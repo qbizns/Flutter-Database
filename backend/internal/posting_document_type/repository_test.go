@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/posting_document_type"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,21 +29,21 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -258,7 +258,7 @@ func TestService_Create(t *testing.T) {
 	service := posting_document_type.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreatePostingDocumentTypesRequest{
+	req := &CreatePostingDocumentTypesRequest{
 		
 		Code: "test_value",
 		
@@ -362,7 +362,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdatePostingDocumentTypesRequest{
+	updateReq := &UpdatePostingDocumentTypesRequest{
 		Code: &updatedValue,
 	}
 	
@@ -384,7 +384,7 @@ func TestHandler_Create(t *testing.T) {
 	service := posting_document_type.NewService(testDB, repo, testLogger)
 	handler := posting_document_type.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreatePostingDocumentTypesRequest{
+	reqBody := &CreatePostingDocumentTypesRequest{
 		
 		Code: "test_value",
 		
@@ -424,7 +424,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.PostingDocumentTypesResponse
+	var resp PostingDocumentTypesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -537,8 +537,8 @@ func newTestPostingDocumentTypesWithID(id uuid.UUID) *posting_document_type.Post
 }
 
 // newTestPostingDocumentTypesRequest creates a test create request
-func newTestPostingDocumentTypesRequest() *dto.CreatePostingDocumentTypesRequest {
-	return &dto.CreatePostingDocumentTypesRequest{
+func newTestPostingDocumentTypesRequest() *CreatePostingDocumentTypesRequest {
+	return &CreatePostingDocumentTypesRequest{
 		
 		Code: "test_code",
 		

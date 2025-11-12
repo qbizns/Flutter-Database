@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/modifier_group"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/modifier_group"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ModifierGroups
 type Service struct {
-	repo   *modifier_group.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ModifierGroups service
-func NewService(repo *modifier_group.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *modifier_group.Repository, db *pgxpool.Pool, logger *loggi
 }
 
 // Create creates a new modifier_groups
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateModifierGroupsRequest) (*dto.ModifierGroupsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateModifierGroupsRequest) (*ModifierGroupsResponse, error) {
 	s.logger.Info("creating modifier_groups",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateMo
 	
 
 	// Convert DTO to entity
-	entity := &modifier_group.ModifierGroups{
+	entity := &ModifierGroups{
 		OrganizationID: orgID,
 		
 		GroupName: req.GroupName,
@@ -122,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateMo
 }
 
 // GetByID retrieves a modifier_groups by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ModifierGroupsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ModifierGroupsResponse, error) {
 	s.logger.Debug("getting modifier_groups",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -159,7 +160,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of modifier_groups records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ModifierGroupsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ModifierGroupsListResponse, error) {
 	s.logger.Debug("listing modifier_groups",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -197,16 +198,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ModifierGroupsResponse, len(entities))
+	items := make([]*ModifierGroupsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ModifierGroupsListResponse{
+	return &ModifierGroupsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -218,7 +219,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing modifier_groups
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateModifierGroupsRequest) (*dto.ModifierGroupsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateModifierGroupsRequest) (*ModifierGroupsResponse, error) {
 	s.logger.Info("updating modifier_groups",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -413,8 +414,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *modifier_group.ModifierGroups) *dto.ModifierGroupsResponse {
-	return &dto.ModifierGroupsResponse{
+func (s *Service) entityToResponse(entity *ModifierGroups) *ModifierGroupsResponse {
+	return &ModifierGroupsResponse{
 		
 		Id: entity.Id,
 		
@@ -479,7 +480,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for modifier_groups
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *modifier_group.ModifierGroups) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ModifierGroups) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

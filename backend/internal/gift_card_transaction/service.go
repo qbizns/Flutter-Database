@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/gift_card_transaction"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/gift_card_transaction"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for GiftCardTransactions
 type Service struct {
-	repo   *gift_card_transaction.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new GiftCardTransactions service
-func NewService(repo *gift_card_transaction.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *gift_card_transaction.Repository, db *pgxpool.Pool, logger
 }
 
 // Create creates a new gift_card_transactions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGiftCardTransactionsRequest) (*dto.GiftCardTransactionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGiftCardTransactionsRequest) (*GiftCardTransactionsResponse, error) {
 	s.logger.Info("creating gift_card_transactions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGi
 	
 
 	// Convert DTO to entity
-	entity := &gift_card_transaction.GiftCardTransactions{
+	entity := &GiftCardTransactions{
 		OrganizationID: orgID,
 		
 		GiftCardId: req.GiftCardId,
@@ -104,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateGi
 }
 
 // GetByID retrieves a gift_card_transactions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.GiftCardTransactionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*GiftCardTransactionsResponse, error) {
 	s.logger.Debug("getting gift_card_transactions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -141,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of gift_card_transactions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.GiftCardTransactionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*GiftCardTransactionsListResponse, error) {
 	s.logger.Debug("listing gift_card_transactions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -179,16 +180,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.GiftCardTransactionsResponse, len(entities))
+	items := make([]*GiftCardTransactionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.GiftCardTransactionsListResponse{
+	return &GiftCardTransactionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -200,7 +201,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing gift_card_transactions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateGiftCardTransactionsRequest) (*dto.GiftCardTransactionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateGiftCardTransactionsRequest) (*GiftCardTransactionsResponse, error) {
 	s.logger.Info("updating gift_card_transactions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -359,8 +360,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *gift_card_transaction.GiftCardTransactions) *dto.GiftCardTransactionsResponse {
-	return &dto.GiftCardTransactionsResponse{
+func (s *Service) entityToResponse(entity *GiftCardTransactions) *GiftCardTransactionsResponse {
+	return &GiftCardTransactionsResponse{
 		
 		Id: entity.Id,
 		
@@ -405,7 +406,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for gift_card_transactions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *gift_card_transaction.GiftCardTransactions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *GiftCardTransactions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

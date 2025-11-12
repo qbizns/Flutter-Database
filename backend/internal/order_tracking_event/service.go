@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/order_tracking_event"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/order_tracking_event"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for OrderTrackingEvents
 type Service struct {
-	repo   *order_tracking_event.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new OrderTrackingEvents service
-func NewService(repo *order_tracking_event.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *order_tracking_event.Repository, db *pgxpool.Pool, logger 
 }
 
 // Create creates a new order_tracking_events
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOrderTrackingEventsRequest) (*dto.OrderTrackingEventsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderTrackingEventsRequest) (*OrderTrackingEventsResponse, error) {
 	s.logger.Info("creating order_tracking_events",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 	
 
 	// Convert DTO to entity
-	entity := &order_tracking_event.OrderTrackingEvents{
+	entity := &OrderTrackingEvents{
 		OrganizationID: orgID,
 		
 		OrderId: req.OrderId,
@@ -118,7 +119,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateOr
 }
 
 // GetByID retrieves a order_tracking_events by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.OrderTrackingEventsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*OrderTrackingEventsResponse, error) {
 	s.logger.Debug("getting order_tracking_events",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -155,7 +156,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of order_tracking_events records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.OrderTrackingEventsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*OrderTrackingEventsListResponse, error) {
 	s.logger.Debug("listing order_tracking_events",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -193,16 +194,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.OrderTrackingEventsResponse, len(entities))
+	items := make([]*OrderTrackingEventsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.OrderTrackingEventsListResponse{
+	return &OrderTrackingEventsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -214,7 +215,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing order_tracking_events
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateOrderTrackingEventsRequest) (*dto.OrderTrackingEventsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateOrderTrackingEventsRequest) (*OrderTrackingEventsResponse, error) {
 	s.logger.Info("updating order_tracking_events",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -401,8 +402,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *order_tracking_event.OrderTrackingEvents) *dto.OrderTrackingEventsResponse {
-	return &dto.OrderTrackingEventsResponse{
+func (s *Service) entityToResponse(entity *OrderTrackingEvents) *OrderTrackingEventsResponse {
+	return &OrderTrackingEventsResponse{
 		
 		Id: entity.Id,
 		
@@ -459,7 +460,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for order_tracking_events
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *order_tracking_event.OrderTrackingEvents) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *OrderTrackingEvents) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

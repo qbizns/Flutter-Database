@@ -1,4 +1,4 @@
-package dto
+package bank_statement_reconciliation
 
 import (
 	"fmt"

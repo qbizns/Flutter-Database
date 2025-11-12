@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/cash_drawer_session"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/cash_drawer_session"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for CashDrawerSessions
 type Service struct {
-	repo   *cash_drawer_session.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new CashDrawerSessions service
-func NewService(repo *cash_drawer_session.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *cash_drawer_session.Repository, db *pgxpool.Pool, logger *
 }
 
 // Create creates a new cash_drawer_sessions
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCashDrawerSessionsRequest) (*dto.CashDrawerSessionsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashDrawerSessionsRequest) (*CashDrawerSessionsResponse, error) {
 	s.logger.Info("creating cash_drawer_sessions",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCa
 	
 
 	// Convert DTO to entity
-	entity := &cash_drawer_session.CashDrawerSessions{
+	entity := &CashDrawerSessions{
 		OrganizationID: orgID,
 		
 		CashDrawerId: req.CashDrawerId,
@@ -92,7 +93,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCa
 }
 
 // GetByID retrieves a cash_drawer_sessions by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.CashDrawerSessionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*CashDrawerSessionsResponse, error) {
 	s.logger.Debug("getting cash_drawer_sessions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -129,7 +130,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of cash_drawer_sessions records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.CashDrawerSessionsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*CashDrawerSessionsListResponse, error) {
 	s.logger.Debug("listing cash_drawer_sessions",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -167,16 +168,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.CashDrawerSessionsResponse, len(entities))
+	items := make([]*CashDrawerSessionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.CashDrawerSessionsListResponse{
+	return &CashDrawerSessionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -188,7 +189,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing cash_drawer_sessions
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateCashDrawerSessionsRequest) (*dto.CashDrawerSessionsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateCashDrawerSessionsRequest) (*CashDrawerSessionsResponse, error) {
 	s.logger.Info("updating cash_drawer_sessions",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -323,8 +324,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *cash_drawer_session.CashDrawerSessions) *dto.CashDrawerSessionsResponse {
-	return &dto.CashDrawerSessionsResponse{
+func (s *Service) entityToResponse(entity *CashDrawerSessions) *CashDrawerSessionsResponse {
+	return &CashDrawerSessionsResponse{
 		
 		Id: entity.Id,
 		
@@ -357,7 +358,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for cash_drawer_sessions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *cash_drawer_session.CashDrawerSessions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *CashDrawerSessions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

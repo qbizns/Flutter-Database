@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/tax_report_line"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/tax_report_line"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for TaxReportLines
 type Service struct {
-	repo   *tax_report_line.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new TaxReportLines service
-func NewService(repo *tax_report_line.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *tax_report_line.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new tax_report_lines
-func (s *Service) Create(ctx context.Context, req *dto.CreateTaxReportLinesRequest) (*dto.TaxReportLinesResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateTaxReportLinesRequest) (*TaxReportLinesResponse, error) {
 	s.logger.Info("creating tax_report_lines",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateTaxReportLinesReque
 	
 
 	// Convert DTO to entity
-	entity := &tax_report_line.TaxReportLines{
+	entity := &TaxReportLines{
 		
 		
 		TaxReportDefinitionId: req.TaxReportDefinitionId,
@@ -105,7 +106,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateTaxReportLinesReque
 }
 
 // GetByID retrieves a tax_report_lines by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.TaxReportLinesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*TaxReportLinesResponse, error) {
 	s.logger.Debug("getting tax_report_lines",
 		zap.String("id", id.String()),
 		
@@ -132,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.TaxReportLine
 }
 
 // List retrieves a paginated list of tax_report_lines records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.TaxReportLinesListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*TaxReportLinesListResponse, error) {
 	s.logger.Debug("listing tax_report_lines",
 		
 		zap.Int("page", page),
@@ -165,16 +166,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.TaxReportLine
 	}
 
 	// Convert to response
-	items := make([]*dto.TaxReportLinesResponse, len(entities))
+	items := make([]*TaxReportLinesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.TaxReportLinesListResponse{
+	return &TaxReportLinesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -186,7 +187,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.TaxReportLine
 }
 
 // Update updates an existing tax_report_lines
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateTaxReportLinesRequest) (*dto.TaxReportLinesResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateTaxReportLinesRequest) (*TaxReportLinesResponse, error) {
 	s.logger.Info("updating tax_report_lines",
 		zap.String("id", id.String()),
 		
@@ -332,8 +333,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *tax_report_line.TaxReportLines) *dto.TaxReportLinesResponse {
-	return &dto.TaxReportLinesResponse{
+func (s *Service) entityToResponse(entity *TaxReportLines) *TaxReportLinesResponse {
+	return &TaxReportLinesResponse{
 		
 		Id: entity.Id,
 		
@@ -373,7 +374,7 @@ func (s *Service) entityToResponse(entity *tax_report_line.TaxReportLines) *dto.
 
 
 // validateBusinessRules validates business rules for tax_report_lines
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *tax_report_line.TaxReportLines) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *TaxReportLines) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

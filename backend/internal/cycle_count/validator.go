@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 )
 
 // Validator handles CycleCounts validation logic
@@ -25,7 +25,7 @@ func NewValidator(repo *Repository) *Validator {
 }
 
 // ValidateCreate validates a create request
-func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *dto.CreateCycleCountsRequest) error {
+func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateCycleCountsRequest) error {
 	// Basic validation
 	if err := req.Validate(); err != nil {
 		return fmt.Errorf("validation failed: %w", err)
@@ -151,7 +151,7 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *dto.Crea
 }
 
 // ValidateUpdate validates an update request
-func (v *Validator) ValidateUpdate(ctx context.Context, tx pgx.Tx, id uuid.UUID, req *dto.UpdateCycleCountsRequest) error {
+func (v *Validator) ValidateUpdate(ctx context.Context, tx pgx.Tx, id uuid.UUID, req *UpdateCycleCountsRequest) error {
 	// Basic validation
 	if err := req.Validate(); err != nil {
 		return fmt.Errorf("validation failed: %w", err)
@@ -435,7 +435,7 @@ func (v *Validator) validateCategoryIdExists(ctx context.Context, tx pgx.Tx, id 
 
 
 // validateCrossFields validates relationships between fields
-func (v *Validator) validateCrossFields(ctx context.Context, tx pgx.Tx, req *dto.CreateCycleCountsRequest) error {
+func (v *Validator) validateCrossFields(ctx context.Context, tx pgx.Tx, req *CreateCycleCountsRequest) error {
 	// Add cross-field validation logic here
 	// Example: start_date must be before end_date
 	// Example: price must be less than max_price
@@ -443,7 +443,7 @@ func (v *Validator) validateCrossFields(ctx context.Context, tx pgx.Tx, req *dto
 }
 
 // validateBusinessRules validates business-specific rules
-func (v *Validator) validateBusinessRules(ctx context.Context, tx pgx.Tx, req *dto.CreateCycleCountsRequest) error {
+func (v *Validator) validateBusinessRules(ctx context.Context, tx pgx.Tx, req *CreateCycleCountsRequest) error {
 	// Add business rule validation here
 	// Example: check inventory levels
 	// Example: validate credit limits
@@ -452,7 +452,7 @@ func (v *Validator) validateBusinessRules(ctx context.Context, tx pgx.Tx, req *d
 }
 
 // validateUpdateBusinessRules validates business rules for updates
-func (v *Validator) validateUpdateBusinessRules(ctx context.Context, tx pgx.Tx, existing *CycleCounts, req *dto.UpdateCycleCountsRequest) error {
+func (v *Validator) validateUpdateBusinessRules(ctx context.Context, tx pgx.Tx, existing *CycleCounts, req *UpdateCycleCountsRequest) error {
 	// Add update-specific business rule validation here
 	// Example: can't change status from 'completed' to 'pending'
 	// Example: can't reduce quantity below reserved amount

@@ -1,4 +1,4 @@
-package dto
+package time_clock_entry
 
 import (
 	"fmt"

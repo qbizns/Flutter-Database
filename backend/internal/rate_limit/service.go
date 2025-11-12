@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/rate_limit"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/rate_limit"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for RateLimits
 type Service struct {
-	repo   *rate_limit.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new RateLimits service
-func NewService(repo *rate_limit.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *rate_limit.Repository, db *pgxpool.Pool, logger *logging.L
 }
 
 // Create creates a new rate_limits
-func (s *Service) Create(ctx context.Context, req *dto.CreateRateLimitsRequest) (*dto.RateLimitsResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateRateLimitsRequest) (*RateLimitsResponse, error) {
 	s.logger.Info("creating rate_limits",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateRateLimitsRequest) 
 	
 
 	// Convert DTO to entity
-	entity := &rate_limit.RateLimits{
+	entity := &RateLimits{
 		
 		
 		IdentifierType: req.IdentifierType,
@@ -105,7 +106,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateRateLimitsRequest) 
 }
 
 // GetByID retrieves a rate_limits by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.RateLimitsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*RateLimitsResponse, error) {
 	s.logger.Debug("getting rate_limits",
 		zap.String("id", id.String()),
 		
@@ -132,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.RateLimitsRes
 }
 
 // List retrieves a paginated list of rate_limits records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.RateLimitsListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*RateLimitsListResponse, error) {
 	s.logger.Debug("listing rate_limits",
 		
 		zap.Int("page", page),
@@ -165,16 +166,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.RateLimitsLis
 	}
 
 	// Convert to response
-	items := make([]*dto.RateLimitsResponse, len(entities))
+	items := make([]*RateLimitsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.RateLimitsListResponse{
+	return &RateLimitsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -186,7 +187,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.RateLimitsLis
 }
 
 // Update updates an existing rate_limits
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateRateLimitsRequest) (*dto.RateLimitsResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRateLimitsRequest) (*RateLimitsResponse, error) {
 	s.logger.Info("updating rate_limits",
 		zap.String("id", id.String()),
 		
@@ -332,8 +333,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *rate_limit.RateLimits) *dto.RateLimitsResponse {
-	return &dto.RateLimitsResponse{
+func (s *Service) entityToResponse(entity *RateLimits) *RateLimitsResponse {
+	return &RateLimitsResponse{
 		
 		Id: entity.Id,
 		
@@ -369,7 +370,7 @@ func (s *Service) entityToResponse(entity *rate_limit.RateLimits) *dto.RateLimit
 
 
 // validateBusinessRules validates business rules for rate_limits
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *rate_limit.RateLimits) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *RateLimits) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

@@ -1,4 +1,4 @@
-package dto
+package order_tracking_event
 
 import (
 	"fmt"

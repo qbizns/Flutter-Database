@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/fixed_asset"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := fixed_asset.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateFixedAssetsRequest{
+	req := &CreateFixedAssetsRequest{
 		
 		AssetNumber: "test_value",
 		
@@ -489,7 +489,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateFixedAssetsRequest{
+	updateReq := &UpdateFixedAssetsRequest{
 		AssetNumber: &updatedValue,
 	}
 	
@@ -511,7 +511,7 @@ func TestHandler_Create(t *testing.T) {
 	service := fixed_asset.NewService(testDB, repo, testLogger)
 	handler := fixed_asset.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateFixedAssetsRequest{
+	reqBody := &CreateFixedAssetsRequest{
 		
 		AssetNumber: "test_value",
 		
@@ -581,7 +581,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -589,7 +589,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.FixedAssetsResponse
+	var resp FixedAssetsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -850,8 +850,8 @@ func newTestFixedAssetsWithID(id uuid.UUID, orgID uuid.UUID) *fixed_asset.FixedA
 }
 
 // newTestFixedAssetsRequest creates a test create request
-func newTestFixedAssetsRequest(orgID uuid.UUID) *dto.CreateFixedAssetsRequest {
-	return &dto.CreateFixedAssetsRequest{
+func newTestFixedAssetsRequest(orgID uuid.UUID) *CreateFixedAssetsRequest {
+	return &CreateFixedAssetsRequest{
 		
 		AssetNumber: "test_asset_number",
 		

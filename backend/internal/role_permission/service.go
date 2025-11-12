@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/role_permission"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/role_permission"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for RolePermissions
 type Service struct {
-	repo   *role_permission.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new RolePermissions service
-func NewService(repo *role_permission.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *role_permission.Repository, db *pgxpool.Pool, logger *logg
 }
 
 // Create creates a new role_permissions
-func (s *Service) Create(ctx context.Context, req *dto.CreateRolePermissionsRequest) (*dto.RolePermissionsResponse, error) {
+func (s *Service) Create(ctx context.Context, req *CreateRolePermissionsRequest) (*RolePermissionsResponse, error) {
 	s.logger.Info("creating role_permissions",
 		
 	)
@@ -50,7 +51,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateRolePermissionsRequ
 	
 
 	// Convert DTO to entity
-	entity := &role_permission.RolePermissions{
+	entity := &RolePermissions{
 		
 		
 		RoleId: req.RoleId,
@@ -83,7 +84,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateRolePermissionsRequ
 }
 
 // GetByID retrieves a role_permissions by ID
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.RolePermissionsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*RolePermissionsResponse, error) {
 	s.logger.Debug("getting role_permissions",
 		zap.String("id", id.String()),
 		
@@ -110,7 +111,7 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*dto.RolePermissio
 }
 
 // List retrieves a paginated list of role_permissions records
-func (s *Service) List(ctx context.Context, page, limit int) (*dto.RolePermissionsListResponse, error) {
+func (s *Service) List(ctx context.Context, page, limit int) (*RolePermissionsListResponse, error) {
 	s.logger.Debug("listing role_permissions",
 		
 		zap.Int("page", page),
@@ -143,16 +144,16 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.RolePermissio
 	}
 
 	// Convert to response
-	items := make([]*dto.RolePermissionsResponse, len(entities))
+	items := make([]*RolePermissionsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.RolePermissionsListResponse{
+	return &RolePermissionsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -164,7 +165,7 @@ func (s *Service) List(ctx context.Context, page, limit int) (*dto.RolePermissio
 }
 
 // Update updates an existing role_permissions
-func (s *Service) Update(ctx context.Context, id uuid.UUID, req *dto.UpdateRolePermissionsRequest) (*dto.RolePermissionsResponse, error) {
+func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRolePermissionsRequest) (*RolePermissionsResponse, error) {
 	s.logger.Info("updating role_permissions",
 		zap.String("id", id.String()),
 		
@@ -266,8 +267,8 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *role_permission.RolePermissions) *dto.RolePermissionsResponse {
-	return &dto.RolePermissionsResponse{
+func (s *Service) entityToResponse(entity *RolePermissions) *RolePermissionsResponse {
+	return &RolePermissionsResponse{
 		
 		Id: entity.Id,
 		
@@ -283,7 +284,7 @@ func (s *Service) entityToResponse(entity *role_permission.RolePermissions) *dto
 
 
 // validateBusinessRules validates business rules for role_permissions
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *role_permission.RolePermissions) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *RolePermissions) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

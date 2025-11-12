@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/notification_preference"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/notification_preference"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for NotificationPreferences
 type Service struct {
-	repo   *notification_preference.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new NotificationPreferences service
-func NewService(repo *notification_preference.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *notification_preference.Repository, db *pgxpool.Pool, logg
 }
 
 // Create creates a new notification_preferences
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNotificationPreferencesRequest) (*dto.NotificationPreferencesResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateNotificationPreferencesRequest) (*NotificationPreferencesResponse, error) {
 	s.logger.Info("creating notification_preferences",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNo
 	
 
 	// Convert DTO to entity
-	entity := &notification_preference.NotificationPreferences{
+	entity := &NotificationPreferences{
 		OrganizationID: orgID,
 		
 		UserId: req.UserId,
@@ -98,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateNo
 }
 
 // GetByID retrieves a notification_preferences by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.NotificationPreferencesResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*NotificationPreferencesResponse, error) {
 	s.logger.Debug("getting notification_preferences",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -135,7 +136,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of notification_preferences records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.NotificationPreferencesListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*NotificationPreferencesListResponse, error) {
 	s.logger.Debug("listing notification_preferences",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -173,16 +174,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.NotificationPreferencesResponse, len(entities))
+	items := make([]*NotificationPreferencesResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.NotificationPreferencesListResponse{
+	return &NotificationPreferencesListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -194,7 +195,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing notification_preferences
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateNotificationPreferencesRequest) (*dto.NotificationPreferencesResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateNotificationPreferencesRequest) (*NotificationPreferencesResponse, error) {
 	s.logger.Info("updating notification_preferences",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -341,8 +342,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *notification_preference.NotificationPreferences) *dto.NotificationPreferencesResponse {
-	return &dto.NotificationPreferencesResponse{
+func (s *Service) entityToResponse(entity *NotificationPreferences) *NotificationPreferencesResponse {
+	return &NotificationPreferencesResponse{
 		
 		Id: entity.Id,
 		
@@ -381,7 +382,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for notification_preferences
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *notification_preference.NotificationPreferences) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *NotificationPreferences) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

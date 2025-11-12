@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/sales_channel"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := sales_channel.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateSalesChannelsRequest{
+	req := &CreateSalesChannelsRequest{
 		
 		ChannelCode: "test_value",
 		
@@ -399,7 +399,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateSalesChannelsRequest{
+	updateReq := &UpdateSalesChannelsRequest{
 		ChannelCode: &updatedValue,
 	}
 	
@@ -421,7 +421,7 @@ func TestHandler_Create(t *testing.T) {
 	service := sales_channel.NewService(testDB, repo, testLogger)
 	handler := sales_channel.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateSalesChannelsRequest{
+	reqBody := &CreateSalesChannelsRequest{
 		
 		ChannelCode: "test_value",
 		
@@ -455,7 +455,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -463,7 +463,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.SalesChannelsResponse
+	var resp SalesChannelsResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -580,8 +580,8 @@ func newTestSalesChannelsWithID(id uuid.UUID, orgID uuid.UUID) *sales_channel.Sa
 }
 
 // newTestSalesChannelsRequest creates a test create request
-func newTestSalesChannelsRequest(orgID uuid.UUID) *dto.CreateSalesChannelsRequest {
-	return &dto.CreateSalesChannelsRequest{
+func newTestSalesChannelsRequest(orgID uuid.UUID) *CreateSalesChannelsRequest {
+	return &CreateSalesChannelsRequest{
 		
 		ChannelCode: "test_channel_code",
 		

@@ -1,4 +1,4 @@
-package dto
+package organization_feature
 
 import (
 	"fmt"

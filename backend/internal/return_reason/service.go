@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/return_reason"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/return_reason"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for ReturnReasons
 type Service struct {
-	repo   *return_reason.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new ReturnReasons service
-func NewService(repo *return_reason.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *return_reason.Repository, db *pgxpool.Pool, logger *loggin
 }
 
 // Create creates a new return_reasons
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateReturnReasonsRequest) (*dto.ReturnReasonsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReturnReasonsRequest) (*ReturnReasonsResponse, error) {
 	s.logger.Info("creating return_reasons",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 	
 
 	// Convert DTO to entity
-	entity := &return_reason.ReturnReasons{
+	entity := &ReturnReasons{
 		OrganizationID: orgID,
 		
 		ReasonCode: req.ReasonCode,
@@ -98,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateRe
 }
 
 // GetByID retrieves a return_reasons by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.ReturnReasonsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*ReturnReasonsResponse, error) {
 	s.logger.Debug("getting return_reasons",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -135,7 +136,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of return_reasons records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.ReturnReasonsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*ReturnReasonsListResponse, error) {
 	s.logger.Debug("listing return_reasons",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -173,16 +174,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.ReturnReasonsResponse, len(entities))
+	items := make([]*ReturnReasonsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.ReturnReasonsListResponse{
+	return &ReturnReasonsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -194,7 +195,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing return_reasons
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateReturnReasonsRequest) (*dto.ReturnReasonsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateReturnReasonsRequest) (*ReturnReasonsResponse, error) {
 	s.logger.Info("updating return_reasons",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -341,8 +342,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *return_reason.ReturnReasons) *dto.ReturnReasonsResponse {
-	return &dto.ReturnReasonsResponse{
+func (s *Service) entityToResponse(entity *ReturnReasons) *ReturnReasonsResponse {
+	return &ReturnReasonsResponse{
 		
 		Id: entity.Id,
 		
@@ -381,7 +382,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for return_reasons
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *return_reason.ReturnReasons) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *ReturnReasons) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

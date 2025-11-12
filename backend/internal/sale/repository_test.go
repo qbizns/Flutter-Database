@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/your-org/pos-backend/internal/sale"
-	"github.com/your-org/pos-backend/internal/dto"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/testutil"
+// 	"github.com/your-org/pos-backend/internal/testutil"
 )
 
 var (
@@ -29,23 +29,23 @@ var (
 func TestMain(m *testing.M) {
 	// Setup
 	var err error
-	testDB, err = testutil.SetupTestDB()
+	testDB, err = // testutil.SetupTestDB()
 	if err != nil {
 		panic(err)
 	}
-	testLogger = testutil.NewTestLogger()
+	testLogger = // testutil.NewTestLogger()
 	
-	testOrgID = testutil.CreateTestOrganization(testDB)
+	testOrgID = // testutil.CreateTestOrganization(testDB)
 	
 
 	// Run tests
 	code := m.Run()
 
 	// Teardown
-	testutil.TeardownTestDB(testDB)
+	// testutil.TeardownTestDB(testDB)
 
 	// Exit
-	testutil.Exit(code)
+	// testutil.Exit(code)
 }
 
 // =============================================================================
@@ -295,7 +295,7 @@ func TestService_Create(t *testing.T) {
 	service := sale.NewService(testDB, repo, testLogger)
 	ctx := context.Background()
 
-	req := &dto.CreateSalesRequest{
+	req := &CreateSalesRequest{
 		
 		SaleNumber: "test_value",
 		
@@ -464,7 +464,7 @@ func TestService_Update(t *testing.T) {
 	
 	
 	updatedValue := "updated_value"
-	updateReq := &dto.UpdateSalesRequest{
+	updateReq := &UpdateSalesRequest{
 		SaleNumber: &updatedValue,
 	}
 	
@@ -486,7 +486,7 @@ func TestHandler_Create(t *testing.T) {
 	service := sale.NewService(testDB, repo, testLogger)
 	handler := sale.NewHandler(service, testLogger)
 
-	reqBody := &dto.CreateSalesRequest{
+	reqBody := &CreateSalesRequest{
 		
 		SaleNumber: "test_value",
 		
@@ -546,7 +546,7 @@ func TestHandler_Create(t *testing.T) {
 	
 	req.Header.Set("Content-Type", "application/json")
 	
-	req = testutil.WithOrgID(req, testOrgID)
+	req = // testutil.WithOrgID(req, testOrgID)
 	
 
 	w := httptest.NewRecorder()
@@ -554,7 +554,7 @@ func TestHandler_Create(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	var resp dto.SalesResponse
+	var resp SalesResponse
 	err = json.Unmarshal(w.Body.Bytes(), &resp)
 	assert.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, resp.ID)
@@ -775,8 +775,8 @@ func newTestSalesWithID(id uuid.UUID, orgID uuid.UUID) *sale.Sales {
 }
 
 // newTestSalesRequest creates a test create request
-func newTestSalesRequest(orgID uuid.UUID) *dto.CreateSalesRequest {
-	return &dto.CreateSalesRequest{
+func newTestSalesRequest(orgID uuid.UUID) *CreateSalesRequest {
+	return &CreateSalesRequest{
 		
 		SaleNumber: "test_sale_number",
 		

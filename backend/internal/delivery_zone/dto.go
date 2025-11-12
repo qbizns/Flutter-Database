@@ -1,4 +1,4 @@
-package dto
+package delivery_zone
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package dto
+package sms_queue
 
 import (
 	"fmt"

@@ -7,21 +7,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/your-org/pos-backend/internal/dto/customer_store_credit_account"
+	"github.com/jackc/pgx/v5/pgxpool"
+	
 	"github.com/your-org/pos-backend/internal/logging"
-	"github.com/your-org/pos-backend/internal/repository/customer_store_credit_account"
+	
 	"go.uber.org/zap"
 )
 
 // Service handles business logic for CustomerStoreCreditAccounts
 type Service struct {
-	repo   *customer_store_credit_account.Repository
+	repo   *Repository
 	db     *pgxpool.Pool
 	logger *logging.Logger
 }
 
 // NewService creates a new CustomerStoreCreditAccounts service
-func NewService(repo *customer_store_credit_account.Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
+func NewService(repo *Repository, db *pgxpool.Pool, logger *logging.Logger) *Service {
 	return &Service{
 		repo:   repo,
 		db:     db,
@@ -30,7 +31,7 @@ func NewService(repo *customer_store_credit_account.Repository, db *pgxpool.Pool
 }
 
 // Create creates a new customer_store_credit_accounts
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCustomerStoreCreditAccountsRequest) (*dto.CustomerStoreCreditAccountsResponse, error) {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustomerStoreCreditAccountsRequest) (*CustomerStoreCreditAccountsResponse, error) {
 	s.logger.Info("creating customer_store_credit_accounts",
 		zap.String("organization_id", orgID.String()),
 	)
@@ -55,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 	
 
 	// Convert DTO to entity
-	entity := &customer_store_credit_account.CustomerStoreCreditAccounts{
+	entity := &CustomerStoreCreditAccounts{
 		OrganizationID: orgID,
 		
 		CustomerId: req.CustomerId,
@@ -92,7 +93,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *dto.CreateCu
 }
 
 // GetByID retrieves a customer_store_credit_accounts by ID
-func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*dto.CustomerStoreCreditAccountsResponse, error) {
+func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*CustomerStoreCreditAccountsResponse, error) {
 	s.logger.Debug("getting customer_store_credit_accounts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -129,7 +130,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 }
 
 // List retrieves a paginated list of customer_store_credit_accounts records
-func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*dto.CustomerStoreCreditAccountsListResponse, error) {
+func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*CustomerStoreCreditAccountsListResponse, error) {
 	s.logger.Debug("listing customer_store_credit_accounts",
 		zap.String("organization_id", orgID.String()),
 		zap.Int("page", page),
@@ -167,16 +168,16 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 	}
 
 	// Convert to response
-	items := make([]*dto.CustomerStoreCreditAccountsResponse, len(entities))
+	items := make([]*CustomerStoreCreditAccountsResponse, len(entities))
 	for i, entity := range entities {
 		items[i] = s.entityToResponse(entity)
 	}
 
 	totalPages := (total + limit - 1) / limit
 
-	return &dto.CustomerStoreCreditAccountsListResponse{
+	return &CustomerStoreCreditAccountsListResponse{
 		Items: items,
-		Pagination: dto.Pagination{
+		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
 			Total:      total,
@@ -188,7 +189,7 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID, page, limit int) (*
 }
 
 // Update updates an existing customer_store_credit_accounts
-func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *dto.UpdateCustomerStoreCreditAccountsRequest) (*dto.CustomerStoreCreditAccountsResponse, error) {
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateCustomerStoreCreditAccountsRequest) (*CustomerStoreCreditAccountsResponse, error) {
 	s.logger.Info("updating customer_store_credit_accounts",
 		zap.String("id", id.String()),
 		zap.String("organization_id", orgID.String()),
@@ -323,8 +324,8 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 }
 
 // entityToResponse converts entity to response DTO
-func (s *Service) entityToResponse(entity *customer_store_credit_account.CustomerStoreCreditAccounts) *dto.CustomerStoreCreditAccountsResponse {
-	return &dto.CustomerStoreCreditAccountsResponse{
+func (s *Service) entityToResponse(entity *CustomerStoreCreditAccounts) *CustomerStoreCreditAccountsResponse {
+	return &CustomerStoreCreditAccountsResponse{
 		
 		Id: entity.Id,
 		
@@ -359,7 +360,7 @@ func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID u
 
 
 // validateBusinessRules validates business rules for customer_store_credit_accounts
-func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *customer_store_credit_account.CustomerStoreCreditAccounts) error {
+func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *CustomerStoreCreditAccounts) error {
 	// TODO: Add business rule validation
 	// Example:
 	// - Check for duplicate names within organization

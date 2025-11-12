@@ -1,4 +1,4 @@
-package dto
+package batch_transaction
 
 import (
 	"fmt"
