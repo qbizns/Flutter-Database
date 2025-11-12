@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/expr-lang/expr"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/metrics"
 	apperrors "github.com/your-org/pos-backend/internal/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -360,4 +362,97 @@ type PostingInput struct {
 	DocumentID     uuid.UUID
 	Event          string
 	UserID         uuid.UUID
+}
+
+// PostBatch processes multiple documents in parallel
+func (e *Engine) PostBatch(ctx context.Context, inputs []PostingInput) []PostingResult {
+	e.logger.Info("posting batch",
+		zap.Int("count", len(inputs)),
+	)
+
+	results := make([]PostingResult, len(inputs))
+
+	// Process in parallel with worker pool
+	const numWorkers = 10
+	jobs := make(chan PostingJob, len(inputs))
+	resultsChan := make(chan PostingResult, len(inputs))
+
+	// Start workers
+	for w := 0; w < numWorkers; w++ {
+		go e.worker(ctx, jobs, resultsChan)
+	}
+
+	// Send jobs
+	for i, input := range inputs {
+		jobs <- PostingJob{Index: i, Input: input}
+	}
+	close(jobs)
+
+	// Collect results
+	for i := 0; i < len(inputs); i++ {
+		result := <-resultsChan
+		results[result.Index] = result
+	}
+
+	// Count successes and failures
+	successes := 0
+	failures := 0
+	for _, result := range results {
+		if result.Error == nil {
+			successes++
+		} else {
+			failures++
+		}
+	}
+
+	e.logger.Info("batch posting completed",
+		zap.Int("total", len(inputs)),
+		zap.Int("successes", successes),
+		zap.Int("failures", failures),
+	)
+
+	return results
+}
+
+// worker processes posting jobs from the channel
+func (e *Engine) worker(ctx context.Context, jobs <-chan PostingJob, results chan<- PostingResult) {
+	for job := range jobs {
+		start := time.Now()
+		err := e.Post(ctx, job.Input)
+		duration := time.Since(start)
+
+		status := "success"
+		if err != nil {
+			status = "error"
+		}
+
+		// Record metrics
+		metrics.RecordPostingExecution(
+			job.Input.DocumentType,
+			job.Input.Event,
+			status,
+			duration,
+		)
+
+		results <- PostingResult{
+			Index:      job.Index,
+			DocumentID: job.Input.DocumentID,
+			Error:      err,
+			Duration:   duration,
+		}
+	}
+}
+
+// PostingJob represents a posting job in the batch
+type PostingJob struct {
+	Index int
+	Input PostingInput
+}
+
+// PostingResult represents the result of a posting operation
+type PostingResult struct {
+	Index      int
+	DocumentID uuid.UUID
+	Error      error
+	Duration   time.Duration
 }

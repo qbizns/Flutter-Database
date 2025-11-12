@@ -1,0 +1,79 @@
+package dto
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
+)
+
+// {{.GoName}}Response represents a {{.Name}} response
+type {{.GoName}}Response struct {
+	{{range .Columns}}
+	{{.GoName}} {{.GoType}} `json:"{{.Name}}"`
+	{{end}}
+}
+
+// Create{{.GoName}}Request represents a request to create a {{.Name}}
+type Create{{.GoName}}Request struct {
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	{{.GoName}} {{.GoType}} `json:"{{.Name}}"{{if .Validation}} validate:"{{.Validation}}"{{end}}`
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+}
+
+// Validate validates the create request
+func (r *Create{{.GoName}}Request) Validate() error {
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}{{if not .Nullable}}
+	if r.{{.GoName}} == {{if eq .GoType "string"}}""{{else if eq .GoType "uuid.UUID"}}uuid.Nil{{else if eq .GoType "int64"}}0{{else}}nil{{end}} {
+		return fmt.Errorf("{{.Name}} is required")
+	}
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+
+	// Additional validation
+	// TODO: Add business-specific validation rules
+
+	return nil
+}
+
+// Update{{.GoName}}Request represents a request to update a {{.Name}}
+type Update{{.GoName}}Request struct {
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	{{.GoName}} *{{if eq .GoType (print "*" (trimPrefix .GoType "*"))}}{{trimPrefix .GoType "*"}}{{else}}{{.GoType}}{{end}} `json:"{{.Name}},omitempty"{{if .Validation}} validate:"omitempty,{{.Validation}}"{{end}}`
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+}
+
+// Validate validates the update request
+func (r *Update{{.GoName}}Request) Validate() error {
+	// At least one field must be provided
+	hasUpdate := false
+	{{range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}{{if ne .Name "deleted_at"}}{{if ne .Name "organization_id"}}
+	if r.{{.GoName}} != nil {
+		hasUpdate = true
+	}
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+
+	if !hasUpdate {
+		return fmt.Errorf("at least one field must be provided for update")
+	}
+
+	// Additional validation
+	// TODO: Add business-specific validation rules
+
+	return nil
+}
+
+// {{.GoName}}ListResponse represents a paginated list of {{.Name}} records
+type {{.GoName}}ListResponse struct {
+	Items      []*{{.GoName}}Response `json:"items"`
+	Pagination Pagination             `json:"pagination"`
+}
+
+// Pagination represents pagination information
+type Pagination struct {
+	Page       int  `json:"page"`
+	Limit      int  `json:"limit"`
+	Total      int  `json:"total"`
+	TotalPages int  `json:"total_pages"`
+	HasNext    bool `json:"has_next"`
+	HasPrev    bool `json:"has_prev"`
+}

@@ -1,0 +1,337 @@
+package {{.Package}}
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/metrics"
+	"go.uber.org/zap"
+)
+
+// Repository handles database operations for {{.GoName}}
+type Repository struct {
+	db     *pgxpool.Pool
+	logger *logging.Logger
+}
+
+// NewRepository creates a new {{.GoName}} repository
+func NewRepository(db *pgxpool.Pool, logger *logging.Logger) *Repository {
+	return &Repository{
+		db:     db,
+		logger: logger,
+	}
+}
+
+// {{.GoName}} represents a {{.Name}} entity
+type {{.GoName}} struct {
+{{- range .Columns}}
+	{{.GoName}} {{.GoType}} `json:"{{.Name}}" db:"{{.Name}}"`
+{{- end}}
+}
+
+// Create inserts a new {{.Name}} record
+func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *{{.GoName}}) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("INSERT", "{{.Name}}", duration, nil)
+	}()
+
+	query := `
+		INSERT INTO {{.Name}} (
+{{- range $i, $col := .Columns}}{{if ne $col.Name "id"}}{{if ne $col.Name "created_at"}}{{if ne $col.Name "updated_at"}}
+			{{if $i}}, {{end}}{{$col.Name}}
+{{- end}}{{end}}{{end}}{{end}}
+		) VALUES (
+{{- range $i, $col := .Columns}}{{if ne $col.Name "id"}}{{if ne $col.Name "created_at"}}{{if ne $col.Name "updated_at"}}
+			{{if $i}}, {{end}}${{add $i 1}}
+{{- end}}{{end}}{{end}}{{end}}
+		)
+		{{if .PrimaryKey}}RETURNING {{.PrimaryKey}}{{if .HasTimestamps}}, created_at, updated_at{{end}}{{end}}
+	`
+
+	row := tx.QueryRow(ctx, query,
+{{- range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}{{if ne .Name "updated_at"}}
+		entity.{{.GoName}},
+{{- end}}{{end}}{{end}}{{end}}
+	)
+
+	{{if .PrimaryKey}}
+	err := row.Scan(&entity.{{toGoName .PrimaryKey}}{{if .HasTimestamps}}, &entity.CreatedAt, &entity.UpdatedAt{{end}})
+	{{else}}
+	err := row.Scan()
+	{{end}}
+
+	if err != nil {
+		r.logger.Error("failed to create {{.Name}}", zap.Error(err))
+		return fmt.Errorf("failed to create {{.Name}}: %w", err)
+	}
+
+	r.logger.Info("created {{.Name}}",
+		{{if .PrimaryKey}}zap.String("id", entity.{{toGoName .PrimaryKey}}.String()),{{end}}
+		{{if .HasOrganization}}zap.String("organization_id", entity.OrganizationID.String()),{{end}}
+	)
+
+	return nil
+}
+
+// GetByID retrieves a {{.Name}} by ID
+func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*{{.GoName}}, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "{{.Name}}", duration, nil)
+	}()
+
+	query := `
+		SELECT
+{{- range $i, $col := .Columns}}
+			{{if $i}}, {{end}}{{$col.Name}}
+{{- end}}
+		FROM {{.Name}}
+		WHERE {{.PrimaryKey}} = $1
+		{{if .HasSoftDelete}}AND deleted_at IS NULL{{end}}
+	`
+
+	var entity {{.GoName}}
+	err := tx.QueryRow(ctx, query, id).Scan(
+{{- range .Columns}}
+		&entity.{{.GoName}},
+{{- end}}
+	)
+
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("{{.Name}} not found")
+	}
+
+	if err != nil {
+		r.logger.Error("failed to get {{.Name}}", zap.Error(err), zap.String("id", id.String()))
+		return nil, fmt.Errorf("failed to get {{.Name}}: %w", err)
+	}
+
+	return &entity, nil
+}
+
+// List retrieves a paginated list of {{.Name}} records
+func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]*{{.GoName}}, int, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "{{.Name}}", duration, nil)
+	}()
+
+	// Get total count
+	var total int
+	countQuery := `
+		SELECT COUNT(*)
+		FROM {{.Name}}
+		{{if .HasSoftDelete}}WHERE deleted_at IS NULL{{end}}
+	`
+
+	err := tx.QueryRow(ctx, countQuery).Scan(&total)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count {{.Name}} records: %w", err)
+	}
+
+	// Get paginated results
+	query := `
+		SELECT
+{{- range $i, $col := .Columns}}
+			{{if $i}}, {{end}}{{$col.Name}}
+{{- end}}
+		FROM {{.Name}}
+		{{if .HasSoftDelete}}WHERE deleted_at IS NULL{{end}}
+		{{if .HasTimestamps}}ORDER BY created_at DESC{{end}}
+		LIMIT $1 OFFSET $2
+	`
+
+	rows, err := tx.Query(ctx, query, limit, offset)
+	if err != nil {
+		r.logger.Error("failed to list {{.Name}}", zap.Error(err))
+		return nil, 0, fmt.Errorf("failed to list {{.Name}}: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*{{.GoName}}
+	for rows.Next() {
+		var entity {{.GoName}}
+		err := rows.Scan(
+{{- range .Columns}}
+			&entity.{{.GoName}},
+{{- end}}
+		)
+		if err != nil {
+			return nil, 0, fmt.Errorf("failed to scan {{.Name}}: %w", err)
+		}
+		entities = append(entities, &entity)
+	}
+
+	if rows.Err() != nil {
+		return nil, 0, fmt.Errorf("error iterating {{.Name}} rows: %w", rows.Err())
+	}
+
+	return entities, total, nil
+}
+
+// Update updates an existing {{.Name}} record
+func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *{{.GoName}}) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("UPDATE", "{{.Name}}", duration, nil)
+	}()
+
+	query := `
+		UPDATE {{.Name}}
+		SET
+{{- range $i, $col := .Columns}}{{if ne $col.Name "id"}}{{if ne $col.Name "created_at"}}
+			{{if $i}}, {{end}}{{$col.Name}} = ${{add $i 1}}
+{{- end}}{{end}}{{end}}
+			{{if .HasTimestamps}}, updated_at = CURRENT_TIMESTAMP{{end}}
+		WHERE {{.PrimaryKey}} = ${{add (len .Columns) 1}}
+		{{if .HasSoftDelete}}AND deleted_at IS NULL{{end}}
+	`
+
+	tag, err := tx.Exec(ctx, query,
+{{- range .Columns}}{{if ne .Name "id"}}{{if ne .Name "created_at"}}
+		entity.{{.GoName}},
+{{- end}}{{end}}{{end}}
+		entity.{{toGoName .PrimaryKey}},
+	)
+
+	if err != nil {
+		r.logger.Error("failed to update {{.Name}}", zap.Error(err))
+		return fmt.Errorf("failed to update {{.Name}}: %w", err)
+	}
+
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("{{.Name}} not found or already deleted")
+	}
+
+	r.logger.Info("updated {{.Name}}",
+		zap.String("id", entity.{{toGoName .PrimaryKey}}.String()),
+	)
+
+	return nil
+}
+
+{{if .HasSoftDelete}}
+// Delete soft-deletes a {{.Name}} record
+func (r *Repository) Delete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("UPDATE", "{{.Name}}", duration, nil)
+	}()
+
+	query := `
+		UPDATE {{.Name}}
+		SET deleted_at = CURRENT_TIMESTAMP
+		WHERE {{.PrimaryKey}} = $1
+		AND deleted_at IS NULL
+	`
+
+	tag, err := tx.Exec(ctx, query, id)
+	if err != nil {
+		r.logger.Error("failed to delete {{.Name}}", zap.Error(err), zap.String("id", id.String()))
+		return fmt.Errorf("failed to delete {{.Name}}: %w", err)
+	}
+
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("{{.Name}} not found or already deleted")
+	}
+
+	r.logger.Info("deleted {{.Name}}", zap.String("id", id.String()))
+	return nil
+}
+{{else}}
+// Delete permanently deletes a {{.Name}} record
+func (r *Repository) Delete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("DELETE", "{{.Name}}", duration, nil)
+	}()
+
+	query := `DELETE FROM {{.Name}} WHERE {{.PrimaryKey}} = $1`
+
+	tag, err := tx.Exec(ctx, query, id)
+	if err != nil {
+		r.logger.Error("failed to delete {{.Name}}", zap.Error(err), zap.String("id", id.String()))
+		return fmt.Errorf("failed to delete {{.Name}}: %w", err)
+	}
+
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("{{.Name}} not found")
+	}
+
+	r.logger.Info("deleted {{.Name}}", zap.String("id", id.String()))
+	return nil
+}
+{{end}}
+
+{{if .HasOrganization}}
+// ListByOrganization retrieves {{.Name}} records for a specific organization
+func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, limit, offset int) ([]*{{.GoName}}, int, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "{{.Name}}", duration, nil)
+	}()
+
+	// Get total count
+	var total int
+	countQuery := `
+		SELECT COUNT(*)
+		FROM {{.Name}}
+		WHERE organization_id = $1
+		{{if .HasSoftDelete}}AND deleted_at IS NULL{{end}}
+	`
+
+	err := tx.QueryRow(ctx, countQuery, orgID).Scan(&total)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count {{.Name}} records: %w", err)
+	}
+
+	// Get paginated results
+	query := `
+		SELECT
+{{- range $i, $col := .Columns}}
+			{{if $i}}, {{end}}{{$col.Name}}
+{{- end}}
+		FROM {{.Name}}
+		WHERE organization_id = $1
+		{{if .HasSoftDelete}}AND deleted_at IS NULL{{end}}
+		{{if .HasTimestamps}}ORDER BY created_at DESC{{end}}
+		LIMIT $2 OFFSET $3
+	`
+
+	rows, err := tx.Query(ctx, query, orgID, limit, offset)
+	if err != nil {
+		r.logger.Error("failed to list {{.Name}} by organization", zap.Error(err))
+		return nil, 0, fmt.Errorf("failed to list {{.Name}}: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*{{.GoName}}
+	for rows.Next() {
+		var entity {{.GoName}}
+		err := rows.Scan(
+{{- range .Columns}}
+			&entity.{{.GoName}},
+{{- end}}
+		)
+		if err != nil {
+			return nil, 0, fmt.Errorf("failed to scan {{.Name}}: %w", err)
+		}
+		entities = append(entities, &entity)
+	}
+
+	return entities, total, nil
+}
+{{end}}

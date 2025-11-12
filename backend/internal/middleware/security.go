@@ -2,9 +2,12 @@ package middleware
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/your-org/pos-backend/internal/config"
@@ -73,29 +76,33 @@ func (sh *SecurityHeaders) Handler() func(http.Handler) http.Handler {
 
 // buildCSP builds Content Security Policy header
 func (sh *SecurityHeaders) buildCSP() string {
-	policies := []string{
-		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' 'unsafe-eval'", // TODO: Remove unsafe-* in production
-		"style-src 'self' 'unsafe-inline'",
-		"img-src 'self' data: https:",
-		"font-src 'self' data:",
-		"connect-src 'self'",
-		"frame-ancestors 'none'",
-		"base-uri 'self'",
-		"form-action 'self'",
-		"upgrade-insecure-requests",
+	// Production-safe CSP - NO unsafe-inline or unsafe-eval
+	if sh.config.IsProduction() {
+		policies := []string{
+			"default-src 'self'",
+			"script-src 'self'", // FIXED: Removed unsafe-inline and unsafe-eval
+			"style-src 'self'",  // FIXED: Removed unsafe-inline
+			"img-src 'self' data: https:",
+			"font-src 'self' data:",
+			"connect-src 'self'",
+			"frame-ancestors 'none'",
+			"base-uri 'self'",
+			"form-action 'self'",
+			"upgrade-insecure-requests",
+			"object-src 'none'", // Block plugins
+		}
+		return strings.Join(policies, "; ")
 	}
 
-	// In development, be more permissive
-	if sh.config.IsDevelopment() {
-		policies = []string{
-			"default-src 'self'",
-			"script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-			"style-src 'self' 'unsafe-inline'",
-			"img-src 'self' data: https: http:",
-			"font-src 'self' data:",
-			"connect-src 'self' http://localhost:* ws://localhost:*",
-		}
+	// In development, be more permissive for hot reload and debugging
+	policies := []string{
+		"default-src 'self'",
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Allow for development
+		"style-src 'self' 'unsafe-inline'",
+		"img-src 'self' data: https: http:",
+		"font-src 'self' data:",
+		"connect-src 'self' http://localhost:* ws://localhost:* wss://localhost:*",
+		"frame-ancestors 'self'",
 	}
 
 	return strings.Join(policies, "; ")
@@ -179,11 +186,94 @@ func CORS(cfg *config.Config) func(http.Handler) http.Handler {
 // CSRF protection middleware
 type CSRF struct {
 	config *config.Config
+	store  *CSRFTokenStore
+}
+
+// CSRFTokenStore manages CSRF tokens with expiration
+type CSRFTokenStore struct {
+	tokens map[string]time.Time
+	mu     sync.RWMutex
+}
+
+// NewCSRFTokenStore creates a new CSRF token store
+func NewCSRFTokenStore() *CSRFTokenStore {
+	store := &CSRFTokenStore{
+		tokens: make(map[string]time.Time),
+	}
+	// Cleanup expired tokens every 10 minutes
+	go store.cleanupExpired()
+	return store
+}
+
+// Generate creates a new CSRF token
+func (s *CSRFTokenStore) Generate() (string, error) {
+	bytes := make([]byte, 32)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	token := base64.URLEncoding.EncodeToString(bytes)
+
+	s.mu.Lock()
+	s.tokens[token] = time.Now().Add(2 * time.Hour)
+	s.mu.Unlock()
+
+	return token, nil
+}
+
+// Validate checks if a CSRF token is valid
+func (s *CSRFTokenStore) Validate(token string) bool {
+	if token == "" {
+		return false
+	}
+
+	s.mu.RLock()
+	expiry, exists := s.tokens[token]
+	s.mu.RUnlock()
+
+	if !exists {
+		return false
+	}
+
+	if time.Now().After(expiry) {
+		s.mu.Lock()
+		delete(s.tokens, token)
+		s.mu.Unlock()
+		return false
+	}
+
+	return true
+}
+
+// Invalidate removes a CSRF token (after successful use)
+func (s *CSRFTokenStore) Invalidate(token string) {
+	s.mu.Lock()
+	delete(s.tokens, token)
+	s.mu.Unlock()
+}
+
+// cleanupExpired removes expired tokens periodically
+func (s *CSRFTokenStore) cleanupExpired() {
+	ticker := time.NewTicker(10 * time.Minute)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		s.mu.Lock()
+		now := time.Now()
+		for token, expiry := range s.tokens {
+			if now.After(expiry) {
+				delete(s.tokens, token)
+			}
+		}
+		s.mu.Unlock()
+	}
 }
 
 // NewCSRF creates a new CSRF middleware
 func NewCSRF(cfg *config.Config) *CSRF {
-	return &CSRF{config: cfg}
+	return &CSRF{
+		config: cfg,
+		store:  NewCSRFTokenStore(),
+	}
 }
 
 // Protect returns middleware that validates CSRF tokens
@@ -208,10 +298,8 @@ func (c *CSRF) Protect() func(http.Handler) http.Handler {
 				token = r.FormValue("csrf_token")
 			}
 
-			// TODO: Implement proper CSRF token validation
-			// For now, just check if token exists
-			if token == "" {
-				http.Error(w, "CSRF token missing", http.StatusForbidden)
+			if !c.store.Validate(token) {
+				http.Error(w, "CSRF token invalid or expired", http.StatusForbidden)
 				return
 			}
 
@@ -220,22 +308,36 @@ func (c *CSRF) Protect() func(http.Handler) http.Handler {
 	}
 }
 
+// GenerateToken creates a new CSRF token for a session
+func (c *CSRF) GenerateToken() (string, error) {
+	return c.store.Generate()
+}
+
 // RequestID adds a unique request ID to each request
-func RequestID() func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			requestID := r.Header.Get("X-Request-ID")
-			if requestID == "" {
-				// Generate a simple request ID
-				requestID = fmt.Sprintf("%d", time.Now().UnixNano())
-			}
+func RequestID(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID := r.Header.Get("X-Request-ID")
+		if requestID == "" {
+			// FIXED: Use UUID instead of timestamp for proper uniqueness
+			// This ensures uniqueness across distributed systems
+			requestID = generateRequestID()
+		}
 
-			// Add to response headers
-			w.Header().Set("X-Request-ID", requestID)
+		// Add to response headers
+		w.Header().Set("X-Request-ID", requestID)
 
-			// Add to context
-			ctx := context.WithValue(r.Context(), "request_id", requestID)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
+		// Add to context
+		ctx := context.WithValue(r.Context(), "request_id", requestID)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// generateRequestID creates a cryptographically secure unique request ID
+func generateRequestID() string {
+	bytes := make([]byte, 16)
+	if _, err := rand.Read(bytes); err != nil {
+		// Fallback to timestamp if random fails (should never happen)
+		return fmt.Sprintf("req_%d", time.Now().UnixNano())
 	}
+	return fmt.Sprintf("req_%s", base64.URLEncoding.EncodeToString(bytes)[:22])
 }
