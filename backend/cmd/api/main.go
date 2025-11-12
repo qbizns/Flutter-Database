@@ -12,11 +12,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
 	"github.com/your-org/pos-backend/internal/auth"
 	"github.com/your-org/pos-backend/internal/config"
 	"github.com/your-org/pos-backend/internal/http/rest"
 	"github.com/your-org/pos-backend/internal/logging"
+	"github.com/your-org/pos-backend/internal/metrics"
 	custommw "github.com/your-org/pos-backend/internal/middleware"
 	"github.com/your-org/pos-backend/internal/repository/postgres"
 	"go.uber.org/zap"
@@ -72,6 +74,25 @@ func main() {
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(cfg.JWT.Secret)
 
+	// Start system metrics collector
+	systemCollector := metrics.NewSystemCollector(logger, 10*time.Second)
+	go systemCollector.Start(context.Background())
+	defer systemCollector.Stop()
+
+	// Start database stats collector
+	go func() {
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			stat := db.Stats()
+			metrics.UpdateDatabaseConnectionStats(
+				stat.AcquiredConns(),
+				stat.IdleConns(),
+				stat.MaxConns(),
+			)
+		}
+	}()
+
 	// Initialize router
 	r := chi.NewRouter()
 
@@ -81,6 +102,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
+
+	// OBSERVABILITY: Collect metrics for all requests
+	r.Use(metrics.MetricsMiddleware)
 
 	// SECURITY: Apply rate limiting to all requests
 	r.Use(rateLimiter.Limit())
@@ -105,6 +129,12 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status": "healthy"}`))
 	})
+
+	// Metrics endpoint (Prometheus scraping)
+	if cfg.Metrics.Enabled {
+		r.Handle("/metrics", promhttp.Handler())
+		logger.Info("metrics endpoint enabled", zap.String("path", "/metrics"))
+	}
 
 	// API routes
 	r.Route("/api/v1", func(r chi.Router) {
