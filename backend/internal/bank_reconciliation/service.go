@@ -3,7 +3,6 @@ package bank_reconciliation
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -109,7 +108,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankRe
 	}
 
 	s.logger.Info("created bank_reconciliations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -145,7 +144,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_reconciliations not found or access denied")
 	}
 	
@@ -246,7 +245,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_reconciliations not found or access denied")
 	}
 	
@@ -254,67 +253,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankAccountId != nil {
-		entity.BankAccountId = *req.BankAccountId
+		entity.BankAccountId = req.BankAccountId
 	}
 	
 	if req.StatementDate != nil {
-		entity.StatementDate = *req.StatementDate
+		entity.StatementDate = req.StatementDate
 	}
 	
 	if req.StatementBalance != nil {
-		entity.StatementBalance = *req.StatementBalance
+		entity.StatementBalance = req.StatementBalance
 	}
 	
 	if req.ReconciliationDate != nil {
-		entity.ReconciliationDate = *req.ReconciliationDate
+		entity.ReconciliationDate = req.ReconciliationDate
 	}
 	
 	if req.BookBalance != nil {
-		entity.BookBalance = *req.BookBalance
+		entity.BookBalance = req.BookBalance
 	}
 	
 	if req.ClearedBalance != nil {
-		entity.ClearedBalance = *req.ClearedBalance
+		entity.ClearedBalance = req.ClearedBalance
 	}
 	
 	if req.Difference != nil {
-		entity.Difference = *req.Difference
+		entity.Difference = req.Difference
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.IsReconciled != nil {
-		entity.IsReconciled = *req.IsReconciled
+		entity.IsReconciled = req.IsReconciled
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = *req.AccountingPeriodId
+		entity.AccountingPeriodId = req.AccountingPeriodId
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.ReconciledBy != nil {
-		entity.ReconciledBy = *req.ReconciledBy
+		entity.ReconciledBy = req.ReconciledBy
 	}
 	
 	if req.ReconciledAt != nil {
-		entity.ReconciledAt = *req.ReconciledAt
+		entity.ReconciledAt = req.ReconciledAt
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -367,7 +366,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get bank_reconciliations: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("bank_reconciliations not found or access denied")
 	}
 	

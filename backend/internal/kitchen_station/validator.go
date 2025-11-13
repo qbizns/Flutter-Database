@@ -31,12 +31,12 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateKi
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	
+
 	// Validate LocationId
-	
-	
-	if err := v.validateLocationIdExists(ctx, tx, req.LocationId); err != nil {
-		return err
+	if req.LocationId != nil {
+		if err := v.validateLocationIdExists(ctx, tx, *req.LocationId); err != nil {
+			return err
+		}
 	}
 	
 	
@@ -73,10 +73,10 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateKi
 	
 	
 	// Validate PrinterId
-	
-	
-	if err := v.validatePrinterIdExists(ctx, tx, req.PrinterId); err != nil {
-		return err
+	if req.PrinterId != nil {
+		if err := v.validatePrinterIdExists(ctx, tx, *req.PrinterId); err != nil {
+			return err
+		}
 	}
 	
 	

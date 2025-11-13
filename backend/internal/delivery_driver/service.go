@@ -3,7 +3,6 @@ package delivery_driver
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -149,7 +148,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDelive
 	}
 
 	s.logger.Info("created delivery_drivers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -185,7 +184,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_drivers not found or access denied")
 	}
 	
@@ -286,7 +285,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_drivers not found or access denied")
 	}
 	
@@ -294,135 +293,135 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.DriverCode != nil {
-		entity.DriverCode = *req.DriverCode
+		entity.DriverCode = req.DriverCode
 	}
 	
 	if req.FullName != nil {
-		entity.FullName = *req.FullName
+		entity.FullName = req.FullName
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.EmergencyContactName != nil {
-		entity.EmergencyContactName = *req.EmergencyContactName
+		entity.EmergencyContactName = req.EmergencyContactName
 	}
 	
 	if req.EmergencyContactPhone != nil {
-		entity.EmergencyContactPhone = *req.EmergencyContactPhone
+		entity.EmergencyContactPhone = req.EmergencyContactPhone
 	}
 	
 	if req.VehicleType != nil {
-		entity.VehicleType = *req.VehicleType
+		entity.VehicleType = req.VehicleType
 	}
 	
 	if req.VehicleMake != nil {
-		entity.VehicleMake = *req.VehicleMake
+		entity.VehicleMake = req.VehicleMake
 	}
 	
 	if req.VehicleModel != nil {
-		entity.VehicleModel = *req.VehicleModel
+		entity.VehicleModel = req.VehicleModel
 	}
 	
 	if req.VehicleYear != nil {
-		entity.VehicleYear = *req.VehicleYear
+		entity.VehicleYear = req.VehicleYear
 	}
 	
 	if req.VehicleColor != nil {
-		entity.VehicleColor = *req.VehicleColor
+		entity.VehicleColor = req.VehicleColor
 	}
 	
 	if req.LicensePlate != nil {
-		entity.LicensePlate = *req.LicensePlate
+		entity.LicensePlate = req.LicensePlate
 	}
 	
 	if req.DriversLicenseNumber != nil {
-		entity.DriversLicenseNumber = *req.DriversLicenseNumber
+		entity.DriversLicenseNumber = req.DriversLicenseNumber
 	}
 	
 	if req.LicenseExpiryDate != nil {
-		entity.LicenseExpiryDate = *req.LicenseExpiryDate
+		entity.LicenseExpiryDate = req.LicenseExpiryDate
 	}
 	
 	if req.InsurancePolicyNumber != nil {
-		entity.InsurancePolicyNumber = *req.InsurancePolicyNumber
+		entity.InsurancePolicyNumber = req.InsurancePolicyNumber
 	}
 	
 	if req.InsuranceExpiryDate != nil {
-		entity.InsuranceExpiryDate = *req.InsuranceExpiryDate
+		entity.InsuranceExpiryDate = req.InsuranceExpiryDate
 	}
 	
 	if req.HireDate != nil {
-		entity.HireDate = *req.HireDate
+		entity.HireDate = req.HireDate
 	}
 	
 	if req.EmploymentType != nil {
-		entity.EmploymentType = *req.EmploymentType
+		entity.EmploymentType = req.EmploymentType
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.TotalDeliveries != nil {
-		entity.TotalDeliveries = *req.TotalDeliveries
+		entity.TotalDeliveries = req.TotalDeliveries
 	}
 	
 	if req.SuccessfulDeliveries != nil {
-		entity.SuccessfulDeliveries = *req.SuccessfulDeliveries
+		entity.SuccessfulDeliveries = req.SuccessfulDeliveries
 	}
 	
 	if req.Rating != nil {
-		entity.Rating = *req.Rating
+		entity.Rating = req.Rating
 	}
 	
 	if req.RatingCount != nil {
-		entity.RatingCount = *req.RatingCount
+		entity.RatingCount = req.RatingCount
 	}
 	
 	if req.CurrentLocation != nil {
-		entity.CurrentLocation = *req.CurrentLocation
+		entity.CurrentLocation = req.CurrentLocation
 	}
 	
 	if req.IsAvailable != nil {
-		entity.IsAvailable = *req.IsAvailable
+		entity.IsAvailable = req.IsAvailable
 	}
 	
 	if req.LastLocationUpdate != nil {
-		entity.LastLocationUpdate = *req.LastLocationUpdate
+		entity.LastLocationUpdate = req.LastLocationUpdate
 	}
 	
 	if req.CommissionRate != nil {
-		entity.CommissionRate = *req.CommissionRate
+		entity.CommissionRate = req.CommissionRate
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = *req.PaymentMethod
+		entity.PaymentMethod = req.PaymentMethod
 	}
 	
 	if req.Documents != nil {
-		entity.Documents = *req.Documents
+		entity.Documents = req.Documents
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'active', != nil {
@@ -487,7 +486,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get delivery_drivers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("delivery_drivers not found or access denied")
 	}
 	

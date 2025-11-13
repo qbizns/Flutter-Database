@@ -3,7 +3,6 @@ package system_health
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -95,7 +94,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSystem
 	}
 
 	s.logger.Info("created system_health",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -131,7 +130,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("system_health not found or access denied")
 	}
 	
@@ -232,7 +231,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("system_health not found or access denied")
 	}
 	
@@ -240,39 +239,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.LastCheckAt != nil {
-		entity.LastCheckAt = *req.LastCheckAt
+		entity.LastCheckAt = req.LastCheckAt
 	}
 	
 	if req.LastSuccessAt != nil {
-		entity.LastSuccessAt = *req.LastSuccessAt
+		entity.LastSuccessAt = req.LastSuccessAt
 	}
 	
 	if req.LastFailureAt != nil {
-		entity.LastFailureAt = *req.LastFailureAt
+		entity.LastFailureAt = req.LastFailureAt
 	}
 	
 	if req.MetricValue != nil {
-		entity.MetricValue = *req.MetricValue
+		entity.MetricValue = req.MetricValue
 	}
 	
 	if req.MetricUnit != nil {
-		entity.MetricUnit = *req.MetricUnit
+		entity.MetricUnit = req.MetricUnit
 	}
 	
 	if req.ThresholdWarning != nil {
-		entity.ThresholdWarning = *req.ThresholdWarning
+		entity.ThresholdWarning = req.ThresholdWarning
 	}
 	
 	if req.ThresholdCritical != nil {
-		entity.ThresholdCritical = *req.ThresholdCritical
+		entity.ThresholdCritical = req.ThresholdCritical
 	}
 	
 	if req.Details != nil {
-		entity.Details = *req.Details
+		entity.Details = req.Details
 	}
 	
 
@@ -325,7 +324,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get system_health: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("system_health not found or access denied")
 	}
 	

@@ -1,9 +1,9 @@
 package order
 
 import (
+	"time"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -57,7 +57,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrders
 
 	// Convert DTO to entity
 	entity := &Orders{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -114,19 +114,9 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrders
 		Metadata: req.Metadata,
 		
 		CreatedBy: req.CreatedBy,
-		
+
 		UpdatedBy: req.UpdatedBy,
-		
-		'draft',: req.'draft',,
-		
-		'served',: req.'served',,
-		
-		'dineIn',: req.'dineIn',,
-		
-		Subtotal: req.Subtotal,
-		
-		DiscountAmount: req.DiscountAmount,
-		
+
 	}
 
 	// Business logic validation
@@ -145,7 +135,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrders
 	}
 
 	s.logger.Info("created orders",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -181,7 +171,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("orders not found or access denied")
 	}
 	
@@ -282,7 +272,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("orders not found or access denied")
 	}
 	
@@ -290,7 +280,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.OrderNumber != nil {
@@ -298,99 +288,99 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DisplayNumber != nil {
-		entity.DisplayNumber = *req.DisplayNumber
+		entity.DisplayNumber = req.DisplayNumber
 	}
 	
 	if req.OrderType != nil {
-		entity.OrderType = *req.OrderType
+		entity.OrderType = req.OrderType
 	}
 	
 	if req.TableId != nil {
-		entity.TableId = *req.TableId
+		entity.TableId = req.TableId
 	}
 	
 	if req.ReservationId != nil {
-		entity.ReservationId = *req.ReservationId
+		entity.ReservationId = req.ReservationId
 	}
 	
 	if req.Covers != nil {
-		entity.Covers = *req.Covers
+		entity.Covers = req.Covers
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.WaiterId != nil {
-		entity.WaiterId = *req.WaiterId
+		entity.WaiterId = req.WaiterId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.OrderDate != nil {
-		entity.OrderDate = *req.OrderDate
+		entity.OrderDate = req.OrderDate
 	}
 	
 	if req.SubmittedAt != nil {
-		entity.SubmittedAt = *req.SubmittedAt
+		entity.SubmittedAt = req.SubmittedAt
 	}
 	
 	if req.KitchenReceivedAt != nil {
-		entity.KitchenReceivedAt = *req.KitchenReceivedAt
+		entity.KitchenReceivedAt = req.KitchenReceivedAt
 	}
 	
 	if req.ReadyAt != nil {
-		entity.ReadyAt = *req.ReadyAt
+		entity.ReadyAt = req.ReadyAt
 	}
 	
 	if req.ServedAt != nil {
-		entity.ServedAt = *req.ServedAt
+		entity.ServedAt = req.ServedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = *req.Subtotal
+		entity.Subtotal = req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.ServiceCharge != nil {
-		entity.ServiceCharge = *req.ServiceCharge
+		entity.ServiceCharge = req.ServiceCharge
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = *req.TotalAmount
+		entity.TotalAmount = req.TotalAmount
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.ShiftId != nil {
-		entity.ShiftId = *req.ShiftId
+		entity.ShiftId = req.ShiftId
 	}
 	
 	if req.CustomerNotes != nil {
-		entity.CustomerNotes = *req.CustomerNotes
+		entity.CustomerNotes = req.CustomerNotes
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = *req.KitchenNotes
+		entity.KitchenNotes = req.KitchenNotes
 	}
 	
 	if req.InternalNotes != nil {
-		entity.InternalNotes = *req.InternalNotes
+		entity.InternalNotes = req.InternalNotes
 	}
 	
 	if req.Metadata != nil {
@@ -398,33 +388,13 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
-	
-	if req.'draft', != nil {
-		entity.'draft', = *req.'draft',
-	}
-	
-	if req.'served', != nil {
-		entity.'served', = *req.'served',
-	}
-	
-	if req.'dineIn', != nil {
-		entity.'dineIn', = *req.'dineIn',
-	}
-	
-	if req.Subtotal != nil {
-		entity.Subtotal = *req.Subtotal
-	}
-	
-	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
-	}
-	
+
 
 	// Business logic validation
 	if err := s.validateBusinessRules(ctx, tx, entity); err != nil {
@@ -475,7 +445,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get orders: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("orders not found or access denied")
 	}
 	
@@ -572,19 +542,9 @@ func (s *Service) entityToResponse(entity *Orders) *OrdersResponse {
 		CreatedBy: entity.CreatedBy,
 		
 		UpdatedBy: entity.UpdatedBy,
-		
+
 		DeletedAt: entity.DeletedAt,
-		
-		'draft',: entity.'draft',,
-		
-		'served',: entity.'served',,
-		
-		'dineIn',: entity.'dineIn',,
-		
-		Subtotal: entity.Subtotal,
-		
-		DiscountAmount: entity.DiscountAmount,
-		
+
 	}
 }
 
@@ -622,4 +582,160 @@ func (s *Service) canDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error 
 	// - etc.
 
 	return nil
+}
+
+// UpdateStatus updates the status of an order
+func (s *Service) UpdateStatus(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateOrderStatusRequest) (*OrdersResponse, error) {
+	s.logger.Info("updating order status",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+		zap.String("status", req.Status),
+	)
+
+	// Validate request
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("validation failed: %w", err)
+	}
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get existing entity
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get order: %w", err)
+	}
+
+	// Verify ownership
+	if entity.OrganizationId != orgID {
+		return nil, fmt.Errorf("order not found or access denied")
+	}
+
+	// Update status
+	statusPtr := &req.Status
+	entity.Status = statusPtr
+
+	// Update timestamps based on status
+	now := time.Now()
+	switch req.Status {
+	case "completed":
+		entity.CompletedAt = &now
+	case "ready":
+		entity.ReadyAt = &now
+	case "preparing":
+		entity.KitchenReceivedAt = &now
+	}
+
+	// Update in database
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to update order: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("updated order status",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
+
+// Cancel cancels an order
+func (s *Service) Cancel(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *CancelOrderRequest) (*OrdersResponse, error) {
+	s.logger.Info("cancelling order",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get existing entity
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get order: %w", err)
+	}
+
+	// Verify ownership
+	if entity.OrganizationId != orgID {
+		return nil, fmt.Errorf("order not found or access denied")
+	}
+
+	// Update status to cancelled
+	cancelledStatus := "cancelled"
+	entity.Status = &cancelledStatus
+
+	// Store cancellation reason in internal notes
+	if req.Reason != "" {
+		notes := fmt.Sprintf("Cancelled: %s", req.Reason)
+		entity.InternalNotes = &notes
+	}
+
+	// Update in database
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to cancel order: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("cancelled order",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
+
+// GetStatistics retrieves order statistics
+func (s *Service) GetStatistics(ctx context.Context, orgID uuid.UUID, fromDate, toDate string) (*OrderStatisticsResponse, error) {
+	s.logger.Debug("getting order statistics",
+		zap.String("organization_id", orgID.String()),
+		zap.String("from_date", fromDate),
+		zap.String("to_date", toDate),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get statistics from repository
+	stats, err := s.repo.GetStatistics(ctx, tx, orgID, fromDate, toDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get order statistics: %w", err)
+	}
+
+	return stats, nil
 }

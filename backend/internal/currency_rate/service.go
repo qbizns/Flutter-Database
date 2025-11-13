@@ -3,7 +3,6 @@ package currency_rate
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -87,7 +86,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCurren
 	}
 
 	s.logger.Info("created currency_rates",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -123,7 +122,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("currency_rates not found or access denied")
 	}
 	
@@ -224,7 +223,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("currency_rates not found or access denied")
 	}
 	
@@ -232,23 +231,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.RateDate != nil {
-		entity.RateDate = *req.RateDate
+		entity.RateDate = req.RateDate
 	}
 	
 	if req.Rate != nil {
-		entity.Rate = *req.Rate
+		entity.Rate = req.Rate
 	}
 	
 	if req.Source != nil {
-		entity.Source = *req.Source
+		entity.Source = req.Source
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -301,7 +300,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get currency_rates: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("currency_rates not found or access denied")
 	}
 	

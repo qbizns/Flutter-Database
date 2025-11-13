@@ -43,8 +43,8 @@ func (cm *CacheMiddleware) CacheGET(ttl time.Duration) func(http.Handler) http.H
 			ctx := r.Context()
 
 			// Get organization ID from context
-			orgID, err := appctx.GetOrganizationID(ctx)
-			if err != nil {
+			orgID, ok := appctx.GetOrganizationID(ctx)
+			if !ok {
 				// No org context, don't cache
 				next.ServeHTTP(w, r)
 				return

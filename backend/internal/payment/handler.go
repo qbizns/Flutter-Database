@@ -302,3 +302,133 @@ type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// Cancel handles POST /api/v1/organizations/{orgID}/payments/{id}/cancel
+func (h *Handler) Cancel(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid payment ID", err)
+		return
+	}
+
+	var req CancelPaymentRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	result, err := h.service.Cancel(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to cancel payment", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to cancel payment", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetStatistics handles GET /api/v1/organizations/{orgID}/payments/statistics
+func (h *Handler) GetStatistics(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	fromDate := r.URL.Query().Get("from_date")
+	toDate := r.URL.Query().Get("to_date")
+
+	result, err := h.service.GetStatistics(ctx, orgID, fromDate, toDate)
+	if err != nil {
+		h.logger.Error("failed to get payment statistics", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get payment statistics", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// CreateRefund handles POST /api/v1/organizations/{orgID}/refunds
+func (h *Handler) CreateRefund(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	var req CreateRefundRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	result, err := h.service.CreateRefund(ctx, orgID, &req)
+	if err != nil {
+		h.logger.Error("failed to create refund", zap.Error(err))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to create refund", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusCreated, result)
+}
+
+// ListRefunds handles GET /api/v1/organizations/{orgID}/refunds
+func (h *Handler) ListRefunds(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	paymentID := r.URL.Query().Get("payment_id")
+	orderID := r.URL.Query().Get("order_id")
+
+	result, err := h.service.ListRefunds(ctx, orgID, paymentID, orderID)
+	if err != nil {
+		h.logger.Error("failed to list refunds", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to list refunds", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetRefund handles GET /api/v1/organizations/{orgID}/refunds/{id}
+func (h *Handler) GetRefund(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid refund ID", err)
+		return
+	}
+
+	result, err := h.service.GetRefund(ctx, orgID, id)
+	if err != nil {
+		h.logger.Error("failed to get refund", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusNotFound, "refund not found", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}

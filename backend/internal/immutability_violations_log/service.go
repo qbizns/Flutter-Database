@@ -3,7 +3,6 @@ package immutability_violations_log
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -93,7 +92,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateImmuta
 	}
 
 	s.logger.Info("created immutability_violations_log",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -129,7 +128,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("immutability_violations_log not found or access denied")
 	}
 	
@@ -230,7 +229,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("immutability_violations_log not found or access denied")
 	}
 	
@@ -238,35 +237,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TableName != nil {
-		entity.TableName = *req.TableName
+		entity.TableName = req.TableName
 	}
 	
 	if req.RecordId != nil {
-		entity.RecordId = *req.RecordId
+		entity.RecordId = req.RecordId
 	}
 	
 	if req.Operation != nil {
-		entity.Operation = *req.Operation
+		entity.Operation = req.Operation
 	}
 	
 	if req.AttemptedBy != nil {
-		entity.AttemptedBy = *req.AttemptedBy
+		entity.AttemptedBy = req.AttemptedBy
 	}
 	
 	if req.AttemptedAt != nil {
-		entity.AttemptedAt = *req.AttemptedAt
+		entity.AttemptedAt = req.AttemptedAt
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.BlockedData != nil {
-		entity.BlockedData = *req.BlockedData
+		entity.BlockedData = req.BlockedData
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -319,7 +318,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get immutability_violations_log: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("immutability_violations_log not found or access denied")
 	}
 	

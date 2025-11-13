@@ -2,6 +2,7 @@ package category
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -127,7 +128,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Categories) 
 
 	r.logger.Info("created categories",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -488,3 +489,42 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 	return entities, total, nil
 }
 
+
+// GetProductsCountByCategory retrieves the count of products per category
+func (r *Repository) GetProductsCountByCategory(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) (map[string]int, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "categories", duration, nil)
+	}()
+
+	query := `
+		SELECT c.id, COUNT(p.id) as product_count
+		FROM categories c
+		LEFT JOIN products p ON p.category_id = c.id AND p.deleted_at IS NULL
+		WHERE c.organization_id = $1 AND c.deleted_at IS NULL
+		GROUP BY c.id`
+
+	rows, err := tx.Query(ctx, query, orgID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get products count by category: %w", err)
+	}
+	defer rows.Close()
+
+	counts := make(map[string]int)
+	for rows.Next() {
+		var categoryID uuid.UUID
+		var count int
+		if err := rows.Scan(&categoryID, &count); err != nil {
+			return nil, fmt.Errorf("failed to scan count: %w", err)
+		}
+		counts[categoryID.String()] = count
+	}
+
+	r.logger.Debug("retrieved products count by category",
+		zap.String("organization_id", orgID.String()),
+		zap.Int("categories", len(counts)),
+	)
+
+	return counts, nil
+}

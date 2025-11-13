@@ -3,7 +3,6 @@ package staff_commission
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -131,7 +130,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateStaffC
 	}
 
 	s.logger.Info("created staff_commissions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -167,7 +166,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("staff_commissions not found or access denied")
 	}
 	
@@ -268,7 +267,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("staff_commissions not found or access denied")
 	}
 	
@@ -276,95 +275,95 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.EmployeeId != nil {
-		entity.EmployeeId = *req.EmployeeId
+		entity.EmployeeId = req.EmployeeId
 	}
 	
 	if req.CommissionDate != nil {
-		entity.CommissionDate = *req.CommissionDate
+		entity.CommissionDate = req.CommissionDate
 	}
 	
 	if req.PeriodStart != nil {
-		entity.PeriodStart = *req.PeriodStart
+		entity.PeriodStart = req.PeriodStart
 	}
 	
 	if req.PeriodEnd != nil {
-		entity.PeriodEnd = *req.PeriodEnd
+		entity.PeriodEnd = req.PeriodEnd
 	}
 	
 	if req.SourceType != nil {
-		entity.SourceType = *req.SourceType
+		entity.SourceType = req.SourceType
 	}
 	
 	if req.SourceSaleId != nil {
-		entity.SourceSaleId = *req.SourceSaleId
+		entity.SourceSaleId = req.SourceSaleId
 	}
 	
 	if req.SourceOrderId != nil {
-		entity.SourceOrderId = *req.SourceOrderId
+		entity.SourceOrderId = req.SourceOrderId
 	}
 	
 	if req.CommissionType != nil {
-		entity.CommissionType = *req.CommissionType
+		entity.CommissionType = req.CommissionType
 	}
 	
 	if req.CommissionRate != nil {
-		entity.CommissionRate = *req.CommissionRate
+		entity.CommissionRate = req.CommissionRate
 	}
 	
 	if req.SalesAmount != nil {
-		entity.SalesAmount = *req.SalesAmount
+		entity.SalesAmount = req.SalesAmount
 	}
 	
 	if req.CommissionAmount != nil {
-		entity.CommissionAmount = *req.CommissionAmount
+		entity.CommissionAmount = req.CommissionAmount
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.PaymentDate != nil {
-		entity.PaymentDate = *req.PaymentDate
+		entity.PaymentDate = req.PaymentDate
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = *req.PaymentMethod
+		entity.PaymentMethod = req.PaymentMethod
 	}
 	
 	if req.PaidBy != nil {
-		entity.PaidBy = *req.PaidBy
+		entity.PaidBy = req.PaidBy
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CalculationNotes != nil {
-		entity.CalculationNotes = *req.CalculationNotes
+		entity.CalculationNotes = req.CalculationNotes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'sale', != nil {
@@ -380,7 +379,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SalesAmount != nil {
-		entity.SalesAmount = *req.SalesAmount
+		entity.SalesAmount = req.SalesAmount
 	}
 	
 
@@ -433,7 +432,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get staff_commissions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("staff_commissions not found or access denied")
 	}
 	

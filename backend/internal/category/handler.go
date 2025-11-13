@@ -302,3 +302,25 @@ type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// GetProductsCountByCategory handles GET /api/v1/organizations/{orgID}/products/count-by-category
+func (h *Handler) GetProductsCountByCategory(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.GetProductsCountByCategory(ctx, orgID)
+	if err != nil {
+		h.logger.Error("failed to get products count by category", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get products count by category", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}

@@ -3,7 +3,6 @@ package cycle_count
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -123,7 +122,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCycleC
 	}
 
 	s.logger.Info("created cycle_counts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -159,7 +158,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cycle_counts not found or access denied")
 	}
 	
@@ -260,7 +259,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cycle_counts not found or access denied")
 	}
 	
@@ -268,95 +267,95 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.CountNumber != nil {
-		entity.CountNumber = *req.CountNumber
+		entity.CountNumber = req.CountNumber
 	}
 	
 	if req.CountDate != nil {
-		entity.CountDate = *req.CountDate
+		entity.CountDate = req.CountDate
 	}
 	
 	if req.CountType != nil {
-		entity.CountType = *req.CountType
+		entity.CountType = req.CountType
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.CategoryId != nil {
-		entity.CategoryId = *req.CategoryId
+		entity.CategoryId = req.CategoryId
 	}
 	
 	if req.IncludeZeroStock != nil {
-		entity.IncludeZeroStock = *req.IncludeZeroStock
+		entity.IncludeZeroStock = req.IncludeZeroStock
 	}
 	
 	if req.TotalItemsPlanned != nil {
-		entity.TotalItemsPlanned = *req.TotalItemsPlanned
+		entity.TotalItemsPlanned = req.TotalItemsPlanned
 	}
 	
 	if req.TotalItemsCounted != nil {
-		entity.TotalItemsCounted = *req.TotalItemsCounted
+		entity.TotalItemsCounted = req.TotalItemsCounted
 	}
 	
 	if req.ItemsWithVariance != nil {
-		entity.ItemsWithVariance = *req.ItemsWithVariance
+		entity.ItemsWithVariance = req.ItemsWithVariance
 	}
 	
 	if req.TotalVarianceValue != nil {
-		entity.TotalVarianceValue = *req.TotalVarianceValue
+		entity.TotalVarianceValue = req.TotalVarianceValue
 	}
 	
 	if req.ScheduledDate != nil {
-		entity.ScheduledDate = *req.ScheduledDate
+		entity.ScheduledDate = req.ScheduledDate
 	}
 	
 	if req.StartedAt != nil {
-		entity.StartedAt = *req.StartedAt
+		entity.StartedAt = req.StartedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.CountedBy != nil {
-		entity.CountedBy = *req.CountedBy
+		entity.CountedBy = req.CountedBy
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.TotalItemsPlanned != nil {
-		entity.TotalItemsPlanned = *req.TotalItemsPlanned
+		entity.TotalItemsPlanned = req.TotalItemsPlanned
 	}
 	
 	if req.TotalItemsCounted != nil {
-		entity.TotalItemsCounted = *req.TotalItemsCounted
+		entity.TotalItemsCounted = req.TotalItemsCounted
 	}
 	
 	if req.ItemsWithVariance != nil {
-		entity.ItemsWithVariance = *req.ItemsWithVariance
+		entity.ItemsWithVariance = req.ItemsWithVariance
 	}
 	
 
@@ -409,7 +408,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get cycle_counts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("cycle_counts not found or access denied")
 	}
 	

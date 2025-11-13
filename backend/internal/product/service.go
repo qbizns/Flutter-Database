@@ -3,14 +3,13 @@ package product
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	
+
 	"github.com/your-org/pos-backend/internal/logging"
-	
+
 	"go.uber.org/zap"
 )
 
@@ -57,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 
 	// Convert DTO to entity
 	entity := &Products{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Sku: req.Sku,
 		
@@ -129,7 +128,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 	}
 
 	s.logger.Info("created products",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -165,7 +164,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("products not found or access denied")
 	}
 	
@@ -266,115 +265,115 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("products not found or access denied")
 	}
 	
 
 	// Update fields
-	
+
 	if req.Sku != nil {
-		entity.Sku = *req.Sku
+		entity.Sku = req.Sku
 	}
-	
+
 	if req.Barcode != nil {
-		entity.Barcode = *req.Barcode
+		entity.Barcode = req.Barcode
 	}
-	
+
 	if req.Name != nil {
 		entity.Name = *req.Name
 	}
-	
+
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
-	
+
 	if req.CategoryId != nil {
-		entity.CategoryId = *req.CategoryId
+		entity.CategoryId = req.CategoryId
 	}
-	
+
 	if req.CostPrice != nil {
-		entity.CostPrice = *req.CostPrice
+		entity.CostPrice = req.CostPrice
 	}
-	
+
 	if req.SellingPrice != nil {
 		entity.SellingPrice = *req.SellingPrice
 	}
-	
+
 	if req.CompareAtPrice != nil {
-		entity.CompareAtPrice = *req.CompareAtPrice
+		entity.CompareAtPrice = req.CompareAtPrice
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = *req.TaxRate
+		entity.TaxRate = req.TaxRate
 	}
-	
+
 	if req.IsTaxInclusive != nil {
-		entity.IsTaxInclusive = *req.IsTaxInclusive
+		entity.IsTaxInclusive = req.IsTaxInclusive
 	}
-	
+
 	if req.TrackInventory != nil {
-		entity.TrackInventory = *req.TrackInventory
+		entity.TrackInventory = req.TrackInventory
 	}
-	
+
 	if req.CurrentStock != nil {
-		entity.CurrentStock = *req.CurrentStock
+		entity.CurrentStock = req.CurrentStock
 	}
-	
+
 	if req.LowStockThreshold != nil {
-		entity.LowStockThreshold = *req.LowStockThreshold
+		entity.LowStockThreshold = req.LowStockThreshold
 	}
-	
+
 	if req.Unit != nil {
-		entity.Unit = *req.Unit
+		entity.Unit = req.Unit
 	}
-	
+
 	if req.IsService != nil {
-		entity.IsService = *req.IsService
+		entity.IsService = req.IsService
 	}
-	
+
 	if req.IsComposite != nil {
-		entity.IsComposite = *req.IsComposite
+		entity.IsComposite = req.IsComposite
 	}
-	
+
 	if req.HasVariants != nil {
-		entity.HasVariants = *req.HasVariants
+		entity.HasVariants = req.HasVariants
 	}
-	
+
 	if req.ImageUrl != nil {
-		entity.ImageUrl = *req.ImageUrl
+		entity.ImageUrl = req.ImageUrl
 	}
-	
+
 	if req.Images != nil {
 		entity.Images = *req.Images
 	}
-	
+
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
-	
+
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
-	
+
 	if req.IsFeatured != nil {
-		entity.IsFeatured = *req.IsFeatured
+		entity.IsFeatured = req.IsFeatured
 	}
-	
+
 	if req.CustomFields != nil {
 		entity.CustomFields = *req.CustomFields
 	}
-	
+
 	if req.Metadata != nil {
 		entity.Metadata = *req.Metadata
 	}
-	
+
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
-	
+
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -427,7 +426,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get products: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("products not found or access denied")
 	}
 	
@@ -524,6 +523,252 @@ func (s *Service) entityToResponse(entity *Products) *ProductsResponse {
 	}
 }
 
+
+// Search searches for products
+func (s *Service) Search(ctx context.Context, orgID uuid.UUID, query, categoryID string) ([]*ProductsResponse, error) {
+	s.logger.Debug("searching products",
+		zap.String("organization_id", orgID.String()),
+		zap.String("query", query),
+		zap.String("category_id", categoryID),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Search from repository
+	entities, err := s.repo.Search(ctx, tx, orgID, query, categoryID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to search products: %w", err)
+	}
+
+	// Convert to response
+	items := make([]*ProductsResponse, len(entities))
+	for i, entity := range entities {
+		items[i] = s.entityToResponse(entity)
+	}
+
+	return items, nil
+}
+
+// GetBatch retrieves multiple products by IDs
+func (s *Service) GetBatch(ctx context.Context, orgID uuid.UUID, req *GetBatchProductsRequest) ([]*ProductsResponse, error) {
+	s.logger.Debug("getting batch products",
+		zap.String("organization_id", orgID.String()),
+		zap.Int("count", len(req.ProductIDs)),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get from repository
+	entities, err := s.repo.GetBatch(ctx, tx, orgID, req.ProductIDs)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get batch products: %w", err)
+	}
+
+	// Convert to response
+	items := make([]*ProductsResponse, len(entities))
+	for i, entity := range entities {
+		items[i] = s.entityToResponse(entity)
+	}
+
+	return items, nil
+}
+
+// GetFeatured retrieves featured products
+func (s *Service) GetFeatured(ctx context.Context, orgID uuid.UUID, limit int) ([]*ProductsResponse, error) {
+	s.logger.Debug("getting featured products",
+		zap.String("organization_id", orgID.String()),
+		zap.Int("limit", limit),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get from repository
+	entities, err := s.repo.GetFeatured(ctx, tx, orgID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get featured products: %w", err)
+	}
+
+	// Convert to response
+	items := make([]*ProductsResponse, len(entities))
+	for i, entity := range entities {
+		items[i] = s.entityToResponse(entity)
+	}
+
+	return items, nil
+}
+
+// GetLowStock retrieves products with low stock
+func (s *Service) GetLowStock(ctx context.Context, orgID uuid.UUID) ([]*ProductsResponse, error) {
+	s.logger.Debug("getting low stock products",
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get from repository
+	entities, err := s.repo.GetLowStock(ctx, tx, orgID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get low stock products: %w", err)
+	}
+
+	// Convert to response
+	items := make([]*ProductsResponse, len(entities))
+	for i, entity := range entities {
+		items[i] = s.entityToResponse(entity)
+	}
+
+	return items, nil
+}
+
+// UpdateStock updates the stock quantity of a product
+func (s *Service) UpdateStock(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateStockRequest) (*ProductsResponse, error) {
+	s.logger.Info("updating product stock",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+		zap.Int("quantity", req.Quantity),
+	)
+
+	// Validate request
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("validation failed: %w", err)
+	}
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get existing entity
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get product: %w", err)
+	}
+
+	// Verify ownership
+	if entity.OrganizationId != orgID {
+		return nil, fmt.Errorf("product not found or access denied")
+	}
+
+	// Update stock
+	quantity := float64(req.Quantity)
+	entity.CurrentStock = &quantity
+
+	// Update in database
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to update product: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("updated product stock",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
+
+// UpdateAvailability updates the availability of a product
+func (s *Service) UpdateAvailability(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *UpdateAvailabilityRequest) (*ProductsResponse, error) {
+	s.logger.Info("updating product availability",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+		zap.Bool("is_available", req.IsAvailable),
+	)
+
+	// Start transaction
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get existing entity
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get product: %w", err)
+	}
+
+	// Verify ownership
+	if entity.OrganizationId != orgID {
+		return nil, fmt.Errorf("product not found or access denied")
+	}
+
+	// Update availability
+	entity.IsActive = &req.IsAvailable
+
+	// Update in database
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to update product: %w", err)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	s.logger.Info("updated product availability",
+		zap.String("id", id.String()),
+		zap.String("organization_id", orgID.String()),
+	)
+
+	return s.entityToResponse(entity), nil
+}
 
 // setOrganizationContext sets the organization context for RLS
 func (s *Service) setOrganizationContext(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) error {

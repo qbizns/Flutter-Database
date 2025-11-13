@@ -3,7 +3,6 @@ package journal_entry
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -135,7 +134,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateJourna
 	}
 
 	s.logger.Info("created journal_entries",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -171,7 +170,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("journal_entries not found or access denied")
 	}
 	
@@ -272,7 +271,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("journal_entries not found or access denied")
 	}
 	
@@ -280,111 +279,111 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.EntryNumber != nil {
-		entity.EntryNumber = *req.EntryNumber
+		entity.EntryNumber = req.EntryNumber
 	}
 	
 	if req.EntryTypeId != nil {
-		entity.EntryTypeId = *req.EntryTypeId
+		entity.EntryTypeId = req.EntryTypeId
 	}
 	
 	if req.EntryDate != nil {
-		entity.EntryDate = *req.EntryDate
+		entity.EntryDate = req.EntryDate
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = *req.PostingDate
+		entity.PostingDate = req.PostingDate
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = *req.AccountingPeriodId
+		entity.AccountingPeriodId = req.AccountingPeriodId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = *req.FiscalYearId
+		entity.FiscalYearId = req.FiscalYearId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.IsPosted != nil {
-		entity.IsPosted = *req.IsPosted
+		entity.IsPosted = req.IsPosted
 	}
 	
 	if req.IsReversed != nil {
-		entity.IsReversed = *req.IsReversed
+		entity.IsReversed = req.IsReversed
 	}
 	
 	if req.ReversalEntryId != nil {
-		entity.ReversalEntryId = *req.ReversalEntryId
+		entity.ReversalEntryId = req.ReversalEntryId
 	}
 	
 	if req.SourceModule != nil {
-		entity.SourceModule = *req.SourceModule
+		entity.SourceModule = req.SourceModule
 	}
 	
 	if req.SourceDocumentType != nil {
-		entity.SourceDocumentType = *req.SourceDocumentType
+		entity.SourceDocumentType = req.SourceDocumentType
 	}
 	
 	if req.SourceDocumentId != nil {
-		entity.SourceDocumentId = *req.SourceDocumentId
+		entity.SourceDocumentId = req.SourceDocumentId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = *req.ReferenceNumber
+		entity.ReferenceNumber = req.ReferenceNumber
 	}
 	
 	if req.TotalDebit != nil {
-		entity.TotalDebit = *req.TotalDebit
+		entity.TotalDebit = req.TotalDebit
 	}
 	
 	if req.TotalCredit != nil {
-		entity.TotalCredit = *req.TotalCredit
+		entity.TotalCredit = req.TotalCredit
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = *req.RequiresApproval
+		entity.RequiresApproval = req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = *req.PostedBy
+		entity.PostedBy = req.PostedBy
 	}
 	
 	if req.PostedAt != nil {
-		entity.PostedAt = *req.PostedAt
+		entity.PostedAt = req.PostedAt
 	}
 	
 	if req.Attachments != nil {
-		entity.Attachments = *req.Attachments
+		entity.Attachments = req.Attachments
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.(isPosted != nil {
@@ -445,7 +444,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get journal_entries: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("journal_entries not found or access denied")
 	}
 	

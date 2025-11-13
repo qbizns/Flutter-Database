@@ -1,6 +1,7 @@
 package restaurant_table
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -334,4 +335,34 @@ type Pagination struct {
 	TotalPages int  `json:"total_pages"`
 	HasNext    bool `json:"has_next"`
 	HasPrev    bool `json:"has_prev"`
+}
+
+// UpdateTableStatusRequest represents a request to update table status
+type UpdateTableStatusRequest struct {
+	Status string `json:"status" validate:"required"`
+}
+
+// Validate validates the update status request
+func (r *UpdateTableStatusRequest) Validate() error {
+	if r.Status == "" {
+		return fmt.Errorf("status is required")
+	}
+	return nil
+}
+
+// AssignOrderRequest represents a request to assign an order to a table
+type AssignOrderRequest struct {
+	OrderID      uuid.UUID  `json:"order_id" validate:"required"`
+	CustomerName *string    `json:"customer_name"`
+	WaiterID     *uuid.UUID `json:"waiter_id"`
+}
+
+// TableStatisticsResponse represents table statistics
+type TableStatisticsResponse struct {
+	TotalTables           int     `json:"total_tables"`
+	AvailableTables       int     `json:"available_tables"`
+	OccupiedTables        int     `json:"occupied_tables"`
+	ReservedTables        int     `json:"reserved_tables"`
+	OccupancyRate         float64 `json:"occupancy_rate"`
+	AverageTurnTimeMinutes int     `json:"average_turn_time_minutes"`
 }

@@ -3,7 +3,6 @@ package pos_session
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -127,7 +126,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosSes
 	}
 
 	s.logger.Info("created pos_sessions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -163,7 +162,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_sessions not found or access denied")
 	}
 	
@@ -264,7 +263,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_sessions not found or access denied")
 	}
 	
@@ -272,103 +271,103 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SessionNumber != nil {
-		entity.SessionNumber = *req.SessionNumber
+		entity.SessionNumber = req.SessionNumber
 	}
 	
 	if req.SessionName != nil {
-		entity.SessionName = *req.SessionName
+		entity.SessionName = req.SessionName
 	}
 	
 	if req.DeviceId != nil {
-		entity.DeviceId = *req.DeviceId
+		entity.DeviceId = req.DeviceId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.ShiftId != nil {
-		entity.ShiftId = *req.ShiftId
+		entity.ShiftId = req.ShiftId
 	}
 	
 	if req.OpenedAt != nil {
-		entity.OpenedAt = *req.OpenedAt
+		entity.OpenedAt = req.OpenedAt
 	}
 	
 	if req.ClosedAt != nil {
-		entity.ClosedAt = *req.ClosedAt
+		entity.ClosedAt = req.ClosedAt
 	}
 	
 	if req.OpeningCash != nil {
-		entity.OpeningCash = *req.OpeningCash
+		entity.OpeningCash = req.OpeningCash
 	}
 	
 	if req.OpeningCard != nil {
-		entity.OpeningCard = *req.OpeningCard
+		entity.OpeningCard = req.OpeningCard
 	}
 	
 	if req.OpeningOther != nil {
-		entity.OpeningOther = *req.OpeningOther
+		entity.OpeningOther = req.OpeningOther
 	}
 	
 	if req.ExpectedCash != nil {
-		entity.ExpectedCash = *req.ExpectedCash
+		entity.ExpectedCash = req.ExpectedCash
 	}
 	
 	if req.ExpectedCard != nil {
-		entity.ExpectedCard = *req.ExpectedCard
+		entity.ExpectedCard = req.ExpectedCard
 	}
 	
 	if req.ExpectedOther != nil {
-		entity.ExpectedOther = *req.ExpectedOther
+		entity.ExpectedOther = req.ExpectedOther
 	}
 	
 	if req.CountedCash != nil {
-		entity.CountedCash = *req.CountedCash
+		entity.CountedCash = req.CountedCash
 	}
 	
 	if req.CountedCard != nil {
-		entity.CountedCard = *req.CountedCard
+		entity.CountedCard = req.CountedCard
 	}
 	
 	if req.CountedOther != nil {
-		entity.CountedOther = *req.CountedOther
+		entity.CountedOther = req.CountedOther
 	}
 	
 	if req.DifferenceCash != nil {
-		entity.DifferenceCash = *req.DifferenceCash
+		entity.DifferenceCash = req.DifferenceCash
 	}
 	
 	if req.DifferenceCard != nil {
-		entity.DifferenceCard = *req.DifferenceCard
+		entity.DifferenceCard = req.DifferenceCard
 	}
 	
 	if req.DifferenceOther != nil {
-		entity.DifferenceOther = *req.DifferenceOther
+		entity.DifferenceOther = req.DifferenceOther
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.ZReportNumber != nil {
-		entity.ZReportNumber = *req.ZReportNumber
+		entity.ZReportNumber = req.ZReportNumber
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -421,7 +420,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get pos_sessions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("pos_sessions not found or access denied")
 	}
 	

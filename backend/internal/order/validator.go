@@ -31,12 +31,13 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateOr
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	
+
 	// Validate LocationId
-	
-	
-	if err := v.validateLocationIdExists(ctx, tx, req.LocationId); err != nil {
-		return err
+
+	if req.LocationId != nil {
+		if err := v.validateLocationIdExists(ctx, tx, *req.LocationId); err != nil {
+			return err
+		}
 	}
 	
 	
@@ -55,40 +56,44 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateOr
 	// Validate OrderType
 	
 	
-	
+
 	// Validate TableId
-	
-	
-	if err := v.validateTableIdExists(ctx, tx, req.TableId); err != nil {
-		return err
+
+	if req.TableId != nil {
+		if err := v.validateTableIdExists(ctx, tx, *req.TableId); err != nil {
+			return err
+		}
 	}
 	
-	
+
 	// Validate ReservationId
-	
-	
-	if err := v.validateReservationIdExists(ctx, tx, req.ReservationId); err != nil {
-		return err
+
+	if req.ReservationId != nil {
+		if err := v.validateReservationIdExists(ctx, tx, *req.ReservationId); err != nil {
+			return err
+		}
 	}
 	
 	
 	// Validate Covers
 	
 	
-	
+
 	// Validate CustomerId
-	
-	
-	if err := v.validateCustomerIdExists(ctx, tx, req.CustomerId); err != nil {
-		return err
+
+	if req.CustomerId != nil {
+		if err := v.validateCustomerIdExists(ctx, tx, *req.CustomerId); err != nil {
+			return err
+		}
 	}
 	
-	
+
 	// Validate WaiterId
-	
-	
-	if err := v.validateWaiterIdExists(ctx, tx, req.WaiterId); err != nil {
-		return err
+
+	if req.WaiterId != nil {
+		if err := v.validateWaiterIdExists(ctx, tx, *req.WaiterId); err != nil {
+			return err
+		}
 	}
 	
 	
@@ -139,20 +144,22 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateOr
 	// Validate TotalAmount
 	
 	
-	
+
 	// Validate SaleId
-	
-	
-	if err := v.validateSaleIdExists(ctx, tx, req.SaleId); err != nil {
-		return err
+
+	if req.SaleId != nil {
+		if err := v.validateSaleIdExists(ctx, tx, *req.SaleId); err != nil {
+			return err
+		}
 	}
 	
-	
+
 	// Validate ShiftId
-	
-	
-	if err := v.validateShiftIdExists(ctx, tx, req.ShiftId); err != nil {
-		return err
+
+	if req.ShiftId != nil {
+		if err := v.validateShiftIdExists(ctx, tx, *req.ShiftId); err != nil {
+			return err
+		}
 	}
 	
 	

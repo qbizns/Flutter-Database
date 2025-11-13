@@ -2,6 +2,7 @@ package payment
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -127,7 +128,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Payments) er
 
 	r.logger.Info("created payments",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -483,3 +484,204 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 	return entities, total, nil
 }
 
+
+// GetStatistics retrieves payment statistics
+func (r *Repository) GetStatistics(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, fromDate, toDate string) (*PaymentStatisticsResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "payments", duration, nil)
+	}()
+
+	query := `
+		SELECT
+			COALESCE(SUM(amount), 0) as total_amount,
+			COUNT(*) as payment_count,
+			COALESCE(AVG(amount), 0) as average_payment
+		FROM payments
+		WHERE organization_id = $1
+			AND status = 'completed'
+			AND deleted_at IS NULL`
+
+	args := []interface{}{orgID}
+	argIdx := 2
+
+	if fromDate != "" {
+		query += fmt.Sprintf(" AND created_at >= $%d", argIdx)
+		args = append(args, fromDate)
+		argIdx++
+	}
+	if toDate != "" {
+		query += fmt.Sprintf(" AND created_at <= $%d", argIdx)
+		args = append(args, toDate)
+	}
+
+	var stats PaymentStatisticsResponse
+	err := tx.QueryRow(ctx, query, args...).Scan(
+		&stats.TotalAmount,
+		&stats.PaymentCount,
+		&stats.AveragePayment,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get payment statistics: %w", err)
+	}
+
+	// Get method breakdown
+	stats.PaymentMethodBreakdown = make(map[string]float64)
+	methodQuery := `
+		SELECT payment_method, COALESCE(SUM(amount), 0) as total
+		FROM payments
+		WHERE organization_id = $1
+			AND status = 'completed'
+			AND deleted_at IS NULL
+		GROUP BY payment_method`
+
+	rows, err := tx.Query(ctx, methodQuery, orgID)
+	if err == nil {
+		defer rows.Close()
+		for rows.Next() {
+			var method string
+			var total float64
+			if err := rows.Scan(&method, &total); err == nil {
+				stats.PaymentMethodBreakdown[method] = total
+			}
+		}
+	}
+
+	return &stats, nil
+}
+
+// CreateRefund creates a new refund
+func (r *Repository) CreateRefund(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, req *CreateRefundRequest) (*RefundResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("INSERT", "refunds", duration, nil)
+	}()
+
+	refund := &RefundResponse{
+		ID:          uuid.New(),
+		PaymentID:   req.PaymentID,
+		OrderID:     req.OrderID,
+		Amount:      req.Amount,
+		Reason:      req.Reason,
+		Status:      req.Status,
+		RequestedBy: req.RequestedBy,
+		Notes:       req.Notes,
+	}
+
+	now := time.Now()
+	refund.RequestedAt = &now
+	refund.CreatedAt = &now
+	refund.UpdatedAt = &now
+
+	query := `
+		INSERT INTO refunds (
+			id, organization_id, payment_id, order_id, amount, reason, 
+			status, requested_by, requested_at, notes, created_at, updated_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+		RETURNING id`
+
+	err := tx.QueryRow(ctx, query,
+		refund.ID, orgID, refund.PaymentID, refund.OrderID, refund.Amount,
+		refund.Reason, refund.Status, refund.RequestedBy, refund.RequestedAt,
+		refund.Notes, refund.CreatedAt, refund.UpdatedAt,
+	).Scan(&refund.ID)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create refund: %w", err)
+	}
+
+	return refund, nil
+}
+
+// ListRefunds retrieves refunds with optional filters
+func (r *Repository) ListRefunds(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, paymentID, orderID string) ([]*RefundResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "refunds", duration, nil)
+	}()
+
+	query := `
+		SELECT id, payment_id, order_id, amount, reason, status, 
+			requested_by, requested_at, processed_at, processed_by, 
+			notes, created_at, updated_at
+		FROM refunds
+		WHERE organization_id = $1`
+
+	args := []interface{}{orgID}
+	argIdx := 2
+
+	if paymentID != "" {
+		pid, err := uuid.Parse(paymentID)
+		if err == nil {
+			query += fmt.Sprintf(" AND payment_id = $%d", argIdx)
+			args = append(args, pid)
+			argIdx++
+		}
+	}
+	if orderID != "" {
+		oid, err := uuid.Parse(orderID)
+		if err == nil {
+			query += fmt.Sprintf(" AND order_id = $%d", argIdx)
+			args = append(args, oid)
+		}
+	}
+
+	query += " ORDER BY created_at DESC"
+
+	rows, err := tx.Query(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list refunds: %w", err)
+	}
+	defer rows.Close()
+
+	var refunds []*RefundResponse
+	for rows.Next() {
+		var refund RefundResponse
+		err := rows.Scan(
+			&refund.ID, &refund.PaymentID, &refund.OrderID, &refund.Amount,
+			&refund.Reason, &refund.Status, &refund.RequestedBy, &refund.RequestedAt,
+			&refund.ProcessedAt, &refund.ProcessedBy, &refund.Notes,
+			&refund.CreatedAt, &refund.UpdatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan refund: %w", err)
+		}
+		refunds = append(refunds, &refund)
+	}
+
+	return refunds, nil
+}
+
+// GetRefund retrieves a refund by ID
+func (r *Repository) GetRefund(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, id uuid.UUID) (*RefundResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "refunds", duration, nil)
+	}()
+
+	query := `
+		SELECT id, payment_id, order_id, amount, reason, status, 
+			requested_by, requested_at, processed_at, processed_by, 
+			notes, created_at, updated_at
+		FROM refunds
+		WHERE organization_id = $1 AND id = $2`
+
+	var refund RefundResponse
+	err := tx.QueryRow(ctx, query, orgID, id).Scan(
+		&refund.ID, &refund.PaymentID, &refund.OrderID, &refund.Amount,
+		&refund.Reason, &refund.Status, &refund.RequestedBy, &refund.RequestedAt,
+		&refund.ProcessedAt, &refund.ProcessedBy, &refund.Notes,
+		&refund.CreatedAt, &refund.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get refund: %w", err)
+	}
+
+	return &refund, nil
+}

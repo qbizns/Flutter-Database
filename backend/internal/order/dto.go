@@ -1,6 +1,7 @@
 package order
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -77,17 +78,7 @@ type OrdersResponse struct {
 	UpdatedBy *uuid.UUID `json:"updated_by"`
 	
 	DeletedAt *time.Time `json:"deleted_at"`
-	
-	'draft', *string `json:"'draft',"`
-	
-	'served', *string `json:"'served',"`
-	
-	'dineIn', *string `json:"'dine_in',"`
-	
-	Subtotal *string `json:"subtotal"`
-	
-	DiscountAmount *string `json:"discount_amount"`
-	
+
 }
 
 // CreateOrdersRequest represents a request to create a orders
@@ -150,17 +141,7 @@ type CreateOrdersRequest struct {
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
 	UpdatedBy *uuid.UUID `json:"updated_by"`
-	
-	'draft', *string `json:"'draft',"`
-	
-	'served', *string `json:"'served',"`
-	
-	'dineIn', *string `json:"'dine_in',"`
-	
-	Subtotal *string `json:"subtotal"`
-	
-	DiscountAmount *string `json:"discount_amount"`
-	
+
 }
 
 // Validate validates the create request
@@ -237,17 +218,7 @@ type UpdateOrdersRequest struct {
 	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
 	
 	UpdatedBy *uuid.UUID `json:"updated_by,omitempty"`
-	
-	'draft', *string `json:"'draft',,omitempty"`
-	
-	'served', *string `json:"'served',,omitempty"`
-	
-	'dineIn', *string `json:"'dine_in',,omitempty"`
-	
-	Subtotal *string `json:"subtotal,omitempty"`
-	
-	DiscountAmount *string `json:"discount_amount,omitempty"`
-	
+
 }
 
 // Validate validates the update request
@@ -371,27 +342,6 @@ func (r *UpdateOrdersRequest) Validate() error {
 		hasUpdate = true
 	}
 	
-	if r.'draft', != nil {
-		hasUpdate = true
-	}
-	
-	if r.'served', != nil {
-		hasUpdate = true
-	}
-	
-	if r.'dineIn', != nil {
-		hasUpdate = true
-	}
-	
-	if r.Subtotal != nil {
-		hasUpdate = true
-	}
-	
-	if r.DiscountAmount != nil {
-		hasUpdate = true
-	}
-	
-
 	if !hasUpdate {
 		return fmt.Errorf("at least one field must be provided for update")
 	}
@@ -416,4 +366,33 @@ type Pagination struct {
 	TotalPages int  `json:"total_pages"`
 	HasNext    bool `json:"has_next"`
 	HasPrev    bool `json:"has_prev"`
+}
+
+// UpdateOrderStatusRequest represents a request to update order status
+type UpdateOrderStatusRequest struct {
+	Status string `json:"status" validate:"required"`
+}
+
+// Validate validates the update status request
+func (r *UpdateOrderStatusRequest) Validate() error {
+	if r.Status == "" {
+		return fmt.Errorf("status is required")
+	}
+	return nil
+}
+
+// CancelOrderRequest represents a request to cancel an order
+type CancelOrderRequest struct {
+	Reason string `json:"reason"`
+}
+
+// OrderStatisticsResponse represents order statistics
+type OrderStatisticsResponse struct {
+	TotalOrders               int     `json:"total_orders"`
+	CompletedOrders           int     `json:"completed_orders"`
+	CancelledOrders           int     `json:"cancelled_orders"`
+	ActiveOrders              int     `json:"active_orders"`
+	TotalRevenue              float64 `json:"total_revenue"`
+	AverageOrderValue         float64 `json:"average_order_value"`
+	AveragePreparationMinutes int     `json:"average_preparation_minutes"`
 }

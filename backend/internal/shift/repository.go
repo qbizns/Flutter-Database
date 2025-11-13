@@ -2,6 +2,7 @@ package shift
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -54,9 +55,8 @@ type Shifts struct {
 	UpdatedAt *time.Time `json:"updated_at" db:"updated_at"`
 	ClosedBy *uuid.UUID `json:"closed_by" db:"closed_by"`
 	ClosedAt *time.Time `json:"closed_at" db:"closed_at"`
-	OpeningCash *string `json:"opening_cash" db:"opening_cash"`
-	(expectedCash *string `json:"(expected_cash" db:"(expected_cash"`
-	(actualCash *string `json:"(actual_cash" db:"(actual_cash"`
+	CreatedBy *uuid.UUID `json:"created_by" db:"created_by"`
+	UpdatedBy *uuid.UUID `json:"updated_by" db:"updated_by"`
 }
 
 // Create inserts a new shifts record
@@ -69,7 +69,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 
 	query := `
 		INSERT INTO shifts (
-			, organization_id
+			organization_id
 			, location_id
 			, user_id
 			, shift_number
@@ -91,10 +91,10 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 			, metadata
 			, closed_by
 			, closed_at
-			, opening_cash
-			, (expected_cash
-			, (actual_cash
+			, created_by
+			, updated_by
 		) VALUES (
+			$1
 			, $2
 			, $3
 			, $4
@@ -115,11 +115,9 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 			, $19
 			, $20
 			, $21
+			, $22
+			, $23
 			, $24
-			, $25
-			, $26
-			, $27
-			, $28
 		)
 		RETURNING id, created_at, updated_at
 	`
@@ -147,9 +145,8 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 		entity.Metadata,
 		entity.ClosedBy,
 		entity.ClosedAt,
-		entity.OpeningCash,
-		entity.(expectedCash,
-		entity.(actualCash,
+		entity.CreatedBy,
+		entity.UpdatedBy,
 	)
 
 	
@@ -163,7 +160,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 
 	r.logger.Info("created shifts",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -204,12 +201,11 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Shi
 			, updated_at
 			, closed_by
 			, closed_at
-			, opening_cash
-			, (expected_cash
-			, (actual_cash
+			, created_by
+			, updated_by
 		FROM shifts
 		WHERE id = $1
-		
+
 	`
 
 	var entity Shifts
@@ -239,9 +235,8 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Shi
 		&entity.UpdatedAt,
 		&entity.ClosedBy,
 		&entity.ClosedAt,
-		&entity.OpeningCash,
-		&entity.(expectedCash,
-		&entity.(actualCash,
+		&entity.CreatedBy,
+		&entity.UpdatedBy,
 	)
 
 	if err == pgx.ErrNoRows {
@@ -305,11 +300,10 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, updated_at
 			, closed_by
 			, closed_at
-			, opening_cash
-			, (expected_cash
-			, (actual_cash
+			, created_by
+			, updated_by
 		FROM shifts
-		
+
 		ORDER BY created_at DESC
 		LIMIT $1 OFFSET $2
 	`
@@ -350,9 +344,8 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.UpdatedAt,
 			&entity.ClosedBy,
 			&entity.ClosedAt,
-			&entity.OpeningCash,
-			&entity.(expectedCash,
-			&entity.(actualCash,
+			&entity.CreatedBy,
+			&entity.UpdatedBy,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan shifts: %w", err)
@@ -378,35 +371,33 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 	query := `
 		UPDATE shifts
 		SET
-			, organization_id = $2
-			, location_id = $3
-			, user_id = $4
-			, shift_number = $5
-			, start_time = $6
-			, end_time = $7
-			, status = $8
-			, opening_cash = $9
-			, opening_notes = $10
-			, expected_cash = $11
-			, actual_cash = $12
-			, cash_difference = $13
-			, closing_notes = $14
-			, total_sales = $15
-			, total_transactions = $16
-			, total_refunds = $17
-			, total_discounts = $18
-			, payment_breakdown = $19
-			, notes = $20
-			, metadata = $21
-			, updated_at = $23
-			, closed_by = $24
-			, closed_at = $25
-			, opening_cash = $26
-			, (expected_cash = $27
-			, (actual_cash = $28
+			organization_id = $1
+			, location_id = $2
+			, user_id = $3
+			, shift_number = $4
+			, start_time = $5
+			, end_time = $6
+			, status = $7
+			, opening_cash = $8
+			, opening_notes = $9
+			, expected_cash = $10
+			, actual_cash = $11
+			, cash_difference = $12
+			, closing_notes = $13
+			, total_sales = $14
+			, total_transactions = $15
+			, total_refunds = $16
+			, total_discounts = $17
+			, payment_breakdown = $18
+			, notes = $19
+			, metadata = $20
+			, closed_by = $21
+			, closed_at = $22
+			, created_by = $23
+			, updated_by = $24
 			, updated_at = CURRENT_TIMESTAMP
-		WHERE id = $29
-		
+		WHERE id = $25
+
 	`
 
 	tag, err := tx.Exec(ctx, query,
@@ -430,12 +421,10 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Shifts) erro
 		entity.PaymentBreakdown,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
 		entity.ClosedBy,
 		entity.ClosedAt,
-		entity.OpeningCash,
-		entity.(expectedCash,
-		entity.(actualCash,
+		entity.CreatedBy,
+		entity.UpdatedBy,
 		entity.Id,
 	)
 
@@ -532,12 +521,11 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, updated_at
 			, closed_by
 			, closed_at
-			, opening_cash
-			, (expected_cash
-			, (actual_cash
+			, created_by
+			, updated_by
 		FROM shifts
 		WHERE organization_id = $1
-		
+
 		ORDER BY created_at DESC
 		LIMIT $2 OFFSET $3
 	`
@@ -578,9 +566,8 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.UpdatedAt,
 			&entity.ClosedBy,
 			&entity.ClosedAt,
-			&entity.OpeningCash,
-			&entity.(expectedCash,
-			&entity.(actualCash,
+			&entity.CreatedBy,
+			&entity.UpdatedBy,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan shifts: %w", err)

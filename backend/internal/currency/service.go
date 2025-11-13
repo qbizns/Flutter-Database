@@ -3,7 +3,6 @@ package currency
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -82,7 +81,7 @@ func (s *Service) Create(ctx context.Context, req *CreateCurrenciesRequest) (*Cu
 	}
 
 	s.logger.Info("created currencies",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -202,23 +201,23 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateCurrencie
 	// Update fields
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.CurrencyName != nil {
-		entity.CurrencyName = *req.CurrencyName
+		entity.CurrencyName = req.CurrencyName
 	}
 	
 	if req.CurrencySymbol != nil {
-		entity.CurrencySymbol = *req.CurrencySymbol
+		entity.CurrencySymbol = req.CurrencySymbol
 	}
 	
 	if req.DecimalPlaces != nil {
-		entity.DecimalPlaces = *req.DecimalPlaces
+		entity.DecimalPlaces = req.DecimalPlaces
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 

@@ -3,7 +3,6 @@ package email_queue
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -121,7 +120,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEmailQ
 	}
 
 	s.logger.Info("created email_queue",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -157,7 +156,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("email_queue not found or access denied")
 	}
 	
@@ -258,7 +257,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("email_queue not found or access denied")
 	}
 	
@@ -266,91 +265,91 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ToAddresses != nil {
-		entity.ToAddresses = *req.ToAddresses
+		entity.ToAddresses = req.ToAddresses
 	}
 	
 	if req.CcAddresses != nil {
-		entity.CcAddresses = *req.CcAddresses
+		entity.CcAddresses = req.CcAddresses
 	}
 	
 	if req.BccAddresses != nil {
-		entity.BccAddresses = *req.BccAddresses
+		entity.BccAddresses = req.BccAddresses
 	}
 	
 	if req.FromAddress != nil {
-		entity.FromAddress = *req.FromAddress
+		entity.FromAddress = req.FromAddress
 	}
 	
 	if req.ReplyTo != nil {
-		entity.ReplyTo = *req.ReplyTo
+		entity.ReplyTo = req.ReplyTo
 	}
 	
 	if req.Subject != nil {
-		entity.Subject = *req.Subject
+		entity.Subject = req.Subject
 	}
 	
 	if req.BodyHtml != nil {
-		entity.BodyHtml = *req.BodyHtml
+		entity.BodyHtml = req.BodyHtml
 	}
 	
 	if req.BodyText != nil {
-		entity.BodyText = *req.BodyText
+		entity.BodyText = req.BodyText
 	}
 	
 	if req.AttachmentIds != nil {
-		entity.AttachmentIds = *req.AttachmentIds
+		entity.AttachmentIds = req.AttachmentIds
 	}
 	
 	if req.TemplateName != nil {
-		entity.TemplateName = *req.TemplateName
+		entity.TemplateName = req.TemplateName
 	}
 	
 	if req.TemplateData != nil {
-		entity.TemplateData = *req.TemplateData
+		entity.TemplateData = req.TemplateData
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Provider != nil {
-		entity.Provider = *req.Provider
+		entity.Provider = req.Provider
 	}
 	
 	if req.ProviderMessageId != nil {
-		entity.ProviderMessageId = *req.ProviderMessageId
+		entity.ProviderMessageId = req.ProviderMessageId
 	}
 	
 	if req.Attempts != nil {
-		entity.Attempts = *req.Attempts
+		entity.Attempts = req.Attempts
 	}
 	
 	if req.MaxAttempts != nil {
-		entity.MaxAttempts = *req.MaxAttempts
+		entity.MaxAttempts = req.MaxAttempts
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.ScheduledAt != nil {
-		entity.ScheduledAt = *req.ScheduledAt
+		entity.ScheduledAt = req.ScheduledAt
 	}
 	
 	if req.SentAt != nil {
-		entity.SentAt = *req.SentAt
+		entity.SentAt = req.SentAt
 	}
 	
 	if req.FailedAt != nil {
-		entity.FailedAt = *req.FailedAt
+		entity.FailedAt = req.FailedAt
 	}
 	
 
@@ -403,7 +402,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get email_queue: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("email_queue not found or access denied")
 	}
 	

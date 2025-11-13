@@ -53,10 +53,10 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateCa
 	
 	
 	// Validate ParentId
-	
-	
-	if err := v.validateParentIdExists(ctx, tx, req.ParentId); err != nil {
-		return err
+	if req.ParentId != nil {
+		if err := v.validateParentIdExists(ctx, tx, *req.ParentId); err != nil {
+			return err
+		}
 	}
 	
 	

@@ -3,7 +3,6 @@ package notification
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -105,7 +104,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateNotifi
 	}
 
 	s.logger.Info("created notifications",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +140,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("notifications not found or access denied")
 	}
 	
@@ -242,7 +241,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("notifications not found or access denied")
 	}
 	
@@ -250,59 +249,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.NotificationType != nil {
-		entity.NotificationType = *req.NotificationType
+		entity.NotificationType = req.NotificationType
 	}
 	
 	if req.Category != nil {
-		entity.Category = *req.Category
+		entity.Category = req.Category
 	}
 	
 	if req.Title != nil {
-		entity.Title = *req.Title
+		entity.Title = req.Title
 	}
 	
 	if req.Message != nil {
-		entity.Message = *req.Message
+		entity.Message = req.Message
 	}
 	
 	if req.ActionUrl != nil {
-		entity.ActionUrl = *req.ActionUrl
+		entity.ActionUrl = req.ActionUrl
 	}
 	
 	if req.ActionLabel != nil {
-		entity.ActionLabel = *req.ActionLabel
+		entity.ActionLabel = req.ActionLabel
 	}
 	
 	if req.Channels != nil {
-		entity.Channels = *req.Channels
+		entity.Channels = req.Channels
 	}
 	
 	if req.IsRead != nil {
-		entity.IsRead = *req.IsRead
+		entity.IsRead = req.IsRead
 	}
 	
 	if req.ReadAt != nil {
-		entity.ReadAt = *req.ReadAt
+		entity.ReadAt = req.ReadAt
 	}
 	
 	if req.RelatedEntityType != nil {
-		entity.RelatedEntityType = *req.RelatedEntityType
+		entity.RelatedEntityType = req.RelatedEntityType
 	}
 	
 	if req.RelatedEntityId != nil {
-		entity.RelatedEntityId = *req.RelatedEntityId
+		entity.RelatedEntityId = req.RelatedEntityId
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.ExpiresAt != nil {
-		entity.ExpiresAt = *req.ExpiresAt
+		entity.ExpiresAt = req.ExpiresAt
 	}
 	
 
@@ -355,7 +354,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get notifications: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("notifications not found or access denied")
 	}
 	

@@ -2,6 +2,7 @@ package restaurant_table
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -171,7 +172,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *RestaurantTa
 
 	r.logger.Info("created restaurant_tables",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -620,3 +621,73 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 	return entities, total, nil
 }
 
+
+// GetStatistics retrieves table statistics
+func (r *Repository) GetStatistics(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) (*TableStatisticsResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "restaurant_tables", duration, nil)
+	}()
+
+	query := `
+		SELECT
+			COUNT(*) as total_tables,
+			COUNT(CASE WHEN status = 'available' THEN 1 END) as available_tables,
+			COUNT(CASE WHEN status = 'occupied' THEN 1 END) as occupied_tables,
+			COUNT(CASE WHEN status = 'reserved' THEN 1 END) as reserved_tables
+		FROM restaurant_tables
+		WHERE organization_id = $1 AND deleted_at IS NULL`
+
+	var stats TableStatisticsResponse
+	err := tx.QueryRow(ctx, query, orgID).Scan(
+		&stats.TotalTables,
+		&stats.AvailableTables,
+		&stats.OccupiedTables,
+		&stats.ReservedTables,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get table statistics: %w", err)
+	}
+
+	if stats.TotalTables > 0 {
+		stats.OccupancyRate = float64(stats.OccupiedTables) / float64(stats.TotalTables) * 100
+	}
+	stats.AverageTurnTimeMinutes = 45 // Placeholder
+
+	return &stats, nil
+}
+
+// GetCountByZone retrieves table count by zone
+func (r *Repository) GetCountByZone(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) (map[string]int, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "restaurant_tables", duration, nil)
+	}()
+
+	query := `
+		SELECT zone_id, COUNT(*) as table_count
+		FROM restaurant_tables
+		WHERE organization_id = $1 AND deleted_at IS NULL AND zone_id IS NOT NULL
+		GROUP BY zone_id`
+
+	rows, err := tx.Query(ctx, query, orgID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get table count by zone: %w", err)
+	}
+	defer rows.Close()
+
+	counts := make(map[string]int)
+	for rows.Next() {
+		var zoneID uuid.UUID
+		var count int
+		if err := rows.Scan(&zoneID, &count); err != nil {
+			return nil, fmt.Errorf("failed to scan count: %w", err)
+		}
+		counts[zoneID.String()] = count
+	}
+
+	return counts, nil
+}

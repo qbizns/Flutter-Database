@@ -6,7 +6,6 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
-	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/your-org/pos-backend/internal/tracing"
@@ -34,22 +33,22 @@ func (tm *TracingMiddleware) Handler() func(http.Handler) http.Handler {
 			ctx, span := tm.tracer.StartSpan(ctx, r.Method+" "+r.URL.Path,
 				trace.WithSpanKind(trace.SpanKindServer),
 				trace.WithAttributes(
-					semconv.HTTPMethod(r.Method),
-					semconv.HTTPRoute(r.URL.Path),
-					semconv.HTTPURL(r.URL.String()),
-					semconv.HTTPScheme(r.URL.Scheme),
-					semconv.HTTPTarget(r.URL.RequestURI()),
-					semconv.NetHostName(r.Host),
-					semconv.UserAgentOriginal(r.UserAgent()),
+					attribute.String("http.method", r.Method),
+					attribute.String("http.route", r.URL.Path),
+					attribute.String("http.url", r.URL.String()),
+					attribute.String("http.scheme", r.URL.Scheme),
+					attribute.String("http.target", r.URL.RequestURI()),
+					attribute.String("net.host.name", r.Host),
+					attribute.String("user_agent.original", r.UserAgent()),
 				),
 			)
 			defer span.End()
 
 			// Add organization and user context if available
-			if orgID, err := appctx.GetOrganizationID(ctx); err == nil {
+			if orgID, ok := appctx.GetOrganizationID(ctx); ok {
 				span.SetAttributes(tracing.AttrOrganizationID.String(orgID.String()))
 			}
-			if userID, err := appctx.GetUserID(ctx); err == nil {
+			if userID, ok := appctx.GetUserID(ctx); ok {
 				span.SetAttributes(tracing.AttrUserID.String(userID.String()))
 			}
 
@@ -63,7 +62,7 @@ func (tm *TracingMiddleware) Handler() func(http.Handler) http.Handler {
 			next.ServeHTTP(wrapped, r.WithContext(ctx))
 
 			// Set response attributes
-			span.SetAttributes(semconv.HTTPStatusCode(wrapped.statusCode))
+			span.SetAttributes(attribute.Int("http.status_code", wrapped.statusCode))
 
 			// Mark span as error if status >= 400
 			if wrapped.statusCode >= 400 {

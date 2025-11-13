@@ -3,7 +3,6 @@ package cash_drawer_session
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -85,7 +84,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashDr
 	}
 
 	s.logger.Info("created cash_drawer_sessions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -121,7 +120,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_drawer_sessions not found or access denied")
 	}
 	
@@ -222,7 +221,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_drawer_sessions not found or access denied")
 	}
 	
@@ -230,19 +229,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CashDrawerId != nil {
-		entity.CashDrawerId = *req.CashDrawerId
+		entity.CashDrawerId = req.CashDrawerId
 	}
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = *req.PosSessionId
+		entity.PosSessionId = req.PosSessionId
 	}
 	
 	if req.OpeningAmount != nil {
-		entity.OpeningAmount = *req.OpeningAmount
+		entity.OpeningAmount = req.OpeningAmount
 	}
 	
 	if req.ClosingAmount != nil {
-		entity.ClosingAmount = *req.ClosingAmount
+		entity.ClosingAmount = req.ClosingAmount
 	}
 	
 
@@ -295,7 +294,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get cash_drawer_sessions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("cash_drawer_sessions not found or access denied")
 	}
 	

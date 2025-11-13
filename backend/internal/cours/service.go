@@ -3,7 +3,6 @@ package cours
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCourse
 	}
 
 	s.logger.Info("created courses",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("courses not found or access denied")
 	}
 	
@@ -244,7 +243,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("courses not found or access denied")
 	}
 	
@@ -252,63 +251,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CourseName != nil {
-		entity.CourseName = *req.CourseName
+		entity.CourseName = req.CourseName
 	}
 	
 	if req.CourseCode != nil {
-		entity.CourseCode = *req.CourseCode
+		entity.CourseCode = req.CourseCode
 	}
 	
 	if req.CourseType != nil {
-		entity.CourseType = *req.CourseType
+		entity.CourseType = req.CourseType
 	}
 	
 	if req.TypicalDurationMinutes != nil {
-		entity.TypicalDurationMinutes = *req.TypicalDurationMinutes
+		entity.TypicalDurationMinutes = req.TypicalDurationMinutes
 	}
 	
 	if req.FireDelayMinutes != nil {
-		entity.FireDelayMinutes = *req.FireDelayMinutes
+		entity.FireDelayMinutes = req.FireDelayMinutes
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = *req.ColorCode
+		entity.ColorCode = req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = *req.Icon
+		entity.Icon = req.Icon
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -361,7 +360,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get courses: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("courses not found or access denied")
 	}
 	

@@ -3,7 +3,6 @@ package accounting_period
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -99,7 +98,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAccoun
 	}
 
 	s.logger.Info("created accounting_periods",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -135,7 +134,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("accounting_periods not found or access denied")
 	}
 	
@@ -236,7 +235,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("accounting_periods not found or access denied")
 	}
 	
@@ -244,47 +243,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = *req.FiscalYearId
+		entity.FiscalYearId = req.FiscalYearId
 	}
 	
 	if req.PeriodNumber != nil {
-		entity.PeriodNumber = *req.PeriodNumber
+		entity.PeriodNumber = req.PeriodNumber
 	}
 	
 	if req.PeriodName != nil {
-		entity.PeriodName = *req.PeriodName
+		entity.PeriodName = req.PeriodName
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = *req.StartDate
+		entity.StartDate = req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = *req.EndDate
+		entity.EndDate = req.EndDate
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.ClosedBy != nil {
-		entity.ClosedBy = *req.ClosedBy
+		entity.ClosedBy = req.ClosedBy
 	}
 	
 	if req.ClosedAt != nil {
-		entity.ClosedAt = *req.ClosedAt
+		entity.ClosedAt = req.ClosedAt
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -337,7 +336,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get accounting_periods: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("accounting_periods not found or access denied")
 	}
 	

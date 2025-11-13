@@ -3,7 +3,6 @@ package delivery_zone
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -117,7 +116,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDelive
 	}
 
 	s.logger.Info("created delivery_zones",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -153,7 +152,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_zones not found or access denied")
 	}
 	
@@ -254,7 +253,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_zones not found or access denied")
 	}
 	
@@ -262,83 +261,83 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.ZoneName != nil {
-		entity.ZoneName = *req.ZoneName
+		entity.ZoneName = req.ZoneName
 	}
 	
 	if req.ZoneCode != nil {
-		entity.ZoneCode = *req.ZoneCode
+		entity.ZoneCode = req.ZoneCode
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Geofence != nil {
-		entity.Geofence = *req.Geofence
+		entity.Geofence = req.Geofence
 	}
 	
 	if req.PostalCodes != nil {
-		entity.PostalCodes = *req.PostalCodes
+		entity.PostalCodes = req.PostalCodes
 	}
 	
 	if req.CoverageNotes != nil {
-		entity.CoverageNotes = *req.CoverageNotes
+		entity.CoverageNotes = req.CoverageNotes
 	}
 	
 	if req.BaseDeliveryFee != nil {
-		entity.BaseDeliveryFee = *req.BaseDeliveryFee
+		entity.BaseDeliveryFee = req.BaseDeliveryFee
 	}
 	
 	if req.FeeType != nil {
-		entity.FeeType = *req.FeeType
+		entity.FeeType = req.FeeType
 	}
 	
 	if req.MinimumOrderAmount != nil {
-		entity.MinimumOrderAmount = *req.MinimumOrderAmount
+		entity.MinimumOrderAmount = req.MinimumOrderAmount
 	}
 	
 	if req.FreeDeliveryThreshold != nil {
-		entity.FreeDeliveryThreshold = *req.FreeDeliveryThreshold
+		entity.FreeDeliveryThreshold = req.FreeDeliveryThreshold
 	}
 	
 	if req.EstimatedDeliveryTimeMinutes != nil {
-		entity.EstimatedDeliveryTimeMinutes = *req.EstimatedDeliveryTimeMinutes
+		entity.EstimatedDeliveryTimeMinutes = req.EstimatedDeliveryTimeMinutes
 	}
 	
 	if req.MaxDeliveryTimeMinutes != nil {
-		entity.MaxDeliveryTimeMinutes = *req.MaxDeliveryTimeMinutes
+		entity.MaxDeliveryTimeMinutes = req.MaxDeliveryTimeMinutes
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.ActiveHours != nil {
-		entity.ActiveHours = *req.ActiveHours
+		entity.ActiveHours = req.ActiveHours
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.BaseDeliveryFee != nil {
-		entity.BaseDeliveryFee = *req.BaseDeliveryFee
+		entity.BaseDeliveryFee = req.BaseDeliveryFee
 	}
 	
 
@@ -391,7 +390,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get delivery_zones: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("delivery_zones not found or access denied")
 	}
 	

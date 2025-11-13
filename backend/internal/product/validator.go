@@ -55,8 +55,10 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreatePr
 	// Validate CategoryId
 	
 	
-	if err := v.validateCategoryIdExists(ctx, tx, req.CategoryId); err != nil {
-		return err
+	if req.CategoryId != nil {
+		if err := v.validateCategoryIdExists(ctx, tx, *req.CategoryId); err != nil {
+			return err
+		}
 	}
 	
 	

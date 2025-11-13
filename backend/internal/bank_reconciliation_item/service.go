@@ -3,7 +3,6 @@ package bank_reconciliation_item
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -89,7 +88,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankRe
 	}
 
 	s.logger.Info("created bank_reconciliation_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -125,7 +124,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_reconciliation_items not found or access denied")
 	}
 	
@@ -226,7 +225,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_reconciliation_items not found or access denied")
 	}
 	
@@ -234,27 +233,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankReconciliationId != nil {
-		entity.BankReconciliationId = *req.BankReconciliationId
+		entity.BankReconciliationId = req.BankReconciliationId
 	}
 	
 	if req.GeneralLedgerId != nil {
-		entity.GeneralLedgerId = *req.GeneralLedgerId
+		entity.GeneralLedgerId = req.GeneralLedgerId
 	}
 	
 	if req.JournalEntryLineId != nil {
-		entity.JournalEntryLineId = *req.JournalEntryLineId
+		entity.JournalEntryLineId = req.JournalEntryLineId
 	}
 	
 	if req.IsCleared != nil {
-		entity.IsCleared = *req.IsCleared
+		entity.IsCleared = req.IsCleared
 	}
 	
 	if req.ClearedDate != nil {
-		entity.ClearedDate = *req.ClearedDate
+		entity.ClearedDate = req.ClearedDate
 	}
 	
 	if req.ClearedBy != nil {
-		entity.ClearedBy = *req.ClearedBy
+		entity.ClearedBy = req.ClearedBy
 	}
 	
 
@@ -307,7 +306,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get bank_reconciliation_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("bank_reconciliation_items not found or access denied")
 	}
 	

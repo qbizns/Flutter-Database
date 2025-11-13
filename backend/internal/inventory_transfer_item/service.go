@@ -3,7 +3,6 @@ package inventory_transfer_item
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -123,7 +122,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 	}
 
 	s.logger.Info("created inventory_transfer_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -159,7 +158,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_transfer_items not found or access denied")
 	}
 	
@@ -260,7 +259,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_transfer_items not found or access denied")
 	}
 	
@@ -268,87 +267,87 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.InventoryTransferId != nil {
-		entity.InventoryTransferId = *req.InventoryTransferId
+		entity.InventoryTransferId = req.InventoryTransferId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.ProductName != nil {
-		entity.ProductName = *req.ProductName
+		entity.ProductName = req.ProductName
 	}
 	
 	if req.ProductSku != nil {
-		entity.ProductSku = *req.ProductSku
+		entity.ProductSku = req.ProductSku
 	}
 	
 	if req.QuantityRequested != nil {
-		entity.QuantityRequested = *req.QuantityRequested
+		entity.QuantityRequested = req.QuantityRequested
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = *req.QuantityShipped
+		entity.QuantityShipped = req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = *req.QuantityReceived
+		entity.QuantityReceived = req.QuantityReceived
 	}
 	
 	if req.UnitOfMeasure != nil {
-		entity.UnitOfMeasure = *req.UnitOfMeasure
+		entity.UnitOfMeasure = req.UnitOfMeasure
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = *req.UnitCost
+		entity.UnitCost = req.UnitCost
 	}
 	
 	if req.TotalCost != nil {
-		entity.TotalCost = *req.TotalCost
+		entity.TotalCost = req.TotalCost
 	}
 	
 	if req.ItemStatus != nil {
-		entity.ItemStatus = *req.ItemStatus
+		entity.ItemStatus = req.ItemStatus
 	}
 	
 	if req.VarianceQuantity != nil {
-		entity.VarianceQuantity = *req.VarianceQuantity
+		entity.VarianceQuantity = req.VarianceQuantity
 	}
 	
 	if req.VarianceReason != nil {
-		entity.VarianceReason = *req.VarianceReason
+		entity.VarianceReason = req.VarianceReason
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.QuantityRequested != nil {
-		entity.QuantityRequested = *req.QuantityRequested
+		entity.QuantityRequested = req.QuantityRequested
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = *req.QuantityShipped
+		entity.QuantityShipped = req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = *req.QuantityReceived
+		entity.QuantityReceived = req.QuantityReceived
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = *req.QuantityShipped
+		entity.QuantityShipped = req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = *req.QuantityReceived
+		entity.QuantityReceived = req.QuantityReceived
 	}
 	
 	if req.(unitCost != nil {
@@ -409,7 +408,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get inventory_transfer_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("inventory_transfer_items not found or access denied")
 	}
 	

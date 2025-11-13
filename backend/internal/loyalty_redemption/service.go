@@ -3,7 +3,6 @@ package loyalty_redemption
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -111,7 +110,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_redemptions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +146,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_redemptions not found or access denied")
 	}
 	
@@ -248,7 +247,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_redemptions not found or access denied")
 	}
 	
@@ -256,71 +255,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.RewardId != nil {
-		entity.RewardId = *req.RewardId
+		entity.RewardId = req.RewardId
 	}
 	
 	if req.RedemptionNumber != nil {
-		entity.RedemptionNumber = *req.RedemptionNumber
+		entity.RedemptionNumber = req.RedemptionNumber
 	}
 	
 	if req.RedemptionDate != nil {
-		entity.RedemptionDate = *req.RedemptionDate
+		entity.RedemptionDate = req.RedemptionDate
 	}
 	
 	if req.PointsRedeemed != nil {
-		entity.PointsRedeemed = *req.PointsRedeemed
+		entity.PointsRedeemed = req.PointsRedeemed
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.UsedDate != nil {
-		entity.UsedDate = *req.UsedDate
+		entity.UsedDate = req.UsedDate
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = *req.ExpiryDate
+		entity.ExpiryDate = req.ExpiryDate
 	}
 	
 	if req.FulfillmentStatus != nil {
-		entity.FulfillmentStatus = *req.FulfillmentStatus
+		entity.FulfillmentStatus = req.FulfillmentStatus
 	}
 	
 	if req.FulfillmentNotes != nil {
-		entity.FulfillmentNotes = *req.FulfillmentNotes
+		entity.FulfillmentNotes = req.FulfillmentNotes
 	}
 	
 	if req.FulfilledBy != nil {
-		entity.FulfilledBy = *req.FulfilledBy
+		entity.FulfilledBy = req.FulfilledBy
 	}
 	
 	if req.FulfilledAt != nil {
-		entity.FulfilledAt = *req.FulfilledAt
+		entity.FulfilledAt = req.FulfilledAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -373,7 +372,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_redemptions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_redemptions not found or access denied")
 	}
 	

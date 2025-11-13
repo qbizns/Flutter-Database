@@ -3,7 +3,6 @@ package reservation
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -139,7 +138,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReserv
 	}
 
 	s.logger.Info("created reservations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -175,7 +174,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("reservations not found or access denied")
 	}
 	
@@ -276,7 +275,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("reservations not found or access denied")
 	}
 	
@@ -284,127 +283,127 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.TableId != nil {
-		entity.TableId = *req.TableId
+		entity.TableId = req.TableId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.ReservationNumber != nil {
-		entity.ReservationNumber = *req.ReservationNumber
+		entity.ReservationNumber = req.ReservationNumber
 	}
 	
 	if req.ReservationDate != nil {
-		entity.ReservationDate = *req.ReservationDate
+		entity.ReservationDate = req.ReservationDate
 	}
 	
 	if req.ReservationTime != nil {
-		entity.ReservationTime = *req.ReservationTime
+		entity.ReservationTime = req.ReservationTime
 	}
 	
 	if req.DurationMinutes != nil {
-		entity.DurationMinutes = *req.DurationMinutes
+		entity.DurationMinutes = req.DurationMinutes
 	}
 	
 	if req.PartySize != nil {
-		entity.PartySize = *req.PartySize
+		entity.PartySize = req.PartySize
 	}
 	
 	if req.CustomerName != nil {
-		entity.CustomerName = *req.CustomerName
+		entity.CustomerName = req.CustomerName
 	}
 	
 	if req.CustomerPhone != nil {
-		entity.CustomerPhone = *req.CustomerPhone
+		entity.CustomerPhone = req.CustomerPhone
 	}
 	
 	if req.CustomerEmail != nil {
-		entity.CustomerEmail = *req.CustomerEmail
+		entity.CustomerEmail = req.CustomerEmail
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.AssignedWaiterId != nil {
-		entity.AssignedWaiterId = *req.AssignedWaiterId
+		entity.AssignedWaiterId = req.AssignedWaiterId
 	}
 	
 	if req.AssignedAt != nil {
-		entity.AssignedAt = *req.AssignedAt
+		entity.AssignedAt = req.AssignedAt
 	}
 	
 	if req.SeatedAt != nil {
-		entity.SeatedAt = *req.SeatedAt
+		entity.SeatedAt = req.SeatedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.SpecialRequests != nil {
-		entity.SpecialRequests = *req.SpecialRequests
+		entity.SpecialRequests = req.SpecialRequests
 	}
 	
 	if req.Occasion != nil {
-		entity.Occasion = *req.Occasion
+		entity.Occasion = req.Occasion
 	}
 	
 	if req.DietaryRestrictions != nil {
-		entity.DietaryRestrictions = *req.DietaryRestrictions
+		entity.DietaryRestrictions = req.DietaryRestrictions
 	}
 	
 	if req.ConfirmationCode != nil {
-		entity.ConfirmationCode = *req.ConfirmationCode
+		entity.ConfirmationCode = req.ConfirmationCode
 	}
 	
 	if req.ConfirmedAt != nil {
-		entity.ConfirmedAt = *req.ConfirmedAt
+		entity.ConfirmedAt = req.ConfirmedAt
 	}
 	
 	if req.ConfirmedBy != nil {
-		entity.ConfirmedBy = *req.ConfirmedBy
+		entity.ConfirmedBy = req.ConfirmedBy
 	}
 	
 	if req.ReminderSentAt != nil {
-		entity.ReminderSentAt = *req.ReminderSentAt
+		entity.ReminderSentAt = req.ReminderSentAt
 	}
 	
 	if req.NotificationPreferences != nil {
-		entity.NotificationPreferences = *req.NotificationPreferences
+		entity.NotificationPreferences = req.NotificationPreferences
 	}
 	
 	if req.CancelledAt != nil {
-		entity.CancelledAt = *req.CancelledAt
+		entity.CancelledAt = req.CancelledAt
 	}
 	
 	if req.CancelledBy != nil {
-		entity.CancelledBy = *req.CancelledBy
+		entity.CancelledBy = req.CancelledBy
 	}
 	
 	if req.CancellationReason != nil {
-		entity.CancellationReason = *req.CancellationReason
+		entity.CancellationReason = req.CancellationReason
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -457,7 +456,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get reservations: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("reservations not found or access denied")
 	}
 	
