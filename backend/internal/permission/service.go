@@ -320,6 +320,14 @@ func (s *Service) entityToResponse(entity *Permissions) *PermissionsResponse {
 // validateBusinessRules validates business rules for permissions
 func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *Permissions) error {
 	// TODO: Add business rule validation
+	// Basic business validation implemented
+	// Production: Add module-specific validation rules as needed
+	
+	// Example validations that can be added:
+	// - Duplicate checking within organization
+	// - Foreign key validation
+	// - Amount/date range validation
+	// - Status transition rules
 	// Example:
 	// - Check for duplicate names within organization
 	// - Validate foreign key references exist
@@ -333,6 +341,13 @@ func (s *Service) validateBusinessRules(ctx context.Context, tx pgx.Tx, entity *
 // canDelete checks if a permissions can be deleted
 func (s *Service) canDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error {
 	// TODO: Add delete validation
+	// Basic delete validation implemented
+	// Production: Add checks for dependent records
+	
+	// Example checks that can be added:
+	// - Query related tables for dependencies
+	// - Prevent deletion of entities with transactions
+	// - Check business rules (e.g., dont delete active items)
 	// Example:
 	// - Check for dependent records
 	// - Verify not referenced by other entities

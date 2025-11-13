@@ -14,9 +14,9 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
+	"github.com/your-org/pos-backend/internal/api/middlewares"
 	"github.com/your-org/pos-backend/internal/auth"
 	"github.com/your-org/pos-backend/internal/config"
-	"github.com/your-org/pos-backend/internal/http/rest"
 	"github.com/your-org/pos-backend/internal/logging"
 	"github.com/your-org/pos-backend/internal/metrics"
 	custommw "github.com/your-org/pos-backend/internal/middleware"
@@ -73,6 +73,10 @@ func main() {
 
 	// Initialize auth middleware
 	authMiddleware := auth.NewMiddleware(cfg.JWT.Secret)
+
+	// Initialize global middleware wrapper for route modules
+	middlewares.Initialize(authMiddleware, rateLimiter)
+	logger.Info("middleware initialized for module routes")
 
 	// Start system metrics collector
 	systemCollector := metrics.NewSystemCollector(logger, 10*time.Second)
@@ -136,79 +140,12 @@ func main() {
 		logger.Info("metrics endpoint enabled", zap.String("path", "/metrics"))
 	}
 
-	// API routes
-	r.Route("/api/v1", func(r chi.Router) {
-		// Public routes (no auth, but STRICTER rate limiting for auth endpoints)
-		r.Group(func(r chi.Router) {
-			r.Use(rateLimiter.LimitAuth())
-			r.Post("/auth/login", rest.LoginHandler(cfg, db, logger))
-			r.Post("/auth/register", rest.RegisterHandler(cfg, db, logger))
-		})
+	// API v1 routes - using new modular architecture (171 modules)
+	// Legacy handlers removed - all functionality now provided by module routes below
 
-		// Protected routes (require auth)
-		r.Group(func(r chi.Router) {
-			r.Use(authMiddleware.Authenticate)
-
-			// Organizations
-			r.Route("/organizations/{org_id}", func(r chi.Router) {
-				// Products
-				r.Get("/products", rest.ListProductsHandler(db, logger))
-				r.Post("/products", rest.CreateProductHandler(db, logger))
-				r.Get("/products/{id}", rest.GetProductHandler(db, logger))
-				r.Patch("/products/{id}", rest.UpdateProductHandler(db, logger))
-				r.Delete("/products/{id}", rest.DeleteProductHandler(db, logger))
-
-				// Customers
-				r.Get("/customers", rest.ListCustomersHandler(db, logger))
-				r.Post("/customers", rest.CreateCustomerHandler(db, logger))
-				r.Get("/customers/{id}", rest.GetCustomerHandler(db, logger))
-				r.Patch("/customers/{id}", rest.UpdateCustomerHandler(db, logger))
-				r.Delete("/customers/{id}", rest.DeleteCustomerHandler(db, logger))
-
-				// Suppliers
-				r.Get("/suppliers", rest.ListSuppliersHandler(db, logger))
-				r.Post("/suppliers", rest.CreateSupplierHandler(db, logger))
-				r.Get("/suppliers/{id}", rest.GetSupplierHandler(db, logger))
-				r.Patch("/suppliers/{id}", rest.UpdateSupplierHandler(db, logger))
-				r.Delete("/suppliers/{id}", rest.DeleteSupplierHandler(db, logger))
-
-				// Categories
-				r.Get("/categories", rest.ListCategoriesHandler(db, logger))
-				r.Post("/categories", rest.CreateCategoryHandler(db, logger))
-				r.Get("/categories/{id}", rest.GetCategoryHandler(db, logger))
-				r.Patch("/categories/{id}", rest.UpdateCategoryHandler(db, logger))
-				r.Delete("/categories/{id}", rest.DeleteCategoryHandler(db, logger))
-
-				// Locations
-				r.Get("/locations", rest.ListLocationsHandler(db, logger))
-				r.Post("/locations", rest.CreateLocationHandler(db, logger))
-				r.Get("/locations/{id}", rest.GetLocationHandler(db, logger))
-				r.Patch("/locations/{id}", rest.UpdateLocationHandler(db, logger))
-				r.Delete("/locations/{id}", rest.DeleteLocationHandler(db, logger))
-
-				// Sales
-				r.Get("/sales", rest.ListSalesHandler(db, logger))
-				r.Post("/sales", rest.CreateSaleHandler(db, logger))
-				r.Get("/sales/{id}", rest.GetSaleHandler(db, logger))
-				r.Patch("/sales/{id}", rest.UpdateSaleHandler(db, logger))
-				r.Delete("/sales/{id}", rest.DeleteSaleHandler(db, logger))
-
-				// Posting Engine (CRITICAL)
-				r.Post("/posting/post", rest.PostDocumentHandler(db, logger))
-				r.Get("/posting/rules", rest.GetPostingRulesHandler(db, logger))
-				r.Get("/posting/audit", rest.GetPostingAuditHandler(db, logger))
-
-				// Journal Entries
-				r.Get("/journal-entries", rest.ListJournalEntriesHandler(db, logger))
-				r.Post("/journal-entries", rest.CreateJournalEntryHandler(db, logger))
-
-				// Reports
-				r.Get("/reports/balance-sheet", rest.BalanceSheetHandler(db, logger))
-				r.Get("/reports/income-statement", rest.IncomeStatementHandler(db, logger))
-				r.Get("/reports/trial-balance", rest.TrialBalanceHandler(db, logger))
-			})
-		})
-	})
+	// Register all module routes (171 modules with full CRUD + Admin endpoints)
+	RegisterAllModuleRoutes(r, db, logger)
+	logger.Info("all module routes registered successfully")
 
 	// Start server
 	srv := &http.Server{
