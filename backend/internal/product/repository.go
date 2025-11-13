@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -175,7 +176,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Products) er
 
 	r.logger.Info("created products",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -632,3 +633,186 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 	return entities, total, nil
 }
 
+
+// Search searches for products by name, SKU, or description
+func (r *Repository) Search(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, query, categoryID string) ([]*Products, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "products", duration, nil)
+	}()
+
+	baseQuery := `
+		SELECT * FROM products
+		WHERE organization_id = $1
+			AND deleted_at IS NULL
+			AND (name ILIKE $2 OR sku ILIKE $2 OR description ILIKE $2)`
+
+	args := []interface{}{orgID, "%" + query + "%"}
+	argIdx := 3
+
+	if categoryID != "" {
+		catID, err := uuid.Parse(categoryID)
+		if err == nil {
+			baseQuery += fmt.Sprintf(" AND category_id = $%d", argIdx)
+			args = append(args, catID)
+		}
+	}
+
+	baseQuery += " ORDER BY name LIMIT 50"
+
+	rows, err := tx.Query(ctx, baseQuery, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to search products: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*Products
+	for rows.Next() {
+		var entity Products
+		if err := r.scanProduct(rows, &entity); err != nil {
+			return nil, err
+		}
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}
+
+// GetBatch retrieves multiple products by IDs
+func (r *Repository) GetBatch(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, productIDs []uuid.UUID) ([]*Products, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "products", duration, nil)
+	}()
+
+	query := `
+		SELECT * FROM products
+		WHERE organization_id = $1
+			AND id = ANY($2)
+			AND deleted_at IS NULL`
+
+	rows, err := tx.Query(ctx, query, orgID, productIDs)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get batch products: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*Products
+	for rows.Next() {
+		var entity Products
+		if err := r.scanProduct(rows, &entity); err != nil {
+			return nil, err
+		}
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}
+
+// GetFeatured retrieves featured products
+func (r *Repository) GetFeatured(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, limit int) ([]*Products, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "products", duration, nil)
+	}()
+
+	query := `
+		SELECT * FROM products
+		WHERE organization_id = $1
+			AND is_featured = true
+			AND is_active = true
+			AND deleted_at IS NULL
+		ORDER BY sort_order, name
+		LIMIT $2`
+
+	rows, err := tx.Query(ctx, query, orgID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get featured products: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*Products
+	for rows.Next() {
+		var entity Products
+		if err := r.scanProduct(rows, &entity); err != nil {
+			return nil, err
+		}
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}
+
+// GetLowStock retrieves products with stock below threshold
+func (r *Repository) GetLowStock(ctx context.Context, tx pgx.Tx, orgID uuid.UUID) ([]*Products, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "products", duration, nil)
+	}()
+
+	query := `
+		SELECT * FROM products
+		WHERE organization_id = $1
+			AND track_inventory = true
+			AND current_stock <= low_stock_threshold
+			AND deleted_at IS NULL
+		ORDER BY current_stock, name`
+
+	rows, err := tx.Query(ctx, query, orgID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get low stock products: %w", err)
+	}
+	defer rows.Close()
+
+	var entities []*Products
+	for rows.Next() {
+		var entity Products
+		if err := r.scanProduct(rows, &entity); err != nil {
+			return nil, err
+		}
+		entities = append(entities, &entity)
+	}
+
+	return entities, nil
+}
+
+// scanProduct scans a row into a Products entity
+func (r *Repository) scanProduct(row pgx.Row, entity *Products) error {
+	return row.Scan(
+		&entity.Id,
+		&entity.OrganizationId,
+		&entity.Sku,
+		&entity.Barcode,
+		&entity.Name,
+		&entity.Description,
+		&entity.CategoryId,
+		&entity.CostPrice,
+		&entity.SellingPrice,
+		&entity.CompareAtPrice,
+		&entity.TaxRate,
+		&entity.IsTaxInclusive,
+		&entity.TrackInventory,
+		&entity.CurrentStock,
+		&entity.LowStockThreshold,
+		&entity.Unit,
+		&entity.IsService,
+		&entity.IsComposite,
+		&entity.HasVariants,
+		&entity.ImageUrl,
+		&entity.Images,
+		&entity.SortOrder,
+		&entity.IsActive,
+		&entity.IsFeatured,
+		&entity.CustomFields,
+		&entity.Metadata,
+		&entity.CreatedAt,
+		&entity.UpdatedAt,
+		&entity.DeletedAt,
+		&entity.CreatedBy,
+		&entity.UpdatedBy,
+	)
+}

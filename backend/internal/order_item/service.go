@@ -3,7 +3,6 @@ package order_item
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -139,7 +138,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderI
 	}
 
 	s.logger.Info("created order_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -175,7 +174,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("order_items not found or access denied")
 	}
 	
@@ -276,7 +275,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("order_items not found or access denied")
 	}
 	
@@ -284,111 +283,111 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderId != nil {
-		entity.OrderId = *req.OrderId
+		entity.OrderId = req.OrderId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.ItemName != nil {
-		entity.ItemName = *req.ItemName
+		entity.ItemName = req.ItemName
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = *req.Quantity
+		entity.Quantity = req.Quantity
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = *req.UnitPrice
+		entity.UnitPrice = req.UnitPrice
 	}
 	
 	if req.CourseId != nil {
-		entity.CourseId = *req.CourseId
+		entity.CourseId = req.CourseId
 	}
 	
 	if req.CoursePosition != nil {
-		entity.CoursePosition = *req.CoursePosition
+		entity.CoursePosition = req.CoursePosition
 	}
 	
 	if req.FireTime != nil {
-		entity.FireTime = *req.FireTime
+		entity.FireTime = req.FireTime
 	}
 	
 	if req.KitchenStationId != nil {
-		entity.KitchenStationId = *req.KitchenStationId
+		entity.KitchenStationId = req.KitchenStationId
 	}
 	
 	if req.KitchenTicketId != nil {
-		entity.KitchenTicketId = *req.KitchenTicketId
+		entity.KitchenTicketId = req.KitchenTicketId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.FiredAt != nil {
-		entity.FiredAt = *req.FiredAt
+		entity.FiredAt = req.FiredAt
 	}
 	
 	if req.AcknowledgedAt != nil {
-		entity.AcknowledgedAt = *req.AcknowledgedAt
+		entity.AcknowledgedAt = req.AcknowledgedAt
 	}
 	
 	if req.StartedPreparingAt != nil {
-		entity.StartedPreparingAt = *req.StartedPreparingAt
+		entity.StartedPreparingAt = req.StartedPreparingAt
 	}
 	
 	if req.ReadyAt != nil {
-		entity.ReadyAt = *req.ReadyAt
+		entity.ReadyAt = req.ReadyAt
 	}
 	
 	if req.ServedAt != nil {
-		entity.ServedAt = *req.ServedAt
+		entity.ServedAt = req.ServedAt
 	}
 	
 	if req.ModifiersTotal != nil {
-		entity.ModifiersTotal = *req.ModifiersTotal
+		entity.ModifiersTotal = req.ModifiersTotal
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.LineTotal != nil {
-		entity.LineTotal = *req.LineTotal
+		entity.LineTotal = req.LineTotal
 	}
 	
 	if req.SpecialInstructions != nil {
-		entity.SpecialInstructions = *req.SpecialInstructions
+		entity.SpecialInstructions = req.SpecialInstructions
 	}
 	
 	if req.CustomerNotes != nil {
-		entity.CustomerNotes = *req.CustomerNotes
+		entity.CustomerNotes = req.CustomerNotes
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = *req.KitchenNotes
+		entity.KitchenNotes = req.KitchenNotes
 	}
 	
 	if req.SeatNumber != nil {
-		entity.SeatNumber = *req.SeatNumber
+		entity.SeatNumber = req.SeatNumber
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'pending', != nil {
@@ -400,11 +399,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = *req.UnitPrice
+		entity.UnitPrice = req.UnitPrice
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 
@@ -457,7 +456,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get order_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("order_items not found or access denied")
 	}
 	

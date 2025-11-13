@@ -3,7 +3,6 @@ package bank_statement_reconciliation
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -89,7 +88,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankSt
 	}
 
 	s.logger.Info("created bank_statement_reconciliations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -125,7 +124,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_statement_reconciliations not found or access denied")
 	}
 	
@@ -226,7 +225,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_statement_reconciliations not found or access denied")
 	}
 	
@@ -234,27 +233,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankStatementLineId != nil {
-		entity.BankStatementLineId = *req.BankStatementLineId
+		entity.BankStatementLineId = req.BankStatementLineId
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.PaymentId != nil {
-		entity.PaymentId = *req.PaymentId
+		entity.PaymentId = req.PaymentId
 	}
 	
 	if req.MatchedAmount != nil {
-		entity.MatchedAmount = *req.MatchedAmount
+		entity.MatchedAmount = req.MatchedAmount
 	}
 	
 	if req.MatchedBy != nil {
-		entity.MatchedBy = *req.MatchedBy
+		entity.MatchedBy = req.MatchedBy
 	}
 	
 	if req.MatchedAt != nil {
-		entity.MatchedAt = *req.MatchedAt
+		entity.MatchedAt = req.MatchedAt
 	}
 	
 
@@ -307,7 +306,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get bank_statement_reconciliations: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("bank_statement_reconciliations not found or access denied")
 	}
 	

@@ -1,6 +1,7 @@
 package product
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -137,8 +138,8 @@ func (r *CreateProductsRequest) Validate() error {
 	if r.Name == "" {
 		return fmt.Errorf("name is required")
 	}
-	
-	if r.SellingPrice == nil {
+
+	if r.SellingPrice == 0 {
 		return fmt.Errorf("selling_price is required")
 	}
 	
@@ -340,4 +341,27 @@ type Pagination struct {
 	TotalPages int  `json:"total_pages"`
 	HasNext    bool `json:"has_next"`
 	HasPrev    bool `json:"has_prev"`
+}
+
+// GetBatchProductsRequest represents a request to get products by IDs
+type GetBatchProductsRequest struct {
+	ProductIDs []uuid.UUID `json:"product_ids" validate:"required"`
+}
+
+// UpdateStockRequest represents a request to update product stock
+type UpdateStockRequest struct {
+	Quantity int `json:"quantity" validate:"required"`
+}
+
+// Validate validates the update stock request
+func (r *UpdateStockRequest) Validate() error {
+	if r.Quantity < 0 {
+		return fmt.Errorf("quantity must be non-negative")
+	}
+	return nil
+}
+
+// UpdateAvailabilityRequest represents a request to update product availability
+type UpdateAvailabilityRequest struct {
+	IsAvailable bool `json:"is_available"`
 }

@@ -3,7 +3,6 @@ package payment_term_line
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -88,7 +87,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePaymentTermLinesRequest
 	}
 
 	s.logger.Info("created payment_term_lines",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -208,31 +207,31 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePaymentTe
 	// Update fields
 	
 	if req.PaymentTermId != nil {
-		entity.PaymentTermId = *req.PaymentTermId
+		entity.PaymentTermId = req.PaymentTermId
 	}
 	
 	if req.Sequence != nil {
-		entity.Sequence = *req.Sequence
+		entity.Sequence = req.Sequence
 	}
 	
 	if req.ValueType != nil {
-		entity.ValueType = *req.ValueType
+		entity.ValueType = req.ValueType
 	}
 	
 	if req.ValueAmount != nil {
-		entity.ValueAmount = *req.ValueAmount
+		entity.ValueAmount = req.ValueAmount
 	}
 	
 	if req.DaysAfter != nil {
-		entity.DaysAfter = *req.DaysAfter
+		entity.DaysAfter = req.DaysAfter
 	}
 	
 	if req.EndOfMonth != nil {
-		entity.EndOfMonth = *req.EndOfMonth
+		entity.EndOfMonth = req.EndOfMonth
 	}
 	
 	if req.DayOfMonth != nil {
-		entity.DayOfMonth = *req.DayOfMonth
+		entity.DayOfMonth = req.DayOfMonth
 	}
 	
 	if req.(valueType != nil {

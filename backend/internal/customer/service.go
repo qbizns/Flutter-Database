@@ -3,7 +3,6 @@ package customer
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -57,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 
 	// Convert DTO to entity
 	entity := &Customers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		CustomerCode: req.CustomerCode,
 		
@@ -135,7 +134,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 	}
 
 	s.logger.Info("created customers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -171,7 +170,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customers not found or access denied")
 	}
 	
@@ -272,7 +271,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customers not found or access denied")
 	}
 	
@@ -280,119 +279,119 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerCode != nil {
-		entity.CustomerCode = *req.CustomerCode
+		entity.CustomerCode = req.CustomerCode
 	}
 	
 	if req.FirstName != nil {
-		entity.FirstName = *req.FirstName
+		entity.FirstName = req.FirstName
 	}
 	
 	if req.LastName != nil {
-		entity.LastName = *req.LastName
+		entity.LastName = req.LastName
 	}
 	
 	if req.CompanyName != nil {
-		entity.CompanyName = *req.CompanyName
+		entity.CompanyName = req.CompanyName
 	}
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.AlternatePhone != nil {
-		entity.AlternatePhone = *req.AlternatePhone
+		entity.AlternatePhone = req.AlternatePhone
 	}
 	
 	if req.AddressLine1 != nil {
-		entity.AddressLine1 = *req.AddressLine1
+		entity.AddressLine1 = req.AddressLine1
 	}
 	
 	if req.AddressLine2 != nil {
-		entity.AddressLine2 = *req.AddressLine2
+		entity.AddressLine2 = req.AddressLine2
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.State != nil {
-		entity.State = *req.State
+		entity.State = req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = *req.Country
+		entity.Country = req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = *req.PostalCode
+		entity.PostalCode = req.PostalCode
 	}
 	
 	if req.DateOfBirth != nil {
-		entity.DateOfBirth = *req.DateOfBirth
+		entity.DateOfBirth = req.DateOfBirth
 	}
 	
 	if req.Gender != nil {
-		entity.Gender = *req.Gender
+		entity.Gender = req.Gender
 	}
 	
 	if req.TaxNumber != nil {
-		entity.TaxNumber = *req.TaxNumber
+		entity.TaxNumber = req.TaxNumber
 	}
 	
 	if req.LoyaltyPoints != nil {
-		entity.LoyaltyPoints = *req.LoyaltyPoints
+		entity.LoyaltyPoints = req.LoyaltyPoints
 	}
 	
 	if req.LoyaltyTier != nil {
-		entity.LoyaltyTier = *req.LoyaltyTier
+		entity.LoyaltyTier = req.LoyaltyTier
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = *req.CreditLimit
+		entity.CreditLimit = req.CreditLimit
 	}
 	
 	if req.OutstandingBalance != nil {
-		entity.OutstandingBalance = *req.OutstandingBalance
+		entity.OutstandingBalance = req.OutstandingBalance
 	}
 	
 	if req.TotalPurchases != nil {
-		entity.TotalPurchases = *req.TotalPurchases
+		entity.TotalPurchases = req.TotalPurchases
 	}
 	
 	if req.TotalOrders != nil {
-		entity.TotalOrders = *req.TotalOrders
+		entity.TotalOrders = req.TotalOrders
 	}
 	
 	if req.LastPurchaseAt != nil {
-		entity.LastPurchaseAt = *req.LastPurchaseAt
+		entity.LastPurchaseAt = req.LastPurchaseAt
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CustomFields != nil {
 		entity.CustomFields = *req.CustomFields
 	}
-	
+
 	if req.Metadata != nil {
 		entity.Metadata = *req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -445,7 +444,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get customers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("customers not found or access denied")
 	}
 	

@@ -3,7 +3,6 @@ package chart_of_account
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -129,7 +128,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateChartO
 	}
 
 	s.logger.Info("created chart_of_accounts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -165,7 +164,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("chart_of_accounts not found or access denied")
 	}
 	
@@ -266,7 +265,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("chart_of_accounts not found or access denied")
 	}
 	
@@ -274,107 +273,107 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.AccountCode != nil {
-		entity.AccountCode = *req.AccountCode
+		entity.AccountCode = req.AccountCode
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = *req.AccountNumber
+		entity.AccountNumber = req.AccountNumber
 	}
 	
 	if req.AccountName != nil {
-		entity.AccountName = *req.AccountName
+		entity.AccountName = req.AccountName
 	}
 	
 	if req.AccountTypeId != nil {
-		entity.AccountTypeId = *req.AccountTypeId
+		entity.AccountTypeId = req.AccountTypeId
 	}
 	
 	if req.AccountSubtypeId != nil {
-		entity.AccountSubtypeId = *req.AccountSubtypeId
+		entity.AccountSubtypeId = req.AccountSubtypeId
 	}
 	
 	if req.ParentAccountId != nil {
-		entity.ParentAccountId = *req.ParentAccountId
+		entity.ParentAccountId = req.ParentAccountId
 	}
 	
 	if req.AccountLevel != nil {
-		entity.AccountLevel = *req.AccountLevel
+		entity.AccountLevel = req.AccountLevel
 	}
 	
 	if req.AccountPath != nil {
-		entity.AccountPath = *req.AccountPath
+		entity.AccountPath = req.AccountPath
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsSystemAccount != nil {
-		entity.IsSystemAccount = *req.IsSystemAccount
+		entity.IsSystemAccount = req.IsSystemAccount
 	}
 	
 	if req.IsHeaderAccount != nil {
-		entity.IsHeaderAccount = *req.IsHeaderAccount
+		entity.IsHeaderAccount = req.IsHeaderAccount
 	}
 	
 	if req.IsBankAccount != nil {
-		entity.IsBankAccount = *req.IsBankAccount
+		entity.IsBankAccount = req.IsBankAccount
 	}
 	
 	if req.IsReconcilable != nil {
-		entity.IsReconcilable = *req.IsReconcilable
+		entity.IsReconcilable = req.IsReconcilable
 	}
 	
 	if req.DefaultTaxCode != nil {
-		entity.DefaultTaxCode = *req.DefaultTaxCode
+		entity.DefaultTaxCode = req.DefaultTaxCode
 	}
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.OpeningBalance != nil {
-		entity.OpeningBalance = *req.OpeningBalance
+		entity.OpeningBalance = req.OpeningBalance
 	}
 	
 	if req.OpeningBalanceDate != nil {
-		entity.OpeningBalanceDate = *req.OpeningBalanceDate
+		entity.OpeningBalanceDate = req.OpeningBalanceDate
 	}
 	
 	if req.CurrentDebitBalance != nil {
-		entity.CurrentDebitBalance = *req.CurrentDebitBalance
+		entity.CurrentDebitBalance = req.CurrentDebitBalance
 	}
 	
 	if req.CurrentCreditBalance != nil {
-		entity.CurrentCreditBalance = *req.CurrentCreditBalance
+		entity.CurrentCreditBalance = req.CurrentCreditBalance
 	}
 	
 	if req.CurrentBalance != nil {
-		entity.CurrentBalance = *req.CurrentBalance
+		entity.CurrentBalance = req.CurrentBalance
 	}
 	
 	if req.LastBalanceUpdate != nil {
-		entity.LastBalanceUpdate = *req.LastBalanceUpdate
+		entity.LastBalanceUpdate = req.LastBalanceUpdate
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -427,7 +426,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get chart_of_accounts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("chart_of_accounts not found or access denied")
 	}
 	

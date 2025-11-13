@@ -3,7 +3,6 @@ package fiscal_position_tax_mapping
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -80,7 +79,7 @@ func (s *Service) Create(ctx context.Context, req *CreateFiscalPositionTaxMappin
 	}
 
 	s.logger.Info("created fiscal_position_tax_mappings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -200,19 +199,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateFiscalPos
 	// Update fields
 	
 	if req.FiscalPositionId != nil {
-		entity.FiscalPositionId = *req.FiscalPositionId
+		entity.FiscalPositionId = req.FiscalPositionId
 	}
 	
 	if req.SourceTaxId != nil {
-		entity.SourceTaxId = *req.SourceTaxId
+		entity.SourceTaxId = req.SourceTaxId
 	}
 	
 	if req.DestinationTaxId != nil {
-		entity.DestinationTaxId = *req.DestinationTaxId
+		entity.DestinationTaxId = req.DestinationTaxId
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 

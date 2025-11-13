@@ -3,7 +3,6 @@ package driver_shift
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -111,7 +110,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDriver
 	}
 
 	s.logger.Info("created driver_shifts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +146,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("driver_shifts not found or access denied")
 	}
 	
@@ -248,7 +247,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("driver_shifts not found or access denied")
 	}
 	
@@ -256,67 +255,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.DriverId != nil {
-		entity.DriverId = *req.DriverId
+		entity.DriverId = req.DriverId
 	}
 	
 	if req.ShiftDate != nil {
-		entity.ShiftDate = *req.ShiftDate
+		entity.ShiftDate = req.ShiftDate
 	}
 	
 	if req.ScheduledStartTime != nil {
-		entity.ScheduledStartTime = *req.ScheduledStartTime
+		entity.ScheduledStartTime = req.ScheduledStartTime
 	}
 	
 	if req.ScheduledEndTime != nil {
-		entity.ScheduledEndTime = *req.ScheduledEndTime
+		entity.ScheduledEndTime = req.ScheduledEndTime
 	}
 	
 	if req.ActualStartTime != nil {
-		entity.ActualStartTime = *req.ActualStartTime
+		entity.ActualStartTime = req.ActualStartTime
 	}
 	
 	if req.ActualEndTime != nil {
-		entity.ActualEndTime = *req.ActualEndTime
+		entity.ActualEndTime = req.ActualEndTime
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.TotalBreakMinutes != nil {
-		entity.TotalBreakMinutes = *req.TotalBreakMinutes
+		entity.TotalBreakMinutes = req.TotalBreakMinutes
 	}
 	
 	if req.TotalDeliveries != nil {
-		entity.TotalDeliveries = *req.TotalDeliveries
+		entity.TotalDeliveries = req.TotalDeliveries
 	}
 	
 	if req.TotalDistanceKm != nil {
-		entity.TotalDistanceKm = *req.TotalDistanceKm
+		entity.TotalDistanceKm = req.TotalDistanceKm
 	}
 	
 	if req.TotalEarnings != nil {
-		entity.TotalEarnings = *req.TotalEarnings
+		entity.TotalEarnings = req.TotalEarnings
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'scheduled', != nil {
@@ -373,7 +372,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get driver_shifts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("driver_shifts not found or access denied")
 	}
 	

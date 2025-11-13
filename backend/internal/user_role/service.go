@@ -3,7 +3,6 @@ package user_role
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -78,7 +77,7 @@ func (s *Service) Create(ctx context.Context, req *CreateUserRolesRequest) (*Use
 	}
 
 	s.logger.Info("created user_roles",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -198,15 +197,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUserRoles
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.RoleId != nil {
-		entity.RoleId = *req.RoleId
+		entity.RoleId = req.RoleId
 	}
 	
 	if req.AssignedBy != nil {
-		entity.AssignedBy = *req.AssignedBy
+		entity.AssignedBy = req.AssignedBy
 	}
 	
 

@@ -3,7 +3,6 @@ package sale_item
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -113,7 +112,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSaleIt
 	}
 
 	s.logger.Info("created sale_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -149,7 +148,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sale_items not found or access denied")
 	}
 	
@@ -250,7 +249,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sale_items not found or access denied")
 	}
 	
@@ -258,75 +257,75 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductName != nil {
-		entity.ProductName = *req.ProductName
+		entity.ProductName = req.ProductName
 	}
 	
 	if req.ProductSku != nil {
-		entity.ProductSku = *req.ProductSku
+		entity.ProductSku = req.ProductSku
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = *req.Quantity
+		entity.Quantity = req.Quantity
 	}
 	
 	if req.Unit != nil {
-		entity.Unit = *req.Unit
+		entity.Unit = req.Unit
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = *req.UnitPrice
+		entity.UnitPrice = req.UnitPrice
 	}
 	
 	if req.CostPrice != nil {
-		entity.CostPrice = *req.CostPrice
+		entity.CostPrice = req.CostPrice
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = *req.Subtotal
+		entity.Subtotal = req.Subtotal
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = *req.TaxRate
+		entity.TaxRate = req.TaxRate
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.Total != nil {
-		entity.Total = *req.Total
+		entity.Total = req.Total
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = *req.DiscountType
+		entity.DiscountType = req.DiscountType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = *req.DiscountValue
+		entity.DiscountValue = req.DiscountValue
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = *req.CustomFields
+		entity.CustomFields = req.CustomFields
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -379,7 +378,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get sale_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("sale_items not found or access denied")
 	}
 	

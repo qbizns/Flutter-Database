@@ -3,7 +3,6 @@ package units_of_measure
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -87,7 +86,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateUnitsO
 	}
 
 	s.logger.Info("created units_of_measure",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -123,7 +122,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("units_of_measure not found or access denied")
 	}
 	
@@ -224,7 +223,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("units_of_measure not found or access denied")
 	}
 	
@@ -232,23 +231,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UomCode != nil {
-		entity.UomCode = *req.UomCode
+		entity.UomCode = req.UomCode
 	}
 	
 	if req.UomName != nil {
-		entity.UomName = *req.UomName
+		entity.UomName = req.UomName
 	}
 	
 	if req.UomType != nil {
-		entity.UomType = *req.UomType
+		entity.UomType = req.UomType
 	}
 	
 	if req.IsBaseUnit != nil {
-		entity.IsBaseUnit = *req.IsBaseUnit
+		entity.IsBaseUnit = req.IsBaseUnit
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 
@@ -301,7 +300,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get units_of_measure: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("units_of_measure not found or access denied")
 	}
 	

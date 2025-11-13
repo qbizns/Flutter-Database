@@ -3,7 +3,6 @@ package rate_limit
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -98,7 +97,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRateLimitsRequest) (*Ra
 	}
 
 	s.logger.Info("created rate_limits",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -218,51 +217,51 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRateLimit
 	// Update fields
 	
 	if req.IdentifierType != nil {
-		entity.IdentifierType = *req.IdentifierType
+		entity.IdentifierType = req.IdentifierType
 	}
 	
 	if req.IdentifierValue != nil {
-		entity.IdentifierValue = *req.IdentifierValue
+		entity.IdentifierValue = req.IdentifierValue
 	}
 	
 	if req.EndpointPath != nil {
-		entity.EndpointPath = *req.EndpointPath
+		entity.EndpointPath = req.EndpointPath
 	}
 	
 	if req.HttpMethod != nil {
-		entity.HttpMethod = *req.HttpMethod
+		entity.HttpMethod = req.HttpMethod
 	}
 	
 	if req.WindowStart != nil {
-		entity.WindowStart = *req.WindowStart
+		entity.WindowStart = req.WindowStart
 	}
 	
 	if req.WindowDurationSeconds != nil {
-		entity.WindowDurationSeconds = *req.WindowDurationSeconds
+		entity.WindowDurationSeconds = req.WindowDurationSeconds
 	}
 	
 	if req.RequestCount != nil {
-		entity.RequestCount = *req.RequestCount
+		entity.RequestCount = req.RequestCount
 	}
 	
 	if req.AllowedCount != nil {
-		entity.AllowedCount = *req.AllowedCount
+		entity.AllowedCount = req.AllowedCount
 	}
 	
 	if req.IsBlocked != nil {
-		entity.IsBlocked = *req.IsBlocked
+		entity.IsBlocked = req.IsBlocked
 	}
 	
 	if req.BlockedUntil != nil {
-		entity.BlockedUntil = *req.BlockedUntil
+		entity.BlockedUntil = req.BlockedUntil
 	}
 	
 	if req.FirstRequestAt != nil {
-		entity.FirstRequestAt = *req.FirstRequestAt
+		entity.FirstRequestAt = req.FirstRequestAt
 	}
 	
 	if req.LastRequestAt != nil {
-		entity.LastRequestAt = *req.LastRequestAt
+		entity.LastRequestAt = req.LastRequestAt
 	}
 	
 	if req.IdentifierType, != nil {

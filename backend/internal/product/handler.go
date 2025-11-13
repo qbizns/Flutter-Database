@@ -302,3 +302,180 @@ type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// Search handles GET /api/v1/organizations/{orgID}/products/search
+func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get query parameters
+	query := r.URL.Query().Get("q")
+	categoryID := r.URL.Query().Get("category_id")
+
+	// Call service
+	result, err := h.service.Search(ctx, orgID, query, categoryID)
+	if err != nil {
+		h.logger.Error("failed to search products", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to search products", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetBatch handles POST /api/v1/organizations/{orgID}/products/batch
+func (h *Handler) GetBatch(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Parse request body
+	var req GetBatchProductsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.GetBatch(ctx, orgID, &req)
+	if err != nil {
+		h.logger.Error("failed to get batch products", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get batch products", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetFeatured handles GET /api/v1/organizations/{orgID}/products/featured
+func (h *Handler) GetFeatured(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get query parameter
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	if limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	// Call service
+	result, err := h.service.GetFeatured(ctx, orgID, limit)
+	if err != nil {
+		h.logger.Error("failed to get featured products", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get featured products", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetLowStock handles GET /api/v1/organizations/{orgID}/products/low-stock
+func (h *Handler) GetLowStock(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.GetLowStock(ctx, orgID)
+	if err != nil {
+		h.logger.Error("failed to get low stock products", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get low stock products", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// UpdateStock handles PATCH /api/v1/organizations/{orgID}/products/{id}/stock
+func (h *Handler) UpdateStock(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid product ID", err)
+		return
+	}
+
+	// Parse request body
+	var req UpdateStockRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.UpdateStock(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to update product stock", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to update product stock", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// UpdateAvailability handles PATCH /api/v1/organizations/{orgID}/products/{id}/availability
+func (h *Handler) UpdateAvailability(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid product ID", err)
+		return
+	}
+
+	// Parse request body
+	var req UpdateAvailabilityRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.UpdateAvailability(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to update product availability", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to update product availability", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}

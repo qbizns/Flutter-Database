@@ -302,3 +302,101 @@ type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// UpdateStatus handles PATCH /api/v1/organizations/{orgID}/orders/{id}/status
+func (h *Handler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid order ID", err)
+		return
+	}
+
+	// Parse request body
+	var req UpdateOrderStatusRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.UpdateStatus(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to update order status", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to update order status", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// Cancel handles POST /api/v1/organizations/{orgID}/orders/{id}/cancel
+func (h *Handler) Cancel(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get ID from URL
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid order ID", err)
+		return
+	}
+
+	// Parse request body
+	var req CancelOrderRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	// Call service
+	result, err := h.service.Cancel(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to cancel order", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to cancel order", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetStatistics handles GET /api/v1/organizations/{orgID}/orders/statistics
+func (h *Handler) GetStatistics(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	// Get organization ID from URL
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	// Get query parameters
+	fromDate := r.URL.Query().Get("from_date")
+	toDate := r.URL.Query().Get("to_date")
+
+	// Call service
+	result, err := h.service.GetStatistics(ctx, orgID, fromDate, toDate)
+	if err != nil {
+		h.logger.Error("failed to get order statistics", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get order statistics", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}

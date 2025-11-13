@@ -3,7 +3,6 @@ package account_subtype
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -82,7 +81,7 @@ func (s *Service) Create(ctx context.Context, req *CreateAccountSubtypesRequest)
 	}
 
 	s.logger.Info("created account_subtypes",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -202,23 +201,23 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAccountSu
 	// Update fields
 	
 	if req.AccountTypeId != nil {
-		entity.AccountTypeId = *req.AccountTypeId
+		entity.AccountTypeId = req.AccountTypeId
 	}
 	
 	if req.SubtypeCode != nil {
-		entity.SubtypeCode = *req.SubtypeCode
+		entity.SubtypeCode = req.SubtypeCode
 	}
 	
 	if req.SubtypeName != nil {
-		entity.SubtypeName = *req.SubtypeName
+		entity.SubtypeName = req.SubtypeName
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 

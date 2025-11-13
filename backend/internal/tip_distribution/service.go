@@ -3,7 +3,6 @@ package tip_distribution
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -125,7 +124,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTipDis
 	}
 
 	s.logger.Info("created tip_distributions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -161,7 +160,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("tip_distributions not found or access denied")
 	}
 	
@@ -262,7 +261,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("tip_distributions not found or access denied")
 	}
 	
@@ -270,87 +269,87 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.TipPoolId != nil {
-		entity.TipPoolId = *req.TipPoolId
+		entity.TipPoolId = req.TipPoolId
 	}
 	
 	if req.DistributionDate != nil {
-		entity.DistributionDate = *req.DistributionDate
+		entity.DistributionDate = req.DistributionDate
 	}
 	
 	if req.PeriodStart != nil {
-		entity.PeriodStart = *req.PeriodStart
+		entity.PeriodStart = req.PeriodStart
 	}
 	
 	if req.PeriodEnd != nil {
-		entity.PeriodEnd = *req.PeriodEnd
+		entity.PeriodEnd = req.PeriodEnd
 	}
 	
 	if req.ShiftId != nil {
-		entity.ShiftId = *req.ShiftId
+		entity.ShiftId = req.ShiftId
 	}
 	
 	if req.EmployeeId != nil {
-		entity.EmployeeId = *req.EmployeeId
+		entity.EmployeeId = req.EmployeeId
 	}
 	
 	if req.SourceType != nil {
-		entity.SourceType = *req.SourceType
+		entity.SourceType = req.SourceType
 	}
 	
 	if req.SourceSaleId != nil {
-		entity.SourceSaleId = *req.SourceSaleId
+		entity.SourceSaleId = req.SourceSaleId
 	}
 	
 	if req.SourceOrderId != nil {
-		entity.SourceOrderId = *req.SourceOrderId
+		entity.SourceOrderId = req.SourceOrderId
 	}
 	
 	if req.TipAmount != nil {
-		entity.TipAmount = *req.TipAmount
+		entity.TipAmount = req.TipAmount
 	}
 	
 	if req.DistributionAmount != nil {
-		entity.DistributionAmount = *req.DistributionAmount
+		entity.DistributionAmount = req.DistributionAmount
 	}
 	
 	if req.DistributionPercentage != nil {
-		entity.DistributionPercentage = *req.DistributionPercentage
+		entity.DistributionPercentage = req.DistributionPercentage
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = *req.PaymentStatus
+		entity.PaymentStatus = req.PaymentStatus
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = *req.PaymentMethod
+		entity.PaymentMethod = req.PaymentMethod
 	}
 	
 	if req.PaidAt != nil {
-		entity.PaidAt = *req.PaidAt
+		entity.PaidAt = req.PaidAt
 	}
 	
 	if req.PaidBy != nil {
-		entity.PaidBy = *req.PaidBy
+		entity.PaidBy = req.PaidBy
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'sale', != nil {
@@ -362,7 +361,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TipAmount != nil {
-		entity.TipAmount = *req.TipAmount
+		entity.TipAmount = req.TipAmount
 	}
 	
 
@@ -415,7 +414,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get tip_distributions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("tip_distributions not found or access denied")
 	}
 	

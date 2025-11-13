@@ -3,7 +3,6 @@ package deferred_revenue_schedule
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -86,7 +85,7 @@ func (s *Service) Create(ctx context.Context, req *CreateDeferredRevenueSchedule
 	}
 
 	s.logger.Info("created deferred_revenue_schedule",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -206,31 +205,31 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateDeferredR
 	// Update fields
 	
 	if req.ContractId != nil {
-		entity.ContractId = *req.ContractId
+		entity.ContractId = req.ContractId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = *req.LineNumber
+		entity.LineNumber = req.LineNumber
 	}
 	
 	if req.RecognitionDate != nil {
-		entity.RecognitionDate = *req.RecognitionDate
+		entity.RecognitionDate = req.RecognitionDate
 	}
 	
 	if req.RecognitionAmount != nil {
-		entity.RecognitionAmount = *req.RecognitionAmount
+		entity.RecognitionAmount = req.RecognitionAmount
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.PostedAt != nil {
-		entity.PostedAt = *req.PostedAt
+		entity.PostedAt = req.PostedAt
 	}
 	
 

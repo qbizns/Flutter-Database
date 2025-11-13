@@ -3,7 +3,6 @@ package sales_channel
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -99,7 +98,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSalesC
 	}
 
 	s.logger.Info("created sales_channels",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -135,7 +134,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sales_channels not found or access denied")
 	}
 	
@@ -236,7 +235,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sales_channels not found or access denied")
 	}
 	
@@ -244,47 +243,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ChannelCode != nil {
-		entity.ChannelCode = *req.ChannelCode
+		entity.ChannelCode = req.ChannelCode
 	}
 	
 	if req.ChannelName != nil {
-		entity.ChannelName = *req.ChannelName
+		entity.ChannelName = req.ChannelName
 	}
 	
 	if req.ChannelType != nil {
-		entity.ChannelType = *req.ChannelType
+		entity.ChannelType = req.ChannelType
 	}
 	
 	if req.ChannelType != nil {
-		entity.ChannelType = *req.ChannelType
+		entity.ChannelType = req.ChannelType
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.SyncInventory != nil {
-		entity.SyncInventory = *req.SyncInventory
+		entity.SyncInventory = req.SyncInventory
 	}
 	
 	if req.SyncCustomers != nil {
-		entity.SyncCustomers = *req.SyncCustomers
+		entity.SyncCustomers = req.SyncCustomers
 	}
 	
 	if req.ExternalSystemName != nil {
-		entity.ExternalSystemName = *req.ExternalSystemName
+		entity.ExternalSystemName = req.ExternalSystemName
 	}
 	
 	if req.ApiEndpoint != nil {
-		entity.ApiEndpoint = *req.ApiEndpoint
+		entity.ApiEndpoint = req.ApiEndpoint
 	}
 	
 	if req.Settings != nil {
-		entity.Settings = *req.Settings
+		entity.Settings = req.Settings
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -337,7 +336,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get sales_channels: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("sales_channels not found or access denied")
 	}
 	

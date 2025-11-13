@@ -3,7 +3,6 @@ package deferred_revenue_contract
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDeferr
 	}
 
 	s.logger.Info("created deferred_revenue_contracts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("deferred_revenue_contracts not found or access denied")
 	}
 	
@@ -244,7 +243,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("deferred_revenue_contracts not found or access denied")
 	}
 	
@@ -252,63 +251,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerInvoiceId != nil {
-		entity.CustomerInvoiceId = *req.CustomerInvoiceId
+		entity.CustomerInvoiceId = req.CustomerInvoiceId
 	}
 	
 	if req.InvoiceLineId != nil {
-		entity.InvoiceLineId = *req.InvoiceLineId
+		entity.InvoiceLineId = req.InvoiceLineId
 	}
 	
 	if req.ContractName != nil {
-		entity.ContractName = *req.ContractName
+		entity.ContractName = req.ContractName
 	}
 	
 	if req.TotalDeferredAmount != nil {
-		entity.TotalDeferredAmount = *req.TotalDeferredAmount
+		entity.TotalDeferredAmount = req.TotalDeferredAmount
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = *req.StartDate
+		entity.StartDate = req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = *req.EndDate
+		entity.EndDate = req.EndDate
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = *req.RecognitionMethod
+		entity.RecognitionMethod = req.RecognitionMethod
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = *req.RecognitionMethod
+		entity.RecognitionMethod = req.RecognitionMethod
 	}
 	
 	if req.DeferredAccountId != nil {
-		entity.DeferredAccountId = *req.DeferredAccountId
+		entity.DeferredAccountId = req.DeferredAccountId
 	}
 	
 	if req.RevenueAccountId != nil {
-		entity.RevenueAccountId = *req.RevenueAccountId
+		entity.RevenueAccountId = req.RevenueAccountId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.RecognizedAmount != nil {
-		entity.RecognizedAmount = *req.RecognizedAmount
+		entity.RecognizedAmount = req.RecognizedAmount
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -361,7 +360,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get deferred_revenue_contracts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("deferred_revenue_contracts not found or access denied")
 	}
 	

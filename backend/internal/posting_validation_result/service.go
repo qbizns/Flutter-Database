@@ -3,7 +3,6 @@ package posting_validation_result
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -101,7 +100,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePostin
 	}
 
 	s.logger.Info("created posting_validation_results",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +136,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("posting_validation_results not found or access denied")
 	}
 	
@@ -238,7 +237,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("posting_validation_results not found or access denied")
 	}
 	
@@ -246,51 +245,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DocumentTypeCode != nil {
-		entity.DocumentTypeCode = *req.DocumentTypeCode
+		entity.DocumentTypeCode = req.DocumentTypeCode
 	}
 	
 	if req.DocumentId != nil {
-		entity.DocumentId = *req.DocumentId
+		entity.DocumentId = req.DocumentId
 	}
 	
 	if req.Event != nil {
-		entity.Event = *req.Event
+		entity.Event = req.Event
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.ValidationRuleId != nil {
-		entity.ValidationRuleId = *req.ValidationRuleId
+		entity.ValidationRuleId = req.ValidationRuleId
 	}
 	
 	if req.Severity != nil {
-		entity.Severity = *req.Severity
+		entity.Severity = req.Severity
 	}
 	
 	if req.MessageCode != nil {
-		entity.MessageCode = *req.MessageCode
+		entity.MessageCode = req.MessageCode
 	}
 	
 	if req.Message != nil {
-		entity.Message = *req.Message
+		entity.Message = req.Message
 	}
 	
 	if req.IsBlocking != nil {
-		entity.IsBlocking = *req.IsBlocking
+		entity.IsBlocking = req.IsBlocking
 	}
 	
 	if req.Context != nil {
-		entity.Context = *req.Context
+		entity.Context = req.Context
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -343,7 +342,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get posting_validation_results: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("posting_validation_results not found or access denied")
 	}
 	

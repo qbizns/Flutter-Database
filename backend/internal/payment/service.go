@@ -3,14 +3,13 @@ package payment
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	
+
 	"github.com/your-org/pos-backend/internal/logging"
-	
+
 	"go.uber.org/zap"
 )
 
@@ -57,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePaymen
 
 	// Convert DTO to entity
 	entity := &Payments{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SaleId: req.SaleId,
 		
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePaymen
 	}
 
 	s.logger.Info("created payments",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,12 +140,12 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 		return nil, fmt.Errorf("failed to get payments: %w", err)
 	}
 
-	
+
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("payments not found or access denied")
 	}
-	
+
 
 	return s.entityToResponse(entity), nil
 }
@@ -242,12 +241,12 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 		return nil, fmt.Errorf("failed to get payments: %w", err)
 	}
 
-	
+
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("payments not found or access denied")
 	}
-	
+
 
 	// Update fields
 	
@@ -268,47 +267,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CardLastFour != nil {
-		entity.CardLastFour = *req.CardLastFour
+		entity.CardLastFour = req.CardLastFour
 	}
-	
+
 	if req.CardType != nil {
-		entity.CardType = *req.CardType
+		entity.CardType = req.CardType
 	}
-	
+
 	if req.TransactionId != nil {
-		entity.TransactionId = *req.TransactionId
+		entity.TransactionId = req.TransactionId
 	}
-	
+
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = *req.ReferenceNumber
+		entity.ReferenceNumber = req.ReferenceNumber
 	}
-	
+
 	if req.AccountNumber != nil {
-		entity.AccountNumber = *req.AccountNumber
+		entity.AccountNumber = req.AccountNumber
 	}
-	
+
 	if req.AccountName != nil {
-		entity.AccountName = *req.AccountName
+		entity.AccountName = req.AccountName
 	}
-	
+
 	if req.PaymentDate != nil {
 		entity.PaymentDate = *req.PaymentDate
 	}
-	
+
 	if req.ProcessedAt != nil {
-		entity.ProcessedAt = *req.ProcessedAt
+		entity.ProcessedAt = req.ProcessedAt
 	}
-	
+
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
-	
+
 	if req.Metadata != nil {
 		entity.Metadata = *req.Metadata
 	}
-	
+
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -361,10 +360,10 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get payments: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("payments not found or access denied")
 	}
-	
+
 
 	// Check if can be deleted (business rules)
 	if err := s.canDelete(ctx, tx, id); err != nil {
@@ -468,4 +467,123 @@ func (s *Service) canDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error 
 	// - etc.
 
 	return nil
+}
+
+// Cancel cancels a payment
+func (s *Service) Cancel(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req *CancelPaymentRequest) (*PaymentsResponse, error) {
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	entity, err := s.repo.GetByID(ctx, tx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get payment: %w", err)
+	}
+
+	if entity.OrganizationId != orgID {
+		return nil, fmt.Errorf("payment not found or access denied")
+	}
+
+	cancelledStatus := "cancelled"
+	entity.PaymentStatus = cancelledStatus
+
+	if err := s.repo.Update(ctx, tx, entity); err != nil {
+		return nil, fmt.Errorf("failed to cancel payment: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return s.entityToResponse(entity), nil
+}
+
+// GetStatistics retrieves payment statistics
+func (s *Service) GetStatistics(ctx context.Context, orgID uuid.UUID, fromDate, toDate string) (*PaymentStatisticsResponse, error) {
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	stats, err := s.repo.GetStatistics(ctx, tx, orgID, fromDate, toDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get payment statistics: %w", err)
+	}
+
+	return stats, nil
+}
+
+// CreateRefund creates a new refund
+func (s *Service) CreateRefund(ctx context.Context, orgID uuid.UUID, req *CreateRefundRequest) (*RefundResponse, error) {
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	refund, err := s.repo.CreateRefund(ctx, tx, orgID, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create refund: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return refund, nil
+}
+
+// ListRefunds retrieves refunds with optional filters
+func (s *Service) ListRefunds(ctx context.Context, orgID uuid.UUID, paymentID, orderID string) ([]*RefundResponse, error) {
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	refunds, err := s.repo.ListRefunds(ctx, tx, orgID, paymentID, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list refunds: %w", err)
+	}
+
+	return refunds, nil
+}
+
+// GetRefund retrieves a refund by ID
+func (s *Service) GetRefund(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*RefundResponse, error) {
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	refund, err := s.repo.GetRefund(ctx, tx, orgID, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get refund: %w", err)
+	}
+
+	return refund, nil
 }

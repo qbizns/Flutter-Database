@@ -3,7 +3,6 @@ package pos_error_log
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosErr
 	}
 
 	s.logger.Info("created pos_error_logs",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_error_logs not found or access denied")
 	}
 	
@@ -244,7 +243,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_error_logs not found or access denied")
 	}
 	
@@ -252,63 +251,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ErrorLevel != nil {
-		entity.ErrorLevel = *req.ErrorLevel
+		entity.ErrorLevel = req.ErrorLevel
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = *req.ErrorCode
+		entity.ErrorCode = req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.DeviceId != nil {
-		entity.DeviceId = *req.DeviceId
+		entity.DeviceId = req.DeviceId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = *req.PosSessionId
+		entity.PosSessionId = req.PosSessionId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.StackTrace != nil {
-		entity.StackTrace = *req.StackTrace
+		entity.StackTrace = req.StackTrace
 	}
 	
 	if req.RequestData != nil {
-		entity.RequestData = *req.RequestData
+		entity.RequestData = req.RequestData
 	}
 	
 	if req.ErrorData != nil {
-		entity.ErrorData = *req.ErrorData
+		entity.ErrorData = req.ErrorData
 	}
 	
 	if req.IsResolved != nil {
-		entity.IsResolved = *req.IsResolved
+		entity.IsResolved = req.IsResolved
 	}
 	
 	if req.ResolvedBy != nil {
-		entity.ResolvedBy = *req.ResolvedBy
+		entity.ResolvedBy = req.ResolvedBy
 	}
 	
 	if req.ResolvedAt != nil {
-		entity.ResolvedAt = *req.ResolvedAt
+		entity.ResolvedAt = req.ResolvedAt
 	}
 	
 	if req.ResolutionNotes != nil {
-		entity.ResolutionNotes = *req.ResolutionNotes
+		entity.ResolutionNotes = req.ResolutionNotes
 	}
 	
 	if req.OccurredAt != nil {
-		entity.OccurredAt = *req.OccurredAt
+		entity.OccurredAt = req.OccurredAt
 	}
 	
 
@@ -361,7 +360,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get pos_error_logs: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("pos_error_logs not found or access denied")
 	}
 	

@@ -3,7 +3,6 @@ package employee_schedule
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -115,7 +114,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEmploy
 	}
 
 	s.logger.Info("created employee_schedules",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("employee_schedules not found or access denied")
 	}
 	
@@ -252,7 +251,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("employee_schedules not found or access denied")
 	}
 	
@@ -260,71 +259,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.EmployeeId != nil {
-		entity.EmployeeId = *req.EmployeeId
+		entity.EmployeeId = req.EmployeeId
 	}
 	
 	if req.ScheduleDate != nil {
-		entity.ScheduleDate = *req.ScheduleDate
+		entity.ScheduleDate = req.ScheduleDate
 	}
 	
 	if req.ShiftType != nil {
-		entity.ShiftType = *req.ShiftType
+		entity.ShiftType = req.ShiftType
 	}
 	
 	if req.Position != nil {
-		entity.Position = *req.Position
+		entity.Position = req.Position
 	}
 	
 	if req.ScheduledStartTime != nil {
-		entity.ScheduledStartTime = *req.ScheduledStartTime
+		entity.ScheduledStartTime = req.ScheduledStartTime
 	}
 	
 	if req.ScheduledEndTime != nil {
-		entity.ScheduledEndTime = *req.ScheduledEndTime
+		entity.ScheduledEndTime = req.ScheduledEndTime
 	}
 	
 	if req.BreakDurationMinutes != nil {
-		entity.BreakDurationMinutes = *req.BreakDurationMinutes
+		entity.BreakDurationMinutes = req.BreakDurationMinutes
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = *req.RequiresApproval
+		entity.RequiresApproval = req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CancellationReason != nil {
-		entity.CancellationReason = *req.CancellationReason
+		entity.CancellationReason = req.CancellationReason
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'scheduled', != nil {
@@ -385,7 +384,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get employee_schedules: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("employee_schedules not found or access denied")
 	}
 	

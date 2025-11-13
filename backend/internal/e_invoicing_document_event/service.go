@@ -3,7 +3,6 @@ package e_invoicing_document_event
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -129,7 +128,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEInvoi
 	}
 
 	s.logger.Info("created e_invoicing_document_events",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -165,7 +164,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("e_invoicing_document_events not found or access denied")
 	}
 	
@@ -266,7 +265,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("e_invoicing_document_events not found or access denied")
 	}
 	
@@ -274,11 +273,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.EInvoicingDocumentId != nil {
-		entity.EInvoicingDocumentId = *req.EInvoicingDocumentId
+		entity.EInvoicingDocumentId = req.EInvoicingDocumentId
 	}
 	
 	if req.EventType != nil {
-		entity.EventType = *req.EventType
+		entity.EventType = req.EventType
 	}
 	
 	if req.'created', != nil {
@@ -318,63 +317,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EventTimestamp != nil {
-		entity.EventTimestamp = *req.EventTimestamp
+		entity.EventTimestamp = req.EventTimestamp
 	}
 	
 	if req.PreviousStatus != nil {
-		entity.PreviousStatus = *req.PreviousStatus
+		entity.PreviousStatus = req.PreviousStatus
 	}
 	
 	if req.NewStatus != nil {
-		entity.NewStatus = *req.NewStatus
+		entity.NewStatus = req.NewStatus
 	}
 	
 	if req.EventDescription != nil {
-		entity.EventDescription = *req.EventDescription
+		entity.EventDescription = req.EventDescription
 	}
 	
 	if req.EventData != nil {
-		entity.EventData = *req.EventData
+		entity.EventData = req.EventData
 	}
 	
 	if req.HttpStatusCode != nil {
-		entity.HttpStatusCode = *req.HttpStatusCode
+		entity.HttpStatusCode = req.HttpStatusCode
 	}
 	
 	if req.HttpMethod != nil {
-		entity.HttpMethod = *req.HttpMethod
+		entity.HttpMethod = req.HttpMethod
 	}
 	
 	if req.ApiEndpoint != nil {
-		entity.ApiEndpoint = *req.ApiEndpoint
+		entity.ApiEndpoint = req.ApiEndpoint
 	}
 	
 	if req.RequestHeaders != nil {
-		entity.RequestHeaders = *req.RequestHeaders
+		entity.RequestHeaders = req.RequestHeaders
 	}
 	
 	if req.ResponseHeaders != nil {
-		entity.ResponseHeaders = *req.ResponseHeaders
+		entity.ResponseHeaders = req.ResponseHeaders
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = *req.ErrorCode
+		entity.ErrorCode = req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.ErrorDetails != nil {
-		entity.ErrorDetails = *req.ErrorDetails
+		entity.ErrorDetails = req.ErrorDetails
 	}
 	
 	if req.TriggeredBy != nil {
-		entity.TriggeredBy = *req.TriggeredBy
+		entity.TriggeredBy = req.TriggeredBy
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 
@@ -427,7 +426,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get e_invoicing_document_events: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("e_invoicing_document_events not found or access denied")
 	}
 	

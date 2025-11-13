@@ -3,7 +3,6 @@ package fiscal_position
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -97,7 +96,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFiscal
 	}
 
 	s.logger.Info("created fiscal_positions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -133,7 +132,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("fiscal_positions not found or access denied")
 	}
 	
@@ -234,7 +233,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("fiscal_positions not found or access denied")
 	}
 	
@@ -242,43 +241,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PositionCode != nil {
-		entity.PositionCode = *req.PositionCode
+		entity.PositionCode = req.PositionCode
 	}
 	
 	if req.PositionName != nil {
-		entity.PositionName = *req.PositionName
+		entity.PositionName = req.PositionName
 	}
 	
 	if req.AutoApply != nil {
-		entity.AutoApply = *req.AutoApply
+		entity.AutoApply = req.AutoApply
 	}
 	
 	if req.CountryId != nil {
-		entity.CountryId = *req.CountryId
+		entity.CountryId = req.CountryId
 	}
 	
 	if req.StateProvince != nil {
-		entity.StateProvince = *req.StateProvince
+		entity.StateProvince = req.StateProvince
 	}
 	
 	if req.ZipPostalCodeRange != nil {
-		entity.ZipPostalCodeRange = *req.ZipPostalCodeRange
+		entity.ZipPostalCodeRange = req.ZipPostalCodeRange
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -331,7 +330,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get fiscal_positions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("fiscal_positions not found or access denied")
 	}
 	

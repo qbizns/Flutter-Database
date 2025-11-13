@@ -40,19 +40,19 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateRe
 	}
 	
 	
-	// Validate FloorPlanId
-	
-	
-	if err := v.validateFloorPlanIdExists(ctx, tx, req.FloorPlanId); err != nil {
-		return err
+	// Validate FloorPlanId if provided
+	if req.FloorPlanId != nil {
+		if err := v.validateFloorPlanIdExists(ctx, tx, *req.FloorPlanId); err != nil {
+			return err
+		}
 	}
-	
-	
-	// Validate SectionId
-	
-	
-	if err := v.validateSectionIdExists(ctx, tx, req.SectionId); err != nil {
-		return err
+
+
+	// Validate SectionId if provided
+	if req.SectionId != nil {
+		if err := v.validateSectionIdExists(ctx, tx, *req.SectionId); err != nil {
+			return err
+		}
 	}
 	
 	
@@ -108,11 +108,11 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateRe
 	
 	
 	
-	// Validate CurrentWaiterId
-	
-	
-	if err := v.validateCurrentWaiterIdExists(ctx, tx, req.CurrentWaiterId); err != nil {
-		return err
+	// Validate CurrentWaiterId if provided
+	if req.CurrentWaiterId != nil {
+		if err := v.validateCurrentWaiterIdExists(ctx, tx, *req.CurrentWaiterId); err != nil {
+			return err
+		}
 	}
 	
 	

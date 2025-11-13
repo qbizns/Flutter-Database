@@ -31,12 +31,13 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreateSh
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	
+
 	// Validate LocationId
-	
-	
-	if err := v.validateLocationIdExists(ctx, tx, req.LocationId); err != nil {
-		return err
+
+	if req.LocationId != nil {
+		if err := v.validateLocationIdExists(ctx, tx, *req.LocationId); err != nil {
+			return err
+		}
 	}
 	
 	

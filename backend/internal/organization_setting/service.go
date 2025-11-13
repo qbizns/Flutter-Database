@@ -3,7 +3,6 @@ package organization_setting
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -143,7 +142,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrgani
 	}
 
 	s.logger.Info("created organization_settings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -179,7 +178,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("organization_settings not found or access denied")
 	}
 	
@@ -280,7 +279,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("organization_settings not found or access denied")
 	}
 	
@@ -288,135 +287,135 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Timezone != nil {
-		entity.Timezone = *req.Timezone
+		entity.Timezone = req.Timezone
 	}
 	
 	if req.DateFormat != nil {
-		entity.DateFormat = *req.DateFormat
+		entity.DateFormat = req.DateFormat
 	}
 	
 	if req.TimeFormat != nil {
-		entity.TimeFormat = *req.TimeFormat
+		entity.TimeFormat = req.TimeFormat
 	}
 	
 	if req.NumberFormat != nil {
-		entity.NumberFormat = *req.NumberFormat
+		entity.NumberFormat = req.NumberFormat
 	}
 	
 	if req.DefaultCurrency != nil {
-		entity.DefaultCurrency = *req.DefaultCurrency
+		entity.DefaultCurrency = req.DefaultCurrency
 	}
 	
 	if req.DefaultLanguage != nil {
-		entity.DefaultLanguage = *req.DefaultLanguage
+		entity.DefaultLanguage = req.DefaultLanguage
 	}
 	
 	if req.BusinessType != nil {
-		entity.BusinessType = *req.BusinessType
+		entity.BusinessType = req.BusinessType
 	}
 	
 	if req.FiscalYearStart != nil {
-		entity.FiscalYearStart = *req.FiscalYearStart
+		entity.FiscalYearStart = req.FiscalYearStart
 	}
 	
 	if req.AutoPrintReceipts != nil {
-		entity.AutoPrintReceipts = *req.AutoPrintReceipts
+		entity.AutoPrintReceipts = req.AutoPrintReceipts
 	}
 	
 	if req.AllowNegativeInventory != nil {
-		entity.AllowNegativeInventory = *req.AllowNegativeInventory
+		entity.AllowNegativeInventory = req.AllowNegativeInventory
 	}
 	
 	if req.RequireCustomerForSale != nil {
-		entity.RequireCustomerForSale = *req.RequireCustomerForSale
+		entity.RequireCustomerForSale = req.RequireCustomerForSale
 	}
 	
 	if req.EnablePriceOverride != nil {
-		entity.EnablePriceOverride = *req.EnablePriceOverride
+		entity.EnablePriceOverride = req.EnablePriceOverride
 	}
 	
 	if req.AutoPostSales != nil {
-		entity.AutoPostSales = *req.AutoPostSales
+		entity.AutoPostSales = req.AutoPostSales
 	}
 	
 	if req.AutoPostPayments != nil {
-		entity.AutoPostPayments = *req.AutoPostPayments
+		entity.AutoPostPayments = req.AutoPostPayments
 	}
 	
 	if req.PostingFrequency != nil {
-		entity.PostingFrequency = *req.PostingFrequency
+		entity.PostingFrequency = req.PostingFrequency
 	}
 	
 	if req.SmtpHost != nil {
-		entity.SmtpHost = *req.SmtpHost
+		entity.SmtpHost = req.SmtpHost
 	}
 	
 	if req.SmtpPort != nil {
-		entity.SmtpPort = *req.SmtpPort
+		entity.SmtpPort = req.SmtpPort
 	}
 	
 	if req.SmtpUsername != nil {
-		entity.SmtpUsername = *req.SmtpUsername
+		entity.SmtpUsername = req.SmtpUsername
 	}
 	
 	if req.SmtpUseTls != nil {
-		entity.SmtpUseTls = *req.SmtpUseTls
+		entity.SmtpUseTls = req.SmtpUseTls
 	}
 	
 	if req.EmailFromAddress != nil {
-		entity.EmailFromAddress = *req.EmailFromAddress
+		entity.EmailFromAddress = req.EmailFromAddress
 	}
 	
 	if req.EmailFromName != nil {
-		entity.EmailFromName = *req.EmailFromName
+		entity.EmailFromName = req.EmailFromName
 	}
 	
 	if req.EnableEmailNotifications != nil {
-		entity.EnableEmailNotifications = *req.EnableEmailNotifications
+		entity.EnableEmailNotifications = req.EnableEmailNotifications
 	}
 	
 	if req.EnableSmsNotifications != nil {
-		entity.EnableSmsNotifications = *req.EnableSmsNotifications
+		entity.EnableSmsNotifications = req.EnableSmsNotifications
 	}
 	
 	if req.Require2fa != nil {
-		entity.Require2fa = *req.Require2fa
+		entity.Require2fa = req.Require2fa
 	}
 	
 	if req.SessionTimeoutMinutes != nil {
-		entity.SessionTimeoutMinutes = *req.SessionTimeoutMinutes
+		entity.SessionTimeoutMinutes = req.SessionTimeoutMinutes
 	}
 	
 	if req.PasswordMinLength != nil {
-		entity.PasswordMinLength = *req.PasswordMinLength
+		entity.PasswordMinLength = req.PasswordMinLength
 	}
 	
 	if req.PasswordRequireSpecial != nil {
-		entity.PasswordRequireSpecial = *req.PasswordRequireSpecial
+		entity.PasswordRequireSpecial = req.PasswordRequireSpecial
 	}
 	
 	if req.ApiEnabled != nil {
-		entity.ApiEnabled = *req.ApiEnabled
+		entity.ApiEnabled = req.ApiEnabled
 	}
 	
 	if req.ApiRateLimitPerMinute != nil {
-		entity.ApiRateLimitPerMinute = *req.ApiRateLimitPerMinute
+		entity.ApiRateLimitPerMinute = req.ApiRateLimitPerMinute
 	}
 	
 	if req.WebhookRetryMaxAttempts != nil {
-		entity.WebhookRetryMaxAttempts = *req.WebhookRetryMaxAttempts
+		entity.WebhookRetryMaxAttempts = req.WebhookRetryMaxAttempts
 	}
 	
 	if req.Features != nil {
-		entity.Features = *req.Features
+		entity.Features = req.Features
 	}
 	
 	if req.CustomSettings != nil {
-		entity.CustomSettings = *req.CustomSettings
+		entity.CustomSettings = req.CustomSettings
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -469,7 +468,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get organization_settings: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("organization_settings not found or access denied")
 	}
 	

@@ -3,7 +3,6 @@ package gift_card_transaction
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -97,7 +96,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGiftCa
 	}
 
 	s.logger.Info("created gift_card_transactions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -133,7 +132,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("gift_card_transactions not found or access denied")
 	}
 	
@@ -234,7 +233,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("gift_card_transactions not found or access denied")
 	}
 	
@@ -242,43 +241,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GiftCardId != nil {
-		entity.GiftCardId = *req.GiftCardId
+		entity.GiftCardId = req.GiftCardId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = *req.TransactionType
+		entity.TransactionType = req.TransactionType
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = *req.TransactionType
+		entity.TransactionType = req.TransactionType
 	}
 	
 	if req.Amount != nil {
-		entity.Amount = *req.Amount
+		entity.Amount = req.Amount
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = *req.BalanceAfter
+		entity.BalanceAfter = req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.PaymentId != nil {
-		entity.PaymentId = *req.PaymentId
+		entity.PaymentId = req.PaymentId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 
@@ -331,7 +330,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get gift_card_transactions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("gift_card_transactions not found or access denied")
 	}
 	

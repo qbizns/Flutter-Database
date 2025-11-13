@@ -3,7 +3,6 @@ package loyalty_reward
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -139,7 +138,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_rewards",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -175,7 +174,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_rewards not found or access denied")
 	}
 	
@@ -276,7 +275,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_rewards not found or access denied")
 	}
 	
@@ -284,123 +283,123 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RewardCode != nil {
-		entity.RewardCode = *req.RewardCode
+		entity.RewardCode = req.RewardCode
 	}
 	
 	if req.RewardName != nil {
-		entity.RewardName = *req.RewardName
+		entity.RewardName = req.RewardName
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.RewardType != nil {
-		entity.RewardType = *req.RewardType
+		entity.RewardType = req.RewardType
 	}
 	
 	if req.PointsCost != nil {
-		entity.PointsCost = *req.PointsCost
+		entity.PointsCost = req.PointsCost
 	}
 	
 	if req.RewardValue != nil {
-		entity.RewardValue = *req.RewardValue
+		entity.RewardValue = req.RewardValue
 	}
 	
 	if req.DiscountPercentage != nil {
-		entity.DiscountPercentage = *req.DiscountPercentage
+		entity.DiscountPercentage = req.DiscountPercentage
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.AvailableFrom != nil {
-		entity.AvailableFrom = *req.AvailableFrom
+		entity.AvailableFrom = req.AvailableFrom
 	}
 	
 	if req.AvailableTo != nil {
-		entity.AvailableTo = *req.AvailableTo
+		entity.AvailableTo = req.AvailableTo
 	}
 	
 	if req.TotalAvailable != nil {
-		entity.TotalAvailable = *req.TotalAvailable
+		entity.TotalAvailable = req.TotalAvailable
 	}
 	
 	if req.TotalRedeemed != nil {
-		entity.TotalRedeemed = *req.TotalRedeemed
+		entity.TotalRedeemed = req.TotalRedeemed
 	}
 	
 	if req.MaxRedemptionsPerCustomer != nil {
-		entity.MaxRedemptionsPerCustomer = *req.MaxRedemptionsPerCustomer
+		entity.MaxRedemptionsPerCustomer = req.MaxRedemptionsPerCustomer
 	}
 	
 	if req.MinimumTierLevel != nil {
-		entity.MinimumTierLevel = *req.MinimumTierLevel
+		entity.MinimumTierLevel = req.MinimumTierLevel
 	}
 	
 	if req.TierIds != nil {
-		entity.TierIds = *req.TierIds
+		entity.TierIds = req.TierIds
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = *req.ImageUrl
+		entity.ImageUrl = req.ImageUrl
 	}
 	
 	if req.ThumbnailUrl != nil {
-		entity.ThumbnailUrl = *req.ThumbnailUrl
+		entity.ThumbnailUrl = req.ThumbnailUrl
 	}
 	
 	if req.Featured != nil {
-		entity.Featured = *req.Featured
+		entity.Featured = req.Featured
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.IsFeatured != nil {
-		entity.IsFeatured = *req.IsFeatured
+		entity.IsFeatured = req.IsFeatured
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = *req.TermsAndConditions
+		entity.TermsAndConditions = req.TermsAndConditions
 	}
 	
 	if req.RedemptionInstructions != nil {
-		entity.RedemptionInstructions = *req.RedemptionInstructions
+		entity.RedemptionInstructions = req.RedemptionInstructions
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.AvailableTo != nil {
-		entity.AvailableTo = *req.AvailableTo
+		entity.AvailableTo = req.AvailableTo
 	}
 	
 	if req.TotalRedeemed != nil {
-		entity.TotalRedeemed = *req.TotalRedeemed
+		entity.TotalRedeemed = req.TotalRedeemed
 	}
 	
 	if req.(totalAvailable != nil {
@@ -457,7 +456,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_rewards: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_rewards not found or access denied")
 	}
 	

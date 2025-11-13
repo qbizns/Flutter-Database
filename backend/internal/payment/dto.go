@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -100,11 +101,11 @@ func (r *CreatePaymentsRequest) Validate() error {
 		return fmt.Errorf("payment_status is required")
 	}
 	
-	if r.Amount == nil {
+	if r.Amount == 0 {
 		return fmt.Errorf("amount is required")
 	}
-	
-	if r.PaymentDate == nil {
+
+	if r.PaymentDate.IsZero() {
 		return fmt.Errorf("payment_date is required")
 	}
 	
@@ -240,4 +241,45 @@ type Pagination struct {
 	TotalPages int  `json:"total_pages"`
 	HasNext    bool `json:"has_next"`
 	HasPrev    bool `json:"has_prev"`
+}
+
+// CancelPaymentRequest represents a request to cancel a payment
+type CancelPaymentRequest struct {
+	Reason string `json:"reason"`
+}
+
+// PaymentStatisticsResponse represents payment statistics
+type PaymentStatisticsResponse struct {
+	TotalAmount             float64            `json:"total_amount"`
+	PaymentCount            int                `json:"payment_count"`
+	AveragePayment          float64            `json:"average_payment"`
+	PaymentMethodBreakdown  map[string]float64 `json:"payment_method_breakdown"`
+}
+
+// CreateRefundRequest represents a request to create a refund
+type CreateRefundRequest struct {
+	PaymentID   uuid.UUID  `json:"payment_id" validate:"required"`
+	OrderID     *uuid.UUID `json:"order_id"`
+	Amount      float64    `json:"amount" validate:"required"`
+	Reason      string     `json:"reason" validate:"required"`
+	Status      string     `json:"status"`
+	RequestedBy *uuid.UUID `json:"requested_by"`
+	Notes       *string    `json:"notes"`
+}
+
+// RefundResponse represents a refund response
+type RefundResponse struct {
+	ID          uuid.UUID  `json:"id"`
+	PaymentID   uuid.UUID  `json:"payment_id"`
+	OrderID     *uuid.UUID `json:"order_id"`
+	Amount      float64    `json:"amount"`
+	Reason      string     `json:"reason"`
+	Status      string     `json:"status"`
+	RequestedBy *uuid.UUID `json:"requested_by"`
+	RequestedAt *time.Time `json:"requested_at"`
+	ProcessedAt *time.Time `json:"processed_at"`
+	ProcessedBy *uuid.UUID `json:"processed_by"`
+	Notes       *string    `json:"notes"`
+	CreatedAt   *time.Time `json:"created_at"`
+	UpdatedAt   *time.Time `json:"updated_at"`
 }

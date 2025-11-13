@@ -3,7 +3,6 @@ package customer_address
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -111,7 +110,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 	}
 
 	s.logger.Info("created customer_addresses",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +146,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_addresses not found or access denied")
 	}
 	
@@ -248,7 +247,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_addresses not found or access denied")
 	}
 	
@@ -256,71 +255,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.AddressLabel != nil {
-		entity.AddressLabel = *req.AddressLabel
+		entity.AddressLabel = req.AddressLabel
 	}
 	
 	if req.AddressLine1 != nil {
-		entity.AddressLine1 = *req.AddressLine1
+		entity.AddressLine1 = req.AddressLine1
 	}
 	
 	if req.AddressLine2 != nil {
-		entity.AddressLine2 = *req.AddressLine2
+		entity.AddressLine2 = req.AddressLine2
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.StateProvince != nil {
-		entity.StateProvince = *req.StateProvince
+		entity.StateProvince = req.StateProvince
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = *req.PostalCode
+		entity.PostalCode = req.PostalCode
 	}
 	
 	if req.Country != nil {
-		entity.Country = *req.Country
+		entity.Country = req.Country
 	}
 	
 	if req.Latitude != nil {
-		entity.Latitude = *req.Latitude
+		entity.Latitude = req.Latitude
 	}
 	
 	if req.Longitude != nil {
-		entity.Longitude = *req.Longitude
+		entity.Longitude = req.Longitude
 	}
 	
 	if req.LocationNotes != nil {
-		entity.LocationNotes = *req.LocationNotes
+		entity.LocationNotes = req.LocationNotes
 	}
 	
 	if req.DeliveryZoneId != nil {
-		entity.DeliveryZoneId = *req.DeliveryZoneId
+		entity.DeliveryZoneId = req.DeliveryZoneId
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -373,7 +372,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get customer_addresses: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("customer_addresses not found or access denied")
 	}
 	

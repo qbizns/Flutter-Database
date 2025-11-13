@@ -3,7 +3,6 @@ package delivery_assignment
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -159,7 +158,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDelive
 	}
 
 	s.logger.Info("created delivery_assignments",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -195,7 +194,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_assignments not found or access denied")
 	}
 	
@@ -296,7 +295,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("delivery_assignments not found or access denied")
 	}
 	
@@ -304,151 +303,151 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderId != nil {
-		entity.OrderId = *req.OrderId
+		entity.OrderId = req.OrderId
 	}
 	
 	if req.DriverId != nil {
-		entity.DriverId = *req.DriverId
+		entity.DriverId = req.DriverId
 	}
 	
 	if req.DriverShiftId != nil {
-		entity.DriverShiftId = *req.DriverShiftId
+		entity.DriverShiftId = req.DriverShiftId
 	}
 	
 	if req.DeliveryZoneId != nil {
-		entity.DeliveryZoneId = *req.DeliveryZoneId
+		entity.DeliveryZoneId = req.DeliveryZoneId
 	}
 	
 	if req.CustomerAddressId != nil {
-		entity.CustomerAddressId = *req.CustomerAddressId
+		entity.CustomerAddressId = req.CustomerAddressId
 	}
 	
 	if req.DeliveryAddress != nil {
-		entity.DeliveryAddress = *req.DeliveryAddress
+		entity.DeliveryAddress = req.DeliveryAddress
 	}
 	
 	if req.DeliveryLocation != nil {
-		entity.DeliveryLocation = *req.DeliveryLocation
+		entity.DeliveryLocation = req.DeliveryLocation
 	}
 	
 	if req.AssignedAt != nil {
-		entity.AssignedAt = *req.AssignedAt
+		entity.AssignedAt = req.AssignedAt
 	}
 	
 	if req.AssignedBy != nil {
-		entity.AssignedBy = *req.AssignedBy
+		entity.AssignedBy = req.AssignedBy
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.AcceptedAt != nil {
-		entity.AcceptedAt = *req.AcceptedAt
+		entity.AcceptedAt = req.AcceptedAt
 	}
 	
 	if req.PickedUpAt != nil {
-		entity.PickedUpAt = *req.PickedUpAt
+		entity.PickedUpAt = req.PickedUpAt
 	}
 	
 	if req.DispatchedAt != nil {
-		entity.DispatchedAt = *req.DispatchedAt
+		entity.DispatchedAt = req.DispatchedAt
 	}
 	
 	if req.ArrivedAt != nil {
-		entity.ArrivedAt = *req.ArrivedAt
+		entity.ArrivedAt = req.ArrivedAt
 	}
 	
 	if req.DeliveredAt != nil {
-		entity.DeliveredAt = *req.DeliveredAt
+		entity.DeliveredAt = req.DeliveredAt
 	}
 	
 	if req.FailedAt != nil {
-		entity.FailedAt = *req.FailedAt
+		entity.FailedAt = req.FailedAt
 	}
 	
 	if req.EstimatedPickupTime != nil {
-		entity.EstimatedPickupTime = *req.EstimatedPickupTime
+		entity.EstimatedPickupTime = req.EstimatedPickupTime
 	}
 	
 	if req.EstimatedDeliveryTime != nil {
-		entity.EstimatedDeliveryTime = *req.EstimatedDeliveryTime
+		entity.EstimatedDeliveryTime = req.EstimatedDeliveryTime
 	}
 	
 	if req.DistanceKm != nil {
-		entity.DistanceKm = *req.DistanceKm
+		entity.DistanceKm = req.DistanceKm
 	}
 	
 	if req.RouteInfo != nil {
-		entity.RouteInfo = *req.RouteInfo
+		entity.RouteInfo = req.RouteInfo
 	}
 	
 	if req.DeliveryFee != nil {
-		entity.DeliveryFee = *req.DeliveryFee
+		entity.DeliveryFee = req.DeliveryFee
 	}
 	
 	if req.DriverCommission != nil {
-		entity.DriverCommission = *req.DriverCommission
+		entity.DriverCommission = req.DriverCommission
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = *req.PaymentMethod
+		entity.PaymentMethod = req.PaymentMethod
 	}
 	
 	if req.CashCollected != nil {
-		entity.CashCollected = *req.CashCollected
+		entity.CashCollected = req.CashCollected
 	}
 	
 	if req.SignatureImageUrl != nil {
-		entity.SignatureImageUrl = *req.SignatureImageUrl
+		entity.SignatureImageUrl = req.SignatureImageUrl
 	}
 	
 	if req.DeliveryPhotoUrl != nil {
-		entity.DeliveryPhotoUrl = *req.DeliveryPhotoUrl
+		entity.DeliveryPhotoUrl = req.DeliveryPhotoUrl
 	}
 	
 	if req.RecipientName != nil {
-		entity.RecipientName = *req.RecipientName
+		entity.RecipientName = req.RecipientName
 	}
 	
 	if req.DeliveryNotes != nil {
-		entity.DeliveryNotes = *req.DeliveryNotes
+		entity.DeliveryNotes = req.DeliveryNotes
 	}
 	
 	if req.FailureReason != nil {
-		entity.FailureReason = *req.FailureReason
+		entity.FailureReason = req.FailureReason
 	}
 	
 	if req.FailureNotes != nil {
-		entity.FailureNotes = *req.FailureNotes
+		entity.FailureNotes = req.FailureNotes
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = *req.RetryCount
+		entity.RetryCount = req.RetryCount
 	}
 	
 	if req.CustomerRating != nil {
-		entity.CustomerRating = *req.CustomerRating
+		entity.CustomerRating = req.CustomerRating
 	}
 	
 	if req.CustomerFeedback != nil {
-		entity.CustomerFeedback = *req.CustomerFeedback
+		entity.CustomerFeedback = req.CustomerFeedback
 	}
 	
 	if req.DriverNotes != nil {
-		entity.DriverNotes = *req.DriverNotes
+		entity.DriverNotes = req.DriverNotes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'assigned', != nil {
@@ -460,11 +459,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CustomerRating != nil {
-		entity.CustomerRating = *req.CustomerRating
+		entity.CustomerRating = req.CustomerRating
 	}
 	
 	if req.DeliveryFee != nil {
-		entity.DeliveryFee = *req.DeliveryFee
+		entity.DeliveryFee = req.DeliveryFee
 	}
 	
 
@@ -517,7 +516,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get delivery_assignments: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("delivery_assignments not found or access denied")
 	}
 	

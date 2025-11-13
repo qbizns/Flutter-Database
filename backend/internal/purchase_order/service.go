@@ -3,7 +3,6 @@ package purchase_order
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -115,7 +114,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePurcha
 	}
 
 	s.logger.Info("created purchase_orders",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("purchase_orders not found or access denied")
 	}
 	
@@ -252,7 +251,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("purchase_orders not found or access denied")
 	}
 	
@@ -260,79 +259,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PoNumber != nil {
-		entity.PoNumber = *req.PoNumber
+		entity.PoNumber = req.PoNumber
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = *req.SupplierId
+		entity.SupplierId = req.SupplierId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.OrderDate != nil {
-		entity.OrderDate = *req.OrderDate
+		entity.OrderDate = req.OrderDate
 	}
 	
 	if req.ExpectedDeliveryDate != nil {
-		entity.ExpectedDeliveryDate = *req.ExpectedDeliveryDate
+		entity.ExpectedDeliveryDate = req.ExpectedDeliveryDate
 	}
 	
 	if req.ActualDeliveryDate != nil {
-		entity.ActualDeliveryDate = *req.ActualDeliveryDate
+		entity.ActualDeliveryDate = req.ActualDeliveryDate
 	}
 	
 	if req.SubtotalAmount != nil {
-		entity.SubtotalAmount = *req.SubtotalAmount
+		entity.SubtotalAmount = req.SubtotalAmount
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.ShippingAmount != nil {
-		entity.ShippingAmount = *req.ShippingAmount
+		entity.ShippingAmount = req.ShippingAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = *req.TotalAmount
+		entity.TotalAmount = req.TotalAmount
 	}
 	
 	if req.PaymentTerms != nil {
-		entity.PaymentTerms = *req.PaymentTerms
+		entity.PaymentTerms = req.PaymentTerms
 	}
 	
 	if req.PaymentDueDate != nil {
-		entity.PaymentDueDate = *req.PaymentDueDate
+		entity.PaymentDueDate = req.PaymentDueDate
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -385,7 +384,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get purchase_orders: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("purchase_orders not found or access denied")
 	}
 	

@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -63,11 +64,6 @@ type Orders struct {
 	CreatedBy *uuid.UUID `json:"created_by" db:"created_by"`
 	UpdatedBy *uuid.UUID `json:"updated_by" db:"updated_by"`
 	DeletedAt *time.Time `json:"deleted_at" db:"deleted_at"`
-	'draft', *string `json:"'draft'," db:"'draft',"`
-	'served', *string `json:"'served'," db:"'served',"`
-	'dineIn', *string `json:"'dine_in'," db:"'dine_in',"`
-	Subtotal *string `json:"subtotal" db:"subtotal"`
-	DiscountAmount *string `json:"discount_amount" db:"discount_amount"`
 }
 
 // Create inserts a new orders record
@@ -80,7 +76,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 
 	query := `
 		INSERT INTO orders (
-			, organization_id
+			organization_id
 			, location_id
 			, order_number
 			, display_number
@@ -111,12 +107,8 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 			, created_by
 			, updated_by
 			, deleted_at
-			, 'draft',
-			, 'served',
-			, 'dine_in',
-			, subtotal
-			, discount_amount
 		) VALUES (
+			$1
 			, $2
 			, $3
 			, $4
@@ -145,14 +137,8 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 			, $27
 			, $28
 			, $29
-			, $32
-			, $33
-			, $34
-			, $35
-			, $36
-			, $37
-			, $38
-			, $39
+			, $30
+			, $31
 		)
 		RETURNING id, created_at, updated_at
 	`
@@ -189,11 +175,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
-		entity.'draft',,
-		entity.'served',,
-		entity.'dineIn',,
-		entity.Subtotal,
-		entity.DiscountAmount,
 	)
 
 	
@@ -207,7 +188,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 
 	r.logger.Info("created orders",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil
@@ -257,11 +238,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ord
 			, created_by
 			, updated_by
 			, deleted_at
-			, 'draft',
-			, 'served',
-			, 'dine_in',
-			, subtotal
-			, discount_amount
 		FROM orders
 		WHERE id = $1
 		AND deleted_at IS NULL
@@ -303,11 +279,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ord
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.DeletedAt,
-		&entity.'draft',,
-		&entity.'served',,
-		&entity.'dineIn',,
-		&entity.Subtotal,
-		&entity.DiscountAmount,
 	)
 
 	if err == pgx.ErrNoRows {
@@ -380,11 +351,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, created_by
 			, updated_by
 			, deleted_at
-			, 'draft',
-			, 'served',
-			, 'dine_in',
-			, subtotal
-			, discount_amount
 		FROM orders
 		WHERE deleted_at IS NULL
 		ORDER BY created_at DESC
@@ -436,11 +402,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
-			&entity.'draft',,
-			&entity.'served',,
-			&entity.'dineIn',,
-			&entity.Subtotal,
-			&entity.DiscountAmount,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan orders: %w", err)
@@ -466,45 +427,39 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 	query := `
 		UPDATE orders
 		SET
-			, organization_id = $2
-			, location_id = $3
-			, order_number = $4
-			, display_number = $5
-			, order_type = $6
-			, table_id = $7
-			, reservation_id = $8
-			, covers = $9
-			, customer_id = $10
-			, waiter_id = $11
-			, status = $12
-			, order_date = $13
-			, submitted_at = $14
-			, kitchen_received_at = $15
-			, ready_at = $16
-			, served_at = $17
-			, completed_at = $18
-			, subtotal = $19
-			, tax_amount = $20
-			, discount_amount = $21
-			, service_charge = $22
-			, total_amount = $23
-			, sale_id = $24
-			, shift_id = $25
-			, customer_notes = $26
-			, kitchen_notes = $27
-			, internal_notes = $28
-			, metadata = $29
-			, updated_at = $31
-			, created_by = $32
-			, updated_by = $33
-			, deleted_at = $34
-			, 'draft', = $35
-			, 'served', = $36
-			, 'dine_in', = $37
-			, subtotal = $38
-			, discount_amount = $39
+			organization_id = $1
+			, location_id = $2
+			, order_number = $3
+			, display_number = $4
+			, order_type = $5
+			, table_id = $6
+			, reservation_id = $7
+			, covers = $8
+			, customer_id = $9
+			, waiter_id = $10
+			, status = $11
+			, order_date = $12
+			, submitted_at = $13
+			, kitchen_received_at = $14
+			, ready_at = $15
+			, served_at = $16
+			, completed_at = $17
+			, subtotal = $18
+			, tax_amount = $19
+			, discount_amount = $20
+			, service_charge = $21
+			, total_amount = $22
+			, sale_id = $23
+			, shift_id = $24
+			, customer_notes = $25
+			, kitchen_notes = $26
+			, internal_notes = $27
+			, metadata = $28
+			, created_by = $29
+			, updated_by = $30
+			, deleted_at = $31
 			, updated_at = CURRENT_TIMESTAMP
-		WHERE id = $40
+		WHERE id = $32
 		AND deleted_at IS NULL
 	`
 
@@ -537,15 +492,9 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Orders) erro
 		entity.KitchenNotes,
 		entity.InternalNotes,
 		entity.Metadata,
-		entity.UpdatedAt,
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
-		entity.'draft',,
-		entity.'served',,
-		entity.'dineIn',,
-		entity.Subtotal,
-		entity.DiscountAmount,
 		entity.Id,
 	)
 
@@ -656,11 +605,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, created_by
 			, updated_by
 			, deleted_at
-			, 'draft',
-			, 'served',
-			, 'dine_in',
-			, subtotal
-			, discount_amount
 		FROM orders
 		WHERE organization_id = $1
 		AND deleted_at IS NULL
@@ -713,11 +657,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
-			&entity.'draft',,
-			&entity.'served',,
-			&entity.'dineIn',,
-			&entity.Subtotal,
-			&entity.DiscountAmount,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan orders: %w", err)
@@ -726,5 +665,71 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 	}
 
 	return entities, total, nil
+}
+
+// GetStatistics retrieves order statistics
+func (r *Repository) GetStatistics(ctx context.Context, tx pgx.Tx, orgID uuid.UUID, fromDate, toDate string) (*OrderStatisticsResponse, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		metrics.RecordDatabaseQuery("SELECT", "orders", duration, nil)
+	}()
+
+	query := `
+		SELECT
+			COUNT(*) as total_orders,
+			COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_orders,
+			COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled_orders,
+			COUNT(CASE WHEN status IN ('pending', 'preparing', 'ready') THEN 1 END) as active_orders,
+			COALESCE(SUM(CASE WHEN status = 'completed' THEN total_amount ELSE 0 END), 0) as total_revenue,
+			COALESCE(AVG(CASE WHEN status = 'completed' THEN total_amount END), 0) as average_order_value,
+			COALESCE(AVG(CASE
+				WHEN status = 'completed' AND submitted_at IS NOT NULL AND completed_at IS NOT NULL
+				THEN EXTRACT(EPOCH FROM (completed_at - submitted_at)) / 60
+			END), 0) as average_preparation_minutes
+		FROM orders
+		WHERE organization_id = $1
+			AND deleted_at IS NULL`
+
+	args := []interface{}{orgID}
+	argIdx := 2
+
+	// Add date filters if provided
+	if fromDate != "" {
+		query += fmt.Sprintf(" AND created_at >= $%d", argIdx)
+		args = append(args, fromDate)
+		argIdx++
+	}
+	if toDate != "" {
+		query += fmt.Sprintf(" AND created_at <= $%d", argIdx)
+		args = append(args, toDate)
+		argIdx++
+	}
+
+	var stats OrderStatisticsResponse
+	var avgPrepMinutes float64
+
+	err := tx.QueryRow(ctx, query, args...).Scan(
+		&stats.TotalOrders,
+		&stats.CompletedOrders,
+		&stats.CancelledOrders,
+		&stats.ActiveOrders,
+		&stats.TotalRevenue,
+		&stats.AverageOrderValue,
+		&avgPrepMinutes,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get order statistics: %w", err)
+	}
+
+	stats.AveragePreparationMinutes = int(avgPrepMinutes)
+
+	r.logger.Debug("retrieved order statistics",
+		zap.String("organization_id", orgID.String()),
+		zap.Int("total_orders", stats.TotalOrders),
+	)
+
+	return &stats, nil
 }
 

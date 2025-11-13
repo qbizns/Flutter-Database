@@ -3,7 +3,6 @@ package modifier_group
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -115,7 +114,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateModifi
 	}
 
 	s.logger.Info("created modifier_groups",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("modifier_groups not found or access denied")
 	}
 	
@@ -252,7 +251,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("modifier_groups not found or access denied")
 	}
 	
@@ -260,71 +259,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GroupName != nil {
-		entity.GroupName = *req.GroupName
+		entity.GroupName = req.GroupName
 	}
 	
 	if req.GroupCode != nil {
-		entity.GroupCode = *req.GroupCode
+		entity.GroupCode = req.GroupCode
 	}
 	
 	if req.DisplayName != nil {
-		entity.DisplayName = *req.DisplayName
+		entity.DisplayName = req.DisplayName
 	}
 	
 	if req.SelectionType != nil {
-		entity.SelectionType = *req.SelectionType
+		entity.SelectionType = req.SelectionType
 	}
 	
 	if req.MinSelections != nil {
-		entity.MinSelections = *req.MinSelections
+		entity.MinSelections = req.MinSelections
 	}
 	
 	if req.MaxSelections != nil {
-		entity.MaxSelections = *req.MaxSelections
+		entity.MaxSelections = req.MaxSelections
 	}
 	
 	if req.ExactSelections != nil {
-		entity.ExactSelections = *req.ExactSelections
+		entity.ExactSelections = req.ExactSelections
 	}
 	
 	if req.IsRequired != nil {
-		entity.IsRequired = *req.IsRequired
+		entity.IsRequired = req.IsRequired
 	}
 	
 	if req.AffectsPrice != nil {
-		entity.AffectsPrice = *req.AffectsPrice
+		entity.AffectsPrice = req.AffectsPrice
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.MinSelections != nil {
-		entity.MinSelections = *req.MinSelections
+		entity.MinSelections = req.MinSelections
 	}
 	
 	if req.(maxSelections != nil {
@@ -385,7 +384,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get modifier_groups: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("modifier_groups not found or access denied")
 	}
 	

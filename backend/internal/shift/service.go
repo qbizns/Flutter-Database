@@ -3,14 +3,13 @@ package shift
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	
+
 	"github.com/your-org/pos-backend/internal/logging"
-	
+
 	"go.uber.org/zap"
 )
 
@@ -57,56 +56,54 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateShifts
 
 	// Convert DTO to entity
 	entity := &Shifts{
-		OrganizationID: orgID,
-		
+		OrganizationId: orgID,
+
 		LocationId: req.LocationId,
-		
+
 		UserId: req.UserId,
-		
+
 		ShiftNumber: req.ShiftNumber,
-		
+
 		StartTime: req.StartTime,
-		
+
 		EndTime: req.EndTime,
-		
+
 		Status: req.Status,
-		
+
 		OpeningCash: req.OpeningCash,
-		
+
 		OpeningNotes: req.OpeningNotes,
-		
+
 		ExpectedCash: req.ExpectedCash,
-		
+
 		ActualCash: req.ActualCash,
-		
+
 		CashDifference: req.CashDifference,
-		
+
 		ClosingNotes: req.ClosingNotes,
-		
+
 		TotalSales: req.TotalSales,
-		
+
 		TotalTransactions: req.TotalTransactions,
-		
+
 		TotalRefunds: req.TotalRefunds,
-		
+
 		TotalDiscounts: req.TotalDiscounts,
-		
+
 		PaymentBreakdown: req.PaymentBreakdown,
-		
+
 		Notes: req.Notes,
-		
+
 		Metadata: req.Metadata,
-		
+
 		ClosedBy: req.ClosedBy,
-		
+
 		ClosedAt: req.ClosedAt,
-		
-		OpeningCash: req.OpeningCash,
-		
-		(expectedCash: req.(expectedCash,
-		
-		(actualCash: req.(actualCash,
-		
+
+		CreatedBy: req.CreatedBy,
+
+		UpdatedBy: req.UpdatedBy,
+
 	}
 
 	// Business logic validation
@@ -125,7 +122,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateShifts
 	}
 
 	s.logger.Info("created shifts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -161,7 +158,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("shifts not found or access denied")
 	}
 	
@@ -262,7 +259,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("shifts not found or access denied")
 	}
 	
@@ -270,101 +267,97 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.UserId != nil {
 		entity.UserId = *req.UserId
 	}
-	
+
 	if req.ShiftNumber != nil {
 		entity.ShiftNumber = *req.ShiftNumber
 	}
-	
+
 	if req.StartTime != nil {
 		entity.StartTime = *req.StartTime
 	}
 	
 	if req.EndTime != nil {
-		entity.EndTime = *req.EndTime
+		entity.EndTime = req.EndTime
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.OpeningCash != nil {
-		entity.OpeningCash = *req.OpeningCash
+		entity.OpeningCash = req.OpeningCash
 	}
 	
 	if req.OpeningNotes != nil {
-		entity.OpeningNotes = *req.OpeningNotes
+		entity.OpeningNotes = req.OpeningNotes
 	}
 	
 	if req.ExpectedCash != nil {
-		entity.ExpectedCash = *req.ExpectedCash
+		entity.ExpectedCash = req.ExpectedCash
 	}
 	
 	if req.ActualCash != nil {
-		entity.ActualCash = *req.ActualCash
+		entity.ActualCash = req.ActualCash
 	}
 	
 	if req.CashDifference != nil {
-		entity.CashDifference = *req.CashDifference
+		entity.CashDifference = req.CashDifference
 	}
 	
 	if req.ClosingNotes != nil {
-		entity.ClosingNotes = *req.ClosingNotes
+		entity.ClosingNotes = req.ClosingNotes
 	}
 	
 	if req.TotalSales != nil {
-		entity.TotalSales = *req.TotalSales
+		entity.TotalSales = req.TotalSales
 	}
 	
 	if req.TotalTransactions != nil {
-		entity.TotalTransactions = *req.TotalTransactions
+		entity.TotalTransactions = req.TotalTransactions
 	}
 	
 	if req.TotalRefunds != nil {
-		entity.TotalRefunds = *req.TotalRefunds
+		entity.TotalRefunds = req.TotalRefunds
 	}
 	
 	if req.TotalDiscounts != nil {
-		entity.TotalDiscounts = *req.TotalDiscounts
+		entity.TotalDiscounts = req.TotalDiscounts
 	}
 	
 	if req.PaymentBreakdown != nil {
 		entity.PaymentBreakdown = *req.PaymentBreakdown
 	}
-	
+
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
-	
+
 	if req.Metadata != nil {
 		entity.Metadata = *req.Metadata
 	}
 	
 	if req.ClosedBy != nil {
-		entity.ClosedBy = *req.ClosedBy
+		entity.ClosedBy = req.ClosedBy
 	}
 	
 	if req.ClosedAt != nil {
-		entity.ClosedAt = *req.ClosedAt
+		entity.ClosedAt = req.ClosedAt
 	}
 	
-	if req.OpeningCash != nil {
-		entity.OpeningCash = *req.OpeningCash
+	if req.CreatedBy != nil {
+		entity.CreatedBy = req.CreatedBy
 	}
-	
-	if req.(expectedCash != nil {
-		entity.(expectedCash = *req.(expectedCash
+
+	if req.UpdatedBy != nil {
+		entity.UpdatedBy = req.UpdatedBy
 	}
-	
-	if req.(actualCash != nil {
-		entity.(actualCash = *req.(actualCash
-	}
-	
+
 
 	// Business logic validation
 	if err := s.validateBusinessRules(ctx, tx, entity); err != nil {
@@ -415,7 +408,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get shifts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("shifts not found or access denied")
 	}
 	
@@ -494,15 +487,9 @@ func (s *Service) entityToResponse(entity *Shifts) *ShiftsResponse {
 		UpdatedAt: entity.UpdatedAt,
 		
 		ClosedBy: entity.ClosedBy,
-		
+
 		ClosedAt: entity.ClosedAt,
-		
-		OpeningCash: entity.OpeningCash,
-		
-		(expectedCash: entity.(expectedCash,
-		
-		(actualCash: entity.(actualCash,
-		
+
 	}
 }
 

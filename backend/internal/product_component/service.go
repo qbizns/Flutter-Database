@@ -3,7 +3,6 @@ package product_component
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -95,7 +94,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 	}
 
 	s.logger.Info("created product_components",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -131,7 +130,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_components not found or access denied")
 	}
 	
@@ -232,7 +231,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_components not found or access denied")
 	}
 	
@@ -240,39 +239,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ParentProductId != nil {
-		entity.ParentProductId = *req.ParentProductId
+		entity.ParentProductId = req.ParentProductId
 	}
 	
 	if req.ComponentProductId != nil {
-		entity.ComponentProductId = *req.ComponentProductId
+		entity.ComponentProductId = req.ComponentProductId
 	}
 	
 	if req.ComponentVariantId != nil {
-		entity.ComponentVariantId = *req.ComponentVariantId
+		entity.ComponentVariantId = req.ComponentVariantId
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = *req.Quantity
+		entity.Quantity = req.Quantity
 	}
 	
 	if req.InheritPrice != nil {
-		entity.InheritPrice = *req.InheritPrice
+		entity.InheritPrice = req.InheritPrice
 	}
 	
 	if req.PriceOverride != nil {
-		entity.PriceOverride = *req.PriceOverride
+		entity.PriceOverride = req.PriceOverride
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.IsOptional != nil {
-		entity.IsOptional = *req.IsOptional
+		entity.IsOptional = req.IsOptional
 	}
 	
 	if req.ComponentProductId != nil {
-		entity.ComponentProductId = *req.ComponentProductId
+		entity.ComponentProductId = req.ComponentProductId
 	}
 	
 
@@ -325,7 +324,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get product_components: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("product_components not found or access denied")
 	}
 	

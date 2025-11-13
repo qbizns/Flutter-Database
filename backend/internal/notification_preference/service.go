@@ -3,7 +3,6 @@ package notification_preference
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -91,7 +90,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateNotifi
 	}
 
 	s.logger.Info("created notification_preferences",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -127,7 +126,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("notification_preferences not found or access denied")
 	}
 	
@@ -228,7 +227,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("notification_preferences not found or access denied")
 	}
 	
@@ -236,31 +235,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.Category != nil {
-		entity.Category = *req.Category
+		entity.Category = req.Category
 	}
 	
 	if req.InAppEnabled != nil {
-		entity.InAppEnabled = *req.InAppEnabled
+		entity.InAppEnabled = req.InAppEnabled
 	}
 	
 	if req.EmailEnabled != nil {
-		entity.EmailEnabled = *req.EmailEnabled
+		entity.EmailEnabled = req.EmailEnabled
 	}
 	
 	if req.SmsEnabled != nil {
-		entity.SmsEnabled = *req.SmsEnabled
+		entity.SmsEnabled = req.SmsEnabled
 	}
 	
 	if req.PushEnabled != nil {
-		entity.PushEnabled = *req.PushEnabled
+		entity.PushEnabled = req.PushEnabled
 	}
 	
 	if req.Frequency != nil {
-		entity.Frequency = *req.Frequency
+		entity.Frequency = req.Frequency
 	}
 	
 
@@ -313,7 +312,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get notification_preferences: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("notification_preferences not found or access denied")
 	}
 	

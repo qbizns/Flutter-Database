@@ -3,7 +3,6 @@ package sale_return
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -109,7 +108,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSaleRe
 	}
 
 	s.logger.Info("created sale_returns",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -145,7 +144,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sale_returns not found or access denied")
 	}
 	
@@ -246,7 +245,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sale_returns not found or access denied")
 	}
 	
@@ -254,67 +253,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReturnNumber != nil {
-		entity.ReturnNumber = *req.ReturnNumber
+		entity.ReturnNumber = req.ReturnNumber
 	}
 	
 	if req.OriginalSaleId != nil {
-		entity.OriginalSaleId = *req.OriginalSaleId
+		entity.OriginalSaleId = req.OriginalSaleId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.ReturnDate != nil {
-		entity.ReturnDate = *req.ReturnDate
+		entity.ReturnDate = req.ReturnDate
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = *req.TotalAmount
+		entity.TotalAmount = req.TotalAmount
 	}
 	
 	if req.RefundAmount != nil {
-		entity.RefundAmount = *req.RefundAmount
+		entity.RefundAmount = req.RefundAmount
 	}
 	
 	if req.RestockingFee != nil {
-		entity.RestockingFee = *req.RestockingFee
+		entity.RestockingFee = req.RestockingFee
 	}
 	
 	if req.RefundMethod != nil {
-		entity.RefundMethod = *req.RefundMethod
+		entity.RefundMethod = req.RefundMethod
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -367,7 +366,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get sale_returns: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("sale_returns not found or access denied")
 	}
 	

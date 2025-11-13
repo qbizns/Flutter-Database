@@ -3,7 +3,6 @@ package modifier
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -115,7 +114,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateModifi
 	}
 
 	s.logger.Info("created modifiers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("modifiers not found or access denied")
 	}
 	
@@ -252,7 +251,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("modifiers not found or access denied")
 	}
 	
@@ -260,79 +259,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ModifierGroupId != nil {
-		entity.ModifierGroupId = *req.ModifierGroupId
+		entity.ModifierGroupId = req.ModifierGroupId
 	}
 	
 	if req.ModifierName != nil {
-		entity.ModifierName = *req.ModifierName
+		entity.ModifierName = req.ModifierName
 	}
 	
 	if req.ModifierCode != nil {
-		entity.ModifierCode = *req.ModifierCode
+		entity.ModifierCode = req.ModifierCode
 	}
 	
 	if req.DisplayName != nil {
-		entity.DisplayName = *req.DisplayName
+		entity.DisplayName = req.DisplayName
 	}
 	
 	if req.PriceAdjustment != nil {
-		entity.PriceAdjustment = *req.PriceAdjustment
+		entity.PriceAdjustment = req.PriceAdjustment
 	}
 	
 	if req.PriceType != nil {
-		entity.PriceType = *req.PriceType
+		entity.PriceType = req.PriceType
 	}
 	
 	if req.IsAvailable != nil {
-		entity.IsAvailable = *req.IsAvailable
+		entity.IsAvailable = req.IsAvailable
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.TrackInventory != nil {
-		entity.TrackInventory = *req.TrackInventory
+		entity.TrackInventory = req.TrackInventory
 	}
 	
 	if req.CurrentStock != nil {
-		entity.CurrentStock = *req.CurrentStock
+		entity.CurrentStock = req.CurrentStock
 	}
 	
 	if req.LowStockThreshold != nil {
-		entity.LowStockThreshold = *req.LowStockThreshold
+		entity.LowStockThreshold = req.LowStockThreshold
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = *req.ImageUrl
+		entity.ImageUrl = req.ImageUrl
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.AllergenInfo != nil {
-		entity.AllergenInfo = *req.AllergenInfo
+		entity.AllergenInfo = req.AllergenInfo
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -385,7 +384,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get modifiers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("modifiers not found or access denied")
 	}
 	

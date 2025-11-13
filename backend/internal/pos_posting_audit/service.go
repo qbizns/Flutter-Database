@@ -3,7 +3,6 @@ package pos_posting_audit
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -157,7 +156,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosPos
 	}
 
 	s.logger.Info("created pos_posting_audit",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -193,7 +192,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_posting_audit not found or access denied")
 	}
 	
@@ -294,7 +293,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_posting_audit not found or access denied")
 	}
 	
@@ -302,19 +301,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = *req.SourceTable
+		entity.SourceTable = req.SourceTable
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = *req.SourceId
+		entity.SourceId = req.SourceId
 	}
 	
 	if req.SourceReference != nil {
-		entity.SourceReference = *req.SourceReference
+		entity.SourceReference = req.SourceReference
 	}
 	
 	if req.PostingStatus != nil {
-		entity.PostingStatus = *req.PostingStatus
+		entity.PostingStatus = req.PostingStatus
 	}
 	
 	if req.'pending', != nil {
@@ -342,99 +341,99 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.ReversalJournalEntryId != nil {
-		entity.ReversalJournalEntryId = *req.ReversalJournalEntryId
+		entity.ReversalJournalEntryId = req.ReversalJournalEntryId
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = *req.PostingDate
+		entity.PostingDate = req.PostingDate
 	}
 	
 	if req.PostedAt != nil {
-		entity.PostedAt = *req.PostedAt
+		entity.PostedAt = req.PostedAt
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = *req.PostedBy
+		entity.PostedBy = req.PostedBy
 	}
 	
 	if req.PostingMethod != nil {
-		entity.PostingMethod = *req.PostingMethod
+		entity.PostingMethod = req.PostingMethod
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = *req.ErrorCode
+		entity.ErrorCode = req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.ErrorDetails != nil {
-		entity.ErrorDetails = *req.ErrorDetails
+		entity.ErrorDetails = req.ErrorDetails
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = *req.RetryCount
+		entity.RetryCount = req.RetryCount
 	}
 	
 	if req.LastRetryAt != nil {
-		entity.LastRetryAt = *req.LastRetryAt
+		entity.LastRetryAt = req.LastRetryAt
 	}
 	
 	if req.MaxRetries != nil {
-		entity.MaxRetries = *req.MaxRetries
+		entity.MaxRetries = req.MaxRetries
 	}
 	
 	if req.ReversedAt != nil {
-		entity.ReversedAt = *req.ReversedAt
+		entity.ReversedAt = req.ReversedAt
 	}
 	
 	if req.ReversedBy != nil {
-		entity.ReversedBy = *req.ReversedBy
+		entity.ReversedBy = req.ReversedBy
 	}
 	
 	if req.ReversalReason != nil {
-		entity.ReversalReason = *req.ReversalReason
+		entity.ReversalReason = req.ReversalReason
 	}
 	
 	if req.TotalDebit != nil {
-		entity.TotalDebit = *req.TotalDebit
+		entity.TotalDebit = req.TotalDebit
 	}
 	
 	if req.TotalCredit != nil {
-		entity.TotalCredit = *req.TotalCredit
+		entity.TotalCredit = req.TotalCredit
 	}
 	
 	if req.LineCount != nil {
-		entity.LineCount = *req.LineCount
+		entity.LineCount = req.LineCount
 	}
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.PostingContext != nil {
-		entity.PostingContext = *req.PostingContext
+		entity.PostingContext = req.PostingContext
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.(postingStatus != nil {
@@ -511,7 +510,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get pos_posting_audit: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("pos_posting_audit not found or access denied")
 	}
 	

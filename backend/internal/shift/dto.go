@@ -1,6 +1,7 @@
 package shift
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -57,15 +58,9 @@ type ShiftsResponse struct {
 	UpdatedAt *time.Time `json:"updated_at"`
 	
 	ClosedBy *uuid.UUID `json:"closed_by"`
-	
+
 	ClosedAt *time.Time `json:"closed_at"`
-	
-	OpeningCash *string `json:"opening_cash"`
-	
-	(expectedCash *string `json:"(expected_cash"`
-	
-	(actualCash *string `json:"(actual_cash"`
-	
+
 }
 
 // CreateShiftsRequest represents a request to create a shifts
@@ -108,17 +103,15 @@ type CreateShiftsRequest struct {
 	Notes *string `json:"notes"`
 	
 	Metadata json.RawMessage `json:"metadata"`
-	
+
 	ClosedBy *uuid.UUID `json:"closed_by"`
-	
+
 	ClosedAt *time.Time `json:"closed_at"`
-	
-	OpeningCash *string `json:"opening_cash"`
-	
-	(expectedCash *string `json:"(expected_cash"`
-	
-	(actualCash *string `json:"(actual_cash"`
-	
+
+	CreatedBy *uuid.UUID `json:"created_by"`
+
+	UpdatedBy *uuid.UUID `json:"updated_by"`
+
 }
 
 // Validate validates the create request
@@ -131,8 +124,8 @@ func (r *CreateShiftsRequest) Validate() error {
 	if r.ShiftNumber == "" {
 		return fmt.Errorf("shift_number is required")
 	}
-	
-	if r.StartTime == nil {
+
+	if r.StartTime.IsZero() {
 		return fmt.Errorf("start_time is required")
 	}
 	
@@ -187,13 +180,11 @@ type UpdateShiftsRequest struct {
 	ClosedBy *uuid.UUID `json:"closed_by,omitempty"`
 	
 	ClosedAt *time.Time `json:"closed_at,omitempty"`
-	
-	OpeningCash *string `json:"opening_cash,omitempty"`
-	
-	(expectedCash *string `json:"(expected_cash,omitempty"`
-	
-	(actualCash *string `json:"(actual_cash,omitempty"`
-	
+
+	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
+
+	UpdatedBy *uuid.UUID `json:"updated_by,omitempty"`
+
 }
 
 // Validate validates the update request
@@ -285,18 +276,13 @@ func (r *UpdateShiftsRequest) Validate() error {
 		hasUpdate = true
 	}
 	
-	if r.OpeningCash != nil {
+	if r.CreatedBy != nil {
 		hasUpdate = true
 	}
-	
-	if r.(expectedCash != nil {
+
+	if r.UpdatedBy != nil {
 		hasUpdate = true
 	}
-	
-	if r.(actualCash != nil {
-		hasUpdate = true
-	}
-	
 
 	if !hasUpdate {
 		return fmt.Errorf("at least one field must be provided for update")

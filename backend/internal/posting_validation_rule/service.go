@@ -3,7 +3,6 @@ package posting_validation_rule
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -115,7 +114,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePostin
 	}
 
 	s.logger.Info("created posting_validation_rules",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +150,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("posting_validation_rules not found or access denied")
 	}
 	
@@ -252,7 +251,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("posting_validation_rules not found or access denied")
 	}
 	
@@ -260,67 +259,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DocumentTypeCode != nil {
-		entity.DocumentTypeCode = *req.DocumentTypeCode
+		entity.DocumentTypeCode = req.DocumentTypeCode
 	}
 	
 	if req.Event != nil {
-		entity.Event = *req.Event
+		entity.Event = req.Event
 	}
 	
 	if req.Target != nil {
-		entity.Target = *req.Target
+		entity.Target = req.Target
 	}
 	
 	if req.Code != nil {
-		entity.Code = *req.Code
+		entity.Code = req.Code
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Expression != nil {
-		entity.Expression = *req.Expression
+		entity.Expression = req.Expression
 	}
 	
 	if req.Severity != nil {
-		entity.Severity = *req.Severity
+		entity.Severity = req.Severity
 	}
 	
 	if req.IsBlocking != nil {
-		entity.IsBlocking = *req.IsBlocking
+		entity.IsBlocking = req.IsBlocking
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.MessageTemplate != nil {
-		entity.MessageTemplate = *req.MessageTemplate
+		entity.MessageTemplate = req.MessageTemplate
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.COALESCE(organizationId, != nil {
@@ -385,7 +384,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get posting_validation_rules: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("posting_validation_rules not found or access denied")
 	}
 	

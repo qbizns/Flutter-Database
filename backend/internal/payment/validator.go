@@ -69,11 +69,8 @@ func (v *Validator) ValidateCreate(ctx context.Context, tx pgx.Tx, req *CreatePa
 	
 	
 	// Validate TransactionId
-	
-	
-	if err := v.validateTransactionIdExists(ctx, tx, req.TransactionId); err != nil {
-		return err
-	}
+	// Note: TransactionId is a string field from payment processor, not a UUID reference
+	// No foreign key validation needed
 	
 	
 	// Validate ReferenceNumber
@@ -180,12 +177,8 @@ func (v *Validator) ValidateUpdate(ctx context.Context, tx pgx.Tx, id uuid.UUID,
 	
 	// Validate TransactionId if provided
 	
-	
-	if req.TransactionId != nil {
-		if err := v.validateTransactionIdExists(ctx, tx, *req.TransactionId); err != nil {
-			return err
-		}
-	}
+	// TransactionId is a string field from payment processor, not a UUID reference
+	// No foreign key validation needed
 	
 	
 	// Validate ReferenceNumber if provided

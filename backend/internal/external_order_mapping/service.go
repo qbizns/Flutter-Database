@@ -3,7 +3,6 @@ package external_order_mapping
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -93,7 +92,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateExtern
 	}
 
 	s.logger.Info("created external_order_mappings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -129,7 +128,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("external_order_mappings not found or access denied")
 	}
 	
@@ -230,7 +229,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("external_order_mappings not found or access denied")
 	}
 	
@@ -238,35 +237,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.SalesChannelId != nil {
-		entity.SalesChannelId = *req.SalesChannelId
+		entity.SalesChannelId = req.SalesChannelId
 	}
 	
 	if req.ExternalOrderId != nil {
-		entity.ExternalOrderId = *req.ExternalOrderId
+		entity.ExternalOrderId = req.ExternalOrderId
 	}
 	
 	if req.ExternalOrderNumber != nil {
-		entity.ExternalOrderNumber = *req.ExternalOrderNumber
+		entity.ExternalOrderNumber = req.ExternalOrderNumber
 	}
 	
 	if req.SyncStatus != nil {
-		entity.SyncStatus = *req.SyncStatus
+		entity.SyncStatus = req.SyncStatus
 	}
 	
 	if req.SyncStatus != nil {
-		entity.SyncStatus = *req.SyncStatus
+		entity.SyncStatus = req.SyncStatus
 	}
 	
 	if req.LastSyncAt != nil {
-		entity.LastSyncAt = *req.LastSyncAt
+		entity.LastSyncAt = req.LastSyncAt
 	}
 	
 	if req.ExternalData != nil {
-		entity.ExternalData = *req.ExternalData
+		entity.ExternalData = req.ExternalData
 	}
 	
 
@@ -319,7 +318,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get external_order_mappings: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("external_order_mappings not found or access denied")
 	}
 	

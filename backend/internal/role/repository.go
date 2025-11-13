@@ -2,6 +2,7 @@ package role
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -95,7 +96,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Roles) error
 
 	r.logger.Info("created roles",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

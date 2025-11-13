@@ -3,7 +3,6 @@ package tax_report_definition
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -101,7 +100,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTaxRep
 	}
 
 	s.logger.Info("created tax_report_definitions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +136,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("tax_report_definitions not found or access denied")
 	}
 	
@@ -238,7 +237,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("tax_report_definitions not found or access denied")
 	}
 	
@@ -246,51 +245,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocalizationPackageId != nil {
-		entity.LocalizationPackageId = *req.LocalizationPackageId
+		entity.LocalizationPackageId = req.LocalizationPackageId
 	}
 	
 	if req.ReportCode != nil {
-		entity.ReportCode = *req.ReportCode
+		entity.ReportCode = req.ReportCode
 	}
 	
 	if req.ReportName != nil {
-		entity.ReportName = *req.ReportName
+		entity.ReportName = req.ReportName
 	}
 	
 	if req.Jurisdiction != nil {
-		entity.Jurisdiction = *req.Jurisdiction
+		entity.Jurisdiction = req.Jurisdiction
 	}
 	
 	if req.Authority != nil {
-		entity.Authority = *req.Authority
+		entity.Authority = req.Authority
 	}
 	
 	if req.ReportFrequency != nil {
-		entity.ReportFrequency = *req.ReportFrequency
+		entity.ReportFrequency = req.ReportFrequency
 	}
 	
 	if req.Version != nil {
-		entity.Version = *req.Version
+		entity.Version = req.Version
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = *req.EffectiveTo
+		entity.EffectiveTo = req.EffectiveTo
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -343,7 +342,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get tax_report_definitions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("tax_report_definitions not found or access denied")
 	}
 	

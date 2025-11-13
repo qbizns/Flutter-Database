@@ -3,7 +3,6 @@ package category
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -57,7 +56,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCatego
 
 	// Convert DTO to entity
 	entity := &Categories{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Name: req.Name,
 		
@@ -105,7 +104,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCatego
 	}
 
 	s.logger.Info("created categories",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +140,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("categories not found or access denied")
 	}
 	
@@ -242,69 +241,69 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("categories not found or access denied")
 	}
 	
 
 	// Update fields
-	
+
 	if req.Name != nil {
 		entity.Name = *req.Name
 	}
-	
+
 	if req.Slug != nil {
 		entity.Slug = *req.Slug
 	}
-	
+
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
-	
+
 	if req.ParentId != nil {
-		entity.ParentId = *req.ParentId
+		entity.ParentId = req.ParentId
 	}
-	
+
 	if req.Level != nil {
-		entity.Level = *req.Level
+		entity.Level = req.Level
 	}
-	
+
 	if req.Path != nil {
-		entity.Path = *req.Path
+		entity.Path = req.Path
 	}
-	
+
 	if req.ImageUrl != nil {
-		entity.ImageUrl = *req.ImageUrl
+		entity.ImageUrl = req.ImageUrl
 	}
-	
+
 	if req.Icon != nil {
-		entity.Icon = *req.Icon
+		entity.Icon = req.Icon
 	}
-	
+
 	if req.Color != nil {
-		entity.Color = *req.Color
+		entity.Color = req.Color
 	}
-	
+
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
-	
+
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
-	
+
 	if req.Metadata != nil {
 		entity.Metadata = *req.Metadata
 	}
-	
+
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
-	
+
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
-	
+
 
 	// Business logic validation
 	if err := s.validateBusinessRules(ctx, tx, entity); err != nil {
@@ -355,7 +354,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get categories: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("categories not found or access denied")
 	}
 	
@@ -462,4 +461,31 @@ func (s *Service) canDelete(ctx context.Context, tx pgx.Tx, id uuid.UUID) error 
 	// - etc.
 
 	return nil
+}
+
+// GetProductsCountByCategory retrieves the count of products per category
+func (s *Service) GetProductsCountByCategory(ctx context.Context, orgID uuid.UUID) (map[string]int, error) {
+	s.logger.Debug("getting products count by category",
+		zap.String("organization_id", orgID.String()),
+	)
+
+	// Start transaction (read-only)
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Set organization context for RLS
+	if err := s.setOrganizationContext(ctx, tx, orgID); err != nil {
+		return nil, err
+	}
+
+	// Get counts from repository
+	counts, err := s.repo.GetProductsCountByCategory(ctx, tx, orgID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get products count by category: %w", err)
+	}
+
+	return counts, nil
 }

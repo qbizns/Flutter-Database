@@ -3,7 +3,6 @@ package journal_entry_line
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -119,7 +118,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateJourna
 	}
 
 	s.logger.Info("created journal_entry_lines",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -155,7 +154,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("journal_entry_lines not found or access denied")
 	}
 	
@@ -256,7 +255,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("journal_entry_lines not found or access denied")
 	}
 	
@@ -264,75 +263,75 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = *req.LineNumber
+		entity.LineNumber = req.LineNumber
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 	if req.DebitAmount != nil {
-		entity.DebitAmount = *req.DebitAmount
+		entity.DebitAmount = req.DebitAmount
 	}
 	
 	if req.CreditAmount != nil {
-		entity.CreditAmount = *req.CreditAmount
+		entity.CreditAmount = req.CreditAmount
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.Department != nil {
-		entity.Department = *req.Department
+		entity.Department = req.Department
 	}
 	
 	if req.ProjectCode != nil {
-		entity.ProjectCode = *req.ProjectCode
+		entity.ProjectCode = req.ProjectCode
 	}
 	
 	if req.CostCenter != nil {
-		entity.CostCenter = *req.CostCenter
+		entity.CostCenter = req.CostCenter
 	}
 	
 	if req.TaxCode != nil {
-		entity.TaxCode = *req.TaxCode
+		entity.TaxCode = req.TaxCode
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Memo != nil {
-		entity.Memo = *req.Memo
+		entity.Memo = req.Memo
 	}
 	
 	if req.IsReconciled != nil {
-		entity.IsReconciled = *req.IsReconciled
+		entity.IsReconciled = req.IsReconciled
 	}
 	
 	if req.ReconciledAt != nil {
-		entity.ReconciledAt = *req.ReconciledAt
+		entity.ReconciledAt = req.ReconciledAt
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.(debitAmount != nil {
@@ -397,7 +396,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get journal_entry_lines: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("journal_entry_lines not found or access denied")
 	}
 	

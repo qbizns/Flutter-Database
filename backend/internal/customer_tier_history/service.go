@@ -3,7 +3,6 @@ package customer_tier_history
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -103,7 +102,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 	}
 
 	s.logger.Info("created customer_tier_history",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -139,7 +138,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_tier_history not found or access denied")
 	}
 	
@@ -240,7 +239,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_tier_history not found or access denied")
 	}
 	
@@ -248,55 +247,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.TierId != nil {
-		entity.TierId = *req.TierId
+		entity.TierId = req.TierId
 	}
 	
 	if req.PreviousTierId != nil {
-		entity.PreviousTierId = *req.PreviousTierId
+		entity.PreviousTierId = req.PreviousTierId
 	}
 	
 	if req.ChangeType != nil {
-		entity.ChangeType = *req.ChangeType
+		entity.ChangeType = req.ChangeType
 	}
 	
 	if req.ChangeReason != nil {
-		entity.ChangeReason = *req.ChangeReason
+		entity.ChangeReason = req.ChangeReason
 	}
 	
 	if req.QualifyingPoints != nil {
-		entity.QualifyingPoints = *req.QualifyingPoints
+		entity.QualifyingPoints = req.QualifyingPoints
 	}
 	
 	if req.QualifyingSpend != nil {
-		entity.QualifyingSpend = *req.QualifyingSpend
+		entity.QualifyingSpend = req.QualifyingSpend
 	}
 	
 	if req.QualifyingPurchases != nil {
-		entity.QualifyingPurchases = *req.QualifyingPurchases
+		entity.QualifyingPurchases = req.QualifyingPurchases
 	}
 	
 	if req.EffectiveDate != nil {
-		entity.EffectiveDate = *req.EffectiveDate
+		entity.EffectiveDate = req.EffectiveDate
 	}
 	
 	if req.ValidUntil != nil {
-		entity.ValidUntil = *req.ValidUntil
+		entity.ValidUntil = req.ValidUntil
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -349,7 +348,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get customer_tier_history: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("customer_tier_history not found or access denied")
 	}
 	

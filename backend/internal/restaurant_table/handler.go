@@ -302,3 +302,133 @@ type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// UpdateStatus handles PATCH /api/v1/organizations/{orgID}/tables/{id}/status
+func (h *Handler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid table ID", err)
+		return
+	}
+
+	var req UpdateTableStatusRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	result, err := h.service.UpdateStatus(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to update table status", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to update table status", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// AssignOrder handles POST /api/v1/organizations/{orgID}/tables/{id}/assign-order
+func (h *Handler) AssignOrder(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid table ID", err)
+		return
+	}
+
+	var req AssignOrderRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid request body", err)
+		return
+	}
+
+	result, err := h.service.AssignOrder(ctx, orgID, id, &req)
+	if err != nil {
+		h.logger.Error("failed to assign order to table", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to assign order to table", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// Clear handles POST /api/v1/organizations/{orgID}/tables/{id}/clear
+func (h *Handler) Clear(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid table ID", err)
+		return
+	}
+
+	result, err := h.service.Clear(ctx, orgID, id)
+	if err != nil {
+		h.logger.Error("failed to clear table", zap.Error(err), zap.String("id", id.String()))
+		h.respondError(w, http.StatusUnprocessableEntity, "failed to clear table", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetStatistics handles GET /api/v1/organizations/{orgID}/tables/statistics
+func (h *Handler) GetStatistics(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	result, err := h.service.GetStatistics(ctx, orgID)
+	if err != nil {
+		h.logger.Error("failed to get table statistics", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get table statistics", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}
+
+// GetCountByZone handles GET /api/v1/organizations/{orgID}/tables/count-by-zone
+func (h *Handler) GetCountByZone(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := uuid.Parse(chi.URLParam(r, "org_id"))
+	if err != nil {
+		h.respondError(w, http.StatusBadRequest, "invalid organization ID", err)
+		return
+	}
+
+	result, err := h.service.GetCountByZone(ctx, orgID)
+	if err != nil {
+		h.logger.Error("failed to get table count by zone", zap.Error(err))
+		h.respondError(w, http.StatusInternalServerError, "failed to get table count by zone", err)
+		return
+	}
+
+	h.respondJSON(w, http.StatusOK, result)
+}

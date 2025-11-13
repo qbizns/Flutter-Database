@@ -3,7 +3,6 @@ package user_session
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateUserSe
 	}
 
 	s.logger.Info("created user_sessions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +142,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("user_sessions not found or access denied")
 	}
 	
@@ -244,7 +243,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("user_sessions not found or access denied")
 	}
 	
@@ -252,63 +251,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.SessionToken != nil {
-		entity.SessionToken = *req.SessionToken
+		entity.SessionToken = req.SessionToken
 	}
 	
 	if req.RefreshToken != nil {
-		entity.RefreshToken = *req.RefreshToken
+		entity.RefreshToken = req.RefreshToken
 	}
 	
 	if req.UserAgent != nil {
-		entity.UserAgent = *req.UserAgent
+		entity.UserAgent = req.UserAgent
 	}
 	
 	if req.IpAddress != nil {
-		entity.IpAddress = *req.IpAddress
+		entity.IpAddress = req.IpAddress
 	}
 	
 	if req.DeviceType != nil {
-		entity.DeviceType = *req.DeviceType
+		entity.DeviceType = req.DeviceType
 	}
 	
 	if req.DeviceName != nil {
-		entity.DeviceName = *req.DeviceName
+		entity.DeviceName = req.DeviceName
 	}
 	
 	if req.Browser != nil {
-		entity.Browser = *req.Browser
+		entity.Browser = req.Browser
 	}
 	
 	if req.Os != nil {
-		entity.Os = *req.Os
+		entity.Os = req.Os
 	}
 	
 	if req.CountryCode != nil {
-		entity.CountryCode = *req.CountryCode
+		entity.CountryCode = req.CountryCode
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.LastActivityAt != nil {
-		entity.LastActivityAt = *req.LastActivityAt
+		entity.LastActivityAt = req.LastActivityAt
 	}
 	
 	if req.ExpiresAt != nil {
-		entity.ExpiresAt = *req.ExpiresAt
+		entity.ExpiresAt = req.ExpiresAt
 	}
 	
 	if req.RevokedAt != nil {
-		entity.RevokedAt = *req.RevokedAt
+		entity.RevokedAt = req.RevokedAt
 	}
 	
 
@@ -361,7 +360,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get user_sessions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("user_sessions not found or access denied")
 	}
 	

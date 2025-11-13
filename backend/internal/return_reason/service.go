@@ -3,7 +3,6 @@ package return_reason
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -91,7 +90,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReturn
 	}
 
 	s.logger.Info("created return_reasons",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -127,7 +126,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("return_reasons not found or access denied")
 	}
 	
@@ -228,7 +227,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("return_reasons not found or access denied")
 	}
 	
@@ -236,31 +235,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReasonCode != nil {
-		entity.ReasonCode = *req.ReasonCode
+		entity.ReasonCode = req.ReasonCode
 	}
 	
 	if req.ReasonName != nil {
-		entity.ReasonName = *req.ReasonName
+		entity.ReasonName = req.ReasonName
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = *req.RequiresApproval
+		entity.RequiresApproval = req.RequiresApproval
 	}
 	
 	if req.AffectsInventory != nil {
-		entity.AffectsInventory = *req.AffectsInventory
+		entity.AffectsInventory = req.AffectsInventory
 	}
 	
 	if req.IsRestockable != nil {
-		entity.IsRestockable = *req.IsRestockable
+		entity.IsRestockable = req.IsRestockable
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 
@@ -313,7 +312,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get return_reasons: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("return_reasons not found or access denied")
 	}
 	
