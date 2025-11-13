@@ -1,6 +1,7 @@
 package loyalty_tier_benefit
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -115,7 +116,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *LoyaltyTierB
 
 	r.logger.Info("created loyalty_tier_benefits",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

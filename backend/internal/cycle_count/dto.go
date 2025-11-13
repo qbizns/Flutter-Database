@@ -1,6 +1,7 @@
 package cycle_count
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -79,7 +80,7 @@ type CreateCycleCountsRequest struct {
 	
 	CountType *string `json:"count_type"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	CategoryId *uuid.UUID `json:"category_id"`
 	
@@ -101,7 +102,7 @@ type CreateCycleCountsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -126,7 +127,7 @@ func (r *CreateCycleCountsRequest) Validate() error {
 		return fmt.Errorf("count_number is required")
 	}
 	
-	if r.CountDate == nil {
+	if r.CountDate.IsZero() {
 		return fmt.Errorf("count_date is required")
 	}
 	
@@ -148,7 +149,7 @@ type UpdateCycleCountsRequest struct {
 	
 	CountType *string `json:"count_type,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	CategoryId *uuid.UUID `json:"category_id,omitempty"`
 	

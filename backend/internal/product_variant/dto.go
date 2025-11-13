@@ -83,7 +83,7 @@ type CreateProductVariantsRequest struct {
 	
 	Barcode *string `json:"barcode"`
 	
-	Attributes json.RawMessage `json:"attributes"`
+	// Duplicate removed: Attributes json.RawMessage `json:"attributes"`
 	
 	CostPrice *float64 `json:"cost_price"`
 	
@@ -101,7 +101,7 @@ type CreateProductVariantsRequest struct {
 	
 	WeightUnit *string `json:"weight_unit"`
 	
-	Dimensions json.RawMessage `json:"dimensions"`
+	// Duplicate removed: Dimensions json.RawMessage `json:"dimensions"`
 	
 	IsActive *bool `json:"is_active"`
 	
@@ -113,7 +113,7 @@ type CreateProductVariantsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

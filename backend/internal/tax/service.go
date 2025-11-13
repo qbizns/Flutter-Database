@@ -3,8 +3,6 @@ package tax
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTaxesR
 
 	// Convert DTO to entity
 	entity := &Taxes{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		TaxGroupId: req.TaxGroupId,
 		
@@ -101,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTaxesR
 	}
 
 	s.logger.Info("created taxes",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +135,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("taxes not found or access denied")
 	}
 	
@@ -238,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("taxes not found or access denied")
 	}
 	
@@ -246,51 +244,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TaxGroupId != nil {
-		entity.TaxGroupId = *req.TaxGroupId
+		entity.TaxGroupId = req.TaxGroupId
 	}
 	
 	if req.TaxCode != nil {
-		entity.TaxCode = *req.TaxCode
+		entity.TaxCode = req.TaxCode
 	}
 	
 	if req.TaxName != nil {
-		entity.TaxName = *req.TaxName
+		entity.TaxName = req.TaxName
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = *req.TaxRate
+		entity.TaxRate = req.TaxRate
 	}
 	
 	if req.TaxScope != nil {
-		entity.TaxScope = *req.TaxScope
+		entity.TaxScope = req.TaxScope
 	}
 	
 	if req.IsPriceInclusive != nil {
-		entity.IsPriceInclusive = *req.IsPriceInclusive
+		entity.IsPriceInclusive = req.IsPriceInclusive
 	}
 	
 	if req.TaxAccountId != nil {
-		entity.TaxAccountId = *req.TaxAccountId
+		entity.TaxAccountId = req.TaxAccountId
 	}
 	
 	if req.TaxRefundAccountId != nil {
-		entity.TaxRefundAccountId = *req.TaxRefundAccountId
+		entity.TaxRefundAccountId = req.TaxRefundAccountId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -343,7 +341,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get taxes: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("taxes not found or access denied")
 	}
 	

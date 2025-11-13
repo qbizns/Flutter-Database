@@ -39,7 +39,7 @@ type GiftCards struct {
 	IssuedDate time.Time `json:"issued_date" db:"issued_date"`
 	ExpiryDate *time.Time `json:"expiry_date" db:"expiry_date"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	IssuedByUserId *uuid.UUID `json:"issued_by_user_id" db:"issued_by_user_id"`
 	IssuedLocationId *uuid.UUID `json:"issued_location_id" db:"issued_location_id"`
 	Notes *string `json:"notes" db:"notes"`
@@ -123,7 +123,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GiftCards) e
 
 	r.logger.Info("created gift_cards",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

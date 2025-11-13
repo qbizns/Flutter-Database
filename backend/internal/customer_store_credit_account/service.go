@@ -3,8 +3,6 @@ package customer_store_credit_account
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 
 	// Convert DTO to entity
 	entity := &CustomerStoreCreditAccounts{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		CustomerId: req.CustomerId,
 		
@@ -85,7 +83,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 	}
 
 	s.logger.Info("created customer_store_credit_accounts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -121,7 +119,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_store_credit_accounts not found or access denied")
 	}
 	
@@ -222,7 +220,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_store_credit_accounts not found or access denied")
 	}
 	
@@ -230,19 +228,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.CurrentBalance != nil {
-		entity.CurrentBalance = *req.CurrentBalance
+		entity.CurrentBalance = req.CurrentBalance
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = *req.CreditLimit
+		entity.CreditLimit = req.CreditLimit
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 
@@ -295,7 +293,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get customer_store_credit_accounts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("customer_store_credit_accounts not found or access denied")
 	}
 	

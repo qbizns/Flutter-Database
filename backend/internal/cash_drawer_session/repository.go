@@ -86,7 +86,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *CashDrawerSe
 
 	r.logger.Info("created cash_drawer_sessions",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

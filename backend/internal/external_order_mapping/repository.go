@@ -1,6 +1,7 @@
 package external_order_mapping
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -36,7 +37,7 @@ type ExternalOrderMappings struct {
 	ExternalOrderId string `json:"external_order_id" db:"external_order_id"`
 	ExternalOrderNumber *string `json:"external_order_number" db:"external_order_number"`
 	SyncStatus *string `json:"sync_status" db:"sync_status"`
-	SyncStatus *string `json:"sync_status" db:"sync_status"`
+	// 	SyncStatus *string `json:"sync_status" db:"sync_status"`
 	LastSyncAt *time.Time `json:"last_sync_at" db:"last_sync_at"`
 	ExternalData json.RawMessage `json:"external_data" db:"external_data"`
 	CreatedAt *time.Time `json:"created_at" db:"created_at"`
@@ -103,7 +104,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ExternalOrde
 
 	r.logger.Info("created external_order_mappings",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

@@ -1,6 +1,7 @@
 package loyalty_points_transaction
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -69,7 +70,7 @@ type CreateLoyaltyPointsTransactionsRequest struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	TransactionDate *time.Time `json:"transaction_date"`
 	

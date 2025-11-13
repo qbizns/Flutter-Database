@@ -1,6 +1,7 @@
 package posting_rule
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"

@@ -3,8 +3,6 @@ package webhook_delivery
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateWebhoo
 
 	// Convert DTO to entity
 	entity := &WebhookDeliveries{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		WebhookId: req.WebhookId,
 		
@@ -111,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateWebhoo
 	}
 
 	s.logger.Info("created webhook_deliveries",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +145,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("webhook_deliveries not found or access denied")
 	}
 	
@@ -248,7 +246,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("webhook_deliveries not found or access denied")
 	}
 	
@@ -256,71 +254,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.WebhookId != nil {
-		entity.WebhookId = *req.WebhookId
+		entity.WebhookId = req.WebhookId
 	}
 	
 	if req.EventType != nil {
-		entity.EventType = *req.EventType
+		entity.EventType = req.EventType
 	}
 	
 	if req.EventId != nil {
-		entity.EventId = *req.EventId
+		entity.EventId = req.EventId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.RequestUrl != nil {
-		entity.RequestUrl = *req.RequestUrl
+		entity.RequestUrl = req.RequestUrl
 	}
 	
 	if req.RequestMethod != nil {
-		entity.RequestMethod = *req.RequestMethod
+		entity.RequestMethod = req.RequestMethod
 	}
 	
 	if req.RequestHeaders != nil {
-		entity.RequestHeaders = *req.RequestHeaders
+		entity.RequestHeaders = req.RequestHeaders
 	}
 	
 	if req.RequestBody != nil {
-		entity.RequestBody = *req.RequestBody
+		entity.RequestBody = req.RequestBody
 	}
 	
 	if req.ResponseStatusCode != nil {
-		entity.ResponseStatusCode = *req.ResponseStatusCode
+		entity.ResponseStatusCode = req.ResponseStatusCode
 	}
 	
 	if req.ResponseHeaders != nil {
-		entity.ResponseHeaders = *req.ResponseHeaders
+		entity.ResponseHeaders = req.ResponseHeaders
 	}
 	
 	if req.ResponseBody != nil {
-		entity.ResponseBody = *req.ResponseBody
+		entity.ResponseBody = req.ResponseBody
 	}
 	
 	if req.AttemptNumber != nil {
-		entity.AttemptNumber = *req.AttemptNumber
+		entity.AttemptNumber = req.AttemptNumber
 	}
 	
 	if req.DurationMs != nil {
-		entity.DurationMs = *req.DurationMs
+		entity.DurationMs = req.DurationMs
 	}
 	
 	if req.NextRetryAt != nil {
-		entity.NextRetryAt = *req.NextRetryAt
+		entity.NextRetryAt = req.NextRetryAt
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.DeliveredAt != nil {
-		entity.DeliveredAt = *req.DeliveredAt
+		entity.DeliveredAt = req.DeliveredAt
 	}
 	
 
@@ -373,7 +371,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get webhook_deliveries: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("webhook_deliveries not found or access denied")
 	}
 	

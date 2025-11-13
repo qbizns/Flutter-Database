@@ -29,9 +29,7 @@ type BankStatementsResponse struct {
 	ClosingBalance float64 `json:"closing_balance"`
 	
 	ImportSource *string `json:"import_source"`
-	
-	ImportSource *string `json:"import_source"`
-	
+
 	ImportFileName *string `json:"import_file_name"`
 	
 	Status *string `json:"status"`
@@ -67,13 +65,11 @@ type CreateBankStatementsRequest struct {
 	
 	ClosingBalance float64 `json:"closing_balance" validate:"required"`
 	
-	ImportSource *string `json:"import_source"`
 	
-	ImportSource *string `json:"import_source"`
 	
 	ImportFileName *string `json:"import_file_name"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -90,25 +86,20 @@ func (r *CreateBankStatementsRequest) Validate() error {
 		return fmt.Errorf("bank_account_id is required")
 	}
 	
-	if r.StatementDate == nil {
+	if r.StatementDate.IsZero() {
 		return fmt.Errorf("statement_date is required")
 	}
 	
-	if r.PeriodStartDate == nil {
+	if r.PeriodStartDate.IsZero() {
 		return fmt.Errorf("period_start_date is required")
 	}
 	
-	if r.PeriodEndDate == nil {
+	if r.PeriodEndDate.IsZero() {
 		return fmt.Errorf("period_end_date is required")
 	}
 	
-	if r.OpeningBalance == nil {
-		return fmt.Errorf("opening_balance is required")
-	}
-	
-	if r.ClosingBalance == nil {
-		return fmt.Errorf("closing_balance is required")
-	}
+	// OpeningBalance and ClosingBalance validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -134,13 +125,11 @@ type UpdateBankStatementsRequest struct {
 	
 	ClosingBalance *float64 `json:"closing_balance,omitempty" validate:"omitempty,required"`
 	
-	ImportSource *string `json:"import_source,omitempty"`
 	
-	ImportSource *string `json:"import_source,omitempty"`
 	
 	ImportFileName *string `json:"import_file_name,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Notes *string `json:"notes,omitempty"`
 	

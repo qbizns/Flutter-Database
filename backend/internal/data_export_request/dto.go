@@ -1,6 +1,7 @@
 package data_export_request
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -26,7 +27,7 @@ type DataExportRequestsResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	FileName *string `json:"file_name"`
 	
@@ -65,11 +66,11 @@ type CreateDataExportRequestsRequest struct {
 	
 	DateTo *time.Time `json:"date_to"`
 	
-	Filters json.RawMessage `json:"filters"`
+	// Duplicate removed: Filters json.RawMessage `json:"filters"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	FileName *string `json:"file_name"`
 	
@@ -128,9 +129,9 @@ type UpdateDataExportRequestsRequest struct {
 	
 	Filters *json.RawMessage `json:"filters,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	FileName *string `json:"file_name,omitempty"`
 	

@@ -3,8 +3,6 @@ package document_sequence
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDocume
 
 	// Convert DTO to entity
 	entity := &DocumentSequences{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		DocumentType: req.DocumentType,
 		
@@ -127,7 +125,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDocume
 	}
 
 	s.logger.Info("created document_sequences",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -163,7 +161,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("document_sequences not found or access denied")
 	}
 	
@@ -264,7 +262,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("document_sequences not found or access denied")
 	}
 	
@@ -272,31 +270,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DocumentType != nil {
-		entity.DocumentType = *req.DocumentType
+		entity.DocumentType = req.DocumentType
 	}
 	
 	if req.Prefix != nil {
-		entity.Prefix = *req.Prefix
+		entity.Prefix = req.Prefix
 	}
 	
 	if req.Suffix != nil {
-		entity.Suffix = *req.Suffix
+		entity.Suffix = req.Suffix
 	}
 	
 	if req.NextNumber != nil {
-		entity.NextNumber = *req.NextNumber
+		entity.NextNumber = req.NextNumber
 	}
 	
 	if req.Padding != nil {
-		entity.Padding = *req.Padding
+		entity.Padding = req.Padding
 	}
 	
 	if req.IncrementBy != nil {
-		entity.IncrementBy = *req.IncrementBy
+		entity.IncrementBy = req.IncrementBy
 	}
 	
 	if req.ResetFrequency != nil {
-		entity.ResetFrequency = *req.ResetFrequency
+		entity.ResetFrequency = req.ResetFrequency
 	}
 	
 	if req.'never', != nil {
@@ -320,55 +318,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LastResetAt != nil {
-		entity.LastResetAt = *req.LastResetAt
+		entity.LastResetAt = req.LastResetAt
 	}
 	
 	if req.LastResetValue != nil {
-		entity.LastResetValue = *req.LastResetValue
+		entity.LastResetValue = req.LastResetValue
 	}
 	
 	if req.IncludeDate != nil {
-		entity.IncludeDate = *req.IncludeDate
+		entity.IncludeDate = req.IncludeDate
 	}
 	
 	if req.DateFormat != nil {
-		entity.DateFormat = *req.DateFormat
+		entity.DateFormat = req.DateFormat
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.AllowManualOverride != nil {
-		entity.AllowManualOverride = *req.AllowManualOverride
+		entity.AllowManualOverride = req.AllowManualOverride
 	}
 	
 	if req.ExampleNumber != nil {
-		entity.ExampleNumber = *req.ExampleNumber
+		entity.ExampleNumber = req.ExampleNumber
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -421,7 +419,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get document_sequences: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("document_sequences not found or access denied")
 	}
 	

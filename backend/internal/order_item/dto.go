@@ -109,7 +109,7 @@ type CreateOrderItemsRequest struct {
 	
 	KitchenTicketId *uuid.UUID `json:"kitchen_ticket_id"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	FiredAt *time.Time `json:"fired_at"`
 	
@@ -135,7 +135,7 @@ type CreateOrderItemsRequest struct {
 	
 	SeatNumber *int64 `json:"seat_number"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -210,7 +210,7 @@ type UpdateOrderItemsRequest struct {
 	
 	KitchenTicketId *uuid.UUID `json:"kitchen_ticket_id,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	FiredAt *time.Time `json:"fired_at,omitempty"`
 	

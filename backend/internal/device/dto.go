@@ -109,7 +109,7 @@ type CreateDevicesRequest struct {
 	
 	IpAddress *string `json:"ip_address"`
 	
-	DeviceConfig json.RawMessage `json:"device_config"`
+	// Duplicate removed: DeviceConfig json.RawMessage `json:"device_config"`
 	
 	ScreenResolution *string `json:"screen_resolution"`
 	
@@ -119,7 +119,7 @@ type CreateDevicesRequest struct {
 	
 	ConnectionString *string `json:"connection_string"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	LastOnlineAt *time.Time `json:"last_online_at"`
 	
@@ -141,7 +141,7 @@ type CreateDevicesRequest struct {
 	
 	MaintenanceNotes *string `json:"maintenance_notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -212,7 +212,7 @@ type UpdateDevicesRequest struct {
 	
 	ConnectionString *string `json:"connection_string,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	LastOnlineAt *time.Time `json:"last_online_at,omitempty"`
 	

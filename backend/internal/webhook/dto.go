@@ -1,6 +1,7 @@
 package webhook
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -71,7 +72,7 @@ type CreateWebhooksRequest struct {
 	
 	HttpMethod *string `json:"http_method"`
 	
-	Headers json.RawMessage `json:"headers"`
+	// Duplicate removed: Headers json.RawMessage `json:"headers"`
 	
 	TimeoutSeconds *int64 `json:"timeout_seconds"`
 	

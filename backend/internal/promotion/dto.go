@@ -1,6 +1,7 @@
 package promotion
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -87,9 +88,9 @@ type CreatePromotionsRequest struct {
 	
 	AppliesTo *string `json:"applies_to"`
 	
-	ApplicableProductIds json.RawMessage `json:"applicable_product_ids"`
+	// Duplicate removed: ApplicableProductIds json.RawMessage `json:"applicable_product_ids"`
 	
-	ApplicableCategoryIds json.RawMessage `json:"applicable_category_ids"`
+	// Duplicate removed: ApplicableCategoryIds json.RawMessage `json:"applicable_category_ids"`
 	
 	MinimumPurchaseAmount *float64 `json:"minimum_purchase_amount"`
 	
@@ -119,7 +120,7 @@ type CreatePromotionsRequest struct {
 	
 	TermsAndConditions *string `json:"terms_and_conditions"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -142,11 +143,10 @@ func (r *CreatePromotionsRequest) Validate() error {
 		return fmt.Errorf("promotion_type is required")
 	}
 	
-	if r.DiscountValue == nil {
-		return fmt.Errorf("discount_value is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
-	if r.StartDate == nil {
+	if r.StartDate.IsZero() {
 		return fmt.Errorf("start_date is required")
 	}
 	

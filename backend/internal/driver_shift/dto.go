@@ -73,7 +73,7 @@ type CreateDriverShiftsRequest struct {
 	
 	ActualEndTime *time.Time `json:"actual_end_time"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	TotalBreakMinutes *int64 `json:"total_break_minutes"`
 	
@@ -85,7 +85,7 @@ type CreateDriverShiftsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -102,7 +102,7 @@ func (r *CreateDriverShiftsRequest) Validate() error {
 		return fmt.Errorf("driver_id is required")
 	}
 	
-	if r.ShiftDate == nil {
+	if r.ShiftDate.IsZero() {
 		return fmt.Errorf("shift_date is required")
 	}
 	
@@ -130,7 +130,7 @@ type UpdateDriverShiftsRequest struct {
 	
 	ActualEndTime *time.Time `json:"actual_end_time,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	TotalBreakMinutes *int64 `json:"total_break_minutes,omitempty"`
 	

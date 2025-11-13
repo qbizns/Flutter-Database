@@ -1,6 +1,7 @@
 package posting_profile_document
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -41,7 +42,7 @@ type CreatePostingProfileDocumentsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 

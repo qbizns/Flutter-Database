@@ -3,8 +3,6 @@ package payment
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePaymen
 
 	// Convert DTO to entity
 	entity := &Payments{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SaleId: req.SaleId,
 		
@@ -107,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePaymen
 	}
 
 	s.logger.Info("created payments",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +141,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("payments not found or access denied")
 	}
 	
@@ -244,7 +242,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("payments not found or access denied")
 	}
 	
@@ -252,63 +250,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = *req.PaymentMethod
+		entity.PaymentMethod = req.PaymentMethod
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = *req.PaymentStatus
+		entity.PaymentStatus = req.PaymentStatus
 	}
 	
 	if req.Amount != nil {
-		entity.Amount = *req.Amount
+		entity.Amount = req.Amount
 	}
 	
 	if req.CardLastFour != nil {
-		entity.CardLastFour = *req.CardLastFour
+		entity.CardLastFour = req.CardLastFour
 	}
 	
 	if req.CardType != nil {
-		entity.CardType = *req.CardType
+		entity.CardType = req.CardType
 	}
 	
 	if req.TransactionId != nil {
-		entity.TransactionId = *req.TransactionId
+		entity.TransactionId = req.TransactionId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = *req.ReferenceNumber
+		entity.ReferenceNumber = req.ReferenceNumber
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = *req.AccountNumber
+		entity.AccountNumber = req.AccountNumber
 	}
 	
 	if req.AccountName != nil {
-		entity.AccountName = *req.AccountName
+		entity.AccountName = req.AccountName
 	}
 	
 	if req.PaymentDate != nil {
-		entity.PaymentDate = *req.PaymentDate
+		entity.PaymentDate = req.PaymentDate
 	}
 	
 	if req.ProcessedAt != nil {
-		entity.ProcessedAt = *req.ProcessedAt
+		entity.ProcessedAt = req.ProcessedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -361,7 +359,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get payments: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("payments not found or access denied")
 	}
 	

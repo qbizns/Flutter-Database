@@ -115,7 +115,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Budgets) err
 
 	r.logger.Info("created budgets",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

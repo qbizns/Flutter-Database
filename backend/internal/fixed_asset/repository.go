@@ -1,6 +1,7 @@
 package fixed_asset
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -187,7 +188,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *FixedAssets)
 
 	r.logger.Info("created fixed_assets",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

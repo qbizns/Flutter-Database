@@ -1,6 +1,7 @@
 package posting_document_type
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -65,7 +66,7 @@ type CreatePostingDocumentTypesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 

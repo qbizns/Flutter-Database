@@ -77,7 +77,7 @@ type CreateUserSessionsRequest struct {
 	
 	LastActivityAt *time.Time `json:"last_activity_at"`
 	
-	ExpiresAt time.Time `json:"expires_at"`
+	// Duplicate removed: ExpiresAt time.Time `json:"expires_at"`
 	
 	RevokedAt *time.Time `json:"revoked_at"`
 	
@@ -94,7 +94,7 @@ func (r *CreateUserSessionsRequest) Validate() error {
 		return fmt.Errorf("session_token is required")
 	}
 	
-	if r.ExpiresAt == nil {
+	if r.ExpiresAt.IsZero() {
 		return fmt.Errorf("expires_at is required")
 	}
 	

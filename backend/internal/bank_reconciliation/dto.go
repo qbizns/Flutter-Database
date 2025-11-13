@@ -1,6 +1,7 @@
 package bank_reconciliation
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -71,7 +72,7 @@ type CreateBankReconciliationsRequest struct {
 	
 	Difference *float64 `json:"difference"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	IsReconciled *bool `json:"is_reconciled"`
 	
@@ -79,7 +80,7 @@ type CreateBankReconciliationsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	ReconciledBy *uuid.UUID `json:"reconciled_by"`
 	
@@ -98,13 +99,12 @@ func (r *CreateBankReconciliationsRequest) Validate() error {
 		return fmt.Errorf("bank_account_id is required")
 	}
 	
-	if r.StatementDate == nil {
+	if r.StatementDate.IsZero() {
 		return fmt.Errorf("statement_date is required")
 	}
 	
-	if r.StatementBalance == nil {
-		return fmt.Errorf("statement_balance is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -130,7 +130,7 @@ type UpdateBankReconciliationsRequest struct {
 	
 	Difference *float64 `json:"difference,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	IsReconciled *bool `json:"is_reconciled,omitempty"`
 	

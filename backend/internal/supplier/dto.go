@@ -1,6 +1,7 @@
 package supplier
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -103,11 +104,11 @@ type CreateSuppliersRequest struct {
 	
 	LastOrderDate *time.Time `json:"last_order_date"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -170,7 +171,7 @@ type UpdateSuppliersRequest struct {
 	
 	LastOrderDate *time.Time `json:"last_order_date,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Notes *string `json:"notes,omitempty"`
 	

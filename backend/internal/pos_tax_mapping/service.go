@@ -3,8 +3,6 @@ package pos_tax_mapping
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosTax
 
 	// Convert DTO to entity
 	entity := &PosTaxMappings{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		PosTaxCode: req.PosTaxCode,
 		
@@ -117,7 +115,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosTax
 	}
 
 	s.logger.Info("created pos_tax_mappings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -153,7 +151,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_tax_mappings not found or access denied")
 	}
 	
@@ -254,7 +252,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_tax_mappings not found or access denied")
 	}
 	
@@ -262,83 +260,83 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PosTaxCode != nil {
-		entity.PosTaxCode = *req.PosTaxCode
+		entity.PosTaxCode = req.PosTaxCode
 	}
 	
 	if req.TaxCategoryCode != nil {
-		entity.TaxCategoryCode = *req.TaxCategoryCode
+		entity.TaxCategoryCode = req.TaxCategoryCode
 	}
 	
 	if req.PosTaxRate != nil {
-		entity.PosTaxRate = *req.PosTaxRate
+		entity.PosTaxRate = req.PosTaxRate
 	}
 	
 	if req.AccountingTaxId != nil {
-		entity.AccountingTaxId = *req.AccountingTaxId
+		entity.AccountingTaxId = req.AccountingTaxId
 	}
 	
 	if req.DefaultTaxAccountId != nil {
-		entity.DefaultTaxAccountId = *req.DefaultTaxAccountId
+		entity.DefaultTaxAccountId = req.DefaultTaxAccountId
 	}
 	
 	if req.DefaultTaxExpenseAccountId != nil {
-		entity.DefaultTaxExpenseAccountId = *req.DefaultTaxExpenseAccountId
+		entity.DefaultTaxExpenseAccountId = req.DefaultTaxExpenseAccountId
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.IsInclusive != nil {
-		entity.IsInclusive = *req.IsInclusive
+		entity.IsInclusive = req.IsInclusive
 	}
 	
 	if req.AppliesToSales != nil {
-		entity.AppliesToSales = *req.AppliesToSales
+		entity.AppliesToSales = req.AppliesToSales
 	}
 	
 	if req.AppliesToPurchases != nil {
-		entity.AppliesToPurchases = *req.AppliesToPurchases
+		entity.AppliesToPurchases = req.AppliesToPurchases
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = *req.EffectiveTo
+		entity.EffectiveTo = req.EffectiveTo
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 
@@ -391,7 +389,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get pos_tax_mappings: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("pos_tax_mappings not found or access denied")
 	}
 	

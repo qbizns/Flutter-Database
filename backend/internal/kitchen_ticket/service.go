@@ -3,8 +3,6 @@ package kitchen_ticket
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateKitche
 
 	// Convert DTO to entity
 	entity := &KitchenTickets{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -137,7 +135,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateKitche
 	}
 
 	s.logger.Info("created kitchen_tickets",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -173,7 +171,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("kitchen_tickets not found or access denied")
 	}
 	
@@ -274,7 +272,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("kitchen_tickets not found or access denied")
 	}
 	
@@ -282,111 +280,111 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.TicketNumber != nil {
-		entity.TicketNumber = *req.TicketNumber
+		entity.TicketNumber = req.TicketNumber
 	}
 	
 	if req.DisplaySequence != nil {
-		entity.DisplaySequence = *req.DisplaySequence
+		entity.DisplaySequence = req.DisplaySequence
 	}
 	
 	if req.OrderId != nil {
-		entity.OrderId = *req.OrderId
+		entity.OrderId = req.OrderId
 	}
 	
 	if req.KitchenStationId != nil {
-		entity.KitchenStationId = *req.KitchenStationId
+		entity.KitchenStationId = req.KitchenStationId
 	}
 	
 	if req.CourseId != nil {
-		entity.CourseId = *req.CourseId
+		entity.CourseId = req.CourseId
 	}
 	
 	if req.TicketType != nil {
-		entity.TicketType = *req.TicketType
+		entity.TicketType = req.TicketType
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.FiredAt != nil {
-		entity.FiredAt = *req.FiredAt
+		entity.FiredAt = req.FiredAt
 	}
 	
 	if req.AcknowledgedAt != nil {
-		entity.AcknowledgedAt = *req.AcknowledgedAt
+		entity.AcknowledgedAt = req.AcknowledgedAt
 	}
 	
 	if req.StartedAt != nil {
-		entity.StartedAt = *req.StartedAt
+		entity.StartedAt = req.StartedAt
 	}
 	
 	if req.ReadyAt != nil {
-		entity.ReadyAt = *req.ReadyAt
+		entity.ReadyAt = req.ReadyAt
 	}
 	
 	if req.BumpedAt != nil {
-		entity.BumpedAt = *req.BumpedAt
+		entity.BumpedAt = req.BumpedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.PrepTimeMinutes != nil {
-		entity.PrepTimeMinutes = *req.PrepTimeMinutes
+		entity.PrepTimeMinutes = req.PrepTimeMinutes
 	}
 	
 	if req.TargetPrepTime != nil {
-		entity.TargetPrepTime = *req.TargetPrepTime
+		entity.TargetPrepTime = req.TargetPrepTime
 	}
 	
 	if req.TableNumber != nil {
-		entity.TableNumber = *req.TableNumber
+		entity.TableNumber = req.TableNumber
 	}
 	
 	if req.OrderType != nil {
-		entity.OrderType = *req.OrderType
+		entity.OrderType = req.OrderType
 	}
 	
 	if req.Covers != nil {
-		entity.Covers = *req.Covers
+		entity.Covers = req.Covers
 	}
 	
 	if req.WaiterName != nil {
-		entity.WaiterName = *req.WaiterName
+		entity.WaiterName = req.WaiterName
 	}
 	
 	if req.SpecialInstructions != nil {
-		entity.SpecialInstructions = *req.SpecialInstructions
+		entity.SpecialInstructions = req.SpecialInstructions
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = *req.KitchenNotes
+		entity.KitchenNotes = req.KitchenNotes
 	}
 	
 	if req.DisplayConfig != nil {
-		entity.DisplayConfig = *req.DisplayConfig
+		entity.DisplayConfig = req.DisplayConfig
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'new', != nil {
@@ -451,7 +449,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get kitchen_tickets: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("kitchen_tickets not found or access denied")
 	}
 	

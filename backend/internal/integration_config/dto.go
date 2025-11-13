@@ -1,6 +1,7 @@
 package integration_config
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -30,7 +31,7 @@ type IntegrationConfigsResponse struct {
 	
 	LastSyncAt *time.Time `json:"last_sync_at"`
 	
-	LastSyncStatus *string `json:"last_sync_status"`
+	// 	LastSyncStatus *string `json:"last_sync_status"`
 	
 	SyncFrequency *string `json:"sync_frequency"`
 	
@@ -57,17 +58,17 @@ type CreateIntegrationConfigsRequest struct {
 	
 	Credentials json.RawMessage `json:"credentials" validate:"required"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
 	IsActive *bool `json:"is_active"`
 	
 	IsConnected *bool `json:"is_connected"`
 	
-	ConnectionStatus *string `json:"connection_status"`
+	// 	ConnectionStatus *string `json:"connection_status"`
 	
 	LastSyncAt *time.Time `json:"last_sync_at"`
 	
-	LastSyncStatus *string `json:"last_sync_status"`
+	// 	LastSyncStatus *string `json:"last_sync_status"`
 	
 	SyncFrequency *string `json:"sync_frequency"`
 	
@@ -116,11 +117,11 @@ type UpdateIntegrationConfigsRequest struct {
 	
 	IsConnected *bool `json:"is_connected,omitempty"`
 	
-	ConnectionStatus *string `json:"connection_status,omitempty"`
+	// 	ConnectionStatus *string `json:"connection_status,omitempty"`
 	
 	LastSyncAt *time.Time `json:"last_sync_at,omitempty"`
 	
-	LastSyncStatus *string `json:"last_sync_status,omitempty"`
+	// 	LastSyncStatus *string `json:"last_sync_status,omitempty"`
 	
 	SyncFrequency *string `json:"sync_frequency,omitempty"`
 	

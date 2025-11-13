@@ -3,8 +3,6 @@ package product_modifier_group
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 
 	// Convert DTO to entity
 	entity := &ProductModifierGroups{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ProductId: req.ProductId,
 		
@@ -95,7 +93,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 	}
 
 	s.logger.Info("created product_modifier_groups",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -131,7 +129,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_modifier_groups not found or access denied")
 	}
 	
@@ -232,7 +230,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_modifier_groups not found or access denied")
 	}
 	
@@ -240,39 +238,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ModifierGroupId != nil {
-		entity.ModifierGroupId = *req.ModifierGroupId
+		entity.ModifierGroupId = req.ModifierGroupId
 	}
 	
 	if req.IsRequired != nil {
-		entity.IsRequired = *req.IsRequired
+		entity.IsRequired = req.IsRequired
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.OverrideMinSelections != nil {
-		entity.OverrideMinSelections = *req.OverrideMinSelections
+		entity.OverrideMinSelections = req.OverrideMinSelections
 	}
 	
 	if req.OverrideMaxSelections != nil {
-		entity.OverrideMaxSelections = *req.OverrideMaxSelections
+		entity.OverrideMaxSelections = req.OverrideMaxSelections
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -325,7 +323,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get product_modifier_groups: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("product_modifier_groups not found or access denied")
 	}
 	

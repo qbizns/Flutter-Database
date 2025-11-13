@@ -121,7 +121,7 @@ type CreateLoyaltyRewardsRequest struct {
 	
 	MinimumTierLevel *int64 `json:"minimum_tier_level"`
 	
-	TierIds json.RawMessage `json:"tier_ids"`
+	// Duplicate removed: TierIds json.RawMessage `json:"tier_ids"`
 	
 	ImageUrl *string `json:"image_url" validate:"url"`
 	
@@ -137,7 +137,7 @@ type CreateLoyaltyRewardsRequest struct {
 	
 	RedemptionInstructions *string `json:"redemption_instructions"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

@@ -3,8 +3,6 @@ package sale
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSalesR
 
 	// Convert DTO to entity
 	entity := &Sales{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SaleNumber: req.SaleNumber,
 		
@@ -125,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSalesR
 	}
 
 	s.logger.Info("created sales",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -161,7 +159,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sales not found or access denied")
 	}
 	
@@ -262,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("sales not found or access denied")
 	}
 	
@@ -270,99 +268,99 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleNumber != nil {
-		entity.SaleNumber = *req.SaleNumber
+		entity.SaleNumber = req.SaleNumber
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = *req.ReferenceNumber
+		entity.ReferenceNumber = req.ReferenceNumber
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = *req.TransactionType
+		entity.TransactionType = req.TransactionType
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.CashierId != nil {
-		entity.CashierId = *req.CashierId
+		entity.CashierId = req.CashierId
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = *req.Subtotal
+		entity.Subtotal = req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = *req.TotalAmount
+		entity.TotalAmount = req.TotalAmount
 	}
 	
 	if req.PaidAmount != nil {
-		entity.PaidAmount = *req.PaidAmount
+		entity.PaidAmount = req.PaidAmount
 	}
 	
 	if req.ChangeAmount != nil {
-		entity.ChangeAmount = *req.ChangeAmount
+		entity.ChangeAmount = req.ChangeAmount
 	}
 	
 	if req.OutstandingAmount != nil {
-		entity.OutstandingAmount = *req.OutstandingAmount
+		entity.OutstandingAmount = req.OutstandingAmount
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = *req.PaymentStatus
+		entity.PaymentStatus = req.PaymentStatus
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = *req.DiscountType
+		entity.DiscountType = req.DiscountType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = *req.DiscountValue
+		entity.DiscountValue = req.DiscountValue
 	}
 	
 	if req.DiscountReason != nil {
-		entity.DiscountReason = *req.DiscountReason
+		entity.DiscountReason = req.DiscountReason
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = *req.TransactionDate
+		entity.TransactionDate = req.TransactionDate
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.InternalNotes != nil {
-		entity.InternalNotes = *req.InternalNotes
+		entity.InternalNotes = req.InternalNotes
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = *req.CustomFields
+		entity.CustomFields = req.CustomFields
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -415,7 +413,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get sales: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("sales not found or access denied")
 	}
 	

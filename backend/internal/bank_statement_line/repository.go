@@ -42,7 +42,7 @@ type BankStatementLines struct {
 	CounterpartyAccount *string `json:"counterparty_account" db:"counterparty_account"`
 	BankReference *string `json:"bank_reference" db:"bank_reference"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	Notes *string `json:"notes" db:"notes"`
 	CreatedAt *time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at" db:"updated_at"`

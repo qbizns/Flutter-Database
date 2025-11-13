@@ -3,8 +3,6 @@ package device
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDevice
 
 	// Convert DTO to entity
 	entity := &Devices{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -143,7 +141,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDevice
 	}
 
 	s.logger.Info("created devices",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -179,7 +177,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("devices not found or access denied")
 	}
 	
@@ -280,7 +278,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("devices not found or access denied")
 	}
 	
@@ -288,115 +286,115 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.DeviceCode != nil {
-		entity.DeviceCode = *req.DeviceCode
+		entity.DeviceCode = req.DeviceCode
 	}
 	
 	if req.DeviceName != nil {
-		entity.DeviceName = *req.DeviceName
+		entity.DeviceName = req.DeviceName
 	}
 	
 	if req.DeviceType != nil {
-		entity.DeviceType = *req.DeviceType
+		entity.DeviceType = req.DeviceType
 	}
 	
 	if req.Manufacturer != nil {
-		entity.Manufacturer = *req.Manufacturer
+		entity.Manufacturer = req.Manufacturer
 	}
 	
 	if req.Model != nil {
-		entity.Model = *req.Model
+		entity.Model = req.Model
 	}
 	
 	if req.SerialNumber != nil {
-		entity.SerialNumber = *req.SerialNumber
+		entity.SerialNumber = req.SerialNumber
 	}
 	
 	if req.MacAddress != nil {
-		entity.MacAddress = *req.MacAddress
+		entity.MacAddress = req.MacAddress
 	}
 	
 	if req.IpAddress != nil {
-		entity.IpAddress = *req.IpAddress
+		entity.IpAddress = req.IpAddress
 	}
 	
 	if req.DeviceConfig != nil {
-		entity.DeviceConfig = *req.DeviceConfig
+		entity.DeviceConfig = req.DeviceConfig
 	}
 	
 	if req.ScreenResolution != nil {
-		entity.ScreenResolution = *req.ScreenResolution
+		entity.ScreenResolution = req.ScreenResolution
 	}
 	
 	if req.OsVersion != nil {
-		entity.OsVersion = *req.OsVersion
+		entity.OsVersion = req.OsVersion
 	}
 	
 	if req.ConnectionType != nil {
-		entity.ConnectionType = *req.ConnectionType
+		entity.ConnectionType = req.ConnectionType
 	}
 	
 	if req.ConnectionString != nil {
-		entity.ConnectionString = *req.ConnectionString
+		entity.ConnectionString = req.ConnectionString
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.LastOnlineAt != nil {
-		entity.LastOnlineAt = *req.LastOnlineAt
+		entity.LastOnlineAt = req.LastOnlineAt
 	}
 	
 	if req.LastHeartbeatAt != nil {
-		entity.LastHeartbeatAt = *req.LastHeartbeatAt
+		entity.LastHeartbeatAt = req.LastHeartbeatAt
 	}
 	
 	if req.AssignedToUserId != nil {
-		entity.AssignedToUserId = *req.AssignedToUserId
+		entity.AssignedToUserId = req.AssignedToUserId
 	}
 	
 	if req.AssignedToStationId != nil {
-		entity.AssignedToStationId = *req.AssignedToStationId
+		entity.AssignedToStationId = req.AssignedToStationId
 	}
 	
 	if req.PurchaseDate != nil {
-		entity.PurchaseDate = *req.PurchaseDate
+		entity.PurchaseDate = req.PurchaseDate
 	}
 	
 	if req.WarrantyExpiryDate != nil {
-		entity.WarrantyExpiryDate = *req.WarrantyExpiryDate
+		entity.WarrantyExpiryDate = req.WarrantyExpiryDate
 	}
 	
 	if req.LicenseKey != nil {
-		entity.LicenseKey = *req.LicenseKey
+		entity.LicenseKey = req.LicenseKey
 	}
 	
 	if req.LicenseExpiryDate != nil {
-		entity.LicenseExpiryDate = *req.LicenseExpiryDate
+		entity.LicenseExpiryDate = req.LicenseExpiryDate
 	}
 	
 	if req.InstallationNotes != nil {
-		entity.InstallationNotes = *req.InstallationNotes
+		entity.InstallationNotes = req.InstallationNotes
 	}
 	
 	if req.MaintenanceNotes != nil {
-		entity.MaintenanceNotes = *req.MaintenanceNotes
+		entity.MaintenanceNotes = req.MaintenanceNotes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.'active', != nil {
@@ -469,7 +467,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get devices: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("devices not found or access denied")
 	}
 	

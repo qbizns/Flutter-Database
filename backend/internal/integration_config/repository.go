@@ -1,6 +1,7 @@
 package integration_config
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -39,7 +40,7 @@ type IntegrationConfigs struct {
 	IsConnected *bool `json:"is_connected" db:"is_connected"`
 	ConnectionStatus *string `json:"connection_status" db:"connection_status"`
 	LastSyncAt *time.Time `json:"last_sync_at" db:"last_sync_at"`
-	LastSyncStatus *string `json:"last_sync_status" db:"last_sync_status"`
+	// 	LastSyncStatus *string `json:"last_sync_status" db:"last_sync_status"`
 	SyncFrequency *string `json:"sync_frequency" db:"sync_frequency"`
 	WebhookUrl *string `json:"webhook_url" db:"webhook_url"`
 	WebhookSecret *string `json:"webhook_secret" db:"webhook_secret"`
@@ -123,7 +124,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *IntegrationC
 
 	r.logger.Info("created integration_configs",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

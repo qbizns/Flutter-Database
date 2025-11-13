@@ -1,6 +1,7 @@
 package your_table_name
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -41,9 +42,9 @@ type CreateYourTableNameRequest struct {
 	
 	Description *string `json:"description"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

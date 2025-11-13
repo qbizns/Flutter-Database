@@ -3,8 +3,6 @@ package role
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateRolesR
 
 	// Convert DTO to entity
 	entity := &Roles{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Name: req.Name,
 		
@@ -89,7 +87,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateRolesR
 	}
 
 	s.logger.Info("created roles",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -125,7 +123,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("roles not found or access denied")
 	}
 	
@@ -226,7 +224,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("roles not found or access denied")
 	}
 	
@@ -234,27 +232,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = *req.Slug
+		entity.Slug = req.Slug
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.IsSystemRole != nil {
-		entity.IsSystemRole = *req.IsSystemRole
+		entity.IsSystemRole = req.IsSystemRole
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.Settings != nil {
-		entity.Settings = *req.Settings
+		entity.Settings = req.Settings
 	}
 	
 
@@ -307,7 +305,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get roles: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("roles not found or access denied")
 	}
 	

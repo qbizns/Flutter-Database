@@ -91,7 +91,7 @@ type CreatePostingRuleLinesRequest struct {
 	
 	AmountExpression *string `json:"amount_expression"`
 	
-	MappingContext json.RawMessage `json:"mapping_context"`
+	// Duplicate removed: MappingContext json.RawMessage `json:"mapping_context"`
 	
 	DescriptionTemplate *string `json:"description_template"`
 	
@@ -99,7 +99,7 @@ type CreatePostingRuleLinesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	(accountSource string `json:"(account_source" validate:"required"`
 	

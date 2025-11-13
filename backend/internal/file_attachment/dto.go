@@ -89,7 +89,7 @@ type CreateFileAttachmentsRequest struct {
 	
 	ImageHeight *int64 `json:"image_height"`
 	
-	VirusScanStatus *string `json:"virus_scan_status"`
+	// 	VirusScanStatus *string `json:"virus_scan_status"`
 	
 	VirusScanAt *time.Time `json:"virus_scan_at"`
 	
@@ -164,7 +164,7 @@ type UpdateFileAttachmentsRequest struct {
 	
 	ImageHeight *int64 `json:"image_height,omitempty"`
 	
-	VirusScanStatus *string `json:"virus_scan_status,omitempty"`
+	// 	VirusScanStatus *string `json:"virus_scan_status,omitempty"`
 	
 	VirusScanAt *time.Time `json:"virus_scan_at,omitempty"`
 	

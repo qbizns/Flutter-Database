@@ -1,6 +1,7 @@
 package loyalty_points_rule
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -87,11 +88,11 @@ type CreateLoyaltyPointsRulesRequest struct {
 	
 	AppliesTo *string `json:"applies_to"`
 	
-	ApplicableProductIds json.RawMessage `json:"applicable_product_ids"`
+	// Duplicate removed: ApplicableProductIds json.RawMessage `json:"applicable_product_ids"`
 	
-	ApplicableCategoryIds json.RawMessage `json:"applicable_category_ids"`
+	// Duplicate removed: ApplicableCategoryIds json.RawMessage `json:"applicable_category_ids"`
 	
-	ApplicableTierIds json.RawMessage `json:"applicable_tier_ids"`
+	// Duplicate removed: ApplicableTierIds json.RawMessage `json:"applicable_tier_ids"`
 	
 	MinimumPurchaseAmount *float64 `json:"minimum_purchase_amount"`
 	
@@ -111,7 +112,7 @@ type CreateLoyaltyPointsRulesRequest struct {
 	
 	TermsAndConditions *string `json:"terms_and_conditions"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

@@ -3,8 +3,6 @@ package loyalty_points_rule
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 
 	// Convert DTO to entity
 	entity := &LoyaltyPointsRules{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		RuleCode: req.RuleCode,
 		
@@ -123,7 +121,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_points_rules",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -159,7 +157,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_points_rules not found or access denied")
 	}
 	
@@ -260,7 +258,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_points_rules not found or access denied")
 	}
 	
@@ -268,95 +266,95 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RuleCode != nil {
-		entity.RuleCode = *req.RuleCode
+		entity.RuleCode = req.RuleCode
 	}
 	
 	if req.RuleName != nil {
-		entity.RuleName = *req.RuleName
+		entity.RuleName = req.RuleName
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.RuleType != nil {
-		entity.RuleType = *req.RuleType
+		entity.RuleType = req.RuleType
 	}
 	
 	if req.PointsPerAmount != nil {
-		entity.PointsPerAmount = *req.PointsPerAmount
+		entity.PointsPerAmount = req.PointsPerAmount
 	}
 	
 	if req.FixedPoints != nil {
-		entity.FixedPoints = *req.FixedPoints
+		entity.FixedPoints = req.FixedPoints
 	}
 	
 	if req.Multiplier != nil {
-		entity.Multiplier = *req.Multiplier
+		entity.Multiplier = req.Multiplier
 	}
 	
 	if req.AppliesTo != nil {
-		entity.AppliesTo = *req.AppliesTo
+		entity.AppliesTo = req.AppliesTo
 	}
 	
 	if req.ApplicableProductIds != nil {
-		entity.ApplicableProductIds = *req.ApplicableProductIds
+		entity.ApplicableProductIds = req.ApplicableProductIds
 	}
 	
 	if req.ApplicableCategoryIds != nil {
-		entity.ApplicableCategoryIds = *req.ApplicableCategoryIds
+		entity.ApplicableCategoryIds = req.ApplicableCategoryIds
 	}
 	
 	if req.ApplicableTierIds != nil {
-		entity.ApplicableTierIds = *req.ApplicableTierIds
+		entity.ApplicableTierIds = req.ApplicableTierIds
 	}
 	
 	if req.MinimumPurchaseAmount != nil {
-		entity.MinimumPurchaseAmount = *req.MinimumPurchaseAmount
+		entity.MinimumPurchaseAmount = req.MinimumPurchaseAmount
 	}
 	
 	if req.MaximumPointsPerTransaction != nil {
-		entity.MaximumPointsPerTransaction = *req.MaximumPointsPerTransaction
+		entity.MaximumPointsPerTransaction = req.MaximumPointsPerTransaction
 	}
 	
 	if req.MaximumPointsPerDay != nil {
-		entity.MaximumPointsPerDay = *req.MaximumPointsPerDay
+		entity.MaximumPointsPerDay = req.MaximumPointsPerDay
 	}
 	
 	if req.MaximumPointsPerMonth != nil {
-		entity.MaximumPointsPerMonth = *req.MaximumPointsPerMonth
+		entity.MaximumPointsPerMonth = req.MaximumPointsPerMonth
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = *req.StartDate
+		entity.StartDate = req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = *req.EndDate
+		entity.EndDate = req.EndDate
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = *req.TermsAndConditions
+		entity.TermsAndConditions = req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -409,7 +407,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_points_rules: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_points_rules not found or access denied")
 	}
 	

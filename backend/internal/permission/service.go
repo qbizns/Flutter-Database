@@ -3,8 +3,6 @@ package permission
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -84,7 +82,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePermissionsRequest) (*P
 	}
 
 	s.logger.Info("created permissions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -204,27 +202,27 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePermissio
 	// Update fields
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = *req.Slug
+		entity.Slug = req.Slug
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Resource != nil {
-		entity.Resource = *req.Resource
+		entity.Resource = req.Resource
 	}
 	
 	if req.Action != nil {
-		entity.Action = *req.Action
+		entity.Action = req.Action
 	}
 	
 	if req.Category != nil {
-		entity.Category = *req.Category
+		entity.Category = req.Category
 	}
 	
 

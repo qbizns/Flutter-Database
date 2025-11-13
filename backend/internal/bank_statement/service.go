@@ -3,8 +3,6 @@ package bank_statement
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankSt
 
 	// Convert DTO to entity
 	entity := &BankStatements{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		BankAccountId: req.BankAccountId,
 		
@@ -105,7 +103,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankSt
 	}
 
 	s.logger.Info("created bank_statements",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +139,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_statements not found or access denied")
 	}
 	
@@ -242,7 +240,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_statements not found or access denied")
 	}
 	
@@ -250,59 +248,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankAccountId != nil {
-		entity.BankAccountId = *req.BankAccountId
+		entity.BankAccountId = req.BankAccountId
 	}
 	
 	if req.StatementNumber != nil {
-		entity.StatementNumber = *req.StatementNumber
+		entity.StatementNumber = req.StatementNumber
 	}
 	
 	if req.StatementDate != nil {
-		entity.StatementDate = *req.StatementDate
+		entity.StatementDate = req.StatementDate
 	}
 	
 	if req.PeriodStartDate != nil {
-		entity.PeriodStartDate = *req.PeriodStartDate
+		entity.PeriodStartDate = req.PeriodStartDate
 	}
 	
 	if req.PeriodEndDate != nil {
-		entity.PeriodEndDate = *req.PeriodEndDate
+		entity.PeriodEndDate = req.PeriodEndDate
 	}
 	
 	if req.OpeningBalance != nil {
-		entity.OpeningBalance = *req.OpeningBalance
+		entity.OpeningBalance = req.OpeningBalance
 	}
 	
 	if req.ClosingBalance != nil {
-		entity.ClosingBalance = *req.ClosingBalance
+		entity.ClosingBalance = req.ClosingBalance
 	}
 	
 	if req.ImportSource != nil {
-		entity.ImportSource = *req.ImportSource
+		entity.ImportSource = req.ImportSource
 	}
 	
 	if req.ImportSource != nil {
-		entity.ImportSource = *req.ImportSource
+		entity.ImportSource = req.ImportSource
 	}
 	
 	if req.ImportFileName != nil {
-		entity.ImportFileName = *req.ImportFileName
+		entity.ImportFileName = req.ImportFileName
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -355,7 +353,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get bank_statements: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("bank_statements not found or access denied")
 	}
 	

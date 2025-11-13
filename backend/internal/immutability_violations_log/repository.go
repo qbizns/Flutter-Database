@@ -1,6 +1,7 @@
 package immutability_violations_log
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -97,7 +98,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Immutability
 
 	r.logger.Info("created immutability_violations_log",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

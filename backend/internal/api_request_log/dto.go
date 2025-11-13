@@ -1,6 +1,7 @@
 package api_request_log
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -59,15 +60,15 @@ type CreateApiRequestLogsRequest struct {
 	
 	Path string `json:"path" validate:"required"`
 	
-	QueryParams json.RawMessage `json:"query_params"`
+	// Duplicate removed: QueryParams json.RawMessage `json:"query_params"`
 	
 	UserId *uuid.UUID `json:"user_id"`
 	
 	ApiKeyId *uuid.UUID `json:"api_key_id"`
 	
-	RequestHeaders json.RawMessage `json:"request_headers"`
+	// Duplicate removed: RequestHeaders json.RawMessage `json:"request_headers"`
 	
-	RequestBody json.RawMessage `json:"request_body"`
+	// Duplicate removed: RequestBody json.RawMessage `json:"request_body"`
 	
 	IpAddress *string `json:"ip_address"`
 	
@@ -75,9 +76,9 @@ type CreateApiRequestLogsRequest struct {
 	
 	StatusCode int64 `json:"status_code" validate:"required"`
 	
-	ResponseHeaders json.RawMessage `json:"response_headers"`
+	// Duplicate removed: ResponseHeaders json.RawMessage `json:"response_headers"`
 	
-	ResponseBody json.RawMessage `json:"response_body"`
+	// Duplicate removed: ResponseBody json.RawMessage `json:"response_body"`
 	
 	DurationMs *int64 `json:"duration_ms"`
 	

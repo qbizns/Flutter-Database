@@ -3,8 +3,6 @@ package general_ledger
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGenera
 
 	// Convert DTO to entity
 	entity := &GeneralLedger{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		JournalEntryId: req.JournalEntryId,
 		
@@ -131,7 +129,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGenera
 	}
 
 	s.logger.Info("created general_ledger",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -167,7 +165,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("general_ledger not found or access denied")
 	}
 	
@@ -268,7 +266,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("general_ledger not found or access denied")
 	}
 	
@@ -276,103 +274,103 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.JournalEntryLineId != nil {
-		entity.JournalEntryLineId = *req.JournalEntryLineId
+		entity.JournalEntryLineId = req.JournalEntryLineId
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = *req.TransactionDate
+		entity.TransactionDate = req.TransactionDate
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = *req.PostingDate
+		entity.PostingDate = req.PostingDate
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = *req.AccountingPeriodId
+		entity.AccountingPeriodId = req.AccountingPeriodId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = *req.FiscalYearId
+		entity.FiscalYearId = req.FiscalYearId
 	}
 	
 	if req.DebitAmount != nil {
-		entity.DebitAmount = *req.DebitAmount
+		entity.DebitAmount = req.DebitAmount
 	}
 	
 	if req.CreditAmount != nil {
-		entity.CreditAmount = *req.CreditAmount
+		entity.CreditAmount = req.CreditAmount
 	}
 	
 	if req.RunningDebitBalance != nil {
-		entity.RunningDebitBalance = *req.RunningDebitBalance
+		entity.RunningDebitBalance = req.RunningDebitBalance
 	}
 	
 	if req.RunningCreditBalance != nil {
-		entity.RunningCreditBalance = *req.RunningCreditBalance
+		entity.RunningCreditBalance = req.RunningCreditBalance
 	}
 	
 	if req.RunningBalance != nil {
-		entity.RunningBalance = *req.RunningBalance
+		entity.RunningBalance = req.RunningBalance
 	}
 	
 	if req.SourceModule != nil {
-		entity.SourceModule = *req.SourceModule
+		entity.SourceModule = req.SourceModule
 	}
 	
 	if req.SourceDocumentType != nil {
-		entity.SourceDocumentType = *req.SourceDocumentType
+		entity.SourceDocumentType = req.SourceDocumentType
 	}
 	
 	if req.SourceDocumentId != nil {
-		entity.SourceDocumentId = *req.SourceDocumentId
+		entity.SourceDocumentId = req.SourceDocumentId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = *req.ReferenceNumber
+		entity.ReferenceNumber = req.ReferenceNumber
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.Department != nil {
-		entity.Department = *req.Department
+		entity.Department = req.Department
 	}
 	
 	if req.ProjectCode != nil {
-		entity.ProjectCode = *req.ProjectCode
+		entity.ProjectCode = req.ProjectCode
 	}
 	
 	if req.CostCenter != nil {
-		entity.CostCenter = *req.CostCenter
+		entity.CostCenter = req.CostCenter
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.IsReversed != nil {
-		entity.IsReversed = *req.IsReversed
+		entity.IsReversed = req.IsReversed
 	}
 	
 	if req.ReversalGlId != nil {
-		entity.ReversalGlId = *req.ReversalGlId
+		entity.ReversalGlId = req.ReversalGlId
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.(debitAmount != nil {
@@ -433,7 +431,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get general_ledger: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("general_ledger not found or access denied")
 	}
 	

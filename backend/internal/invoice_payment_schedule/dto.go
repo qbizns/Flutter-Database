@@ -51,7 +51,7 @@ type CreateInvoicePaymentSchedulesRequest struct {
 	
 	AmountPaid *float64 `json:"amount_paid"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 }
 
@@ -70,7 +70,7 @@ func (r *CreateInvoicePaymentSchedulesRequest) Validate() error {
 		return fmt.Errorf("line_number is required")
 	}
 	
-	if r.DueDate == nil {
+	if r.DueDate.IsZero() {
 		return fmt.Errorf("due_date is required")
 	}
 	
@@ -100,7 +100,7 @@ type UpdateInvoicePaymentSchedulesRequest struct {
 	
 	AmountPaid *float64 `json:"amount_paid,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 }
 

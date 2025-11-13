@@ -3,8 +3,6 @@ package pos_account_mapping
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosAcc
 
 	// Convert DTO to entity
 	entity := &PosAccountMappings{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SourceType: req.SourceType,
 		
@@ -163,7 +161,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePosAcc
 	}
 
 	s.logger.Info("created pos_account_mappings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -199,7 +197,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_account_mappings not found or access denied")
 	}
 	
@@ -300,7 +298,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("pos_account_mappings not found or access denied")
 	}
 	
@@ -308,7 +306,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceType != nil {
-		entity.SourceType = *req.SourceType
+		entity.SourceType = req.SourceType
 	}
 	
 	if req.'product', != nil {
@@ -364,15 +362,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = *req.SourceId
+		entity.SourceId = req.SourceId
 	}
 	
 	if req.SourceCode != nil {
-		entity.SourceCode = *req.SourceCode
+		entity.SourceCode = req.SourceCode
 	}
 	
 	if req.Purpose != nil {
-		entity.Purpose = *req.Purpose
+		entity.Purpose = req.Purpose
 	}
 	
 	if req.'revenue', != nil {
@@ -420,51 +418,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.Conditions != nil {
-		entity.Conditions = *req.Conditions
+		entity.Conditions = req.Conditions
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = *req.EffectiveTo
+		entity.EffectiveTo = req.EffectiveTo
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.(sourceType != nil {
@@ -476,7 +474,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 
@@ -529,7 +527,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get pos_account_mappings: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("pos_account_mappings not found or access denied")
 	}
 	

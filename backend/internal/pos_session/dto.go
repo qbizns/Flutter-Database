@@ -87,7 +87,7 @@ type CreatePosSessionsRequest struct {
 	
 	ShiftId *uuid.UUID `json:"shift_id"`
 	
-	OpenedAt time.Time `json:"opened_at"`
+	// Duplicate removed: OpenedAt time.Time `json:"opened_at"`
 	
 	ClosedAt *time.Time `json:"closed_at"`
 	
@@ -115,7 +115,7 @@ type CreatePosSessionsRequest struct {
 	
 	DifferenceOther *float64 `json:"difference_other"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ZReportNumber *string `json:"z_report_number"`
 	
@@ -142,7 +142,7 @@ func (r *CreatePosSessionsRequest) Validate() error {
 		return fmt.Errorf("user_id is required")
 	}
 	
-	if r.OpenedAt == nil {
+	if r.OpenedAt.IsZero() {
 		return fmt.Errorf("opened_at is required")
 	}
 	
@@ -196,7 +196,7 @@ type UpdatePosSessionsRequest struct {
 	
 	DifferenceOther *float64 `json:"difference_other,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ZReportNumber *string `json:"z_report_number,omitempty"`
 	

@@ -1,6 +1,7 @@
 package organization_feature
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -55,9 +56,9 @@ type CreateOrganizationFeaturesRequest struct {
 	
 	IsAvailable *bool `json:"is_available"`
 	
-	Configuration json.RawMessage `json:"configuration"`
+	// Duplicate removed: Configuration json.RawMessage `json:"configuration"`
 	
-	Limits json.RawMessage `json:"limits"`
+	// Duplicate removed: Limits json.RawMessage `json:"limits"`
 	
 	EnabledAt *time.Time `json:"enabled_at"`
 	
@@ -67,7 +68,7 @@ type CreateOrganizationFeaturesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

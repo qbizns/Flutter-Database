@@ -3,8 +3,6 @@ package data_export_request
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDataEx
 
 	// Convert DTO to entity
 	entity := &DataExportRequests{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ExportType: req.ExportType,
 		
@@ -115,7 +113,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateDataEx
 	}
 
 	s.logger.Info("created data_export_requests",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +149,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("data_export_requests not found or access denied")
 	}
 	
@@ -252,7 +250,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("data_export_requests not found or access denied")
 	}
 	
@@ -260,79 +258,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ExportType != nil {
-		entity.ExportType = *req.ExportType
+		entity.ExportType = req.ExportType
 	}
 	
 	if req.ExportFormat != nil {
-		entity.ExportFormat = *req.ExportFormat
+		entity.ExportFormat = req.ExportFormat
 	}
 	
 	if req.DateFrom != nil {
-		entity.DateFrom = *req.DateFrom
+		entity.DateFrom = req.DateFrom
 	}
 	
 	if req.DateTo != nil {
-		entity.DateTo = *req.DateTo
+		entity.DateTo = req.DateTo
 	}
 	
 	if req.Filters != nil {
-		entity.Filters = *req.Filters
+		entity.Filters = req.Filters
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.FileName != nil {
-		entity.FileName = *req.FileName
+		entity.FileName = req.FileName
 	}
 	
 	if req.FileSize != nil {
-		entity.FileSize = *req.FileSize
+		entity.FileSize = req.FileSize
 	}
 	
 	if req.FilePath != nil {
-		entity.FilePath = *req.FilePath
+		entity.FilePath = req.FilePath
 	}
 	
 	if req.DownloadUrl != nil {
-		entity.DownloadUrl = *req.DownloadUrl
+		entity.DownloadUrl = req.DownloadUrl
 	}
 	
 	if req.DownloadExpiresAt != nil {
-		entity.DownloadExpiresAt = *req.DownloadExpiresAt
+		entity.DownloadExpiresAt = req.DownloadExpiresAt
 	}
 	
 	if req.TotalRecords != nil {
-		entity.TotalRecords = *req.TotalRecords
+		entity.TotalRecords = req.TotalRecords
 	}
 	
 	if req.ProcessedRecords != nil {
-		entity.ProcessedRecords = *req.ProcessedRecords
+		entity.ProcessedRecords = req.ProcessedRecords
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.RequestedBy != nil {
-		entity.RequestedBy = *req.RequestedBy
+		entity.RequestedBy = req.RequestedBy
 	}
 	
 	if req.RequestedAt != nil {
-		entity.RequestedAt = *req.RequestedAt
+		entity.RequestedAt = req.RequestedAt
 	}
 	
 	if req.StartedAt != nil {
-		entity.StartedAt = *req.StartedAt
+		entity.StartedAt = req.StartedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 
@@ -385,7 +383,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get data_export_requests: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("data_export_requests not found or access denied")
 	}
 	

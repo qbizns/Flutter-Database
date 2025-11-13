@@ -3,8 +3,6 @@ package goods_receipt_item
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGoodsR
 
 	// Convert DTO to entity
 	entity := &GoodsReceiptItems{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		GoodsReceiptId: req.GoodsReceiptId,
 		
@@ -93,7 +91,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGoodsR
 	}
 
 	s.logger.Info("created goods_receipt_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -129,7 +127,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("goods_receipt_items not found or access denied")
 	}
 	
@@ -230,7 +228,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("goods_receipt_items not found or access denied")
 	}
 	
@@ -238,35 +236,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GoodsReceiptId != nil {
-		entity.GoodsReceiptId = *req.GoodsReceiptId
+		entity.GoodsReceiptId = req.GoodsReceiptId
 	}
 	
 	if req.PurchaseOrderItemId != nil {
-		entity.PurchaseOrderItemId = *req.PurchaseOrderItemId
+		entity.PurchaseOrderItemId = req.PurchaseOrderItemId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = *req.QuantityReceived
+		entity.QuantityReceived = req.QuantityReceived
 	}
 	
 	if req.QuantityAccepted != nil {
-		entity.QuantityAccepted = *req.QuantityAccepted
+		entity.QuantityAccepted = req.QuantityAccepted
 	}
 	
 	if req.QuantityRejected != nil {
-		entity.QuantityRejected = *req.QuantityRejected
+		entity.QuantityRejected = req.QuantityRejected
 	}
 	
 	if req.RejectionReason != nil {
-		entity.RejectionReason = *req.RejectionReason
+		entity.RejectionReason = req.RejectionReason
 	}
 	
 
@@ -319,7 +317,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get goods_receipt_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("goods_receipt_items not found or access denied")
 	}
 	

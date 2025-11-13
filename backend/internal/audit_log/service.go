@@ -3,8 +3,6 @@ package audit_log
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAuditL
 
 	// Convert DTO to entity
 	entity := &AuditLogs{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		UserId: req.UserId,
 		
@@ -97,7 +95,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAuditL
 	}
 
 	s.logger.Info("created audit_logs",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -133,7 +131,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("audit_logs not found or access denied")
 	}
 	
@@ -234,7 +232,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("audit_logs not found or access denied")
 	}
 	
@@ -242,43 +240,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.Action != nil {
-		entity.Action = *req.Action
+		entity.Action = req.Action
 	}
 	
 	if req.ResourceType != nil {
-		entity.ResourceType = *req.ResourceType
+		entity.ResourceType = req.ResourceType
 	}
 	
 	if req.ResourceId != nil {
-		entity.ResourceId = *req.ResourceId
+		entity.ResourceId = req.ResourceId
 	}
 	
 	if req.OldValues != nil {
-		entity.OldValues = *req.OldValues
+		entity.OldValues = req.OldValues
 	}
 	
 	if req.NewValues != nil {
-		entity.NewValues = *req.NewValues
+		entity.NewValues = req.NewValues
 	}
 	
 	if req.Changes != nil {
-		entity.Changes = *req.Changes
+		entity.Changes = req.Changes
 	}
 	
 	if req.IpAddress != nil {
-		entity.IpAddress = *req.IpAddress
+		entity.IpAddress = req.IpAddress
 	}
 	
 	if req.UserAgent != nil {
-		entity.UserAgent = *req.UserAgent
+		entity.UserAgent = req.UserAgent
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -331,7 +329,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get audit_logs: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("audit_logs not found or access denied")
 	}
 	

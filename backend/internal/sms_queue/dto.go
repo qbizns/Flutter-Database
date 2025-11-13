@@ -22,7 +22,7 @@ type SmsQueueResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Provider *string `json:"provider"`
 	
@@ -57,9 +57,9 @@ type CreateSmsQueueRequest struct {
 	
 	Message string `json:"message" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Provider *string `json:"provider"`
 	
@@ -110,9 +110,9 @@ type UpdateSmsQueueRequest struct {
 	
 	Message *string `json:"message,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Provider *string `json:"provider,omitempty"`
 	

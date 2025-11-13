@@ -1,6 +1,7 @@
 package chart_of_account
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -175,7 +176,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ChartOfAccou
 
 	r.logger.Info("created chart_of_accounts",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

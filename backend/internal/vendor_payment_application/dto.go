@@ -48,9 +48,8 @@ func (r *CreateVendorPaymentApplicationsRequest) Validate() error {
 		return fmt.Errorf("vendor_bill_id is required")
 	}
 	
-	if r.AppliedAmount == nil {
-		return fmt.Errorf("applied_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

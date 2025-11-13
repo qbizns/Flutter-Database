@@ -3,8 +3,6 @@ package file_attachment
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFileAt
 
 	// Convert DTO to entity
 	entity := &FileAttachments{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		FileName: req.FileName,
 		
@@ -113,7 +111,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateFileAt
 	}
 
 	s.logger.Info("created file_attachments",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -149,7 +147,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("file_attachments not found or access denied")
 	}
 	
@@ -250,7 +248,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("file_attachments not found or access denied")
 	}
 	
@@ -258,75 +256,75 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FileName != nil {
-		entity.FileName = *req.FileName
+		entity.FileName = req.FileName
 	}
 	
 	if req.FileSize != nil {
-		entity.FileSize = *req.FileSize
+		entity.FileSize = req.FileSize
 	}
 	
 	if req.MimeType != nil {
-		entity.MimeType = *req.MimeType
+		entity.MimeType = req.MimeType
 	}
 	
 	if req.FileExtension != nil {
-		entity.FileExtension = *req.FileExtension
+		entity.FileExtension = req.FileExtension
 	}
 	
 	if req.StorageProvider != nil {
-		entity.StorageProvider = *req.StorageProvider
+		entity.StorageProvider = req.StorageProvider
 	}
 	
 	if req.StoragePath != nil {
-		entity.StoragePath = *req.StoragePath
+		entity.StoragePath = req.StoragePath
 	}
 	
 	if req.StorageUrl != nil {
-		entity.StorageUrl = *req.StorageUrl
+		entity.StorageUrl = req.StorageUrl
 	}
 	
 	if req.FileHash != nil {
-		entity.FileHash = *req.FileHash
+		entity.FileHash = req.FileHash
 	}
 	
 	if req.EntityType != nil {
-		entity.EntityType = *req.EntityType
+		entity.EntityType = req.EntityType
 	}
 	
 	if req.EntityId != nil {
-		entity.EntityId = *req.EntityId
+		entity.EntityId = req.EntityId
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Tags != nil {
-		entity.Tags = *req.Tags
+		entity.Tags = req.Tags
 	}
 	
 	if req.IsPublic != nil {
-		entity.IsPublic = *req.IsPublic
+		entity.IsPublic = req.IsPublic
 	}
 	
 	if req.ImageWidth != nil {
-		entity.ImageWidth = *req.ImageWidth
+		entity.ImageWidth = req.ImageWidth
 	}
 	
 	if req.ImageHeight != nil {
-		entity.ImageHeight = *req.ImageHeight
+		entity.ImageHeight = req.ImageHeight
 	}
 	
 	if req.VirusScanStatus != nil {
-		entity.VirusScanStatus = *req.VirusScanStatus
+		entity.VirusScanStatus = req.VirusScanStatus
 	}
 	
 	if req.VirusScanAt != nil {
-		entity.VirusScanAt = *req.VirusScanAt
+		entity.VirusScanAt = req.VirusScanAt
 	}
 	
 	if req.UploadedBy != nil {
-		entity.UploadedBy = *req.UploadedBy
+		entity.UploadedBy = req.UploadedBy
 	}
 	
 
@@ -379,7 +377,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get file_attachments: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("file_attachments not found or access denied")
 	}
 	

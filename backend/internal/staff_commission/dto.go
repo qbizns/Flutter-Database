@@ -103,7 +103,7 @@ type CreateStaffCommissionsRequest struct {
 	
 	CommissionAmount float64 `json:"commission_amount" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by"`
 	
@@ -119,7 +119,7 @@ type CreateStaffCommissionsRequest struct {
 	
 	CalculationNotes *string `json:"calculation_notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -142,7 +142,7 @@ func (r *CreateStaffCommissionsRequest) Validate() error {
 		return fmt.Errorf("employee_id is required")
 	}
 	
-	if r.CommissionDate == nil {
+	if r.CommissionDate.IsZero() {
 		return fmt.Errorf("commission_date is required")
 	}
 	
@@ -158,9 +158,8 @@ func (r *CreateStaffCommissionsRequest) Validate() error {
 		return fmt.Errorf("source_type is required")
 	}
 	
-	if r.CommissionAmount == nil {
-		return fmt.Errorf("commission_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -196,7 +195,7 @@ type UpdateStaffCommissionsRequest struct {
 	
 	CommissionAmount *float64 `json:"commission_amount,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by,omitempty"`
 	

@@ -135,7 +135,7 @@ type CreateDeliveryDriversRequest struct {
 	
 	EmploymentType *string `json:"employment_type"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	TotalDeliveries *int64 `json:"total_deliveries"`
 	
@@ -145,7 +145,7 @@ type CreateDeliveryDriversRequest struct {
 	
 	RatingCount *int64 `json:"rating_count"`
 	
-	CurrentLocation json.RawMessage `json:"current_location"`
+	// Duplicate removed: CurrentLocation json.RawMessage `json:"current_location"`
 	
 	IsAvailable *bool `json:"is_available"`
 	
@@ -155,9 +155,9 @@ type CreateDeliveryDriversRequest struct {
 	
 	PaymentMethod *string `json:"payment_method"`
 	
-	Documents json.RawMessage `json:"documents"`
+	// Duplicate removed: Documents json.RawMessage `json:"documents"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -230,7 +230,7 @@ type UpdateDeliveryDriversRequest struct {
 	
 	EmploymentType *string `json:"employment_type,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	TotalDeliveries *int64 `json:"total_deliveries,omitempty"`
 	

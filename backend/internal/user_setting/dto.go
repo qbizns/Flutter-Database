@@ -1,6 +1,7 @@
 package user_setting
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -53,7 +54,7 @@ type CreateUserSettingsRequest struct {
 	
 	DefaultDashboard *string `json:"default_dashboard"`
 	
-	DashboardLayout json.RawMessage `json:"dashboard_layout"`
+	// Duplicate removed: DashboardLayout json.RawMessage `json:"dashboard_layout"`
 	
 	ItemsPerPage *int64 `json:"items_per_page"`
 	
@@ -65,9 +66,9 @@ type CreateUserSettingsRequest struct {
 	
 	DefaultLocationId *uuid.UUID `json:"default_location_id"`
 	
-	QuickActions json.RawMessage `json:"quick_actions"`
+	// Duplicate removed: QuickActions json.RawMessage `json:"quick_actions"`
 	
-	CustomPreferences json.RawMessage `json:"custom_preferences"`
+	// Duplicate removed: CustomPreferences json.RawMessage `json:"custom_preferences"`
 	
 }
 

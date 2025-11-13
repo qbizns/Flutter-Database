@@ -1,6 +1,7 @@
 package loyalty_points_transaction
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -121,7 +122,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *LoyaltyPoint
 
 	r.logger.Info("created loyalty_points_transactions",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

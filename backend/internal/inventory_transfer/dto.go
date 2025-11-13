@@ -85,7 +85,7 @@ type CreateInventoryTransfersRequest struct {
 	
 	ToLocationId uuid.UUID `json:"to_location_id" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RequestedDate *time.Time `json:"requested_date"`
 	
@@ -109,7 +109,7 @@ type CreateInventoryTransfersRequest struct {
 	
 	RejectionReason *string `json:"rejection_reason"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -138,7 +138,7 @@ func (r *CreateInventoryTransfersRequest) Validate() error {
 		return fmt.Errorf("transfer_number is required")
 	}
 	
-	if r.TransferDate == nil {
+	if r.TransferDate.IsZero() {
 		return fmt.Errorf("transfer_date is required")
 	}
 	
@@ -168,7 +168,7 @@ type UpdateInventoryTransfersRequest struct {
 	
 	ToLocationId *uuid.UUID `json:"to_location_id,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	RequestedDate *time.Time `json:"requested_date,omitempty"`
 	

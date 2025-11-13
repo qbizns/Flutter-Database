@@ -90,7 +90,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *UnitsOfMeasu
 
 	r.logger.Info("created units_of_measure",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

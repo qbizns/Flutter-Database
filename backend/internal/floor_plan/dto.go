@@ -1,6 +1,7 @@
 package floor_plan
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -57,7 +58,7 @@ type CreateFloorPlansRequest struct {
 	
 	DisplayOrder *int64 `json:"display_order"`
 	
-	LayoutConfig json.RawMessage `json:"layout_config"`
+	// Duplicate removed: LayoutConfig json.RawMessage `json:"layout_config"`
 	
 	IsActive *bool `json:"is_active"`
 	
@@ -67,7 +68,7 @@ type CreateFloorPlansRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

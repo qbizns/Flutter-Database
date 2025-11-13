@@ -1,6 +1,7 @@
 package fixed_asset
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -135,7 +136,7 @@ type CreateFixedAssetsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -154,7 +155,7 @@ func (r *CreateFixedAssetsRequest) Validate() error {
 		return fmt.Errorf("asset_name is required")
 	}
 	
-	if r.AcquisitionDate == nil {
+	if r.AcquisitionDate.IsZero() {
 		return fmt.Errorf("acquisition_date is required")
 	}
 	
@@ -170,7 +171,7 @@ func (r *CreateFixedAssetsRequest) Validate() error {
 		return fmt.Errorf("useful_life_years is required")
 	}
 	
-	if r.DepreciationStartDate == nil {
+	if r.DepreciationStartDate.IsZero() {
 		return fmt.Errorf("depreciation_start_date is required")
 	}
 	

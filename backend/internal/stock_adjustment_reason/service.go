@@ -3,8 +3,6 @@ package stock_adjustment_reason
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateStockA
 
 	// Convert DTO to entity
 	entity := &StockAdjustmentReasons{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Code: req.Code,
 		
@@ -97,7 +95,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateStockA
 	}
 
 	s.logger.Info("created stock_adjustment_reasons",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -133,7 +131,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("stock_adjustment_reasons not found or access denied")
 	}
 	
@@ -234,7 +232,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("stock_adjustment_reasons not found or access denied")
 	}
 	
@@ -242,43 +240,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Code != nil {
-		entity.Code = *req.Code
+		entity.Code = req.Code
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.ReasonType != nil {
-		entity.ReasonType = *req.ReasonType
+		entity.ReasonType = req.ReasonType
 	}
 	
 	if req.IsSystemReason != nil {
-		entity.IsSystemReason = *req.IsSystemReason
+		entity.IsSystemReason = req.IsSystemReason
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = *req.RequiresApproval
+		entity.RequiresApproval = req.RequiresApproval
 	}
 	
 	if req.RequiresNotes != nil {
-		entity.RequiresNotes = *req.RequiresNotes
+		entity.RequiresNotes = req.RequiresNotes
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -331,7 +329,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get stock_adjustment_reasons: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("stock_adjustment_reasons not found or access denied")
 	}
 	

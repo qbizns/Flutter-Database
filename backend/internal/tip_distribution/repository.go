@@ -1,6 +1,7 @@
 package tip_distribution
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -167,7 +168,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *TipDistribut
 
 	r.logger.Info("created tip_distributions",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

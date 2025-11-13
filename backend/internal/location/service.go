@@ -3,8 +3,6 @@ package location
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLocati
 
 	// Convert DTO to entity
 	entity := &Locations{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationCode: req.LocationCode,
 		
@@ -125,7 +123,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLocati
 	}
 
 	s.logger.Info("created locations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -161,7 +159,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("locations not found or access denied")
 	}
 	
@@ -262,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("locations not found or access denied")
 	}
 	
@@ -270,99 +268,99 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationCode != nil {
-		entity.LocationCode = *req.LocationCode
+		entity.LocationCode = req.LocationCode
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.LocationType != nil {
-		entity.LocationType = *req.LocationType
+		entity.LocationType = req.LocationType
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.ManagerUserId != nil {
-		entity.ManagerUserId = *req.ManagerUserId
+		entity.ManagerUserId = req.ManagerUserId
 	}
 	
 	if req.AddressLine1 != nil {
-		entity.AddressLine1 = *req.AddressLine1
+		entity.AddressLine1 = req.AddressLine1
 	}
 	
 	if req.AddressLine2 != nil {
-		entity.AddressLine2 = *req.AddressLine2
+		entity.AddressLine2 = req.AddressLine2
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.State != nil {
-		entity.State = *req.State
+		entity.State = req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = *req.Country
+		entity.Country = req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = *req.PostalCode
+		entity.PostalCode = req.PostalCode
 	}
 	
 	if req.Timezone != nil {
-		entity.Timezone = *req.Timezone
+		entity.Timezone = req.Timezone
 	}
 	
 	if req.BusinessHours != nil {
-		entity.BusinessHours = *req.BusinessHours
+		entity.BusinessHours = req.BusinessHours
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsPrimary != nil {
-		entity.IsPrimary = *req.IsPrimary
+		entity.IsPrimary = req.IsPrimary
 	}
 	
 	if req.AllowSales != nil {
-		entity.AllowSales = *req.AllowSales
+		entity.AllowSales = req.AllowSales
 	}
 	
 	if req.AllowPurchases != nil {
-		entity.AllowPurchases = *req.AllowPurchases
+		entity.AllowPurchases = req.AllowPurchases
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = *req.TaxRate
+		entity.TaxRate = req.TaxRate
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Settings != nil {
-		entity.Settings = *req.Settings
+		entity.Settings = req.Settings
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -415,7 +413,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get locations: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("locations not found or access denied")
 	}
 	

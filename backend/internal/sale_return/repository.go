@@ -42,7 +42,7 @@ type SaleReturns struct {
 	RestockingFee *float64 `json:"restocking_fee" db:"restocking_fee"`
 	RefundMethod *string `json:"refund_method" db:"refund_method"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	ApprovedBy *uuid.UUID `json:"approved_by" db:"approved_by"`
 	ApprovedAt *time.Time `json:"approved_at" db:"approved_at"`
 	Notes *string `json:"notes" db:"notes"`
@@ -135,7 +135,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *SaleReturns)
 
 	r.logger.Info("created sale_returns",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

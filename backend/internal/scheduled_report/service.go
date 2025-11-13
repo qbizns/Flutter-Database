@@ -3,8 +3,6 @@ package scheduled_report
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSchedu
 
 	// Convert DTO to entity
 	entity := &ScheduledReports{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ReportName: req.ReportName,
 		
@@ -109,7 +107,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSchedu
 	}
 
 	s.logger.Info("created scheduled_reports",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -145,7 +143,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("scheduled_reports not found or access denied")
 	}
 	
@@ -246,7 +244,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("scheduled_reports not found or access denied")
 	}
 	
@@ -254,67 +252,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReportName != nil {
-		entity.ReportName = *req.ReportName
+		entity.ReportName = req.ReportName
 	}
 	
 	if req.ReportType != nil {
-		entity.ReportType = *req.ReportType
+		entity.ReportType = req.ReportType
 	}
 	
 	if req.ScheduleFrequency != nil {
-		entity.ScheduleFrequency = *req.ScheduleFrequency
+		entity.ScheduleFrequency = req.ScheduleFrequency
 	}
 	
 	if req.ScheduleDayOfWeek != nil {
-		entity.ScheduleDayOfWeek = *req.ScheduleDayOfWeek
+		entity.ScheduleDayOfWeek = req.ScheduleDayOfWeek
 	}
 	
 	if req.ScheduleDayOfMonth != nil {
-		entity.ScheduleDayOfMonth = *req.ScheduleDayOfMonth
+		entity.ScheduleDayOfMonth = req.ScheduleDayOfMonth
 	}
 	
 	if req.ScheduleTime != nil {
-		entity.ScheduleTime = *req.ScheduleTime
+		entity.ScheduleTime = req.ScheduleTime
 	}
 	
 	if req.ScheduleTimezone != nil {
-		entity.ScheduleTimezone = *req.ScheduleTimezone
+		entity.ScheduleTimezone = req.ScheduleTimezone
 	}
 	
 	if req.ReportParameters != nil {
-		entity.ReportParameters = *req.ReportParameters
+		entity.ReportParameters = req.ReportParameters
 	}
 	
 	if req.DeliveryMethod != nil {
-		entity.DeliveryMethod = *req.DeliveryMethod
+		entity.DeliveryMethod = req.DeliveryMethod
 	}
 	
 	if req.DeliveryRecipients != nil {
-		entity.DeliveryRecipients = *req.DeliveryRecipients
+		entity.DeliveryRecipients = req.DeliveryRecipients
 	}
 	
 	if req.OutputFormat != nil {
-		entity.OutputFormat = *req.OutputFormat
+		entity.OutputFormat = req.OutputFormat
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.LastRunAt != nil {
-		entity.LastRunAt = *req.LastRunAt
+		entity.LastRunAt = req.LastRunAt
 	}
 	
 	if req.LastRunStatus != nil {
-		entity.LastRunStatus = *req.LastRunStatus
+		entity.LastRunStatus = req.LastRunStatus
 	}
 	
 	if req.NextRunAt != nil {
-		entity.NextRunAt = *req.NextRunAt
+		entity.NextRunAt = req.NextRunAt
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -367,7 +365,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get scheduled_reports: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("scheduled_reports not found or access denied")
 	}
 	

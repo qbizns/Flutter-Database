@@ -3,8 +3,6 @@ package product_serial_number
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 
 	// Convert DTO to entity
 	entity := &ProductSerialNumbers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ProductId: req.ProductId,
 		
@@ -119,7 +117,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 	}
 
 	s.logger.Info("created product_serial_numbers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -155,7 +153,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_serial_numbers not found or access denied")
 	}
 	
@@ -256,7 +254,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("product_serial_numbers not found or access denied")
 	}
 	
@@ -264,87 +262,87 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.SerialNumber != nil {
-		entity.SerialNumber = *req.SerialNumber
+		entity.SerialNumber = req.SerialNumber
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = *req.PurchaseOrderId
+		entity.PurchaseOrderId = req.PurchaseOrderId
 	}
 	
 	if req.PurchaseDate != nil {
-		entity.PurchaseDate = *req.PurchaseDate
+		entity.PurchaseDate = req.PurchaseDate
 	}
 	
 	if req.PurchaseCost != nil {
-		entity.PurchaseCost = *req.PurchaseCost
+		entity.PurchaseCost = req.PurchaseCost
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = *req.SupplierId
+		entity.SupplierId = req.SupplierId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.SaleDate != nil {
-		entity.SaleDate = *req.SaleDate
+		entity.SaleDate = req.SaleDate
 	}
 	
 	if req.SalePrice != nil {
-		entity.SalePrice = *req.SalePrice
+		entity.SalePrice = req.SalePrice
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.WarrantyStartDate != nil {
-		entity.WarrantyStartDate = *req.WarrantyStartDate
+		entity.WarrantyStartDate = req.WarrantyStartDate
 	}
 	
 	if req.WarrantyEndDate != nil {
-		entity.WarrantyEndDate = *req.WarrantyEndDate
+		entity.WarrantyEndDate = req.WarrantyEndDate
 	}
 	
 	if req.WarrantyProvider != nil {
-		entity.WarrantyProvider = *req.WarrantyProvider
+		entity.WarrantyProvider = req.WarrantyProvider
 	}
 	
 	if req.WarrantyTerms != nil {
-		entity.WarrantyTerms = *req.WarrantyTerms
+		entity.WarrantyTerms = req.WarrantyTerms
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -397,7 +395,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get product_serial_numbers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("product_serial_numbers not found or access denied")
 	}
 	

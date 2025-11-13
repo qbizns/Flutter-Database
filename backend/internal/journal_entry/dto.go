@@ -95,7 +95,7 @@ type CreateJournalEntriesRequest struct {
 	
 	FiscalYearId *uuid.UUID `json:"fiscal_year_id"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	IsPosted *bool `json:"is_posted"`
 	
@@ -129,9 +129,9 @@ type CreateJournalEntriesRequest struct {
 	
 	PostedAt *time.Time `json:"posted_at"`
 	
-	Attachments json.RawMessage `json:"attachments"`
+	// Duplicate removed: Attachments json.RawMessage `json:"attachments"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -154,11 +154,11 @@ func (r *CreateJournalEntriesRequest) Validate() error {
 		return fmt.Errorf("entry_type_id is required")
 	}
 	
-	if r.EntryDate == nil {
+	if r.EntryDate.IsZero() {
 		return fmt.Errorf("entry_date is required")
 	}
 	
-	if r.PostingDate == nil {
+	if r.PostingDate.IsZero() {
 		return fmt.Errorf("posting_date is required")
 	}
 	
@@ -188,7 +188,7 @@ type UpdateJournalEntriesRequest struct {
 	
 	FiscalYearId *uuid.UUID `json:"fiscal_year_id,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	IsPosted *bool `json:"is_posted,omitempty"`
 	

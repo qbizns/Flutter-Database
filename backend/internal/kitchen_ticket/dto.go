@@ -101,7 +101,7 @@ type CreateKitchenTicketsRequest struct {
 	
 	Priority *int64 `json:"priority"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	FiredAt *time.Time `json:"fired_at"`
 	
@@ -131,9 +131,9 @@ type CreateKitchenTicketsRequest struct {
 	
 	KitchenNotes *string `json:"kitchen_notes"`
 	
-	DisplayConfig json.RawMessage `json:"display_config"`
+	// Duplicate removed: DisplayConfig json.RawMessage `json:"display_config"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -188,7 +188,7 @@ type UpdateKitchenTicketsRequest struct {
 	
 	Priority *int64 `json:"priority,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	FiredAt *time.Time `json:"fired_at,omitempty"`
 	

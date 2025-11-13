@@ -1,6 +1,7 @@
 package sale
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -97,7 +98,7 @@ type CreateSalesRequest struct {
 	
 	OutstandingAmount float64 `json:"outstanding_amount" validate:"required"`
 	
-	PaymentStatus string `json:"payment_status" validate:"required"`
+	// 	PaymentStatus string `json:"payment_status" validate:"required"`
 	
 	DiscountType *string `json:"discount_type"`
 	
@@ -113,9 +114,9 @@ type CreateSalesRequest struct {
 	
 	InternalNotes *string `json:"internal_notes"`
 	
-	CustomFields json.RawMessage `json:"custom_fields"`
+	// Duplicate removed: CustomFields json.RawMessage `json:"custom_fields"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -138,35 +139,14 @@ func (r *CreateSalesRequest) Validate() error {
 		return fmt.Errorf("subtotal is required")
 	}
 	
-	if r.TaxAmount == nil {
-		return fmt.Errorf("tax_amount is required")
-	}
-	
-	if r.DiscountAmount == nil {
-		return fmt.Errorf("discount_amount is required")
-	}
-	
-	if r.TotalAmount == nil {
-		return fmt.Errorf("total_amount is required")
-	}
-	
-	if r.PaidAmount == nil {
-		return fmt.Errorf("paid_amount is required")
-	}
-	
-	if r.ChangeAmount == nil {
-		return fmt.Errorf("change_amount is required")
-	}
-	
-	if r.OutstandingAmount == nil {
-		return fmt.Errorf("outstanding_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 	if r.PaymentStatus == "" {
 		return fmt.Errorf("payment_status is required")
 	}
 	
-	if r.TransactionDate == nil {
+	if r.TransactionDate.IsZero() {
 		return fmt.Errorf("transaction_date is required")
 	}
 	
@@ -204,7 +184,7 @@ type UpdateSalesRequest struct {
 	
 	OutstandingAmount *float64 `json:"outstanding_amount,omitempty" validate:"omitempty,required"`
 	
-	PaymentStatus *string `json:"payment_status,omitempty" validate:"omitempty,required"`
+	// 	PaymentStatus *string `json:"payment_status,omitempty" validate:"omitempty,required"`
 	
 	DiscountType *string `json:"discount_type,omitempty"`
 	

@@ -126,7 +126,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *UserSessions
 
 	r.logger.Info("created user_sessions",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

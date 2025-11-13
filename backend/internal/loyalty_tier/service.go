@@ -3,8 +3,6 @@ package loyalty_tier
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 
 	// Convert DTO to entity
 	entity := &LoyaltyTiers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		TierCode: req.TierCode,
 		
@@ -119,7 +117,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_tiers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -155,7 +153,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_tiers not found or access denied")
 	}
 	
@@ -256,7 +254,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_tiers not found or access denied")
 	}
 	
@@ -264,79 +262,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TierCode != nil {
-		entity.TierCode = *req.TierCode
+		entity.TierCode = req.TierCode
 	}
 	
 	if req.TierName != nil {
-		entity.TierName = *req.TierName
+		entity.TierName = req.TierName
 	}
 	
 	if req.TierLevel != nil {
-		entity.TierLevel = *req.TierLevel
+		entity.TierLevel = req.TierLevel
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.PointsThreshold != nil {
-		entity.PointsThreshold = *req.PointsThreshold
+		entity.PointsThreshold = req.PointsThreshold
 	}
 	
 	if req.AnnualSpendThreshold != nil {
-		entity.AnnualSpendThreshold = *req.AnnualSpendThreshold
+		entity.AnnualSpendThreshold = req.AnnualSpendThreshold
 	}
 	
 	if req.PurchaseCountThreshold != nil {
-		entity.PurchaseCountThreshold = *req.PurchaseCountThreshold
+		entity.PurchaseCountThreshold = req.PurchaseCountThreshold
 	}
 	
 	if req.PointsMultiplier != nil {
-		entity.PointsMultiplier = *req.PointsMultiplier
+		entity.PointsMultiplier = req.PointsMultiplier
 	}
 	
 	if req.DiscountPercentage != nil {
-		entity.DiscountPercentage = *req.DiscountPercentage
+		entity.DiscountPercentage = req.DiscountPercentage
 	}
 	
 	if req.TierColor != nil {
-		entity.TierColor = *req.TierColor
+		entity.TierColor = req.TierColor
 	}
 	
 	if req.TierIcon != nil {
-		entity.TierIcon = *req.TierIcon
+		entity.TierIcon = req.TierIcon
 	}
 	
 	if req.BadgeImageUrl != nil {
-		entity.BadgeImageUrl = *req.BadgeImageUrl
+		entity.BadgeImageUrl = req.BadgeImageUrl
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsDefault != nil {
-		entity.IsDefault = *req.IsDefault
+		entity.IsDefault = req.IsDefault
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.PointsThreshold != nil {
-		entity.PointsThreshold = *req.PointsThreshold
+		entity.PointsThreshold = req.PointsThreshold
 	}
 	
 	if req.(annualSpendThreshold != nil {
@@ -397,7 +395,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_tiers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_tiers not found or access denied")
 	}
 	

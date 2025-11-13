@@ -1,6 +1,7 @@
 package customer
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -133,9 +134,9 @@ type CreateCustomersRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	CustomFields json.RawMessage `json:"custom_fields"`
+	// Duplicate removed: CustomFields json.RawMessage `json:"custom_fields"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

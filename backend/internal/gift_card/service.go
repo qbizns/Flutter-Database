@@ -3,8 +3,6 @@ package gift_card
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGiftCa
 
 	// Convert DTO to entity
 	entity := &GiftCards{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		CardNumber: req.CardNumber,
 		
@@ -103,7 +101,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGiftCa
 	}
 
 	s.logger.Info("created gift_cards",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -139,7 +137,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("gift_cards not found or access denied")
 	}
 	
@@ -240,7 +238,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("gift_cards not found or access denied")
 	}
 	
@@ -248,55 +246,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CardNumber != nil {
-		entity.CardNumber = *req.CardNumber
+		entity.CardNumber = req.CardNumber
 	}
 	
 	if req.PinCode != nil {
-		entity.PinCode = *req.PinCode
+		entity.PinCode = req.PinCode
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.OriginalValue != nil {
-		entity.OriginalValue = *req.OriginalValue
+		entity.OriginalValue = req.OriginalValue
 	}
 	
 	if req.CurrentBalance != nil {
-		entity.CurrentBalance = *req.CurrentBalance
+		entity.CurrentBalance = req.CurrentBalance
 	}
 	
 	if req.IssuedDate != nil {
-		entity.IssuedDate = *req.IssuedDate
+		entity.IssuedDate = req.IssuedDate
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = *req.ExpiryDate
+		entity.ExpiryDate = req.ExpiryDate
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.IssuedByUserId != nil {
-		entity.IssuedByUserId = *req.IssuedByUserId
+		entity.IssuedByUserId = req.IssuedByUserId
 	}
 	
 	if req.IssuedLocationId != nil {
-		entity.IssuedLocationId = *req.IssuedLocationId
+		entity.IssuedLocationId = req.IssuedLocationId
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -349,7 +347,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get gift_cards: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("gift_cards not found or access denied")
 	}
 	

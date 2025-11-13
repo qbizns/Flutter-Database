@@ -3,8 +3,6 @@ package posting_profile_document
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -82,7 +80,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePostingProfileDocuments
 	}
 
 	s.logger.Info("created posting_profile_documents",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -202,23 +200,23 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingPr
 	// Update fields
 	
 	if req.PostingProfileId != nil {
-		entity.PostingProfileId = *req.PostingProfileId
+		entity.PostingProfileId = req.PostingProfileId
 	}
 	
 	if req.PostingDocumentTypeId != nil {
-		entity.PostingDocumentTypeId = *req.PostingDocumentTypeId
+		entity.PostingDocumentTypeId = req.PostingDocumentTypeId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 

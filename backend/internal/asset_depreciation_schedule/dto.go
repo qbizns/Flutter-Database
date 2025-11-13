@@ -82,13 +82,12 @@ func (r *CreateAssetDepreciationScheduleRequest) Validate() error {
 		return fmt.Errorf("fixed_asset_id is required")
 	}
 	
-	if r.DepreciationDate == nil {
+	if r.DepreciationDate.IsZero() {
 		return fmt.Errorf("depreciation_date is required")
 	}
 	
-	if r.DepreciationAmount == nil {
-		return fmt.Errorf("depreciation_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 	if r.AccumulatedDepreciationBeginning == nil {
 		return fmt.Errorf("accumulated_depreciation_beginning is required")

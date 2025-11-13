@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -87,7 +88,7 @@ type CreateOrganizationsRequest struct {
 	
 	PostalCode *string `json:"postal_code"`
 	
-	Status string `json:"status" validate:"required"`
+	// 	Status string `json:"status" validate:"required"`
 	
 	Plan *string `json:"plan"`
 	
@@ -103,9 +104,9 @@ type CreateOrganizationsRequest struct {
 	
 	MaxLocations *int64 `json:"max_locations"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -158,7 +159,7 @@ type UpdateOrganizationsRequest struct {
 	
 	PostalCode *string `json:"postal_code,omitempty"`
 	
-	Status *string `json:"status,omitempty" validate:"omitempty,required"`
+	// 	Status *string `json:"status,omitempty" validate:"omitempty,required"`
 	
 	Plan *string `json:"plan,omitempty"`
 	

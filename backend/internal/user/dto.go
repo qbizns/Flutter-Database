@@ -1,6 +1,7 @@
 package user
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -75,7 +76,7 @@ type CreateUsersRequest struct {
 	
 	AvatarUrl *string `json:"avatar_url" validate:"url"`
 	
-	Status string `json:"status" validate:"required"`
+	// 	Status string `json:"status" validate:"required"`
 	
 	EmailVerified *bool `json:"email_verified"`
 	
@@ -93,9 +94,9 @@ type CreateUsersRequest struct {
 	
 	TwoFactorSecret *string `json:"two_factor_secret"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -144,7 +145,7 @@ type UpdateUsersRequest struct {
 	
 	AvatarUrl *string `json:"avatar_url,omitempty" validate:"omitempty,url"`
 	
-	Status *string `json:"status,omitempty" validate:"omitempty,required"`
+	// 	Status *string `json:"status,omitempty" validate:"omitempty,required"`
 	
 	EmailVerified *bool `json:"email_verified,omitempty"`
 	

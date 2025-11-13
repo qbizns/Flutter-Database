@@ -1,6 +1,7 @@
 package e_invoicing_document_event
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -44,7 +45,7 @@ type EInvoicingDocumentEvents struct {
 	'statusCheck' *string `json:"'status_check'" db:"'status_check'"`
 	EventTimestamp time.Time `json:"event_timestamp" db:"event_timestamp"`
 	PreviousStatus *string `json:"previous_status" db:"previous_status"`
-	NewStatus *string `json:"new_status" db:"new_status"`
+	// 	NewStatus *string `json:"new_status" db:"new_status"`
 	EventDescription *string `json:"event_description" db:"event_description"`
 	EventData json.RawMessage `json:"event_data" db:"event_data"`
 	HttpStatusCode *int64 `json:"http_status_code" db:"http_status_code"`
@@ -170,7 +171,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EInvoicingDo
 
 	r.logger.Info("created e_invoicing_document_events",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

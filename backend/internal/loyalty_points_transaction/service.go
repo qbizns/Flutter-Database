@@ -3,8 +3,6 @@ package loyalty_points_transaction
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 
 	// Convert DTO to entity
 	entity := &LoyaltyPointsTransactions{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		CustomerId: req.CustomerId,
 		
@@ -105,7 +103,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_points_transactions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +139,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_points_transactions not found or access denied")
 	}
 	
@@ -242,7 +240,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_points_transactions not found or access denied")
 	}
 	
@@ -250,59 +248,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = *req.TransactionType
+		entity.TransactionType = req.TransactionType
 	}
 	
 	if req.Points != nil {
-		entity.Points = *req.Points
+		entity.Points = req.Points
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = *req.BalanceAfter
+		entity.BalanceAfter = req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.RedemptionId != nil {
-		entity.RedemptionId = *req.RedemptionId
+		entity.RedemptionId = req.RedemptionId
 	}
 	
 	if req.PointsRuleId != nil {
-		entity.PointsRuleId = *req.PointsRuleId
+		entity.PointsRuleId = req.PointsRuleId
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = *req.Reason
+		entity.Reason = req.Reason
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = *req.ExpiryDate
+		entity.ExpiryDate = req.ExpiryDate
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = *req.TransactionDate
+		entity.TransactionDate = req.TransactionDate
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -355,7 +353,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_points_transactions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_points_transactions not found or access denied")
 	}
 	

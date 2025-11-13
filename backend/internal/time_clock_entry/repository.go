@@ -1,6 +1,7 @@
 package time_clock_entry
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -167,7 +168,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *TimeClockEnt
 
 	r.logger.Info("created time_clock_entries",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

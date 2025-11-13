@@ -3,8 +3,6 @@ package bank_account
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankAc
 
 	// Convert DTO to entity
 	entity := &BankAccounts{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ChartAccountId: req.ChartAccountId,
 		
@@ -111,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBankAc
 	}
 
 	s.logger.Info("created bank_accounts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +145,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_accounts not found or access denied")
 	}
 	
@@ -248,7 +246,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("bank_accounts not found or access denied")
 	}
 	
@@ -256,71 +254,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ChartAccountId != nil {
-		entity.ChartAccountId = *req.ChartAccountId
+		entity.ChartAccountId = req.ChartAccountId
 	}
 	
 	if req.BankName != nil {
-		entity.BankName = *req.BankName
+		entity.BankName = req.BankName
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = *req.AccountNumber
+		entity.AccountNumber = req.AccountNumber
 	}
 	
 	if req.AccountType != nil {
-		entity.AccountType = *req.AccountType
+		entity.AccountType = req.AccountType
 	}
 	
 	if req.RoutingNumber != nil {
-		entity.RoutingNumber = *req.RoutingNumber
+		entity.RoutingNumber = req.RoutingNumber
 	}
 	
 	if req.SwiftCode != nil {
-		entity.SwiftCode = *req.SwiftCode
+		entity.SwiftCode = req.SwiftCode
 	}
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.CurrentBalance != nil {
-		entity.CurrentBalance = *req.CurrentBalance
+		entity.CurrentBalance = req.CurrentBalance
 	}
 	
 	if req.StatementBalance != nil {
-		entity.StatementBalance = *req.StatementBalance
+		entity.StatementBalance = req.StatementBalance
 	}
 	
 	if req.LastStatementDate != nil {
-		entity.LastStatementDate = *req.LastStatementDate
+		entity.LastStatementDate = req.LastStatementDate
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.OnlineBankingEnabled != nil {
-		entity.OnlineBankingEnabled = *req.OnlineBankingEnabled
+		entity.OnlineBankingEnabled = req.OnlineBankingEnabled
 	}
 	
 	if req.LastSyncDate != nil {
-		entity.LastSyncDate = *req.LastSyncDate
+		entity.LastSyncDate = req.LastSyncDate
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -373,7 +371,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get bank_accounts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("bank_accounts not found or access denied")
 	}
 	

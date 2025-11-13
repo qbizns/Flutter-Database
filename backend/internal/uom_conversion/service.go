@@ -3,8 +3,6 @@ package uom_conversion
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -78,7 +76,7 @@ func (s *Service) Create(ctx context.Context, req *CreateUomConversionsRequest) 
 	}
 
 	s.logger.Info("created uom_conversions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -198,15 +196,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUomConver
 	// Update fields
 	
 	if req.FromUomId != nil {
-		entity.FromUomId = *req.FromUomId
+		entity.FromUomId = req.FromUomId
 	}
 	
 	if req.ToUomId != nil {
-		entity.ToUomId = *req.ToUomId
+		entity.ToUomId = req.ToUomId
 	}
 	
 	if req.ConversionFactor != nil {
-		entity.ConversionFactor = *req.ConversionFactor
+		entity.ConversionFactor = req.ConversionFactor
 	}
 	
 

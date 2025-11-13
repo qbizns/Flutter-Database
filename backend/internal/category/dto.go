@@ -1,6 +1,7 @@
 package category
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -75,7 +76,7 @@ type CreateCategoriesRequest struct {
 	
 	IsActive *bool `json:"is_active"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

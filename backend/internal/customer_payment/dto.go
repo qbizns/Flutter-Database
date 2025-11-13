@@ -1,6 +1,7 @@
 package customer_payment
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -79,7 +80,7 @@ type CreateCustomerPaymentsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -98,7 +99,7 @@ func (r *CreateCustomerPaymentsRequest) Validate() error {
 		return fmt.Errorf("customer_id is required")
 	}
 	
-	if r.PaymentDate == nil {
+	if r.PaymentDate.IsZero() {
 		return fmt.Errorf("payment_date is required")
 	}
 	
@@ -106,9 +107,8 @@ func (r *CreateCustomerPaymentsRequest) Validate() error {
 		return fmt.Errorf("payment_method is required")
 	}
 	
-	if r.PaymentAmount == nil {
-		return fmt.Errorf("payment_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

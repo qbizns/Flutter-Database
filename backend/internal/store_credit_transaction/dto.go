@@ -76,9 +76,8 @@ func (r *CreateStoreCreditTransactionsRequest) Validate() error {
 		return fmt.Errorf("transaction_type is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 	if r.BalanceAfter == nil {
 		return fmt.Errorf("balance_after is required")

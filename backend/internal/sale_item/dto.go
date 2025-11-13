@@ -1,6 +1,7 @@
 package sale_item
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -91,9 +92,9 @@ type CreateSaleItemsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	CustomFields json.RawMessage `json:"custom_fields"`
+	// Duplicate removed: CustomFields json.RawMessage `json:"custom_fields"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 
@@ -270,7 +271,7 @@ type SaleItemsListResponse struct {
 type Pagination struct {
 	Page       int  `json:"page"`
 	Limit      int  `json:"limit"`
-	Total      int  `json:"total"`
+	// Duplicate removed: Total      int  `json:"total"`
 	TotalPages int  `json:"total_pages"`
 	HasNext    bool `json:"has_next"`
 	HasPrev    bool `json:"has_prev"`

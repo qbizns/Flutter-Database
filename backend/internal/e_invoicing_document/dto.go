@@ -121,7 +121,7 @@ type CreateEInvoicingDocumentsRequest struct {
 	
 	InternalReference *string `json:"internal_reference"`
 	
-	Status string `json:"status" validate:"required"`
+	// 	Status string `json:"status" validate:"required"`
 	
 	'draft', *string `json:"'draft',"`
 	
@@ -141,9 +141,9 @@ type CreateEInvoicingDocumentsRequest struct {
 	
 	ResponseAt *time.Time `json:"response_at"`
 	
-	RequestPayload json.RawMessage `json:"request_payload"`
+	// Duplicate removed: RequestPayload json.RawMessage `json:"request_payload"`
 	
-	ResponsePayload json.RawMessage `json:"response_payload"`
+	// Duplicate removed: ResponsePayload json.RawMessage `json:"response_payload"`
 	
 	ErrorCode *string `json:"error_code"`
 	
@@ -179,7 +179,7 @@ type CreateEInvoicingDocumentsRequest struct {
 	
 	SubmissionFormat *string `json:"submission_format"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -248,7 +248,7 @@ type UpdateEInvoicingDocumentsRequest struct {
 	
 	InternalReference *string `json:"internal_reference,omitempty"`
 	
-	Status *string `json:"status,omitempty" validate:"omitempty,required"`
+	// 	Status *string `json:"status,omitempty" validate:"omitempty,required"`
 	
 	'draft', *string `json:"'draft',,omitempty"`
 	

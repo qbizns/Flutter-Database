@@ -87,7 +87,7 @@ type CreateTimeClockEntriesRequest struct {
 	
 	DeviceId *uuid.UUID `json:"device_id"`
 	
-	GpsLocation json.RawMessage `json:"gps_location"`
+	// Duplicate removed: GpsLocation json.RawMessage `json:"gps_location"`
 	
 	IpAddress *string `json:"ip_address"`
 	
@@ -111,7 +111,7 @@ type CreateTimeClockEntriesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

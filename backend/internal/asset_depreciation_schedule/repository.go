@@ -118,7 +118,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *AssetDepreci
 
 	r.logger.Info("created asset_depreciation_schedule",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

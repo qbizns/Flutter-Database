@@ -3,8 +3,6 @@ package api_key
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateApiKey
 
 	// Convert DTO to entity
 	entity := &ApiKeys{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		KeyName: req.KeyName,
 		
@@ -101,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateApiKey
 	}
 
 	s.logger.Info("created api_keys",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +135,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("api_keys not found or access denied")
 	}
 	
@@ -238,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("api_keys not found or access denied")
 	}
 	
@@ -246,51 +244,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.KeyName != nil {
-		entity.KeyName = *req.KeyName
+		entity.KeyName = req.KeyName
 	}
 	
 	if req.KeyPrefix != nil {
-		entity.KeyPrefix = *req.KeyPrefix
+		entity.KeyPrefix = req.KeyPrefix
 	}
 	
 	if req.KeyHash != nil {
-		entity.KeyHash = *req.KeyHash
+		entity.KeyHash = req.KeyHash
 	}
 	
 	if req.Scopes != nil {
-		entity.Scopes = *req.Scopes
+		entity.Scopes = req.Scopes
 	}
 	
 	if req.AllowedIps != nil {
-		entity.AllowedIps = *req.AllowedIps
+		entity.AllowedIps = req.AllowedIps
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.LastUsedAt != nil {
-		entity.LastUsedAt = *req.LastUsedAt
+		entity.LastUsedAt = req.LastUsedAt
 	}
 	
 	if req.UsageCount != nil {
-		entity.UsageCount = *req.UsageCount
+		entity.UsageCount = req.UsageCount
 	}
 	
 	if req.RateLimitPerMinute != nil {
-		entity.RateLimitPerMinute = *req.RateLimitPerMinute
+		entity.RateLimitPerMinute = req.RateLimitPerMinute
 	}
 	
 	if req.RateLimitPerHour != nil {
-		entity.RateLimitPerHour = *req.RateLimitPerHour
+		entity.RateLimitPerHour = req.RateLimitPerHour
 	}
 	
 	if req.ExpiresAt != nil {
-		entity.ExpiresAt = *req.ExpiresAt
+		entity.ExpiresAt = req.ExpiresAt
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -343,7 +341,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get api_keys: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("api_keys not found or access denied")
 	}
 	

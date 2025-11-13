@@ -1,6 +1,7 @@
 package location
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -99,7 +100,7 @@ type CreateLocationsRequest struct {
 	
 	Timezone *string `json:"timezone"`
 	
-	BusinessHours json.RawMessage `json:"business_hours"`
+	// Duplicate removed: BusinessHours json.RawMessage `json:"business_hours"`
 	
 	IsActive *bool `json:"is_active"`
 	
@@ -113,9 +114,9 @@ type CreateLocationsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

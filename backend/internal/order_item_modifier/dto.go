@@ -1,6 +1,7 @@
 package order_item_modifier
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -59,7 +60,7 @@ type CreateOrderItemModifiersRequest struct {
 	
 	DisplayOrder *int64 `json:"display_order"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

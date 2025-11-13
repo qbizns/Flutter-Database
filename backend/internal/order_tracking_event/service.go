@@ -3,8 +3,6 @@ package order_tracking_event
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderT
 
 	// Convert DTO to entity
 	entity := &OrderTrackingEvents{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		OrderId: req.OrderId,
 		
@@ -111,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateOrderT
 	}
 
 	s.logger.Info("created order_tracking_events",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +145,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("order_tracking_events not found or access denied")
 	}
 	
@@ -248,7 +246,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("order_tracking_events not found or access denied")
 	}
 	
@@ -256,51 +254,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderId != nil {
-		entity.OrderId = *req.OrderId
+		entity.OrderId = req.OrderId
 	}
 	
 	if req.DeliveryAssignmentId != nil {
-		entity.DeliveryAssignmentId = *req.DeliveryAssignmentId
+		entity.DeliveryAssignmentId = req.DeliveryAssignmentId
 	}
 	
 	if req.EventType != nil {
-		entity.EventType = *req.EventType
+		entity.EventType = req.EventType
 	}
 	
 	if req.EventTimestamp != nil {
-		entity.EventTimestamp = *req.EventTimestamp
+		entity.EventTimestamp = req.EventTimestamp
 	}
 	
 	if req.EventMessage != nil {
-		entity.EventMessage = *req.EventMessage
+		entity.EventMessage = req.EventMessage
 	}
 	
 	if req.Location != nil {
-		entity.Location = *req.Location
+		entity.Location = req.Location
 	}
 	
 	if req.LocationName != nil {
-		entity.LocationName = *req.LocationName
+		entity.LocationName = req.LocationName
 	}
 	
 	if req.ActorType != nil {
-		entity.ActorType = *req.ActorType
+		entity.ActorType = req.ActorType
 	}
 	
 	if req.ActorId != nil {
-		entity.ActorId = *req.ActorId
+		entity.ActorId = req.ActorId
 	}
 	
 	if req.ActorName != nil {
-		entity.ActorName = *req.ActorName
+		entity.ActorName = req.ActorName
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.'orderPlaced', != nil {
@@ -373,7 +371,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get order_tracking_events: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("order_tracking_events not found or access denied")
 	}
 	

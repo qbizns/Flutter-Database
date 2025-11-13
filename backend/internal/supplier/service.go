@@ -3,8 +3,6 @@ package supplier
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSuppli
 
 	// Convert DTO to entity
 	entity := &Suppliers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SupplierCode: req.SupplierCode,
 		
@@ -121,7 +119,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateSuppli
 	}
 
 	s.logger.Info("created suppliers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -157,7 +155,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("suppliers not found or access denied")
 	}
 	
@@ -258,7 +256,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("suppliers not found or access denied")
 	}
 	
@@ -266,91 +264,91 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SupplierCode != nil {
-		entity.SupplierCode = *req.SupplierCode
+		entity.SupplierCode = req.SupplierCode
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.ContactPerson != nil {
-		entity.ContactPerson = *req.ContactPerson
+		entity.ContactPerson = req.ContactPerson
 	}
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.Address != nil {
-		entity.Address = *req.Address
+		entity.Address = req.Address
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.State != nil {
-		entity.State = *req.State
+		entity.State = req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = *req.Country
+		entity.Country = req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = *req.PostalCode
+		entity.PostalCode = req.PostalCode
 	}
 	
 	if req.TaxNumber != nil {
-		entity.TaxNumber = *req.TaxNumber
+		entity.TaxNumber = req.TaxNumber
 	}
 	
 	if req.PaymentTerms != nil {
-		entity.PaymentTerms = *req.PaymentTerms
+		entity.PaymentTerms = req.PaymentTerms
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = *req.CreditLimit
+		entity.CreditLimit = req.CreditLimit
 	}
 	
 	if req.OutstandingBalance != nil {
-		entity.OutstandingBalance = *req.OutstandingBalance
+		entity.OutstandingBalance = req.OutstandingBalance
 	}
 	
 	if req.TotalPurchases != nil {
-		entity.TotalPurchases = *req.TotalPurchases
+		entity.TotalPurchases = req.TotalPurchases
 	}
 	
 	if req.TotalOrders != nil {
-		entity.TotalOrders = *req.TotalOrders
+		entity.TotalOrders = req.TotalOrders
 	}
 	
 	if req.LastOrderDate != nil {
-		entity.LastOrderDate = *req.LastOrderDate
+		entity.LastOrderDate = req.LastOrderDate
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -403,7 +401,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get suppliers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("suppliers not found or access denied")
 	}
 	

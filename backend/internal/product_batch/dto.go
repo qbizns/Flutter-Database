@@ -1,6 +1,7 @@
 package product_batch
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -48,7 +49,7 @@ type ProductBatchesResponse struct {
 	
 	TotalCost *float64 `json:"total_cost"`
 	
-	QualityStatus *string `json:"quality_status"`
+	// 	QualityStatus *string `json:"quality_status"`
 	
 	QualityCheckDate *time.Time `json:"quality_check_date"`
 	
@@ -93,7 +94,7 @@ type CreateProductBatchesRequest struct {
 	
 	LotNumber *string `json:"lot_number"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	InitialQuantity float64 `json:"initial_quantity" validate:"required"`
 	
@@ -117,7 +118,7 @@ type CreateProductBatchesRequest struct {
 	
 	TotalCost *float64 `json:"total_cost"`
 	
-	QualityStatus *string `json:"quality_status"`
+	// 	QualityStatus *string `json:"quality_status"`
 	
 	QualityCheckDate *time.Time `json:"quality_check_date"`
 	
@@ -127,7 +128,7 @@ type CreateProductBatchesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -162,7 +163,7 @@ func (r *CreateProductBatchesRequest) Validate() error {
 		return fmt.Errorf("current_quantity is required")
 	}
 	
-	if r.ReceivedDate == nil {
+	if r.ReceivedDate.IsZero() {
 		return fmt.Errorf("received_date is required")
 	}
 	
@@ -186,7 +187,7 @@ type UpdateProductBatchesRequest struct {
 	
 	LotNumber *string `json:"lot_number,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	InitialQuantity *float64 `json:"initial_quantity,omitempty" validate:"omitempty,required"`
 	
@@ -210,7 +211,7 @@ type UpdateProductBatchesRequest struct {
 	
 	TotalCost *float64 `json:"total_cost,omitempty"`
 	
-	QualityStatus *string `json:"quality_status,omitempty"`
+	// 	QualityStatus *string `json:"quality_status,omitempty"`
 	
 	QualityCheckDate *time.Time `json:"quality_check_date,omitempty"`
 	

@@ -1,6 +1,7 @@
 package system_health
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -103,7 +104,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *SystemHealth
 
 	r.logger.Info("created system_health",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

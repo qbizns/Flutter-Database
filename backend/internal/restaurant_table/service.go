@@ -3,8 +3,6 @@ package restaurant_table
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateRestau
 
 	// Convert DTO to entity
 	entity := &RestaurantTables{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -127,7 +125,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateRestau
 	}
 
 	s.logger.Info("created restaurant_tables",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -163,7 +161,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("restaurant_tables not found or access denied")
 	}
 	
@@ -264,7 +262,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("restaurant_tables not found or access denied")
 	}
 	
@@ -272,103 +270,103 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.FloorPlanId != nil {
-		entity.FloorPlanId = *req.FloorPlanId
+		entity.FloorPlanId = req.FloorPlanId
 	}
 	
 	if req.SectionId != nil {
-		entity.SectionId = *req.SectionId
+		entity.SectionId = req.SectionId
 	}
 	
 	if req.TableNumber != nil {
-		entity.TableNumber = *req.TableNumber
+		entity.TableNumber = req.TableNumber
 	}
 	
 	if req.TableName != nil {
-		entity.TableName = *req.TableName
+		entity.TableName = req.TableName
 	}
 	
 	if req.MinCapacity != nil {
-		entity.MinCapacity = *req.MinCapacity
+		entity.MinCapacity = req.MinCapacity
 	}
 	
 	if req.MaxCapacity != nil {
-		entity.MaxCapacity = *req.MaxCapacity
+		entity.MaxCapacity = req.MaxCapacity
 	}
 	
 	if req.TableShape != nil {
-		entity.TableShape = *req.TableShape
+		entity.TableShape = req.TableShape
 	}
 	
 	if req.IsCombinable != nil {
-		entity.IsCombinable = *req.IsCombinable
+		entity.IsCombinable = req.IsCombinable
 	}
 	
 	if req.PositionX != nil {
-		entity.PositionX = *req.PositionX
+		entity.PositionX = req.PositionX
 	}
 	
 	if req.PositionY != nil {
-		entity.PositionY = *req.PositionY
+		entity.PositionY = req.PositionY
 	}
 	
 	if req.Rotation != nil {
-		entity.Rotation = *req.Rotation
+		entity.Rotation = req.Rotation
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.CurrentCovers != nil {
-		entity.CurrentCovers = *req.CurrentCovers
+		entity.CurrentCovers = req.CurrentCovers
 	}
 	
 	if req.SeatedAt != nil {
-		entity.SeatedAt = *req.SeatedAt
+		entity.SeatedAt = req.SeatedAt
 	}
 	
 	if req.CurrentWaiterId != nil {
-		entity.CurrentWaiterId = *req.CurrentWaiterId
+		entity.CurrentWaiterId = req.CurrentWaiterId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.AllowOnlineReservation != nil {
-		entity.AllowOnlineReservation = *req.AllowOnlineReservation
+		entity.AllowOnlineReservation = req.AllowOnlineReservation
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = *req.ColorCode
+		entity.ColorCode = req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = *req.Icon
+		entity.Icon = req.Icon
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -421,7 +419,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get restaurant_tables: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("restaurant_tables not found or access denied")
 	}
 	

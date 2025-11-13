@@ -3,8 +3,6 @@ package background_job
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBackgr
 
 	// Convert DTO to entity
 	entity := &BackgroundJobs{
-		OrganizationID: orgID,
+		OrganizationId: &orgID,
 		
 		JobType: req.JobType,
 		
@@ -115,7 +113,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBackgr
 	}
 
 	s.logger.Info("created background_jobs",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +149,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if *entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("background_jobs not found or access denied")
 	}
 	
@@ -252,7 +250,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if *entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("background_jobs not found or access denied")
 	}
 	
@@ -260,79 +258,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JobType != nil {
-		entity.JobType = *req.JobType
+		entity.JobType = req.JobType
 	}
 	
 	if req.JobName != nil {
-		entity.JobName = *req.JobName
+		entity.JobName = req.JobName
 	}
 	
 	if req.QueueName != nil {
-		entity.QueueName = *req.QueueName
+		entity.QueueName = req.QueueName
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Payload != nil {
-		entity.Payload = *req.Payload
+		entity.Payload = req.Payload
 	}
 	
 	if req.Result != nil {
-		entity.Result = *req.Result
+		entity.Result = req.Result
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.ErrorDetails != nil {
-		entity.ErrorDetails = *req.ErrorDetails
+		entity.ErrorDetails = req.ErrorDetails
 	}
 	
 	if req.Attempts != nil {
-		entity.Attempts = *req.Attempts
+		entity.Attempts = req.Attempts
 	}
 	
 	if req.MaxAttempts != nil {
-		entity.MaxAttempts = *req.MaxAttempts
+		entity.MaxAttempts = req.MaxAttempts
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.ScheduledAt != nil {
-		entity.ScheduledAt = *req.ScheduledAt
+		entity.ScheduledAt = req.ScheduledAt
 	}
 	
 	if req.StartedAt != nil {
-		entity.StartedAt = *req.StartedAt
+		entity.StartedAt = req.StartedAt
 	}
 	
 	if req.CompletedAt != nil {
-		entity.CompletedAt = *req.CompletedAt
+		entity.CompletedAt = req.CompletedAt
 	}
 	
 	if req.FailedAt != nil {
-		entity.FailedAt = *req.FailedAt
+		entity.FailedAt = req.FailedAt
 	}
 	
 	if req.WorkerId != nil {
-		entity.WorkerId = *req.WorkerId
+		entity.WorkerId = req.WorkerId
 	}
 	
 	if req.ProcessingTimeout != nil {
-		entity.ProcessingTimeout = *req.ProcessingTimeout
+		entity.ProcessingTimeout = req.ProcessingTimeout
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -385,7 +383,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get background_jobs: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if *entity.OrganizationId != orgID {
 		return fmt.Errorf("background_jobs not found or access denied")
 	}
 	

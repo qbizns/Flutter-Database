@@ -1,6 +1,7 @@
 package restaurant_table
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -99,7 +100,7 @@ type CreateRestaurantTablesRequest struct {
 	
 	Rotation *int64 `json:"rotation"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	CurrentCovers *int64 `json:"current_covers"`
 	
@@ -119,7 +120,7 @@ type CreateRestaurantTablesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -176,7 +177,7 @@ type UpdateRestaurantTablesRequest struct {
 	
 	Rotation *int64 `json:"rotation,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	CurrentCovers *int64 `json:"current_covers,omitempty"`
 	

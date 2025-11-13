@@ -1,6 +1,7 @@
 package posting_rule
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -69,7 +70,7 @@ type CreatePostingRulesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

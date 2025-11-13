@@ -1,6 +1,7 @@
 package product_serial_number
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -155,7 +156,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ProductSeria
 
 	r.logger.Info("created product_serial_numbers",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

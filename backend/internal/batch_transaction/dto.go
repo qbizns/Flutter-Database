@@ -1,6 +1,7 @@
 package batch_transaction
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -57,7 +58,7 @@ type CreateBatchTransactionsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	TransactionDate *time.Time `json:"transaction_date"`
 	

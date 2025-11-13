@@ -1,6 +1,7 @@
 package loyalty_redemption
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -32,7 +33,7 @@ type LoyaltyRedemptionsResponse struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date"`
 	
-	FulfillmentStatus *string `json:"fulfillment_status"`
+	// 	FulfillmentStatus *string `json:"fulfillment_status"`
 	
 	FulfillmentNotes *string `json:"fulfillment_notes"`
 	
@@ -67,7 +68,7 @@ type CreateLoyaltyRedemptionsRequest struct {
 	
 	PointsRedeemed int64 `json:"points_redeemed" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	SaleId *uuid.UUID `json:"sale_id"`
 	
@@ -75,7 +76,7 @@ type CreateLoyaltyRedemptionsRequest struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date"`
 	
-	FulfillmentStatus *string `json:"fulfillment_status"`
+	// 	FulfillmentStatus *string `json:"fulfillment_status"`
 	
 	FulfillmentNotes *string `json:"fulfillment_notes"`
 	
@@ -85,7 +86,7 @@ type CreateLoyaltyRedemptionsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -132,7 +133,7 @@ type UpdateLoyaltyRedemptionsRequest struct {
 	
 	PointsRedeemed *int64 `json:"points_redeemed,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	SaleId *uuid.UUID `json:"sale_id,omitempty"`
 	
@@ -140,7 +141,7 @@ type UpdateLoyaltyRedemptionsRequest struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date,omitempty"`
 	
-	FulfillmentStatus *string `json:"fulfillment_status,omitempty"`
+	// 	FulfillmentStatus *string `json:"fulfillment_status,omitempty"`
 	
 	FulfillmentNotes *string `json:"fulfillment_notes,omitempty"`
 	

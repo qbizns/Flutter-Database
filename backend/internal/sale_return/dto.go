@@ -36,7 +36,7 @@ type SaleReturnsResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by"`
 	
@@ -77,9 +77,9 @@ type CreateSaleReturnsRequest struct {
 	
 	RefundMethod *string `json:"refund_method"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by"`
 	
@@ -106,7 +106,7 @@ func (r *CreateSaleReturnsRequest) Validate() error {
 		return fmt.Errorf("user_id is required")
 	}
 	
-	if r.ReturnDate == nil {
+	if r.ReturnDate.IsZero() {
 		return fmt.Errorf("return_date is required")
 	}
 	
@@ -140,9 +140,9 @@ type UpdateSaleReturnsRequest struct {
 	
 	RefundMethod *string `json:"refund_method,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by,omitempty"`
 	

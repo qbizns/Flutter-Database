@@ -1,6 +1,7 @@
 package delivery_assignment
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -235,7 +236,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DeliveryAssi
 
 	r.logger.Info("created delivery_assignments",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

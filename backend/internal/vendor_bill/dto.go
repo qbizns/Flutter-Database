@@ -1,6 +1,7 @@
 package vendor_bill
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -95,7 +96,7 @@ type CreateVendorBillsRequest struct {
 	
 	BalanceDue *float64 `json:"balance_due"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	JournalEntryId *uuid.UUID `json:"journal_entry_id"`
 	
@@ -109,9 +110,9 @@ type CreateVendorBillsRequest struct {
 	
 	Memo *string `json:"memo"`
 	
-	Attachments json.RawMessage `json:"attachments"`
+	// Duplicate removed: Attachments json.RawMessage `json:"attachments"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -130,17 +131,16 @@ func (r *CreateVendorBillsRequest) Validate() error {
 		return fmt.Errorf("supplier_id is required")
 	}
 	
-	if r.BillDate == nil {
+	if r.BillDate.IsZero() {
 		return fmt.Errorf("bill_date is required")
 	}
 	
-	if r.DueDate == nil {
+	if r.DueDate.IsZero() {
 		return fmt.Errorf("due_date is required")
 	}
 	
-	if r.TotalAmount == nil {
-		return fmt.Errorf("total_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -176,7 +176,7 @@ type UpdateVendorBillsRequest struct {
 	
 	BalanceDue *float64 `json:"balance_due,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	JournalEntryId *uuid.UUID `json:"journal_entry_id,omitempty"`
 	

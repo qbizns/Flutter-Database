@@ -1,6 +1,7 @@
 package sales_channel
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -65,7 +66,7 @@ type CreateSalesChannelsRequest struct {
 	
 	ApiEndpoint *string `json:"api_endpoint"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

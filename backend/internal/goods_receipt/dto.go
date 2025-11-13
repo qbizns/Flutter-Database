@@ -28,7 +28,7 @@ type GoodsReceiptsResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -57,9 +57,9 @@ type CreateGoodsReceiptsRequest struct {
 	
 	ReceivedBy uuid.UUID `json:"received_by" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -82,7 +82,7 @@ func (r *CreateGoodsReceiptsRequest) Validate() error {
 		return fmt.Errorf("location_id is required")
 	}
 	
-	if r.ReceiptDate == nil {
+	if r.ReceiptDate.IsZero() {
 		return fmt.Errorf("receipt_date is required")
 	}
 	
@@ -112,9 +112,9 @@ type UpdateGoodsReceiptsRequest struct {
 	
 	ReceivedBy *uuid.UUID `json:"received_by,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Notes *string `json:"notes,omitempty"`
 	

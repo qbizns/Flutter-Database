@@ -40,7 +40,7 @@ type EInvoicingDocumentEventsResponse struct {
 	
 	PreviousStatus *string `json:"previous_status"`
 	
-	NewStatus *string `json:"new_status"`
+	// 	NewStatus *string `json:"new_status"`
 	
 	EventDescription *string `json:"event_description"`
 	
@@ -97,13 +97,13 @@ type CreateEInvoicingDocumentEventsRequest struct {
 	
 	EventTimestamp time.Time `json:"event_timestamp" validate:"required"`
 	
-	PreviousStatus *string `json:"previous_status"`
+	// 	PreviousStatus *string `json:"previous_status"`
 	
-	NewStatus *string `json:"new_status"`
+	// 	NewStatus *string `json:"new_status"`
 	
 	EventDescription *string `json:"event_description"`
 	
-	EventData json.RawMessage `json:"event_data"`
+	// Duplicate removed: EventData json.RawMessage `json:"event_data"`
 	
 	HttpStatusCode *int64 `json:"http_status_code"`
 	
@@ -111,15 +111,15 @@ type CreateEInvoicingDocumentEventsRequest struct {
 	
 	ApiEndpoint *string `json:"api_endpoint"`
 	
-	RequestHeaders json.RawMessage `json:"request_headers"`
+	// Duplicate removed: RequestHeaders json.RawMessage `json:"request_headers"`
 	
-	ResponseHeaders json.RawMessage `json:"response_headers"`
+	// Duplicate removed: ResponseHeaders json.RawMessage `json:"response_headers"`
 	
 	ErrorCode *string `json:"error_code"`
 	
 	ErrorMessage *string `json:"error_message"`
 	
-	ErrorDetails json.RawMessage `json:"error_details"`
+	// Duplicate removed: ErrorDetails json.RawMessage `json:"error_details"`
 	
 	TriggeredBy string `json:"triggered_by" validate:"required"`
 	
@@ -180,9 +180,9 @@ type UpdateEInvoicingDocumentEventsRequest struct {
 	
 	EventTimestamp *time.Time `json:"event_timestamp,omitempty" validate:"omitempty,required"`
 	
-	PreviousStatus *string `json:"previous_status,omitempty"`
+	// 	PreviousStatus *string `json:"previous_status,omitempty"`
 	
-	NewStatus *string `json:"new_status,omitempty"`
+	// 	NewStatus *string `json:"new_status,omitempty"`
 	
 	EventDescription *string `json:"event_description,omitempty"`
 	

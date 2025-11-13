@@ -1,6 +1,7 @@
 package customer_tier_history
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -118,7 +119,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *CustomerTier
 
 	r.logger.Info("created customer_tier_history",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

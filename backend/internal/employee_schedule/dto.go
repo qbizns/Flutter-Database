@@ -79,7 +79,7 @@ type CreateEmployeeSchedulesRequest struct {
 	
 	BreakDurationMinutes *int64 `json:"break_duration_minutes"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RequiresApproval *bool `json:"requires_approval"`
 	
@@ -91,7 +91,7 @@ type CreateEmployeeSchedulesRequest struct {
 	
 	CancellationReason *string `json:"cancellation_reason"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -110,7 +110,7 @@ func (r *CreateEmployeeSchedulesRequest) Validate() error {
 		return fmt.Errorf("employee_id is required")
 	}
 	
-	if r.ScheduleDate == nil {
+	if r.ScheduleDate.IsZero() {
 		return fmt.Errorf("schedule_date is required")
 	}
 	
@@ -148,7 +148,7 @@ type UpdateEmployeeSchedulesRequest struct {
 	
 	BreakDurationMinutes *int64 `json:"break_duration_minutes,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	RequiresApproval *bool `json:"requires_approval,omitempty"`
 	

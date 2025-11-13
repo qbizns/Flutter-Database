@@ -3,8 +3,6 @@ package reconciliation_rule_model
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReconc
 
 	// Convert DTO to entity
 	entity := &ReconciliationRuleModels{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		RuleName: req.RuleName,
 		
@@ -111,7 +109,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateReconc
 	}
 
 	s.logger.Info("created reconciliation_rule_models",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -147,7 +145,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("reconciliation_rule_models not found or access denied")
 	}
 	
@@ -248,7 +246,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("reconciliation_rule_models not found or access denied")
 	}
 	
@@ -256,71 +254,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RuleName != nil {
-		entity.RuleName = *req.RuleName
+		entity.RuleName = req.RuleName
 	}
 	
 	if req.RuleCode != nil {
-		entity.RuleCode = *req.RuleCode
+		entity.RuleCode = req.RuleCode
 	}
 	
 	if req.Sequence != nil {
-		entity.Sequence = *req.Sequence
+		entity.Sequence = req.Sequence
 	}
 	
 	if req.AmountMin != nil {
-		entity.AmountMin = *req.AmountMin
+		entity.AmountMin = req.AmountMin
 	}
 	
 	if req.AmountMax != nil {
-		entity.AmountMax = *req.AmountMax
+		entity.AmountMax = req.AmountMax
 	}
 	
 	if req.DescriptionPattern != nil {
-		entity.DescriptionPattern = *req.DescriptionPattern
+		entity.DescriptionPattern = req.DescriptionPattern
 	}
 	
 	if req.CounterpartyPattern != nil {
-		entity.CounterpartyPattern = *req.CounterpartyPattern
+		entity.CounterpartyPattern = req.CounterpartyPattern
 	}
 	
 	if req.ReferencePattern != nil {
-		entity.ReferencePattern = *req.ReferencePattern
+		entity.ReferencePattern = req.ReferencePattern
 	}
 	
 	if req.JournalId != nil {
-		entity.JournalId = *req.JournalId
+		entity.JournalId = req.JournalId
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 	if req.AnalyticAccountId != nil {
-		entity.AnalyticAccountId = *req.AnalyticAccountId
+		entity.AnalyticAccountId = req.AnalyticAccountId
 	}
 	
 	if req.TaxId != nil {
-		entity.TaxId = *req.TaxId
+		entity.TaxId = req.TaxId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.AutoApply != nil {
-		entity.AutoApply = *req.AutoApply
+		entity.AutoApply = req.AutoApply
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -373,7 +371,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get reconciliation_rule_models: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("reconciliation_rule_models not found or access denied")
 	}
 	

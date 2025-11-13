@@ -130,7 +130,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *SaleReturnIt
 
 	r.logger.Info("created sale_return_items",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

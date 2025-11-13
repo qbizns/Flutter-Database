@@ -1,6 +1,7 @@
 package loyalty_tier_benefit
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -69,7 +70,7 @@ type CreateLoyaltyTierBenefitsRequest struct {
 	
 	TermsAndConditions *string `json:"terms_and_conditions"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 

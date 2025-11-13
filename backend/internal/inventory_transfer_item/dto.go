@@ -91,7 +91,7 @@ type CreateInventoryTransferItemsRequest struct {
 	
 	TotalCost *float64 `json:"total_cost"`
 	
-	ItemStatus *string `json:"item_status"`
+	// 	ItemStatus *string `json:"item_status"`
 	
 	VarianceQuantity *float64 `json:"variance_quantity"`
 	
@@ -99,7 +99,7 @@ type CreateInventoryTransferItemsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	QuantityRequested *string `json:"quantity_requested"`
 	
@@ -164,7 +164,7 @@ type UpdateInventoryTransferItemsRequest struct {
 	
 	TotalCost *float64 `json:"total_cost,omitempty"`
 	
-	ItemStatus *string `json:"item_status,omitempty"`
+	// 	ItemStatus *string `json:"item_status,omitempty"`
 	
 	VarianceQuantity *float64 `json:"variance_quantity,omitempty"`
 	

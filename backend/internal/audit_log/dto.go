@@ -1,6 +1,7 @@
 package audit_log
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -49,17 +50,17 @@ type CreateAuditLogsRequest struct {
 	
 	ResourceId *uuid.UUID `json:"resource_id"`
 	
-	OldValues json.RawMessage `json:"old_values"`
+	// Duplicate removed: OldValues json.RawMessage `json:"old_values"`
 	
-	NewValues json.RawMessage `json:"new_values"`
+	// Duplicate removed: NewValues json.RawMessage `json:"new_values"`
 	
-	Changes json.RawMessage `json:"changes"`
+	// Duplicate removed: Changes json.RawMessage `json:"changes"`
 	
 	IpAddress *string `json:"ip_address"`
 	
 	UserAgent *string `json:"user_agent"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 

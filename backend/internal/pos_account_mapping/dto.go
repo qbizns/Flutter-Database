@@ -175,7 +175,7 @@ type CreatePosAccountMappingsRequest struct {
 	
 	Priority *int64 `json:"priority"`
 	
-	Conditions json.RawMessage `json:"conditions"`
+	// Duplicate removed: Conditions json.RawMessage `json:"conditions"`
 	
 	EffectiveFrom *time.Time `json:"effective_from"`
 	
@@ -185,7 +185,7 @@ type CreatePosAccountMappingsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

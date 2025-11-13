@@ -1,6 +1,7 @@
 package kitchen_station
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -75,7 +76,7 @@ type CreateKitchenStationsRequest struct {
 	
 	AlertSoundEnabled *bool `json:"alert_sound_enabled"`
 	
-	DisplayConfig json.RawMessage `json:"display_config"`
+	// Duplicate removed: DisplayConfig json.RawMessage `json:"display_config"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

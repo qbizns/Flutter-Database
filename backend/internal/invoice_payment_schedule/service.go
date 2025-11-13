@@ -3,8 +3,6 @@ package invoice_payment_schedule
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvoic
 
 	// Convert DTO to entity
 	entity := &InvoicePaymentSchedules{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SourceType: req.SourceType,
 		
@@ -91,7 +89,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvoic
 	}
 
 	s.logger.Info("created invoice_payment_schedules",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -127,7 +125,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("invoice_payment_schedules not found or access denied")
 	}
 	
@@ -228,7 +226,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("invoice_payment_schedules not found or access denied")
 	}
 	
@@ -236,31 +234,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceType != nil {
-		entity.SourceType = *req.SourceType
+		entity.SourceType = req.SourceType
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = *req.SourceId
+		entity.SourceId = req.SourceId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = *req.LineNumber
+		entity.LineNumber = req.LineNumber
 	}
 	
 	if req.DueDate != nil {
-		entity.DueDate = *req.DueDate
+		entity.DueDate = req.DueDate
 	}
 	
 	if req.AmountDue != nil {
-		entity.AmountDue = *req.AmountDue
+		entity.AmountDue = req.AmountDue
 	}
 	
 	if req.AmountPaid != nil {
-		entity.AmountPaid = *req.AmountPaid
+		entity.AmountPaid = req.AmountPaid
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 
@@ -313,7 +311,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get invoice_payment_schedules: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("invoice_payment_schedules not found or access denied")
 	}
 	

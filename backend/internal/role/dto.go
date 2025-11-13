@@ -1,6 +1,7 @@
 package role
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -47,7 +48,7 @@ type CreateRolesRequest struct {
 	
 	IsDefault *bool `json:"is_default"`
 	
-	Settings json.RawMessage `json:"settings"`
+	// Duplicate removed: Settings json.RawMessage `json:"settings"`
 	
 }
 

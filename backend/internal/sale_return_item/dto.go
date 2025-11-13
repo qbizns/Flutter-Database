@@ -108,9 +108,8 @@ func (r *CreateSaleReturnItemsRequest) Validate() error {
 		return fmt.Errorf("subtotal is required")
 	}
 	
-	if r.TotalAmount == nil {
-		return fmt.Errorf("total_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

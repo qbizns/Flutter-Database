@@ -3,8 +3,6 @@ package batch_transaction
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBatchT
 
 	// Convert DTO to entity
 	entity := &BatchTransactions{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		BatchId: req.BatchId,
 		
@@ -99,7 +97,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBatchT
 	}
 
 	s.logger.Info("created batch_transactions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -135,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("batch_transactions not found or access denied")
 	}
 	
@@ -236,7 +234,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("batch_transactions not found or access denied")
 	}
 	
@@ -244,47 +242,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BatchId != nil {
-		entity.BatchId = *req.BatchId
+		entity.BatchId = req.BatchId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = *req.TransactionType
+		entity.TransactionType = req.TransactionType
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = *req.Quantity
+		entity.Quantity = req.Quantity
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = *req.BalanceAfter
+		entity.BalanceAfter = req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.InventoryTransferId != nil {
-		entity.InventoryTransferId = *req.InventoryTransferId
+		entity.InventoryTransferId = req.InventoryTransferId
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = *req.Reason
+		entity.Reason = req.Reason
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = *req.TransactionDate
+		entity.TransactionDate = req.TransactionDate
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -337,7 +335,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get batch_transactions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("batch_transactions not found or access denied")
 	}
 	

@@ -1,6 +1,7 @@
 package email_queue
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -38,7 +39,7 @@ type EmailQueueResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Provider *string `json:"provider"`
 	
@@ -85,11 +86,11 @@ type CreateEmailQueueRequest struct {
 	
 	TemplateName *string `json:"template_name"`
 	
-	TemplateData json.RawMessage `json:"template_data"`
+	// Duplicate removed: TemplateData json.RawMessage `json:"template_data"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Provider *string `json:"provider"`
 	
@@ -154,9 +155,9 @@ type UpdateEmailQueueRequest struct {
 	
 	TemplateData *json.RawMessage `json:"template_data,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Provider *string `json:"provider,omitempty"`
 	

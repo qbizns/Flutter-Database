@@ -1,6 +1,7 @@
 package webhook_delivery
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -35,7 +36,7 @@ type WebhookDeliveries struct {
 	EventType string `json:"event_type" db:"event_type"`
 	EventId uuid.UUID `json:"event_id" db:"event_id"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	RequestUrl string `json:"request_url" db:"request_url"`
 	RequestMethod string `json:"request_method" db:"request_method"`
 	RequestHeaders json.RawMessage `json:"request_headers" db:"request_headers"`
@@ -134,7 +135,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *WebhookDeliv
 
 	r.logger.Info("created webhook_deliveries",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

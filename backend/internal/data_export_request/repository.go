@@ -1,6 +1,7 @@
 package data_export_request
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -37,7 +38,7 @@ type DataExportRequests struct {
 	DateTo *time.Time `json:"date_to" db:"date_to"`
 	Filters json.RawMessage `json:"filters" db:"filters"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	FileName *string `json:"file_name" db:"file_name"`
 	FileSize *int64 `json:"file_size" db:"file_size"`
 	FilePath *string `json:"file_path" db:"file_path"`
@@ -141,7 +142,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DataExportRe
 
 	r.logger.Info("created data_export_requests",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

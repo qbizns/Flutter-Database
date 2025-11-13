@@ -88,15 +88,15 @@ type PosPostingAuditResponse struct {
 	
 	UpdatedBy *uuid.UUID `json:"updated_by"`
 	
-	(postingStatus string `json:"(posting_status"`
+	// 	(postingStatus string `json:"(posting_status"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
-	(postingStatus string `json:"(posting_status"`
+	// 	(postingStatus string `json:"(posting_status"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
 	(ABS(COALESCE(totalDebit, *string `json:"(ABS(COALESCE(total_debit,"`
 	
@@ -111,7 +111,7 @@ type CreatePosPostingAuditRequest struct {
 	
 	SourceReference *string `json:"source_reference"`
 	
-	PostingStatus string `json:"posting_status" validate:"required"`
+	// 	PostingStatus string `json:"posting_status" validate:"required"`
 	
 	'pending', *string `json:"'pending',"`
 	
@@ -141,7 +141,7 @@ type CreatePosPostingAuditRequest struct {
 	
 	ErrorMessage *string `json:"error_message"`
 	
-	ErrorDetails json.RawMessage `json:"error_details"`
+	// Duplicate removed: ErrorDetails json.RawMessage `json:"error_details"`
 	
 	RetryCount *int64 `json:"retry_count"`
 	
@@ -163,25 +163,25 @@ type CreatePosPostingAuditRequest struct {
 	
 	CurrencyCode *string `json:"currency_code"`
 	
-	PostingContext json.RawMessage `json:"posting_context"`
+	// Duplicate removed: PostingContext json.RawMessage `json:"posting_context"`
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
 	UpdatedBy *uuid.UUID `json:"updated_by"`
 	
-	(postingStatus string `json:"(posting_status" validate:"required"`
+	// 	(postingStatus string `json:"(posting_status" validate:"required"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
-	(postingStatus string `json:"(posting_status" validate:"required"`
+	// 	(postingStatus string `json:"(posting_status" validate:"required"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
-	(postingStatus *string `json:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status"`
 	
 	(ABS(COALESCE(totalDebit, *string `json:"(ABS(COALESCE(total_debit,"`
 	
@@ -226,7 +226,7 @@ type UpdatePosPostingAuditRequest struct {
 	
 	SourceReference *string `json:"source_reference,omitempty"`
 	
-	PostingStatus *string `json:"posting_status,omitempty" validate:"omitempty,required"`
+	// 	PostingStatus *string `json:"posting_status,omitempty" validate:"omitempty,required"`
 	
 	'pending', *string `json:"'pending',,omitempty"`
 	
@@ -288,15 +288,15 @@ type UpdatePosPostingAuditRequest struct {
 	
 	UpdatedBy *uuid.UUID `json:"updated_by,omitempty"`
 	
-	(postingStatus *string `json:"(posting_status,omitempty" validate:"omitempty,required"`
+	// 	(postingStatus *string `json:"(posting_status,omitempty" validate:"omitempty,required"`
 	
-	(postingStatus *string `json:"(posting_status,omitempty"`
+	// 	(postingStatus *string `json:"(posting_status,omitempty"`
 	
-	(postingStatus *string `json:"(posting_status,omitempty" validate:"omitempty,required"`
+	// 	(postingStatus *string `json:"(posting_status,omitempty" validate:"omitempty,required"`
 	
-	(postingStatus *string `json:"(posting_status,omitempty"`
+	// 	(postingStatus *string `json:"(posting_status,omitempty"`
 	
-	(postingStatus *string `json:"(posting_status,omitempty"`
+	// 	(postingStatus *string `json:"(posting_status,omitempty"`
 	
 	(ABS(COALESCE(totalDebit, *string `json:"(ABS(COALESCE(total_debit,,omitempty"`
 	

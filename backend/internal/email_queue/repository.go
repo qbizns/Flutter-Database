@@ -1,6 +1,7 @@
 package email_queue
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -43,7 +44,7 @@ type EmailQueue struct {
 	TemplateName *string `json:"template_name" db:"template_name"`
 	TemplateData json.RawMessage `json:"template_data" db:"template_data"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	Provider *string `json:"provider" db:"provider"`
 	ProviderMessageId *string `json:"provider_message_id" db:"provider_message_id"`
 	Attempts *int64 `json:"attempts" db:"attempts"`
@@ -154,7 +155,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EmailQueue) 
 
 	r.logger.Info("created email_queue",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

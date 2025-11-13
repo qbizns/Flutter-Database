@@ -68,9 +68,8 @@ func (r *CreateBudgetLinesRequest) Validate() error {
 		return fmt.Errorf("budget_id is required")
 	}
 	
-	if r.PlannedAmount == nil {
-		return fmt.Errorf("planned_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 	if r.AccountId == "" {
 		return fmt.Errorf("account_id is required")

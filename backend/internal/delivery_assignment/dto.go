@@ -119,13 +119,13 @@ type CreateDeliveryAssignmentsRequest struct {
 	
 	DeliveryAddress string `json:"delivery_address" validate:"required"`
 	
-	DeliveryLocation json.RawMessage `json:"delivery_location"`
+	// Duplicate removed: DeliveryLocation json.RawMessage `json:"delivery_location"`
 	
 	AssignedAt *time.Time `json:"assigned_at"`
 	
 	AssignedBy *uuid.UUID `json:"assigned_by"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	AcceptedAt *time.Time `json:"accepted_at"`
 	
@@ -145,7 +145,7 @@ type CreateDeliveryAssignmentsRequest struct {
 	
 	DistanceKm *float64 `json:"distance_km"`
 	
-	RouteInfo json.RawMessage `json:"route_info"`
+	// Duplicate removed: RouteInfo json.RawMessage `json:"route_info"`
 	
 	DeliveryFee *float64 `json:"delivery_fee"`
 	
@@ -175,7 +175,7 @@ type CreateDeliveryAssignmentsRequest struct {
 	
 	DriverNotes *string `json:"driver_notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -234,7 +234,7 @@ type UpdateDeliveryAssignmentsRequest struct {
 	
 	AssignedBy *uuid.UUID `json:"assigned_by,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	AcceptedAt *time.Time `json:"accepted_at,omitempty"`
 	

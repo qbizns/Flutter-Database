@@ -3,8 +3,6 @@ package loyalty_tier_benefit
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 
 	// Convert DTO to entity
 	entity := &LoyaltyTierBenefits{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		TierId: req.TierId,
 		
@@ -101,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateLoyalt
 	}
 
 	s.logger.Info("created loyalty_tier_benefits",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +135,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_tier_benefits not found or access denied")
 	}
 	
@@ -238,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("loyalty_tier_benefits not found or access denied")
 	}
 	
@@ -246,51 +244,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TierId != nil {
-		entity.TierId = *req.TierId
+		entity.TierId = req.TierId
 	}
 	
 	if req.BenefitCode != nil {
-		entity.BenefitCode = *req.BenefitCode
+		entity.BenefitCode = req.BenefitCode
 	}
 	
 	if req.BenefitName != nil {
-		entity.BenefitName = *req.BenefitName
+		entity.BenefitName = req.BenefitName
 	}
 	
 	if req.BenefitDescription != nil {
-		entity.BenefitDescription = *req.BenefitDescription
+		entity.BenefitDescription = req.BenefitDescription
 	}
 	
 	if req.BenefitType != nil {
-		entity.BenefitType = *req.BenefitType
+		entity.BenefitType = req.BenefitType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = *req.DiscountValue
+		entity.DiscountValue = req.DiscountValue
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = *req.DiscountType
+		entity.DiscountType = req.DiscountType
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = *req.Icon
+		entity.Icon = req.Icon
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = *req.TermsAndConditions
+		entity.TermsAndConditions = req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -343,7 +341,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get loyalty_tier_benefits: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("loyalty_tier_benefits not found or access denied")
 	}
 	

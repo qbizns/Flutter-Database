@@ -3,8 +3,6 @@ package budget_line
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -90,7 +88,7 @@ func (s *Service) Create(ctx context.Context, req *CreateBudgetLinesRequest) (*B
 	}
 
 	s.logger.Info("created budget_lines",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -210,39 +208,39 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBudgetLin
 	// Update fields
 	
 	if req.BudgetId != nil {
-		entity.BudgetId = *req.BudgetId
+		entity.BudgetId = req.BudgetId
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 	if req.AnalyticAccountId != nil {
-		entity.AnalyticAccountId = *req.AnalyticAccountId
+		entity.AnalyticAccountId = req.AnalyticAccountId
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = *req.AccountingPeriodId
+		entity.AccountingPeriodId = req.AccountingPeriodId
 	}
 	
 	if req.PeriodStartDate != nil {
-		entity.PeriodStartDate = *req.PeriodStartDate
+		entity.PeriodStartDate = req.PeriodStartDate
 	}
 	
 	if req.PeriodEndDate != nil {
-		entity.PeriodEndDate = *req.PeriodEndDate
+		entity.PeriodEndDate = req.PeriodEndDate
 	}
 	
 	if req.PlannedAmount != nil {
-		entity.PlannedAmount = *req.PlannedAmount
+		entity.PlannedAmount = req.PlannedAmount
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = *req.AccountId
+		entity.AccountId = req.AccountId
 	}
 	
 

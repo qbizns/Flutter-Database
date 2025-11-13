@@ -3,8 +3,6 @@ package cash_movement
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashMo
 
 	// Convert DTO to entity
 	entity := &CashMovements{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		PosSessionId: req.PosSessionId,
 		
@@ -99,7 +97,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashMo
 	}
 
 	s.logger.Info("created cash_movements",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -135,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_movements not found or access denied")
 	}
 	
@@ -236,7 +234,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_movements not found or access denied")
 	}
 	
@@ -244,47 +242,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = *req.PosSessionId
+		entity.PosSessionId = req.PosSessionId
 	}
 	
 	if req.CashDrawerId != nil {
-		entity.CashDrawerId = *req.CashDrawerId
+		entity.CashDrawerId = req.CashDrawerId
 	}
 	
 	if req.MovementType != nil {
-		entity.MovementType = *req.MovementType
+		entity.MovementType = req.MovementType
 	}
 	
 	if req.Amount != nil {
-		entity.Amount = *req.Amount
+		entity.Amount = req.Amount
 	}
 	
 	if req.ReasonCode != nil {
-		entity.ReasonCode = *req.ReasonCode
+		entity.ReasonCode = req.ReasonCode
 	}
 	
 	if req.ReasonDescription != nil {
-		entity.ReasonDescription = *req.ReasonDescription
+		entity.ReasonDescription = req.ReasonDescription
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = *req.RequiresApproval
+		entity.RequiresApproval = req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
-		entity.ApprovedAt = *req.ApprovedAt
+		entity.ApprovedAt = req.ApprovedAt
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 
@@ -337,7 +335,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get cash_movements: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("cash_movements not found or access denied")
 	}
 	

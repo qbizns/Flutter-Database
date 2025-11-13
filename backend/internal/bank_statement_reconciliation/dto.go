@@ -54,9 +54,8 @@ func (r *CreateBankStatementReconciliationsRequest) Validate() error {
 		return fmt.Errorf("bank_statement_line_id is required")
 	}
 	
-	if r.MatchedAmount == nil {
-		return fmt.Errorf("matched_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

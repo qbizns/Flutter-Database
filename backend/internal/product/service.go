@@ -3,8 +3,6 @@ package product
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 
 	// Convert DTO to entity
 	entity := &Products{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Sku: req.Sku,
 		
@@ -129,7 +127,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateProduc
 	}
 
 	s.logger.Info("created products",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -165,7 +163,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("products not found or access denied")
 	}
 	
@@ -266,7 +264,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("products not found or access denied")
 	}
 	
@@ -274,107 +272,107 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Sku != nil {
-		entity.Sku = *req.Sku
+		entity.Sku = req.Sku
 	}
 	
 	if req.Barcode != nil {
-		entity.Barcode = *req.Barcode
+		entity.Barcode = req.Barcode
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.CategoryId != nil {
-		entity.CategoryId = *req.CategoryId
+		entity.CategoryId = req.CategoryId
 	}
 	
 	if req.CostPrice != nil {
-		entity.CostPrice = *req.CostPrice
+		entity.CostPrice = req.CostPrice
 	}
 	
 	if req.SellingPrice != nil {
-		entity.SellingPrice = *req.SellingPrice
+		entity.SellingPrice = req.SellingPrice
 	}
 	
 	if req.CompareAtPrice != nil {
-		entity.CompareAtPrice = *req.CompareAtPrice
+		entity.CompareAtPrice = req.CompareAtPrice
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = *req.TaxRate
+		entity.TaxRate = req.TaxRate
 	}
 	
 	if req.IsTaxInclusive != nil {
-		entity.IsTaxInclusive = *req.IsTaxInclusive
+		entity.IsTaxInclusive = req.IsTaxInclusive
 	}
 	
 	if req.TrackInventory != nil {
-		entity.TrackInventory = *req.TrackInventory
+		entity.TrackInventory = req.TrackInventory
 	}
 	
 	if req.CurrentStock != nil {
-		entity.CurrentStock = *req.CurrentStock
+		entity.CurrentStock = req.CurrentStock
 	}
 	
 	if req.LowStockThreshold != nil {
-		entity.LowStockThreshold = *req.LowStockThreshold
+		entity.LowStockThreshold = req.LowStockThreshold
 	}
 	
 	if req.Unit != nil {
-		entity.Unit = *req.Unit
+		entity.Unit = req.Unit
 	}
 	
 	if req.IsService != nil {
-		entity.IsService = *req.IsService
+		entity.IsService = req.IsService
 	}
 	
 	if req.IsComposite != nil {
-		entity.IsComposite = *req.IsComposite
+		entity.IsComposite = req.IsComposite
 	}
 	
 	if req.HasVariants != nil {
-		entity.HasVariants = *req.HasVariants
+		entity.HasVariants = req.HasVariants
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = *req.ImageUrl
+		entity.ImageUrl = req.ImageUrl
 	}
 	
 	if req.Images != nil {
-		entity.Images = *req.Images
+		entity.Images = req.Images
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsFeatured != nil {
-		entity.IsFeatured = *req.IsFeatured
+		entity.IsFeatured = req.IsFeatured
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = *req.CustomFields
+		entity.CustomFields = req.CustomFields
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -427,7 +425,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get products: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("products not found or access denied")
 	}
 	

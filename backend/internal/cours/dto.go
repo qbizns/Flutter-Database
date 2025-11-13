@@ -1,6 +1,7 @@
 package cours
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -79,7 +80,7 @@ type CreateCoursesRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

@@ -1,6 +1,7 @@
 package pos_tax_mapping
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -151,7 +152,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PosTaxMappin
 
 	r.logger.Info("created pos_tax_mappings",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

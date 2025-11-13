@@ -3,8 +3,6 @@ package posting_document_type
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -94,7 +92,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePostingDocumentTypesReq
 	}
 
 	s.logger.Info("created posting_document_types",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -214,47 +212,47 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingDo
 	// Update fields
 	
 	if req.Code != nil {
-		entity.Code = *req.Code
+		entity.Code = req.Code
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.SourceSchema != nil {
-		entity.SourceSchema = *req.SourceSchema
+		entity.SourceSchema = req.SourceSchema
 	}
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = *req.SourceTable
+		entity.SourceTable = req.SourceTable
 	}
 	
 	if req.SourcePkColumn != nil {
-		entity.SourcePkColumn = *req.SourcePkColumn
+		entity.SourcePkColumn = req.SourcePkColumn
 	}
 	
 	if req.Category != nil {
-		entity.Category = *req.Category
+		entity.Category = req.Category
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsSystem != nil {
-		entity.IsSystem = *req.IsSystem
+		entity.IsSystem = req.IsSystem
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 

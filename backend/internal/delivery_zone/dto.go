@@ -1,6 +1,7 @@
 package delivery_zone
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -73,7 +74,7 @@ type CreateDeliveryZonesRequest struct {
 	
 	Description *string `json:"description"`
 	
-	Geofence json.RawMessage `json:"geofence"`
+	// Duplicate removed: Geofence json.RawMessage `json:"geofence"`
 	
 	PostalCodes *string `json:"postal_codes"`
 	
@@ -95,9 +96,9 @@ type CreateDeliveryZonesRequest struct {
 	
 	IsActive *bool `json:"is_active"`
 	
-	ActiveHours json.RawMessage `json:"active_hours"`
+	// Duplicate removed: ActiveHours json.RawMessage `json:"active_hours"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

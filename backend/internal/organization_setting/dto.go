@@ -1,6 +1,7 @@
 package organization_setting
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -145,9 +146,9 @@ type CreateOrganizationSettingsRequest struct {
 	
 	WebhookRetryMaxAttempts *int64 `json:"webhook_retry_max_attempts"`
 	
-	Features json.RawMessage `json:"features"`
+	// Duplicate removed: Features json.RawMessage `json:"features"`
 	
-	CustomSettings json.RawMessage `json:"custom_settings"`
+	// Duplicate removed: CustomSettings json.RawMessage `json:"custom_settings"`
 	
 	UpdatedBy *uuid.UUID `json:"updated_by"`
 	

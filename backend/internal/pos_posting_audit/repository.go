@@ -1,6 +1,7 @@
 package pos_posting_audit
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -68,11 +69,11 @@ type PosPostingAudit struct {
 	DeletedAt *time.Time `json:"deleted_at" db:"deleted_at"`
 	CreatedBy *uuid.UUID `json:"created_by" db:"created_by"`
 	UpdatedBy *uuid.UUID `json:"updated_by" db:"updated_by"`
-	(postingStatus string `json:"(posting_status" db:"(posting_status"`
-	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
-	(postingStatus string `json:"(posting_status" db:"(posting_status"`
-	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
-	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
+	// 	(postingStatus string `json:"(posting_status" db:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
+	// 	(postingStatus string `json:"(posting_status" db:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
+	// 	(postingStatus *string `json:"(posting_status" db:"(posting_status"`
 	(ABS(COALESCE(totalDebit, *string `json:"(ABS(COALESCE(total_debit," db:"(ABS(COALESCE(total_debit,"`
 }
 
@@ -231,7 +232,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PosPostingAu
 
 	r.logger.Info("created pos_posting_audit",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

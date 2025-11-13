@@ -1,6 +1,7 @@
 package external_order_mapping
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -24,7 +25,7 @@ type ExternalOrderMappingsResponse struct {
 	
 	SyncStatus *string `json:"sync_status"`
 	
-	SyncStatus *string `json:"sync_status"`
+	// 	SyncStatus *string `json:"sync_status"`
 	
 	LastSyncAt *time.Time `json:"last_sync_at"`
 	
@@ -49,13 +50,13 @@ type CreateExternalOrderMappingsRequest struct {
 	
 	ExternalOrderNumber *string `json:"external_order_number"`
 	
-	SyncStatus *string `json:"sync_status"`
+	// 	SyncStatus *string `json:"sync_status"`
 	
-	SyncStatus *string `json:"sync_status"`
+	// 	SyncStatus *string `json:"sync_status"`
 	
 	LastSyncAt *time.Time `json:"last_sync_at"`
 	
-	ExternalData json.RawMessage `json:"external_data"`
+	// Duplicate removed: ExternalData json.RawMessage `json:"external_data"`
 	
 }
 
@@ -92,9 +93,9 @@ type UpdateExternalOrderMappingsRequest struct {
 	
 	ExternalOrderNumber *string `json:"external_order_number,omitempty"`
 	
-	SyncStatus *string `json:"sync_status,omitempty"`
+	// 	SyncStatus *string `json:"sync_status,omitempty"`
 	
-	SyncStatus *string `json:"sync_status,omitempty"`
+	// 	SyncStatus *string `json:"sync_status,omitempty"`
 	
 	LastSyncAt *time.Time `json:"last_sync_at,omitempty"`
 	

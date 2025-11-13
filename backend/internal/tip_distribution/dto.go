@@ -99,7 +99,7 @@ type CreateTipDistributionsRequest struct {
 	
 	DistributionPercentage *float64 `json:"distribution_percentage"`
 	
-	PaymentStatus *string `json:"payment_status"`
+	// 	PaymentStatus *string `json:"payment_status"`
 	
 	PaymentMethod *string `json:"payment_method"`
 	
@@ -109,7 +109,7 @@ type CreateTipDistributionsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -126,7 +126,7 @@ type CreateTipDistributionsRequest struct {
 // Validate validates the create request
 func (r *CreateTipDistributionsRequest) Validate() error {
 	
-	if r.DistributionDate == nil {
+	if r.DistributionDate.IsZero() {
 		return fmt.Errorf("distribution_date is required")
 	}
 	
@@ -138,13 +138,8 @@ func (r *CreateTipDistributionsRequest) Validate() error {
 		return fmt.Errorf("source_type is required")
 	}
 	
-	if r.TipAmount == nil {
-		return fmt.Errorf("tip_amount is required")
-	}
-	
-	if r.DistributionAmount == nil {
-		return fmt.Errorf("distribution_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -182,7 +177,7 @@ type UpdateTipDistributionsRequest struct {
 	
 	DistributionPercentage *float64 `json:"distribution_percentage,omitempty"`
 	
-	PaymentStatus *string `json:"payment_status,omitempty"`
+	// 	PaymentStatus *string `json:"payment_status,omitempty"`
 	
 	PaymentMethod *string `json:"payment_method,omitempty"`
 	

@@ -3,8 +3,6 @@ package posting_concept
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -96,7 +94,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePostingConceptsRequest)
 	}
 
 	s.logger.Info("created posting_concepts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -216,51 +214,51 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingCo
 	// Update fields
 	
 	if req.ConceptKey != nil {
-		entity.ConceptKey = *req.ConceptKey
+		entity.ConceptKey = req.ConceptKey
 	}
 	
 	if req.DefaultLabel != nil {
-		entity.DefaultLabel = *req.DefaultLabel
+		entity.DefaultLabel = req.DefaultLabel
 	}
 	
 	if req.DefaultDescription != nil {
-		entity.DefaultDescription = *req.DefaultDescription
+		entity.DefaultDescription = req.DefaultDescription
 	}
 	
 	if req.ExpectedAccountTypeId != nil {
-		entity.ExpectedAccountTypeId = *req.ExpectedAccountTypeId
+		entity.ExpectedAccountTypeId = req.ExpectedAccountTypeId
 	}
 	
 	if req.NormalSide != nil {
-		entity.NormalSide = *req.NormalSide
+		entity.NormalSide = req.NormalSide
 	}
 	
 	if req.ExampleCode != nil {
-		entity.ExampleCode = *req.ExampleCode
+		entity.ExampleCode = req.ExampleCode
 	}
 	
 	if req.ExampleAccountName != nil {
-		entity.ExampleAccountName = *req.ExampleAccountName
+		entity.ExampleAccountName = req.ExampleAccountName
 	}
 	
 	if req.IsSystem != nil {
-		entity.IsSystem = *req.IsSystem
+		entity.IsSystem = req.IsSystem
 	}
 	
 	if req.ConceptCategory != nil {
-		entity.ConceptCategory = *req.ConceptCategory
+		entity.ConceptCategory = req.ConceptCategory
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = *req.SortOrder
+		entity.SortOrder = req.SortOrder
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 

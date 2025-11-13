@@ -65,7 +65,7 @@ type CreateOrderTrackingEventsRequest struct {
 	
 	EventMessage *string `json:"event_message"`
 	
-	Location json.RawMessage `json:"location"`
+	// Duplicate removed: Location json.RawMessage `json:"location"`
 	
 	LocationName *string `json:"location_name"`
 	
@@ -75,7 +75,7 @@ type CreateOrderTrackingEventsRequest struct {
 	
 	ActorName *string `json:"actor_name"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

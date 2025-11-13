@@ -1,6 +1,7 @@
 package restaurant_table
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -171,7 +172,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *RestaurantTa
 
 	r.logger.Info("created restaurant_tables",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

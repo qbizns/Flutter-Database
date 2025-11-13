@@ -3,8 +3,6 @@ package inventory_valuation_setting
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 
 	// Convert DTO to entity
 	entity := &InventoryValuationSettings{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ValuationMethod: req.ValuationMethod,
 		
@@ -145,7 +143,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 	}
 
 	s.logger.Info("created inventory_valuation_settings",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -181,7 +179,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_valuation_settings not found or access denied")
 	}
 	
@@ -282,7 +280,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_valuation_settings not found or access denied")
 	}
 	
@@ -290,7 +288,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ValuationMethod != nil {
-		entity.ValuationMethod = *req.ValuationMethod
+		entity.ValuationMethod = req.ValuationMethod
 	}
 	
 	if req.'fifo', != nil {
@@ -318,7 +316,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CostLayerGranularity != nil {
-		entity.CostLayerGranularity = *req.CostLayerGranularity
+		entity.CostLayerGranularity = req.CostLayerGranularity
 	}
 	
 	if req.'product', != nil {
@@ -338,23 +336,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DefaultInventoryAccountId != nil {
-		entity.DefaultInventoryAccountId = *req.DefaultInventoryAccountId
+		entity.DefaultInventoryAccountId = req.DefaultInventoryAccountId
 	}
 	
 	if req.DefaultCogsAccountId != nil {
-		entity.DefaultCogsAccountId = *req.DefaultCogsAccountId
+		entity.DefaultCogsAccountId = req.DefaultCogsAccountId
 	}
 	
 	if req.DefaultInventoryAdjustmentAccountId != nil {
-		entity.DefaultInventoryAdjustmentAccountId = *req.DefaultInventoryAdjustmentAccountId
+		entity.DefaultInventoryAdjustmentAccountId = req.DefaultInventoryAdjustmentAccountId
 	}
 	
 	if req.DefaultInventoryVarianceAccountId != nil {
-		entity.DefaultInventoryVarianceAccountId = *req.DefaultInventoryVarianceAccountId
+		entity.DefaultInventoryVarianceAccountId = req.DefaultInventoryVarianceAccountId
 	}
 	
 	if req.CogsRecognitionTiming != nil {
-		entity.CogsRecognitionTiming = *req.CogsRecognitionTiming
+		entity.CogsRecognitionTiming = req.CogsRecognitionTiming
 	}
 	
 	if req.'onSale', != nil {
@@ -370,19 +368,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AllowNegativeInventory != nil {
-		entity.AllowNegativeInventory = *req.AllowNegativeInventory
+		entity.AllowNegativeInventory = req.AllowNegativeInventory
 	}
 	
 	if req.RevalueOnPurchase != nil {
-		entity.RevalueOnPurchase = *req.RevalueOnPurchase
+		entity.RevalueOnPurchase = req.RevalueOnPurchase
 	}
 	
 	if req.RoundUnitCostToDecimals != nil {
-		entity.RoundUnitCostToDecimals = *req.RoundUnitCostToDecimals
+		entity.RoundUnitCostToDecimals = req.RoundUnitCostToDecimals
 	}
 	
 	if req.RevaluationFrequency != nil {
-		entity.RevaluationFrequency = *req.RevaluationFrequency
+		entity.RevaluationFrequency = req.RevaluationFrequency
 	}
 	
 	if req.'realTime', != nil {
@@ -402,27 +400,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = *req.EffectiveFrom
+		entity.EffectiveFrom = req.EffectiveFrom
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -475,7 +473,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get inventory_valuation_settings: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("inventory_valuation_settings not found or access denied")
 	}
 	

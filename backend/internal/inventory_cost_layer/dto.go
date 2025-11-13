@@ -1,6 +1,7 @@
 package inventory_cost_layer
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -83,7 +84,7 @@ type CreateInventoryCostLayersRequest struct {
 	
 	ConsumedAt *time.Time `json:"consumed_at"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 
@@ -94,7 +95,7 @@ func (r *CreateInventoryCostLayersRequest) Validate() error {
 		return fmt.Errorf("product_id is required")
 	}
 	
-	if r.LayerDate == nil {
+	if r.LayerDate.IsZero() {
 		return fmt.Errorf("layer_date is required")
 	}
 	

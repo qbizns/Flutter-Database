@@ -1,6 +1,7 @@
 package product
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -113,7 +114,7 @@ type CreateProductsRequest struct {
 	
 	ImageUrl *string `json:"image_url" validate:"url"`
 	
-	Images json.RawMessage `json:"images"`
+	// Duplicate removed: Images json.RawMessage `json:"images"`
 	
 	SortOrder *int64 `json:"sort_order"`
 	
@@ -121,9 +122,9 @@ type CreateProductsRequest struct {
 	
 	IsFeatured *bool `json:"is_featured"`
 	
-	CustomFields json.RawMessage `json:"custom_fields"`
+	// Duplicate removed: CustomFields json.RawMessage `json:"custom_fields"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

@@ -1,6 +1,7 @@
 package posting_profile_document
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"

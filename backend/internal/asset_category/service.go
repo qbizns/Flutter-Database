@@ -3,8 +3,6 @@ package asset_category
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -90,7 +88,7 @@ func (s *Service) Create(ctx context.Context, req *CreateAssetCategoriesRequest)
 	}
 
 	s.logger.Info("created asset_categories",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -210,39 +208,39 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAssetCate
 	// Update fields
 	
 	if req.CategoryCode != nil {
-		entity.CategoryCode = *req.CategoryCode
+		entity.CategoryCode = req.CategoryCode
 	}
 	
 	if req.CategoryName != nil {
-		entity.CategoryName = *req.CategoryName
+		entity.CategoryName = req.CategoryName
 	}
 	
 	if req.DefaultDepreciationMethod != nil {
-		entity.DefaultDepreciationMethod = *req.DefaultDepreciationMethod
+		entity.DefaultDepreciationMethod = req.DefaultDepreciationMethod
 	}
 	
 	if req.DefaultUsefulLifeYears != nil {
-		entity.DefaultUsefulLifeYears = *req.DefaultUsefulLifeYears
+		entity.DefaultUsefulLifeYears = req.DefaultUsefulLifeYears
 	}
 	
 	if req.DefaultSalvageValuePercent != nil {
-		entity.DefaultSalvageValuePercent = *req.DefaultSalvageValuePercent
+		entity.DefaultSalvageValuePercent = req.DefaultSalvageValuePercent
 	}
 	
 	if req.AssetAccountId != nil {
-		entity.AssetAccountId = *req.AssetAccountId
+		entity.AssetAccountId = req.AssetAccountId
 	}
 	
 	if req.AccumulatedDepreciationAccountId != nil {
-		entity.AccumulatedDepreciationAccountId = *req.AccumulatedDepreciationAccountId
+		entity.AccumulatedDepreciationAccountId = req.AccumulatedDepreciationAccountId
 	}
 	
 	if req.DepreciationExpenseAccountId != nil {
-		entity.DepreciationExpenseAccountId = *req.DepreciationExpenseAccountId
+		entity.DepreciationExpenseAccountId = req.DepreciationExpenseAccountId
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 

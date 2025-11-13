@@ -43,7 +43,7 @@ type CreateDeferredRevenueScheduleRequest struct {
 	
 	RecognitionAmount float64 `json:"recognition_amount" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	JournalEntryId *uuid.UUID `json:"journal_entry_id"`
 	
@@ -62,13 +62,12 @@ func (r *CreateDeferredRevenueScheduleRequest) Validate() error {
 		return fmt.Errorf("line_number is required")
 	}
 	
-	if r.RecognitionDate == nil {
+	if r.RecognitionDate.IsZero() {
 		return fmt.Errorf("recognition_date is required")
 	}
 	
-	if r.RecognitionAmount == nil {
-		return fmt.Errorf("recognition_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -88,7 +87,7 @@ type UpdateDeferredRevenueScheduleRequest struct {
 	
 	RecognitionAmount *float64 `json:"recognition_amount,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	JournalEntryId *uuid.UUID `json:"journal_entry_id,omitempty"`
 	

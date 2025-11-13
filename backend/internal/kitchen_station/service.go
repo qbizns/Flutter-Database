@@ -3,8 +3,6 @@ package kitchen_station
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateKitche
 
 	// Convert DTO to entity
 	entity := &KitchenStations{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -105,7 +103,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateKitche
 	}
 
 	s.logger.Info("created kitchen_stations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +139,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("kitchen_stations not found or access denied")
 	}
 	
@@ -242,7 +240,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("kitchen_stations not found or access denied")
 	}
 	
@@ -250,59 +248,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.StationName != nil {
-		entity.StationName = *req.StationName
+		entity.StationName = req.StationName
 	}
 	
 	if req.StationCode != nil {
-		entity.StationCode = *req.StationCode
+		entity.StationCode = req.StationCode
 	}
 	
 	if req.StationType != nil {
-		entity.StationType = *req.StationType
+		entity.StationType = req.StationType
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = *req.ColorCode
+		entity.ColorCode = req.ColorCode
 	}
 	
 	if req.PrinterId != nil {
-		entity.PrinterId = *req.PrinterId
+		entity.PrinterId = req.PrinterId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.AutoPrintTickets != nil {
-		entity.AutoPrintTickets = *req.AutoPrintTickets
+		entity.AutoPrintTickets = req.AutoPrintTickets
 	}
 	
 	if req.AlertSoundEnabled != nil {
-		entity.AlertSoundEnabled = *req.AlertSoundEnabled
+		entity.AlertSoundEnabled = req.AlertSoundEnabled
 	}
 	
 	if req.DisplayConfig != nil {
-		entity.DisplayConfig = *req.DisplayConfig
+		entity.DisplayConfig = req.DisplayConfig
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -355,7 +353,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get kitchen_stations: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("kitchen_stations not found or access denied")
 	}
 	

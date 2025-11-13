@@ -111,7 +111,7 @@ type CreateOrdersRequest struct {
 	
 	WaiterId *uuid.UUID `json:"waiter_id"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	OrderDate *time.Time `json:"order_date"`
 	
@@ -145,7 +145,7 @@ type CreateOrdersRequest struct {
 	
 	InternalNotes *string `json:"internal_notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -198,7 +198,7 @@ type UpdateOrdersRequest struct {
 	
 	WaiterId *uuid.UUID `json:"waiter_id,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	OrderDate *time.Time `json:"order_date,omitempty"`
 	

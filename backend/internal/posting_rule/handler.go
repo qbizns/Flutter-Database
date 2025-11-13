@@ -314,7 +314,7 @@ func (h *Handler) ListDeleted(w http.ResponseWriter, r *http.Request) {
 
 // Restore handles POST /api/v1/admin/{module}/{id}/restore
 func (h *Handler) Restore(w http.ResponseWriter, r *http.Request) {
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	_, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid ID", err)
 		return
@@ -326,7 +326,7 @@ func (h *Handler) Restore(w http.ResponseWriter, r *http.Request) {
 
 // PermanentDelete handles DELETE /api/v1/admin/{module}/{id}/permanent
 func (h *Handler) PermanentDelete(w http.ResponseWriter, r *http.Request) {
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	_, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		h.respondError(w, http.StatusBadRequest, "invalid ID", err)
 		return

@@ -1,6 +1,7 @@
 package background_job
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -35,7 +36,7 @@ type BackgroundJobs struct {
 	JobName string `json:"job_name" db:"job_name"`
 	QueueName *string `json:"queue_name" db:"queue_name"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	Payload json.RawMessage `json:"payload" db:"payload"`
 	Result json.RawMessage `json:"result" db:"result"`
 	ErrorMessage *string `json:"error_message" db:"error_message"`
@@ -143,7 +144,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BackgroundJo
 
 	r.logger.Info("created background_jobs",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

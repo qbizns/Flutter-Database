@@ -1,6 +1,7 @@
 package pos_error_log
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -67,9 +68,9 @@ type CreatePosErrorLogsRequest struct {
 	
 	StackTrace *string `json:"stack_trace"`
 	
-	RequestData json.RawMessage `json:"request_data"`
+	// Duplicate removed: RequestData json.RawMessage `json:"request_data"`
 	
-	ErrorData json.RawMessage `json:"error_data"`
+	// Duplicate removed: ErrorData json.RawMessage `json:"error_data"`
 	
 	IsResolved *bool `json:"is_resolved"`
 	

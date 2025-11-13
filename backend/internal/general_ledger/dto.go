@@ -121,7 +121,7 @@ type CreateGeneralLedgerRequest struct {
 	
 	ReversalGlId *uuid.UUID `json:"reversal_gl_id"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -146,11 +146,11 @@ func (r *CreateGeneralLedgerRequest) Validate() error {
 		return fmt.Errorf("account_id is required")
 	}
 	
-	if r.TransactionDate == nil {
+	if r.TransactionDate.IsZero() {
 		return fmt.Errorf("transaction_date is required")
 	}
 	
-	if r.PostingDate == nil {
+	if r.PostingDate.IsZero() {
 		return fmt.Errorf("posting_date is required")
 	}
 	

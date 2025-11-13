@@ -3,8 +3,6 @@ package bank_statement_line
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -100,7 +98,7 @@ func (s *Service) Create(ctx context.Context, req *CreateBankStatementLinesReque
 	}
 
 	s.logger.Info("created bank_statement_lines",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -220,59 +218,59 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBankState
 	// Update fields
 	
 	if req.BankStatementId != nil {
-		entity.BankStatementId = *req.BankStatementId
+		entity.BankStatementId = req.BankStatementId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = *req.LineNumber
+		entity.LineNumber = req.LineNumber
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = *req.TransactionDate
+		entity.TransactionDate = req.TransactionDate
 	}
 	
 	if req.ValueDate != nil {
-		entity.ValueDate = *req.ValueDate
+		entity.ValueDate = req.ValueDate
 	}
 	
 	if req.Amount != nil {
-		entity.Amount = *req.Amount
+		entity.Amount = req.Amount
 	}
 	
 	if req.CurrencyCode != nil {
-		entity.CurrencyCode = *req.CurrencyCode
+		entity.CurrencyCode = req.CurrencyCode
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Reference != nil {
-		entity.Reference = *req.Reference
+		entity.Reference = req.Reference
 	}
 	
 	if req.CounterpartyName != nil {
-		entity.CounterpartyName = *req.CounterpartyName
+		entity.CounterpartyName = req.CounterpartyName
 	}
 	
 	if req.CounterpartyAccount != nil {
-		entity.CounterpartyAccount = *req.CounterpartyAccount
+		entity.CounterpartyAccount = req.CounterpartyAccount
 	}
 	
 	if req.BankReference != nil {
-		entity.BankReference = *req.BankReference
+		entity.BankReference = req.BankReference
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 

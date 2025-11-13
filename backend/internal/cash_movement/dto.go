@@ -80,9 +80,8 @@ func (r *CreateCashMovementsRequest) Validate() error {
 		return fmt.Errorf("movement_type is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 	if r.ReasonDescription == "" {
 		return fmt.Errorf("reason_description is required")

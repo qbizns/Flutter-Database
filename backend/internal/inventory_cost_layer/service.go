@@ -3,8 +3,6 @@ package inventory_cost_layer
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 
 	// Convert DTO to entity
 	entity := &InventoryCostLayers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ProductId: req.ProductId,
 		
@@ -107,7 +105,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 	}
 
 	s.logger.Info("created inventory_cost_layers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -143,7 +141,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_cost_layers not found or access denied")
 	}
 	
@@ -244,7 +242,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_cost_layers not found or access denied")
 	}
 	
@@ -252,63 +250,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.LotNumber != nil {
-		entity.LotNumber = *req.LotNumber
+		entity.LotNumber = req.LotNumber
 	}
 	
 	if req.SerialNumber != nil {
-		entity.SerialNumber = *req.SerialNumber
+		entity.SerialNumber = req.SerialNumber
 	}
 	
 	if req.LayerDate != nil {
-		entity.LayerDate = *req.LayerDate
+		entity.LayerDate = req.LayerDate
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = *req.UnitCost
+		entity.UnitCost = req.UnitCost
 	}
 	
 	if req.OriginalQuantity != nil {
-		entity.OriginalQuantity = *req.OriginalQuantity
+		entity.OriginalQuantity = req.OriginalQuantity
 	}
 	
 	if req.RemainingQuantity != nil {
-		entity.RemainingQuantity = *req.RemainingQuantity
+		entity.RemainingQuantity = req.RemainingQuantity
 	}
 	
 	if req.UomCode != nil {
-		entity.UomCode = *req.UomCode
+		entity.UomCode = req.UomCode
 	}
 	
 	if req.SourceTransactionType != nil {
-		entity.SourceTransactionType = *req.SourceTransactionType
+		entity.SourceTransactionType = req.SourceTransactionType
 	}
 	
 	if req.SourceTransactionId != nil {
-		entity.SourceTransactionId = *req.SourceTransactionId
+		entity.SourceTransactionId = req.SourceTransactionId
 	}
 	
 	if req.SourceReference != nil {
-		entity.SourceReference = *req.SourceReference
+		entity.SourceReference = req.SourceReference
 	}
 	
 	if req.IsFullyConsumed != nil {
-		entity.IsFullyConsumed = *req.IsFullyConsumed
+		entity.IsFullyConsumed = req.IsFullyConsumed
 	}
 	
 	if req.ConsumedAt != nil {
-		entity.ConsumedAt = *req.ConsumedAt
+		entity.ConsumedAt = req.ConsumedAt
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 
@@ -361,7 +359,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get inventory_cost_layers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("inventory_cost_layers not found or access denied")
 	}
 	

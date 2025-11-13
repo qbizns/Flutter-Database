@@ -38,7 +38,7 @@ type GoodsReceipts struct {
 	ReceiptDate time.Time `json:"receipt_date" db:"receipt_date"`
 	ReceivedBy uuid.UUID `json:"received_by" db:"received_by"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	Notes *string `json:"notes" db:"notes"`
 	CreatedBy *uuid.UUID `json:"created_by" db:"created_by"`
 	CreatedAt *time.Time `json:"created_at" db:"created_at"`
@@ -111,7 +111,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GoodsReceipt
 
 	r.logger.Info("created goods_receipts",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

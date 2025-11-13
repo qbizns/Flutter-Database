@@ -3,8 +3,6 @@ package api_request_log
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateApiReq
 
 	// Convert DTO to entity
 	entity := &ApiRequestLogs{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		RequestId: req.RequestId,
 		
@@ -109,7 +107,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateApiReq
 	}
 
 	s.logger.Info("created api_request_logs",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -145,7 +143,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("api_request_logs not found or access denied")
 	}
 	
@@ -246,7 +244,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("api_request_logs not found or access denied")
 	}
 	
@@ -254,67 +252,67 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RequestId != nil {
-		entity.RequestId = *req.RequestId
+		entity.RequestId = req.RequestId
 	}
 	
 	if req.Method != nil {
-		entity.Method = *req.Method
+		entity.Method = req.Method
 	}
 	
 	if req.Path != nil {
-		entity.Path = *req.Path
+		entity.Path = req.Path
 	}
 	
 	if req.QueryParams != nil {
-		entity.QueryParams = *req.QueryParams
+		entity.QueryParams = req.QueryParams
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = *req.UserId
+		entity.UserId = req.UserId
 	}
 	
 	if req.ApiKeyId != nil {
-		entity.ApiKeyId = *req.ApiKeyId
+		entity.ApiKeyId = req.ApiKeyId
 	}
 	
 	if req.RequestHeaders != nil {
-		entity.RequestHeaders = *req.RequestHeaders
+		entity.RequestHeaders = req.RequestHeaders
 	}
 	
 	if req.RequestBody != nil {
-		entity.RequestBody = *req.RequestBody
+		entity.RequestBody = req.RequestBody
 	}
 	
 	if req.IpAddress != nil {
-		entity.IpAddress = *req.IpAddress
+		entity.IpAddress = req.IpAddress
 	}
 	
 	if req.UserAgent != nil {
-		entity.UserAgent = *req.UserAgent
+		entity.UserAgent = req.UserAgent
 	}
 	
 	if req.StatusCode != nil {
-		entity.StatusCode = *req.StatusCode
+		entity.StatusCode = req.StatusCode
 	}
 	
 	if req.ResponseHeaders != nil {
-		entity.ResponseHeaders = *req.ResponseHeaders
+		entity.ResponseHeaders = req.ResponseHeaders
 	}
 	
 	if req.ResponseBody != nil {
-		entity.ResponseBody = *req.ResponseBody
+		entity.ResponseBody = req.ResponseBody
 	}
 	
 	if req.DurationMs != nil {
-		entity.DurationMs = *req.DurationMs
+		entity.DurationMs = req.DurationMs
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.ErrorStack != nil {
-		entity.ErrorStack = *req.ErrorStack
+		entity.ErrorStack = req.ErrorStack
 	}
 	
 
@@ -367,7 +365,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get api_request_logs: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("api_request_logs not found or access denied")
 	}
 	

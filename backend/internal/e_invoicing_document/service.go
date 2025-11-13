@@ -3,8 +3,6 @@ package e_invoicing_document
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEInvoi
 
 	// Convert DTO to entity
 	entity := &EInvoicingDocuments{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		SourceTable: req.SourceTable,
 		
@@ -157,7 +155,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateEInvoi
 	}
 
 	s.logger.Info("created e_invoicing_documents",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -193,7 +191,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("e_invoicing_documents not found or access denied")
 	}
 	
@@ -294,7 +292,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("e_invoicing_documents not found or access denied")
 	}
 	
@@ -302,39 +300,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = *req.SourceTable
+		entity.SourceTable = req.SourceTable
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = *req.SourceId
+		entity.SourceId = req.SourceId
 	}
 	
 	if req.Authority != nil {
-		entity.Authority = *req.Authority
+		entity.Authority = req.Authority
 	}
 	
 	if req.CountryCode != nil {
-		entity.CountryCode = *req.CountryCode
+		entity.CountryCode = req.CountryCode
 	}
 	
 	if req.DocumentUuid != nil {
-		entity.DocumentUuid = *req.DocumentUuid
+		entity.DocumentUuid = req.DocumentUuid
 	}
 	
 	if req.DocumentType != nil {
-		entity.DocumentType = *req.DocumentType
+		entity.DocumentType = req.DocumentType
 	}
 	
 	if req.DocumentNumber != nil {
-		entity.DocumentNumber = *req.DocumentNumber
+		entity.DocumentNumber = req.DocumentNumber
 	}
 	
 	if req.InternalReference != nil {
-		entity.InternalReference = *req.InternalReference
+		entity.InternalReference = req.InternalReference
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.'draft', != nil {
@@ -366,99 +364,99 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SubmittedAt != nil {
-		entity.SubmittedAt = *req.SubmittedAt
+		entity.SubmittedAt = req.SubmittedAt
 	}
 	
 	if req.ResponseAt != nil {
-		entity.ResponseAt = *req.ResponseAt
+		entity.ResponseAt = req.ResponseAt
 	}
 	
 	if req.RequestPayload != nil {
-		entity.RequestPayload = *req.RequestPayload
+		entity.RequestPayload = req.RequestPayload
 	}
 	
 	if req.ResponsePayload != nil {
-		entity.ResponsePayload = *req.ResponsePayload
+		entity.ResponsePayload = req.ResponsePayload
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = *req.ErrorCode
+		entity.ErrorCode = req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
-		entity.ErrorMessage = *req.ErrorMessage
+		entity.ErrorMessage = req.ErrorMessage
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = *req.RetryCount
+		entity.RetryCount = req.RetryCount
 	}
 	
 	if req.LastRetryAt != nil {
-		entity.LastRetryAt = *req.LastRetryAt
+		entity.LastRetryAt = req.LastRetryAt
 	}
 	
 	if req.ZatcaHashValue != nil {
-		entity.ZatcaHashValue = *req.ZatcaHashValue
+		entity.ZatcaHashValue = req.ZatcaHashValue
 	}
 	
 	if req.ZatcaPreviousHashValue != nil {
-		entity.ZatcaPreviousHashValue = *req.ZatcaPreviousHashValue
+		entity.ZatcaPreviousHashValue = req.ZatcaPreviousHashValue
 	}
 	
 	if req.ZatcaInvoiceCounterValue != nil {
-		entity.ZatcaInvoiceCounterValue = *req.ZatcaInvoiceCounterValue
+		entity.ZatcaInvoiceCounterValue = req.ZatcaInvoiceCounterValue
 	}
 	
 	if req.ZatcaCryptographicStamp != nil {
-		entity.ZatcaCryptographicStamp = *req.ZatcaCryptographicStamp
+		entity.ZatcaCryptographicStamp = req.ZatcaCryptographicStamp
 	}
 	
 	if req.ZatcaQrCodePayload != nil {
-		entity.ZatcaQrCodePayload = *req.ZatcaQrCodePayload
+		entity.ZatcaQrCodePayload = req.ZatcaQrCodePayload
 	}
 	
 	if req.ZatcaComplianceInvoiceNumber != nil {
-		entity.ZatcaComplianceInvoiceNumber = *req.ZatcaComplianceInvoiceNumber
+		entity.ZatcaComplianceInvoiceNumber = req.ZatcaComplianceInvoiceNumber
 	}
 	
 	if req.EtaDocumentTypeVersion != nil {
-		entity.EtaDocumentTypeVersion = *req.EtaDocumentTypeVersion
+		entity.EtaDocumentTypeVersion = req.EtaDocumentTypeVersion
 	}
 	
 	if req.EtaSubmissionUuid != nil {
-		entity.EtaSubmissionUuid = *req.EtaSubmissionUuid
+		entity.EtaSubmissionUuid = req.EtaSubmissionUuid
 	}
 	
 	if req.EtaLongId != nil {
-		entity.EtaLongId = *req.EtaLongId
+		entity.EtaLongId = req.EtaLongId
 	}
 	
 	if req.EtaInternalId != nil {
-		entity.EtaInternalId = *req.EtaInternalId
+		entity.EtaInternalId = req.EtaInternalId
 	}
 	
 	if req.EtaDigitalSignature != nil {
-		entity.EtaDigitalSignature = *req.EtaDigitalSignature
+		entity.EtaDigitalSignature = req.EtaDigitalSignature
 	}
 	
 	if req.EtaSignatureAlgorithm != nil {
-		entity.EtaSignatureAlgorithm = *req.EtaSignatureAlgorithm
+		entity.EtaSignatureAlgorithm = req.EtaSignatureAlgorithm
 	}
 	
 	if req.SubmissionFormat != nil {
-		entity.SubmissionFormat = *req.SubmissionFormat
+		entity.SubmissionFormat = req.SubmissionFormat
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -511,7 +509,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get e_invoicing_documents: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("e_invoicing_documents not found or access denied")
 	}
 	

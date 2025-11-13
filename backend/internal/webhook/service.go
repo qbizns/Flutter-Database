@@ -3,8 +3,6 @@ package webhook
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateWebhoo
 
 	// Convert DTO to entity
 	entity := &Webhooks{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		WebhookName: req.WebhookName,
 		
@@ -113,7 +111,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateWebhoo
 	}
 
 	s.logger.Info("created webhooks",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -149,7 +147,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("webhooks not found or access denied")
 	}
 	
@@ -250,7 +248,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("webhooks not found or access denied")
 	}
 	
@@ -258,75 +256,75 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.WebhookName != nil {
-		entity.WebhookName = *req.WebhookName
+		entity.WebhookName = req.WebhookName
 	}
 	
 	if req.Url != nil {
-		entity.Url = *req.Url
+		entity.Url = req.Url
 	}
 	
 	if req.Secret != nil {
-		entity.Secret = *req.Secret
+		entity.Secret = req.Secret
 	}
 	
 	if req.Events != nil {
-		entity.Events = *req.Events
+		entity.Events = req.Events
 	}
 	
 	if req.HttpMethod != nil {
-		entity.HttpMethod = *req.HttpMethod
+		entity.HttpMethod = req.HttpMethod
 	}
 	
 	if req.Headers != nil {
-		entity.Headers = *req.Headers
+		entity.Headers = req.Headers
 	}
 	
 	if req.TimeoutSeconds != nil {
-		entity.TimeoutSeconds = *req.TimeoutSeconds
+		entity.TimeoutSeconds = req.TimeoutSeconds
 	}
 	
 	if req.MaxRetries != nil {
-		entity.MaxRetries = *req.MaxRetries
+		entity.MaxRetries = req.MaxRetries
 	}
 	
 	if req.RetryBackoffSeconds != nil {
-		entity.RetryBackoffSeconds = *req.RetryBackoffSeconds
+		entity.RetryBackoffSeconds = req.RetryBackoffSeconds
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsVerified != nil {
-		entity.IsVerified = *req.IsVerified
+		entity.IsVerified = req.IsVerified
 	}
 	
 	if req.TotalDeliveries != nil {
-		entity.TotalDeliveries = *req.TotalDeliveries
+		entity.TotalDeliveries = req.TotalDeliveries
 	}
 	
 	if req.SuccessfulDeliveries != nil {
-		entity.SuccessfulDeliveries = *req.SuccessfulDeliveries
+		entity.SuccessfulDeliveries = req.SuccessfulDeliveries
 	}
 	
 	if req.FailedDeliveries != nil {
-		entity.FailedDeliveries = *req.FailedDeliveries
+		entity.FailedDeliveries = req.FailedDeliveries
 	}
 	
 	if req.LastDeliveryAt != nil {
-		entity.LastDeliveryAt = *req.LastDeliveryAt
+		entity.LastDeliveryAt = req.LastDeliveryAt
 	}
 	
 	if req.LastSuccessAt != nil {
-		entity.LastSuccessAt = *req.LastSuccessAt
+		entity.LastSuccessAt = req.LastSuccessAt
 	}
 	
 	if req.LastFailureAt != nil {
-		entity.LastFailureAt = *req.LastFailureAt
+		entity.LastFailureAt = req.LastFailureAt
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -379,7 +377,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get webhooks: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("webhooks not found or access denied")
 	}
 	

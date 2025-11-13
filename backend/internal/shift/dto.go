@@ -81,7 +81,7 @@ type CreateShiftsRequest struct {
 	
 	EndTime *time.Time `json:"end_time"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	OpeningCash *float64 `json:"opening_cash"`
 	
@@ -103,11 +103,11 @@ type CreateShiftsRequest struct {
 	
 	TotalDiscounts *float64 `json:"total_discounts"`
 	
-	PaymentBreakdown json.RawMessage `json:"payment_breakdown"`
+	// Duplicate removed: PaymentBreakdown json.RawMessage `json:"payment_breakdown"`
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	ClosedBy *uuid.UUID `json:"closed_by"`
 	
@@ -156,7 +156,7 @@ type UpdateShiftsRequest struct {
 	
 	EndTime *time.Time `json:"end_time,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	OpeningCash *float64 `json:"opening_cash,omitempty"`
 	

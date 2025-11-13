@@ -1,6 +1,7 @@
 package webhook_delivery
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -22,7 +23,7 @@ type WebhookDeliveriesResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RequestUrl string `json:"request_url"`
 	
@@ -61,21 +62,21 @@ type CreateWebhookDeliveriesRequest struct {
 	
 	EventId uuid.UUID `json:"event_id" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RequestUrl string `json:"request_url" validate:"required,url"`
 	
 	RequestMethod string `json:"request_method" validate:"required"`
 	
-	RequestHeaders json.RawMessage `json:"request_headers"`
+	// Duplicate removed: RequestHeaders json.RawMessage `json:"request_headers"`
 	
-	RequestBody json.RawMessage `json:"request_body"`
+	// Duplicate removed: RequestBody json.RawMessage `json:"request_body"`
 	
 	ResponseStatusCode *int64 `json:"response_status_code"`
 	
-	ResponseHeaders json.RawMessage `json:"response_headers"`
+	// Duplicate removed: ResponseHeaders json.RawMessage `json:"response_headers"`
 	
 	ResponseBody *string `json:"response_body"`
 	
@@ -130,9 +131,9 @@ type UpdateWebhookDeliveriesRequest struct {
 	
 	EventId *uuid.UUID `json:"event_id,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	RequestUrl *string `json:"request_url,omitempty" validate:"omitempty,required,url"`
 	

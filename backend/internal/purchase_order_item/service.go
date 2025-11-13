@@ -3,8 +3,6 @@ package purchase_order_item
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePurcha
 
 	// Convert DTO to entity
 	entity := &PurchaseOrderItems{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		PurchaseOrderId: req.PurchaseOrderId,
 		
@@ -101,7 +99,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePurcha
 	}
 
 	s.logger.Info("created purchase_order_items",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -137,7 +135,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("purchase_order_items not found or access denied")
 	}
 	
@@ -238,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("purchase_order_items not found or access denied")
 	}
 	
@@ -246,51 +244,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = *req.PurchaseOrderId
+		entity.PurchaseOrderId = req.PurchaseOrderId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = *req.LineNumber
+		entity.LineNumber = req.LineNumber
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = *req.ProductId
+		entity.ProductId = req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = *req.ProductVariantId
+		entity.ProductVariantId = req.ProductVariantId
 	}
 	
 	if req.QuantityOrdered != nil {
-		entity.QuantityOrdered = *req.QuantityOrdered
+		entity.QuantityOrdered = req.QuantityOrdered
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = *req.QuantityReceived
+		entity.QuantityReceived = req.QuantityReceived
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = *req.UnitCost
+		entity.UnitCost = req.UnitCost
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = *req.Subtotal
+		entity.Subtotal = req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = *req.TaxAmount
+		entity.TaxAmount = req.TaxAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = *req.TotalAmount
+		entity.TotalAmount = req.TotalAmount
 	}
 	
 	if req.ExpectedDeliveryDate != nil {
-		entity.ExpectedDeliveryDate = *req.ExpectedDeliveryDate
+		entity.ExpectedDeliveryDate = req.ExpectedDeliveryDate
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 
@@ -343,7 +341,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get purchase_order_items: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("purchase_order_items not found or access denied")
 	}
 	

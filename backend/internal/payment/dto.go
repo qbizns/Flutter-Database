@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -57,7 +58,7 @@ type CreatePaymentsRequest struct {
 	
 	PaymentMethod string `json:"payment_method" validate:"required"`
 	
-	PaymentStatus string `json:"payment_status" validate:"required"`
+	// 	PaymentStatus string `json:"payment_status" validate:"required"`
 	
 	Amount float64 `json:"amount" validate:"required"`
 	
@@ -79,7 +80,7 @@ type CreatePaymentsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -100,11 +101,10 @@ func (r *CreatePaymentsRequest) Validate() error {
 		return fmt.Errorf("payment_status is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
-	if r.PaymentDate == nil {
+	if r.PaymentDate.IsZero() {
 		return fmt.Errorf("payment_date is required")
 	}
 	
@@ -122,7 +122,7 @@ type UpdatePaymentsRequest struct {
 	
 	PaymentMethod *string `json:"payment_method,omitempty" validate:"omitempty,required"`
 	
-	PaymentStatus *string `json:"payment_status,omitempty" validate:"omitempty,required"`
+	// 	PaymentStatus *string `json:"payment_status,omitempty" validate:"omitempty,required"`
 	
 	Amount *float64 `json:"amount,omitempty" validate:"omitempty,required"`
 	

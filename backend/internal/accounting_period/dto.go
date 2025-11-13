@@ -1,6 +1,7 @@
 package accounting_period
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -57,13 +58,13 @@ type CreateAccountingPeriodsRequest struct {
 	
 	EndDate time.Time `json:"end_date" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ClosedBy *uuid.UUID `json:"closed_by"`
 	
 	ClosedAt *time.Time `json:"closed_at"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -86,11 +87,11 @@ func (r *CreateAccountingPeriodsRequest) Validate() error {
 		return fmt.Errorf("period_name is required")
 	}
 	
-	if r.StartDate == nil {
+	if r.StartDate.IsZero() {
 		return fmt.Errorf("start_date is required")
 	}
 	
-	if r.EndDate == nil {
+	if r.EndDate.IsZero() {
 		return fmt.Errorf("end_date is required")
 	}
 	
@@ -114,7 +115,7 @@ type UpdateAccountingPeriodsRequest struct {
 	
 	EndDate *time.Time `json:"end_date,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ClosedBy *uuid.UUID `json:"closed_by,omitempty"`
 	

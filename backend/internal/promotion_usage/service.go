@@ -3,8 +3,6 @@ package promotion_usage
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePromot
 
 	// Convert DTO to entity
 	entity := &PromotionUsage{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		PromotionId: req.PromotionId,
 		
@@ -87,7 +85,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePromot
 	}
 
 	s.logger.Info("created promotion_usage",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -123,7 +121,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("promotion_usage not found or access denied")
 	}
 	
@@ -224,7 +222,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("promotion_usage not found or access denied")
 	}
 	
@@ -232,23 +230,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PromotionId != nil {
-		entity.PromotionId = *req.PromotionId
+		entity.PromotionId = req.PromotionId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = *req.SaleId
+		entity.SaleId = req.SaleId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = *req.CustomerId
+		entity.CustomerId = req.CustomerId
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = *req.DiscountAmount
+		entity.DiscountAmount = req.DiscountAmount
 	}
 	
 	if req.UsedAt != nil {
-		entity.UsedAt = *req.UsedAt
+		entity.UsedAt = req.UsedAt
 	}
 	
 
@@ -301,7 +299,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get promotion_usage: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("promotion_usage not found or access denied")
 	}
 	

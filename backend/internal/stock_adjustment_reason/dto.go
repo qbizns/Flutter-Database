@@ -1,6 +1,7 @@
 package stock_adjustment_reason
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -63,7 +64,7 @@ type CreateStockAdjustmentReasonsRequest struct {
 	
 	SortOrder *int64 `json:"sort_order"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 

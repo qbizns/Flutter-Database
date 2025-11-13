@@ -1,6 +1,7 @@
 package organization_setting
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -197,7 +198,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Organization
 
 	r.logger.Info("created organization_settings",
 		zap.String("id", entity.OrganizationId.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

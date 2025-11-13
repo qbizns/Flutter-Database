@@ -1,6 +1,7 @@
 package loyalty_redemption
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -40,7 +41,7 @@ type LoyaltyRedemptions struct {
 	SaleId *uuid.UUID `json:"sale_id" db:"sale_id"`
 	UsedDate *time.Time `json:"used_date" db:"used_date"`
 	ExpiryDate *time.Time `json:"expiry_date" db:"expiry_date"`
-	FulfillmentStatus *string `json:"fulfillment_status" db:"fulfillment_status"`
+	// 	FulfillmentStatus *string `json:"fulfillment_status" db:"fulfillment_status"`
 	FulfillmentNotes *string `json:"fulfillment_notes" db:"fulfillment_notes"`
 	FulfilledBy *uuid.UUID `json:"fulfilled_by" db:"fulfilled_by"`
 	FulfilledAt *time.Time `json:"fulfilled_at" db:"fulfilled_at"`
@@ -135,7 +136,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *LoyaltyRedem
 
 	r.logger.Info("created loyalty_redemptions",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

@@ -61,13 +61,13 @@ type CreateTipPoolsRequest struct {
 	
 	DistributionMethod *string `json:"distribution_method"`
 	
-	DistributionConfig json.RawMessage `json:"distribution_config"`
+	// Duplicate removed: DistributionConfig json.RawMessage `json:"distribution_config"`
 	
 	EligiblePositions *string `json:"eligible_positions"`
 	
 	IsActive *bool `json:"is_active"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

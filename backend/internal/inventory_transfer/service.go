@@ -3,8 +3,6 @@ package inventory_transfer
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 
 	// Convert DTO to entity
 	entity := &InventoryTransfers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		TransferNumber: req.TransferNumber,
 		
@@ -129,7 +127,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateInvent
 	}
 
 	s.logger.Info("created inventory_transfers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -165,7 +163,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_transfers not found or access denied")
 	}
 	
@@ -266,7 +264,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("inventory_transfers not found or access denied")
 	}
 	
@@ -274,95 +272,95 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TransferNumber != nil {
-		entity.TransferNumber = *req.TransferNumber
+		entity.TransferNumber = req.TransferNumber
 	}
 	
 	if req.TransferDate != nil {
-		entity.TransferDate = *req.TransferDate
+		entity.TransferDate = req.TransferDate
 	}
 	
 	if req.FromLocationId != nil {
-		entity.FromLocationId = *req.FromLocationId
+		entity.FromLocationId = req.FromLocationId
 	}
 	
 	if req.ToLocationId != nil {
-		entity.ToLocationId = *req.ToLocationId
+		entity.ToLocationId = req.ToLocationId
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.RequestedDate != nil {
-		entity.RequestedDate = *req.RequestedDate
+		entity.RequestedDate = req.RequestedDate
 	}
 	
 	if req.ApprovedDate != nil {
-		entity.ApprovedDate = *req.ApprovedDate
+		entity.ApprovedDate = req.ApprovedDate
 	}
 	
 	if req.ShippedDate != nil {
-		entity.ShippedDate = *req.ShippedDate
+		entity.ShippedDate = req.ShippedDate
 	}
 	
 	if req.ExpectedDeliveryDate != nil {
-		entity.ExpectedDeliveryDate = *req.ExpectedDeliveryDate
+		entity.ExpectedDeliveryDate = req.ExpectedDeliveryDate
 	}
 	
 	if req.ReceivedDate != nil {
-		entity.ReceivedDate = *req.ReceivedDate
+		entity.ReceivedDate = req.ReceivedDate
 	}
 	
 	if req.Carrier != nil {
-		entity.Carrier = *req.Carrier
+		entity.Carrier = req.Carrier
 	}
 	
 	if req.TrackingNumber != nil {
-		entity.TrackingNumber = *req.TrackingNumber
+		entity.TrackingNumber = req.TrackingNumber
 	}
 	
 	if req.ShippingCost != nil {
-		entity.ShippingCost = *req.ShippingCost
+		entity.ShippingCost = req.ShippingCost
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = *req.Reason
+		entity.Reason = req.Reason
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.RejectionReason != nil {
-		entity.RejectionReason = *req.RejectionReason
+		entity.RejectionReason = req.RejectionReason
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 	if req.RequestedBy != nil {
-		entity.RequestedBy = *req.RequestedBy
+		entity.RequestedBy = req.RequestedBy
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = *req.ApprovedBy
+		entity.ApprovedBy = req.ApprovedBy
 	}
 	
 	if req.ShippedBy != nil {
-		entity.ShippedBy = *req.ShippedBy
+		entity.ShippedBy = req.ShippedBy
 	}
 	
 	if req.ReceivedBy != nil {
-		entity.ReceivedBy = *req.ReceivedBy
+		entity.ReceivedBy = req.ReceivedBy
 	}
 	
 	if req.(approvedDate != nil {
@@ -427,7 +425,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get inventory_transfers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("inventory_transfers not found or access denied")
 	}
 	

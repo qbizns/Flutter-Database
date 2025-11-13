@@ -1,6 +1,7 @@
 package background_job
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -22,7 +23,7 @@ type BackgroundJobsResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Payload json.RawMessage `json:"payload"`
 	
@@ -67,17 +68,17 @@ type CreateBackgroundJobsRequest struct {
 	
 	QueueName *string `json:"queue_name"`
 	
-	Status *string `json:"status"`
+	// Duplicate removed: 	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// Duplicate removed: 	// 	Status *string `json:"status"`
 	
 	Payload json.RawMessage `json:"payload" validate:"required"`
 	
-	Result json.RawMessage `json:"result"`
+	// Duplicate removed: Result json.RawMessage `json:"result"`
 	
 	ErrorMessage *string `json:"error_message"`
 	
-	ErrorDetails json.RawMessage `json:"error_details"`
+	// Duplicate removed: ErrorDetails json.RawMessage `json:"error_details"`
 	
 	Attempts *int64 `json:"attempts"`
 	
@@ -132,9 +133,9 @@ type UpdateBackgroundJobsRequest struct {
 	
 	QueueName *string `json:"queue_name,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Payload *json.RawMessage `json:"payload,omitempty" validate:"omitempty,required"`
 	

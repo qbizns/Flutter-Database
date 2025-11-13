@@ -40,7 +40,7 @@ type PurchaseOrdersResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by"`
 	
@@ -87,9 +87,9 @@ type CreatePurchaseOrdersRequest struct {
 	
 	PaymentDueDate *time.Time `json:"payment_due_date"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by"`
 	
@@ -118,7 +118,7 @@ func (r *CreatePurchaseOrdersRequest) Validate() error {
 		return fmt.Errorf("location_id is required")
 	}
 	
-	if r.OrderDate == nil {
+	if r.OrderDate.IsZero() {
 		return fmt.Errorf("order_date is required")
 	}
 	
@@ -156,9 +156,9 @@ type UpdatePurchaseOrdersRequest struct {
 	
 	PaymentDueDate *time.Time `json:"payment_due_date,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ApprovedBy *uuid.UUID `json:"approved_by,omitempty"`
 	

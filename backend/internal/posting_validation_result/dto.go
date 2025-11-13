@@ -1,6 +1,7 @@
 package posting_validation_result
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -63,9 +64,9 @@ type CreatePostingValidationResultsRequest struct {
 	
 	IsBlocking bool `json:"is_blocking" validate:"required"`
 	
-	Context json.RawMessage `json:"context"`
+	// Duplicate removed: Context json.RawMessage `json:"context"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

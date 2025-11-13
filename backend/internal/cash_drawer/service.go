@@ -3,8 +3,6 @@ package cash_drawer
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashDr
 
 	// Convert DTO to entity
 	entity := &CashDrawers{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		DrawerCode: req.DrawerCode,
 		
@@ -91,7 +89,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCashDr
 	}
 
 	s.logger.Info("created cash_drawers",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -127,7 +125,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_drawers not found or access denied")
 	}
 	
@@ -228,7 +226,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("cash_drawers not found or access denied")
 	}
 	
@@ -236,31 +234,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DrawerCode != nil {
-		entity.DrawerCode = *req.DrawerCode
+		entity.DrawerCode = req.DrawerCode
 	}
 	
 	if req.DrawerName != nil {
-		entity.DrawerName = *req.DrawerName
+		entity.DrawerName = req.DrawerName
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.DeviceId != nil {
-		entity.DeviceId = *req.DeviceId
+		entity.DeviceId = req.DeviceId
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -313,7 +311,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get cash_drawers: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("cash_drawers not found or access denied")
 	}
 	

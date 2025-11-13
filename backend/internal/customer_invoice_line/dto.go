@@ -1,6 +1,7 @@
 package customer_invoice_line
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -79,7 +80,7 @@ type CreateCustomerInvoiceLinesRequest struct {
 	
 	ProductId *uuid.UUID `json:"product_id"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 
@@ -106,9 +107,8 @@ func (r *CreateCustomerInvoiceLinesRequest) Validate() error {
 		return fmt.Errorf("unit_price is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

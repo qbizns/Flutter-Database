@@ -44,7 +44,7 @@ type PurchaseOrders struct {
 	PaymentTerms *string `json:"payment_terms" db:"payment_terms"`
 	PaymentDueDate *time.Time `json:"payment_due_date" db:"payment_due_date"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	ApprovedBy *uuid.UUID `json:"approved_by" db:"approved_by"`
 	ApprovedAt *time.Time `json:"approved_at" db:"approved_at"`
 	Notes *string `json:"notes" db:"notes"`
@@ -147,7 +147,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PurchaseOrde
 
 	r.logger.Info("created purchase_orders",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

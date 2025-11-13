@@ -97,7 +97,7 @@ type CreateJournalEntryLinesRequest struct {
 	
 	ReconciledAt *time.Time `json:"reconciled_at"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

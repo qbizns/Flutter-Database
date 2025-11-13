@@ -3,8 +3,6 @@ package journal_entry_type
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -82,7 +80,7 @@ func (s *Service) Create(ctx context.Context, req *CreateJournalEntryTypesReques
 	}
 
 	s.logger.Info("created journal_entry_types",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -202,23 +200,23 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateJournalEn
 	// Update fields
 	
 	if req.TypeCode != nil {
-		entity.TypeCode = *req.TypeCode
+		entity.TypeCode = req.TypeCode
 	}
 	
 	if req.TypeName != nil {
-		entity.TypeName = *req.TypeName
+		entity.TypeName = req.TypeName
 	}
 	
 	if req.TypeCategory != nil {
-		entity.TypeCategory = *req.TypeCategory
+		entity.TypeCategory = req.TypeCategory
 	}
 	
 	if req.NumberPrefix != nil {
-		entity.NumberPrefix = *req.NumberPrefix
+		entity.NumberPrefix = req.NumberPrefix
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 

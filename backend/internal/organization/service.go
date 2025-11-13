@@ -3,8 +3,6 @@ package organization
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -116,7 +114,7 @@ func (s *Service) Create(ctx context.Context, req *CreateOrganizationsRequest) (
 	}
 
 	s.logger.Info("created organizations",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -236,91 +234,91 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateOrganizat
 	// Update fields
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = *req.Slug
+		entity.Slug = req.Slug
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.Address != nil {
-		entity.Address = *req.Address
+		entity.Address = req.Address
 	}
 	
 	if req.City != nil {
-		entity.City = *req.City
+		entity.City = req.City
 	}
 	
 	if req.State != nil {
-		entity.State = *req.State
+		entity.State = req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = *req.Country
+		entity.Country = req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = *req.PostalCode
+		entity.PostalCode = req.PostalCode
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Plan != nil {
-		entity.Plan = *req.Plan
+		entity.Plan = req.Plan
 	}
 	
 	if req.TrialEndsAt != nil {
-		entity.TrialEndsAt = *req.TrialEndsAt
+		entity.TrialEndsAt = req.TrialEndsAt
 	}
 	
 	if req.SubscriptionStartsAt != nil {
-		entity.SubscriptionStartsAt = *req.SubscriptionStartsAt
+		entity.SubscriptionStartsAt = req.SubscriptionStartsAt
 	}
 	
 	if req.SubscriptionEndsAt != nil {
-		entity.SubscriptionEndsAt = *req.SubscriptionEndsAt
+		entity.SubscriptionEndsAt = req.SubscriptionEndsAt
 	}
 	
 	if req.MaxUsers != nil {
-		entity.MaxUsers = *req.MaxUsers
+		entity.MaxUsers = req.MaxUsers
 	}
 	
 	if req.MaxProducts != nil {
-		entity.MaxProducts = *req.MaxProducts
+		entity.MaxProducts = req.MaxProducts
 	}
 	
 	if req.MaxLocations != nil {
-		entity.MaxLocations = *req.MaxLocations
+		entity.MaxLocations = req.MaxLocations
 	}
 	
 	if req.Settings != nil {
-		entity.Settings = *req.Settings
+		entity.Settings = req.Settings
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 

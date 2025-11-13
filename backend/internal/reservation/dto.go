@@ -1,6 +1,7 @@
 package reservation
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -109,7 +110,7 @@ type CreateReservationsRequest struct {
 	
 	CustomerEmail *string `json:"customer_email" validate:"email"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	AssignedWaiterId *uuid.UUID `json:"assigned_waiter_id"`
 	
@@ -133,7 +134,7 @@ type CreateReservationsRequest struct {
 	
 	ReminderSentAt *time.Time `json:"reminder_sent_at"`
 	
-	NotificationPreferences json.RawMessage `json:"notification_preferences"`
+	// Duplicate removed: NotificationPreferences json.RawMessage `json:"notification_preferences"`
 	
 	CancelledAt *time.Time `json:"cancelled_at"`
 	
@@ -143,7 +144,7 @@ type CreateReservationsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -162,7 +163,7 @@ func (r *CreateReservationsRequest) Validate() error {
 		return fmt.Errorf("reservation_number is required")
 	}
 	
-	if r.ReservationDate == nil {
+	if r.ReservationDate.IsZero() {
 		return fmt.Errorf("reservation_date is required")
 	}
 	
@@ -210,7 +211,7 @@ type UpdateReservationsRequest struct {
 	
 	CustomerEmail *string `json:"customer_email,omitempty" validate:"omitempty,email"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	AssignedWaiterId *uuid.UUID `json:"assigned_waiter_id,omitempty"`
 	

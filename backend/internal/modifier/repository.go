@@ -1,6 +1,7 @@
 package modifier
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -147,7 +148,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Modifiers) e
 
 	r.logger.Info("created modifiers",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

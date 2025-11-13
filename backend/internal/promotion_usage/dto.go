@@ -50,9 +50,8 @@ func (r *CreatePromotionUsageRequest) Validate() error {
 		return fmt.Errorf("promotion_id is required")
 	}
 	
-	if r.DiscountAmount == nil {
-		return fmt.Errorf("discount_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

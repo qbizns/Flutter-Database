@@ -97,7 +97,7 @@ type CreateLoyaltyTiersRequest struct {
 	
 	SortOrder *int64 `json:"sort_order"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

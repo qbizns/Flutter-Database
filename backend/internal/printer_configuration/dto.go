@@ -85,7 +85,7 @@ type CreatePrinterConfigurationsRequest struct {
 	
 	PrintPriority *int64 `json:"print_priority"`
 	
-	TemplateConfig json.RawMessage `json:"template_config"`
+	// Duplicate removed: TemplateConfig json.RawMessage `json:"template_config"`
 	
 	PaperSize *string `json:"paper_size"`
 	
@@ -95,7 +95,7 @@ type CreatePrinterConfigurationsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	

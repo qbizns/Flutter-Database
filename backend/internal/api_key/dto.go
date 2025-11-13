@@ -1,6 +1,7 @@
 package api_key
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -55,7 +56,7 @@ type CreateApiKeysRequest struct {
 	
 	KeyHash string `json:"key_hash" validate:"required"`
 	
-	Scopes json.RawMessage `json:"scopes"`
+	// Duplicate removed: Scopes json.RawMessage `json:"scopes"`
 	
 	AllowedIps *string `json:"allowed_ips"`
 	

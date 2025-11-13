@@ -3,8 +3,6 @@ package role_permission
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -76,7 +74,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRolePermissionsRequest)
 	}
 
 	s.logger.Info("created role_permissions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -196,11 +194,11 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRolePermi
 	// Update fields
 	
 	if req.RoleId != nil {
-		entity.RoleId = *req.RoleId
+		entity.RoleId = req.RoleId
 	}
 	
 	if req.PermissionId != nil {
-		entity.PermissionId = *req.PermissionId
+		entity.PermissionId = req.PermissionId
 	}
 	
 

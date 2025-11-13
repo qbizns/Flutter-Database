@@ -1,6 +1,7 @@
 package scheduled_report
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -69,7 +70,7 @@ type CreateScheduledReportsRequest struct {
 	
 	ScheduleTimezone *string `json:"schedule_timezone"`
 	
-	ReportParameters json.RawMessage `json:"report_parameters"`
+	// Duplicate removed: ReportParameters json.RawMessage `json:"report_parameters"`
 	
 	DeliveryMethod *string `json:"delivery_method"`
 	
@@ -81,7 +82,7 @@ type CreateScheduledReportsRequest struct {
 	
 	LastRunAt *time.Time `json:"last_run_at"`
 	
-	LastRunStatus *string `json:"last_run_status"`
+	// 	LastRunStatus *string `json:"last_run_status"`
 	
 	NextRunAt *time.Time `json:"next_run_at"`
 	
@@ -144,7 +145,7 @@ type UpdateScheduledReportsRequest struct {
 	
 	LastRunAt *time.Time `json:"last_run_at,omitempty"`
 	
-	LastRunStatus *string `json:"last_run_status,omitempty"`
+	// 	LastRunStatus *string `json:"last_run_status,omitempty"`
 	
 	NextRunAt *time.Time `json:"next_run_at,omitempty"`
 	

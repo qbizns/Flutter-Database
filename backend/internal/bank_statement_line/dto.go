@@ -36,7 +36,6 @@ type BankStatementLinesResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -73,9 +72,7 @@ type CreateBankStatementLinesRequest struct {
 	
 	BankReference *string `json:"bank_reference"`
 	
-	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -92,13 +89,12 @@ func (r *CreateBankStatementLinesRequest) Validate() error {
 		return fmt.Errorf("line_number is required")
 	}
 	
-	if r.TransactionDate == nil {
+	if r.TransactionDate.IsZero() {
 		return fmt.Errorf("transaction_date is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -132,9 +128,9 @@ type UpdateBankStatementLinesRequest struct {
 	
 	BankReference *string `json:"bank_reference,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Notes *string `json:"notes,omitempty"`
 	

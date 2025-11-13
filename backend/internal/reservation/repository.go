@@ -1,6 +1,7 @@
 package reservation
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -195,7 +196,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Reservations
 
 	r.logger.Info("created reservations",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

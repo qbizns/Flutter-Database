@@ -1,6 +1,7 @@
 package product_serial_number
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -75,7 +76,7 @@ type CreateProductSerialNumbersRequest struct {
 	
 	SerialNumber string `json:"serial_number" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	PurchaseOrderId *uuid.UUID `json:"purchase_order_id"`
 	
@@ -103,7 +104,7 @@ type CreateProductSerialNumbersRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -140,7 +141,7 @@ type UpdateProductSerialNumbersRequest struct {
 	
 	SerialNumber *string `json:"serial_number,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	PurchaseOrderId *uuid.UUID `json:"purchase_order_id,omitempty"`
 	

@@ -3,8 +3,6 @@ package promotion
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePromot
 
 	// Convert DTO to entity
 	entity := &Promotions{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		PromotionCode: req.PromotionCode,
 		
@@ -127,7 +125,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreatePromot
 	}
 
 	s.logger.Info("created promotions",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -163,7 +161,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("promotions not found or access denied")
 	}
 	
@@ -264,7 +262,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("promotions not found or access denied")
 	}
 	
@@ -272,103 +270,103 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PromotionCode != nil {
-		entity.PromotionCode = *req.PromotionCode
+		entity.PromotionCode = req.PromotionCode
 	}
 	
 	if req.Name != nil {
-		entity.Name = *req.Name
+		entity.Name = req.Name
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.PromotionType != nil {
-		entity.PromotionType = *req.PromotionType
+		entity.PromotionType = req.PromotionType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = *req.DiscountValue
+		entity.DiscountValue = req.DiscountValue
 	}
 	
 	if req.AppliesTo != nil {
-		entity.AppliesTo = *req.AppliesTo
+		entity.AppliesTo = req.AppliesTo
 	}
 	
 	if req.ApplicableProductIds != nil {
-		entity.ApplicableProductIds = *req.ApplicableProductIds
+		entity.ApplicableProductIds = req.ApplicableProductIds
 	}
 	
 	if req.ApplicableCategoryIds != nil {
-		entity.ApplicableCategoryIds = *req.ApplicableCategoryIds
+		entity.ApplicableCategoryIds = req.ApplicableCategoryIds
 	}
 	
 	if req.MinimumPurchaseAmount != nil {
-		entity.MinimumPurchaseAmount = *req.MinimumPurchaseAmount
+		entity.MinimumPurchaseAmount = req.MinimumPurchaseAmount
 	}
 	
 	if req.MinimumQuantity != nil {
-		entity.MinimumQuantity = *req.MinimumQuantity
+		entity.MinimumQuantity = req.MinimumQuantity
 	}
 	
 	if req.BuyQuantity != nil {
-		entity.BuyQuantity = *req.BuyQuantity
+		entity.BuyQuantity = req.BuyQuantity
 	}
 	
 	if req.GetQuantity != nil {
-		entity.GetQuantity = *req.GetQuantity
+		entity.GetQuantity = req.GetQuantity
 	}
 	
 	if req.GetDiscountPercentage != nil {
-		entity.GetDiscountPercentage = *req.GetDiscountPercentage
+		entity.GetDiscountPercentage = req.GetDiscountPercentage
 	}
 	
 	if req.MaxUsesTotal != nil {
-		entity.MaxUsesTotal = *req.MaxUsesTotal
+		entity.MaxUsesTotal = req.MaxUsesTotal
 	}
 	
 	if req.MaxUsesPerCustomer != nil {
-		entity.MaxUsesPerCustomer = *req.MaxUsesPerCustomer
+		entity.MaxUsesPerCustomer = req.MaxUsesPerCustomer
 	}
 	
 	if req.CurrentUses != nil {
-		entity.CurrentUses = *req.CurrentUses
+		entity.CurrentUses = req.CurrentUses
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = *req.StartDate
+		entity.StartDate = req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = *req.EndDate
+		entity.EndDate = req.EndDate
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.IsCombinable != nil {
-		entity.IsCombinable = *req.IsCombinable
+		entity.IsCombinable = req.IsCombinable
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = *req.TermsAndConditions
+		entity.TermsAndConditions = req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -421,7 +419,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get promotions: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("promotions not found or access denied")
 	}
 	

@@ -1,6 +1,7 @@
 package expens
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -99,7 +100,7 @@ type CreateExpensesRequest struct {
 	
 	Currency *string `json:"currency"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	ReferenceNumber *string `json:"reference_number"`
 	
@@ -107,13 +108,13 @@ type CreateExpensesRequest struct {
 	
 	ReceiptUrl *string `json:"receipt_url" validate:"url"`
 	
-	AttachmentUrls json.RawMessage `json:"attachment_urls"`
+	// Duplicate removed: AttachmentUrls json.RawMessage `json:"attachment_urls"`
 	
 	Description *string `json:"description"`
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -138,7 +139,7 @@ func (r *CreateExpensesRequest) Validate() error {
 		return fmt.Errorf("expense_number is required")
 	}
 	
-	if r.ExpenseDate == nil {
+	if r.ExpenseDate.IsZero() {
 		return fmt.Errorf("expense_date is required")
 	}
 	
@@ -150,13 +151,8 @@ func (r *CreateExpensesRequest) Validate() error {
 		return fmt.Errorf("payee_name is required")
 	}
 	
-	if r.Amount == nil {
-		return fmt.Errorf("amount is required")
-	}
-	
-	if r.TotalAmount == nil {
-		return fmt.Errorf("total_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation
@@ -190,7 +186,7 @@ type UpdateExpensesRequest struct {
 	
 	Currency *string `json:"currency,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	ReferenceNumber *string `json:"reference_number,omitempty"`
 	

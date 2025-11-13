@@ -1,6 +1,7 @@
 package cycle_count_item
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -89,7 +90,7 @@ type CreateCycleCountItemsRequest struct {
 	
 	VarianceValue *float64 `json:"variance_value"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RecountRequired *bool `json:"recount_required"`
 	
@@ -105,7 +106,7 @@ type CreateCycleCountItemsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CountedAt *time.Time `json:"counted_at"`
 	
@@ -164,7 +165,7 @@ type UpdateCycleCountItemsRequest struct {
 	
 	VarianceValue *float64 `json:"variance_value,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	RecountRequired *bool `json:"recount_required,omitempty"`
 	

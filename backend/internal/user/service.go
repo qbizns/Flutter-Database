@@ -3,8 +3,6 @@ package user
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateUsersR
 
 	// Convert DTO to entity
 	entity := &Users{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		Email: req.Email,
 		
@@ -115,7 +113,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateUsersR
 	}
 
 	s.logger.Info("created users",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -151,7 +149,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("users not found or access denied")
 	}
 	
@@ -252,7 +250,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("users not found or access denied")
 	}
 	
@@ -260,79 +258,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Email != nil {
-		entity.Email = *req.Email
+		entity.Email = req.Email
 	}
 	
 	if req.PasswordHash != nil {
-		entity.PasswordHash = *req.PasswordHash
+		entity.PasswordHash = req.PasswordHash
 	}
 	
 	if req.FirstName != nil {
-		entity.FirstName = *req.FirstName
+		entity.FirstName = req.FirstName
 	}
 	
 	if req.LastName != nil {
-		entity.LastName = *req.LastName
+		entity.LastName = req.LastName
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = *req.Phone
+		entity.Phone = req.Phone
 	}
 	
 	if req.AvatarUrl != nil {
-		entity.AvatarUrl = *req.AvatarUrl
+		entity.AvatarUrl = req.AvatarUrl
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.EmailVerified != nil {
-		entity.EmailVerified = *req.EmailVerified
+		entity.EmailVerified = req.EmailVerified
 	}
 	
 	if req.EmailVerifiedAt != nil {
-		entity.EmailVerifiedAt = *req.EmailVerifiedAt
+		entity.EmailVerifiedAt = req.EmailVerifiedAt
 	}
 	
 	if req.LastLoginAt != nil {
-		entity.LastLoginAt = *req.LastLoginAt
+		entity.LastLoginAt = req.LastLoginAt
 	}
 	
 	if req.LastLoginIp != nil {
-		entity.LastLoginIp = *req.LastLoginIp
+		entity.LastLoginIp = req.LastLoginIp
 	}
 	
 	if req.FailedLoginAttempts != nil {
-		entity.FailedLoginAttempts = *req.FailedLoginAttempts
+		entity.FailedLoginAttempts = req.FailedLoginAttempts
 	}
 	
 	if req.LockedUntil != nil {
-		entity.LockedUntil = *req.LockedUntil
+		entity.LockedUntil = req.LockedUntil
 	}
 	
 	if req.TwoFactorEnabled != nil {
-		entity.TwoFactorEnabled = *req.TwoFactorEnabled
+		entity.TwoFactorEnabled = req.TwoFactorEnabled
 	}
 	
 	if req.TwoFactorSecret != nil {
-		entity.TwoFactorSecret = *req.TwoFactorSecret
+		entity.TwoFactorSecret = req.TwoFactorSecret
 	}
 	
 	if req.Settings != nil {
-		entity.Settings = *req.Settings
+		entity.Settings = req.Settings
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -385,7 +383,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get users: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("users not found or access denied")
 	}
 	

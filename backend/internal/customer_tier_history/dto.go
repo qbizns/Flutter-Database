@@ -1,6 +1,7 @@
 package customer_tier_history
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -69,7 +70,7 @@ type CreateCustomerTierHistoryRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -90,7 +91,7 @@ func (r *CreateCustomerTierHistoryRequest) Validate() error {
 		return fmt.Errorf("change_type is required")
 	}
 	
-	if r.EffectiveDate == nil {
+	if r.EffectiveDate.IsZero() {
 		return fmt.Errorf("effective_date is required")
 	}
 	

@@ -1,6 +1,7 @@
 package stock_adjustment_reason
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -111,7 +112,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *StockAdjustm
 
 	r.logger.Info("created stock_adjustment_reasons",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

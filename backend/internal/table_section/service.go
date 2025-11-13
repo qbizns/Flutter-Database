@@ -3,8 +3,6 @@ package table_section
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTableS
 
 	// Convert DTO to entity
 	entity := &TableSections{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		LocationId: req.LocationId,
 		
@@ -105,7 +103,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateTableS
 	}
 
 	s.logger.Info("created table_sections",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -141,7 +139,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("table_sections not found or access denied")
 	}
 	
@@ -242,7 +240,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("table_sections not found or access denied")
 	}
 	
@@ -250,59 +248,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.FloorPlanId != nil {
-		entity.FloorPlanId = *req.FloorPlanId
+		entity.FloorPlanId = req.FloorPlanId
 	}
 	
 	if req.SectionName != nil {
-		entity.SectionName = *req.SectionName
+		entity.SectionName = req.SectionName
 	}
 	
 	if req.SectionCode != nil {
-		entity.SectionCode = *req.SectionCode
+		entity.SectionCode = req.SectionCode
 	}
 	
 	if req.SectionType != nil {
-		entity.SectionType = *req.SectionType
+		entity.SectionType = req.SectionType
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = *req.ColorCode
+		entity.ColorCode = req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = *req.Icon
+		entity.Icon = req.Icon
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -355,7 +353,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get table_sections: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("table_sections not found or access denied")
 	}
 	

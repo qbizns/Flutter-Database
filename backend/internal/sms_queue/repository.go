@@ -35,7 +35,7 @@ type SmsQueue struct {
 	FromPhone *string `json:"from_phone" db:"from_phone"`
 	Message string `json:"message" db:"message"`
 	Status *string `json:"status" db:"status"`
-	Status *string `json:"status" db:"status"`
+	// 	Status *string `json:"status" db:"status"`
 	Provider *string `json:"provider" db:"provider"`
 	ProviderMessageId *string `json:"provider_message_id" db:"provider_message_id"`
 	Attempts *int64 `json:"attempts" db:"attempts"`
@@ -126,7 +126,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *SmsQueue) er
 
 	r.logger.Info("created sms_queue",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

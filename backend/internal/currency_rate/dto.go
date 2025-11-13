@@ -52,7 +52,7 @@ func (r *CreateCurrencyRatesRequest) Validate() error {
 		return fmt.Errorf("currency_code is required")
 	}
 	
-	if r.RateDate == nil {
+	if r.RateDate.IsZero() {
 		return fmt.Errorf("rate_date is required")
 	}
 	

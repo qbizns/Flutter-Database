@@ -3,8 +3,6 @@ package goods_receipt
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGoodsR
 
 	// Convert DTO to entity
 	entity := &GoodsReceipts{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		ReceiptNumber: req.ReceiptNumber,
 		
@@ -97,7 +95,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateGoodsR
 	}
 
 	s.logger.Info("created goods_receipts",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -133,7 +131,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("goods_receipts not found or access denied")
 	}
 	
@@ -234,7 +232,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("goods_receipts not found or access denied")
 	}
 	
@@ -242,43 +240,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReceiptNumber != nil {
-		entity.ReceiptNumber = *req.ReceiptNumber
+		entity.ReceiptNumber = req.ReceiptNumber
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = *req.PurchaseOrderId
+		entity.PurchaseOrderId = req.PurchaseOrderId
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = *req.SupplierId
+		entity.SupplierId = req.SupplierId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = *req.LocationId
+		entity.LocationId = req.LocationId
 	}
 	
 	if req.ReceiptDate != nil {
-		entity.ReceiptDate = *req.ReceiptDate
+		entity.ReceiptDate = req.ReceiptDate
 	}
 	
 	if req.ReceivedBy != nil {
-		entity.ReceivedBy = *req.ReceivedBy
+		entity.ReceivedBy = req.ReceivedBy
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 
@@ -331,7 +329,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get goods_receipts: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("goods_receipts not found or access denied")
 	}
 	

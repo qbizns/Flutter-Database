@@ -1,6 +1,7 @@
 package cours
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -131,7 +132,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Courses) err
 
 	r.logger.Info("created courses",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

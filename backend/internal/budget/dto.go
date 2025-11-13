@@ -61,7 +61,7 @@ type CreateBudgetsRequest struct {
 	
 	BudgetType *string `json:"budget_type"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	Notes *string `json:"notes"`
 	
@@ -82,11 +82,11 @@ func (r *CreateBudgetsRequest) Validate() error {
 		return fmt.Errorf("budget_name is required")
 	}
 	
-	if r.StartDate == nil {
+	if r.StartDate.IsZero() {
 		return fmt.Errorf("start_date is required")
 	}
 	
-	if r.EndDate == nil {
+	if r.EndDate.IsZero() {
 		return fmt.Errorf("end_date is required")
 	}
 	
@@ -114,7 +114,7 @@ type UpdateBudgetsRequest struct {
 	
 	BudgetType *string `json:"budget_type,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	Notes *string `json:"notes,omitempty"`
 	

@@ -1,6 +1,7 @@
 package product_batch
 
 import (
+	"encoding/json"
 	"context"
 	"fmt"
 	"time"
@@ -48,7 +49,7 @@ type ProductBatches struct {
 	SupplierBatchNumber *string `json:"supplier_batch_number" db:"supplier_batch_number"`
 	UnitCost *float64 `json:"unit_cost" db:"unit_cost"`
 	TotalCost *float64 `json:"total_cost" db:"total_cost"`
-	QualityStatus *string `json:"quality_status" db:"quality_status"`
+	// 	QualityStatus *string `json:"quality_status" db:"quality_status"`
 	QualityCheckDate *time.Time `json:"quality_check_date" db:"quality_check_date"`
 	QualityCheckedBy *uuid.UUID `json:"quality_checked_by" db:"quality_checked_by"`
 	QualityNotes *string `json:"quality_notes" db:"quality_notes"`
@@ -187,7 +188,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ProductBatch
 
 	r.logger.Info("created product_batches",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

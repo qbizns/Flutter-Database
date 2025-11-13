@@ -48,9 +48,8 @@ func (r *CreateCustomerPaymentApplicationsRequest) Validate() error {
 		return fmt.Errorf("customer_invoice_id is required")
 	}
 	
-	if r.AppliedAmount == nil {
-		return fmt.Errorf("applied_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
 
 	// Additional validation

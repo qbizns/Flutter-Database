@@ -3,8 +3,6 @@ package customer_payment_application
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 
 	// Convert DTO to entity
 	entity := &CustomerPaymentApplications{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		CustomerPaymentId: req.CustomerPaymentId,
 		
@@ -83,7 +81,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateCustom
 	}
 
 	s.logger.Info("created customer_payment_applications",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -119,7 +117,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_payment_applications not found or access denied")
 	}
 	
@@ -220,7 +218,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("customer_payment_applications not found or access denied")
 	}
 	
@@ -228,15 +226,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerPaymentId != nil {
-		entity.CustomerPaymentId = *req.CustomerPaymentId
+		entity.CustomerPaymentId = req.CustomerPaymentId
 	}
 	
 	if req.CustomerInvoiceId != nil {
-		entity.CustomerInvoiceId = *req.CustomerInvoiceId
+		entity.CustomerInvoiceId = req.CustomerInvoiceId
 	}
 	
 	if req.AppliedAmount != nil {
-		entity.AppliedAmount = *req.AppliedAmount
+		entity.AppliedAmount = req.AppliedAmount
 	}
 	
 
@@ -289,7 +287,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get customer_payment_applications: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("customer_payment_applications not found or access denied")
 	}
 	

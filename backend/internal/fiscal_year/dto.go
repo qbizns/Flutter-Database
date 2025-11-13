@@ -1,6 +1,7 @@
 package fiscal_year
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -53,7 +54,7 @@ type CreateFiscalYearsRequest struct {
 	
 	EndDate time.Time `json:"end_date" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	IsCurrent *bool `json:"is_current"`
 	
@@ -63,7 +64,7 @@ type CreateFiscalYearsRequest struct {
 	
 	Notes *string `json:"notes"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -78,11 +79,11 @@ func (r *CreateFiscalYearsRequest) Validate() error {
 		return fmt.Errorf("fiscal_year is required")
 	}
 	
-	if r.StartDate == nil {
+	if r.StartDate.IsZero() {
 		return fmt.Errorf("start_date is required")
 	}
 	
-	if r.EndDate == nil {
+	if r.EndDate.IsZero() {
 		return fmt.Errorf("end_date is required")
 	}
 	
@@ -102,7 +103,7 @@ type UpdateFiscalYearsRequest struct {
 	
 	EndDate *time.Time `json:"end_date,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	IsCurrent *bool `json:"is_current,omitempty"`
 	

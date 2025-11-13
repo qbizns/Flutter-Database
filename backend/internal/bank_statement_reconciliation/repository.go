@@ -93,7 +93,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 
 	r.logger.Info("created bank_statement_reconciliations",
 		zap.String("id", entity.Id.String()),
-		zap.String("organization_id", entity.OrganizationID.String()),
+		zap.String("organization_id", entity.OrganizationId.String()),
 	)
 
 	return nil

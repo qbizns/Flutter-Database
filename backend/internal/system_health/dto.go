@@ -1,6 +1,7 @@
 package system_health
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -41,7 +42,7 @@ type SystemHealthResponse struct {
 // CreateSystemHealthRequest represents a request to create a system_health
 type CreateSystemHealthRequest struct {
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	LastCheckAt *time.Time `json:"last_check_at"`
 	
@@ -57,7 +58,7 @@ type CreateSystemHealthRequest struct {
 	
 	ThresholdCritical *float64 `json:"threshold_critical"`
 	
-	Details json.RawMessage `json:"details"`
+	// Duplicate removed: Details json.RawMessage `json:"details"`
 	
 }
 
@@ -74,7 +75,7 @@ func (r *CreateSystemHealthRequest) Validate() error {
 // UpdateSystemHealthRequest represents a request to update a system_health
 type UpdateSystemHealthRequest struct {
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	LastCheckAt *time.Time `json:"last_check_at,omitempty"`
 	

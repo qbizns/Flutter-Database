@@ -1,6 +1,7 @@
 package immutability_violations_log
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -43,13 +44,13 @@ type CreateImmutabilityViolationsLogRequest struct {
 	
 	AttemptedBy *uuid.UUID `json:"attempted_by"`
 	
-	AttemptedAt time.Time `json:"attempted_at"`
+	// Duplicate removed: AttemptedAt time.Time `json:"attempted_at"`
 	
 	ErrorMessage *string `json:"error_message"`
 	
-	BlockedData json.RawMessage `json:"blocked_data"`
+	// Duplicate removed: BlockedData json.RawMessage `json:"blocked_data"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 }
 
@@ -64,7 +65,7 @@ func (r *CreateImmutabilityViolationsLogRequest) Validate() error {
 		return fmt.Errorf("operation is required")
 	}
 	
-	if r.AttemptedAt == nil {
+	if r.AttemptedAt.IsZero() {
 		return fmt.Errorf("attempted_at is required")
 	}
 	

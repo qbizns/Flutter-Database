@@ -3,8 +3,6 @@ package posting_rule
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -98,7 +96,7 @@ func (s *Service) Create(ctx context.Context, req *CreatePostingRulesRequest) (*
 	}
 
 	s.logger.Info("created posting_rules",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -218,55 +216,55 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRu
 	// Update fields
 	
 	if req.PostingProfileDocumentId != nil {
-		entity.PostingProfileDocumentId = *req.PostingProfileDocumentId
+		entity.PostingProfileDocumentId = req.PostingProfileDocumentId
 	}
 	
 	if req.RuleCode != nil {
-		entity.RuleCode = *req.RuleCode
+		entity.RuleCode = req.RuleCode
 	}
 	
 	if req.RuleName != nil {
-		entity.RuleName = *req.RuleName
+		entity.RuleName = req.RuleName
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 	if req.Event != nil {
-		entity.Event = *req.Event
+		entity.Event = req.Event
 	}
 	
 	if req.Level != nil {
-		entity.Level = *req.Level
+		entity.Level = req.Level
 	}
 	
 	if req.Priority != nil {
-		entity.Priority = *req.Priority
+		entity.Priority = req.Priority
 	}
 	
 	if req.ConditionExpression != nil {
-		entity.ConditionExpression = *req.ConditionExpression
+		entity.ConditionExpression = req.ConditionExpression
 	}
 	
 	if req.IsActive != nil {
-		entity.IsActive = *req.IsActive
+		entity.IsActive = req.IsActive
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.Metadata != nil {
-		entity.Metadata = *req.Metadata
+		entity.Metadata = req.Metadata
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 

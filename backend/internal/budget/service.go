@@ -3,8 +3,6 @@ package budget
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBudget
 
 	// Convert DTO to entity
 	entity := &Budgets{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		BudgetCode: req.BudgetCode,
 		
@@ -99,7 +97,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBudget
 	}
 
 	s.logger.Info("created budgets",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -135,7 +133,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("budgets not found or access denied")
 	}
 	
@@ -236,7 +234,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("budgets not found or access denied")
 	}
 	
@@ -244,47 +242,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BudgetCode != nil {
-		entity.BudgetCode = *req.BudgetCode
+		entity.BudgetCode = req.BudgetCode
 	}
 	
 	if req.BudgetName != nil {
-		entity.BudgetName = *req.BudgetName
+		entity.BudgetName = req.BudgetName
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = *req.FiscalYearId
+		entity.FiscalYearId = req.FiscalYearId
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = *req.StartDate
+		entity.StartDate = req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = *req.EndDate
+		entity.EndDate = req.EndDate
 	}
 	
 	if req.BudgetType != nil {
-		entity.BudgetType = *req.BudgetType
+		entity.BudgetType = req.BudgetType
 	}
 	
 	if req.BudgetType != nil {
-		entity.BudgetType = *req.BudgetType
+		entity.BudgetType = req.BudgetType
 	}
 	
 	if req.Status != nil {
-		entity.Status = *req.Status
+		entity.Status = req.Status
 	}
 	
 	if req.Notes != nil {
-		entity.Notes = *req.Notes
+		entity.Notes = req.Notes
 	}
 	
 	if req.CreatedBy != nil {
-		entity.CreatedBy = *req.CreatedBy
+		entity.CreatedBy = req.CreatedBy
 	}
 	
 	if req.UpdatedBy != nil {
-		entity.UpdatedBy = *req.UpdatedBy
+		entity.UpdatedBy = req.UpdatedBy
 	}
 	
 
@@ -337,7 +335,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get budgets: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("budgets not found or access denied")
 	}
 	

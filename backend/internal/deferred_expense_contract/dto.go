@@ -75,7 +75,7 @@ type CreateDeferredExpenseContractsRequest struct {
 	
 	ExpenseAccountId uuid.UUID `json:"expense_account_id" validate:"required"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	RecognizedAmount *float64 `json:"recognized_amount"`
 	
@@ -90,15 +90,14 @@ type CreateDeferredExpenseContractsRequest struct {
 // Validate validates the create request
 func (r *CreateDeferredExpenseContractsRequest) Validate() error {
 	
-	if r.TotalDeferredAmount == nil {
-		return fmt.Errorf("total_deferred_amount is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
-	if r.StartDate == nil {
+	if r.StartDate.IsZero() {
 		return fmt.Errorf("start_date is required")
 	}
 	
-	if r.EndDate == nil {
+	if r.EndDate.IsZero() {
 		return fmt.Errorf("end_date is required")
 	}
 	
@@ -140,7 +139,7 @@ type UpdateDeferredExpenseContractsRequest struct {
 	
 	ExpenseAccountId *uuid.UUID `json:"expense_account_id,omitempty" validate:"omitempty,required"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	RecognizedAmount *float64 `json:"recognized_amount,omitempty"`
 	

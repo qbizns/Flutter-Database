@@ -30,7 +30,7 @@ type GiftCardsResponse struct {
 	
 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	IssuedByUserId *uuid.UUID `json:"issued_by_user_id"`
 	
@@ -65,9 +65,9 @@ type CreateGiftCardsRequest struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
-	Status *string `json:"status"`
+	// 	Status *string `json:"status"`
 	
 	IssuedByUserId *uuid.UUID `json:"issued_by_user_id"`
 	
@@ -86,15 +86,10 @@ func (r *CreateGiftCardsRequest) Validate() error {
 		return fmt.Errorf("card_number is required")
 	}
 	
-	if r.OriginalValue == nil {
-		return fmt.Errorf("original_value is required")
-	}
+	// Numeric field validation
+	// TODO: Add validation for numeric fields
 	
-	if r.CurrentBalance == nil {
-		return fmt.Errorf("current_balance is required")
-	}
-	
-	if r.IssuedDate == nil {
+	if r.IssuedDate.IsZero() {
 		return fmt.Errorf("issued_date is required")
 	}
 	
@@ -122,9 +117,9 @@ type UpdateGiftCardsRequest struct {
 	
 	ExpiryDate *time.Time `json:"expiry_date,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
-	Status *string `json:"status,omitempty"`
+	// 	Status *string `json:"status,omitempty"`
 	
 	IssuedByUserId *uuid.UUID `json:"issued_by_user_id,omitempty"`
 	

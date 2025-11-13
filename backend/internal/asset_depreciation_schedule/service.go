@@ -3,8 +3,6 @@ package asset_depreciation_schedule
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAssetD
 
 	// Convert DTO to entity
 	entity := &AssetDepreciationSchedule{
-		OrganizationID: orgID,
+		OrganizationId: orgID,
 		
 		FixedAssetId: req.FixedAssetId,
 		
@@ -103,7 +101,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateAssetD
 	}
 
 	s.logger.Info("created asset_depreciation_schedule",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		zap.String("organization_id", orgID.String()),
 	)
 
@@ -139,7 +137,7 @@ func (s *Service) GetByID(ctx context.Context, orgID uuid.UUID, id uuid.UUID) (*
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("asset_depreciation_schedule not found or access denied")
 	}
 	
@@ -240,7 +238,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 
 	
 	// Verify ownership
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return nil, fmt.Errorf("asset_depreciation_schedule not found or access denied")
 	}
 	
@@ -248,55 +246,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FixedAssetId != nil {
-		entity.FixedAssetId = *req.FixedAssetId
+		entity.FixedAssetId = req.FixedAssetId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = *req.FiscalYearId
+		entity.FiscalYearId = req.FiscalYearId
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = *req.AccountingPeriodId
+		entity.AccountingPeriodId = req.AccountingPeriodId
 	}
 	
 	if req.DepreciationDate != nil {
-		entity.DepreciationDate = *req.DepreciationDate
+		entity.DepreciationDate = req.DepreciationDate
 	}
 	
 	if req.DepreciationAmount != nil {
-		entity.DepreciationAmount = *req.DepreciationAmount
+		entity.DepreciationAmount = req.DepreciationAmount
 	}
 	
 	if req.AccumulatedDepreciationBeginning != nil {
-		entity.AccumulatedDepreciationBeginning = *req.AccumulatedDepreciationBeginning
+		entity.AccumulatedDepreciationBeginning = req.AccumulatedDepreciationBeginning
 	}
 	
 	if req.AccumulatedDepreciationEnding != nil {
-		entity.AccumulatedDepreciationEnding = *req.AccumulatedDepreciationEnding
+		entity.AccumulatedDepreciationEnding = req.AccumulatedDepreciationEnding
 	}
 	
 	if req.BookValueBeginning != nil {
-		entity.BookValueBeginning = *req.BookValueBeginning
+		entity.BookValueBeginning = req.BookValueBeginning
 	}
 	
 	if req.BookValueEnding != nil {
-		entity.BookValueEnding = *req.BookValueEnding
+		entity.BookValueEnding = req.BookValueEnding
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = *req.JournalEntryId
+		entity.JournalEntryId = req.JournalEntryId
 	}
 	
 	if req.IsPosted != nil {
-		entity.IsPosted = *req.IsPosted
+		entity.IsPosted = req.IsPosted
 	}
 	
 	if req.PostedAt != nil {
-		entity.PostedAt = *req.PostedAt
+		entity.PostedAt = req.PostedAt
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = *req.PostedBy
+		entity.PostedBy = req.PostedBy
 	}
 	
 
@@ -349,7 +347,7 @@ func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, id uuid.UUID) err
 		return fmt.Errorf("failed to get asset_depreciation_schedule: %w", err)
 	}
 
-	if entity.OrganizationID != orgID {
+	if entity.OrganizationId != orgID {
 		return fmt.Errorf("asset_depreciation_schedule not found or access denied")
 	}
 	

@@ -1,6 +1,7 @@
 package inventory_transaction
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -73,7 +74,7 @@ type CreateInventoryTransactionsRequest struct {
 	
 	Reason *string `json:"reason"`
 	
-	Metadata json.RawMessage `json:"metadata"`
+	// Duplicate removed: Metadata json.RawMessage `json:"metadata"`
 	
 	CreatedBy *uuid.UUID `json:"created_by"`
 	
@@ -98,7 +99,7 @@ func (r *CreateInventoryTransactionsRequest) Validate() error {
 		return fmt.Errorf("balance_after is required")
 	}
 	
-	if r.TransactionDate == nil {
+	if r.TransactionDate.IsZero() {
 		return fmt.Errorf("transaction_date is required")
 	}
 	

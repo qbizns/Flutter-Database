@@ -3,8 +3,6 @@ package account_type
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -88,7 +86,7 @@ func (s *Service) Create(ctx context.Context, req *CreateAccountTypesRequest) (*
 	}
 
 	s.logger.Info("created account_types",
-		zap.String("id", entity.ID.String()),
+		zap.String("id", entity.Id.String()),
 		
 	)
 
@@ -208,35 +206,35 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAccountTy
 	// Update fields
 	
 	if req.TypeCode != nil {
-		entity.TypeCode = *req.TypeCode
+		entity.TypeCode = req.TypeCode
 	}
 	
 	if req.TypeName != nil {
-		entity.TypeName = *req.TypeName
+		entity.TypeName = req.TypeName
 	}
 	
 	if req.TypeCategory != nil {
-		entity.TypeCategory = *req.TypeCategory
+		entity.TypeCategory = req.TypeCategory
 	}
 	
 	if req.NormalBalance != nil {
-		entity.NormalBalance = *req.NormalBalance
+		entity.NormalBalance = req.NormalBalance
 	}
 	
 	if req.IsBalanceSheet != nil {
-		entity.IsBalanceSheet = *req.IsBalanceSheet
+		entity.IsBalanceSheet = req.IsBalanceSheet
 	}
 	
 	if req.IsIncomeStatement != nil {
-		entity.IsIncomeStatement = *req.IsIncomeStatement
+		entity.IsIncomeStatement = req.IsIncomeStatement
 	}
 	
 	if req.DisplayOrder != nil {
-		entity.DisplayOrder = *req.DisplayOrder
+		entity.DisplayOrder = req.DisplayOrder
 	}
 	
 	if req.Description != nil {
-		entity.Description = *req.Description
+		entity.Description = req.Description
 	}
 	
 
