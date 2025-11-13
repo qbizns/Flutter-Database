@@ -226,7 +226,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DeliveryAssi
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -263,7 +263,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Del
 			, delivery_location
 			, assigned_at
 			, assigned_by
-			, status
 			, accepted_at
 			, picked_up_at
 			, dispatched_at
@@ -343,7 +342,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Del
 		&entity.DriverNotes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.DeletedAt,
@@ -400,7 +399,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, delivery_location
 			, assigned_at
 			, assigned_by
-			, status
 			, accepted_at
 			, picked_up_at
 			, dispatched_at
@@ -490,7 +488,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.DriverNotes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
@@ -609,7 +607,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *DeliveryAssi
 		entity.CustomerFeedback,
 		entity.DriverNotes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
@@ -795,7 +793,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.DriverNotes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,

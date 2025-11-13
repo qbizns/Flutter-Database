@@ -206,7 +206,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DeliveryDriv
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -253,7 +253,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Del
 			, insurance_expiry_date
 			, hire_date
 			, employment_type
-			, status
 			, total_deliveries
 			, successful_deliveries
 			, rating
@@ -314,7 +313,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Del
 		&entity.Documents,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.DeletedAt,
@@ -380,7 +379,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, insurance_expiry_date
 			, hire_date
 			, employment_type
-			, status
 			, total_deliveries
 			, successful_deliveries
 			, rating
@@ -451,7 +449,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Documents,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
@@ -560,7 +558,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *DeliveryDriv
 		entity.PaymentMethod,
 		entity.Documents,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
@@ -736,7 +734,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Documents,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,

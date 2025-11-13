@@ -230,19 +230,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PromotionId != nil {
-		entity.PromotionId = req.PromotionId
+		entity.PromotionId = *req.PromotionId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.UsedAt != nil {

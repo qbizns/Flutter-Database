@@ -250,15 +250,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = req.PaymentMethod
+		entity.PaymentMethod = *req.PaymentMethod
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = req.PaymentStatus
+		entity.PaymentStatus = *req.PaymentStatus
 	}
 	
 	if req.Amount != nil {
@@ -266,31 +266,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CardLastFour != nil {
-		entity.CardLastFour = req.CardLastFour
+		entity.CardLastFour = *req.CardLastFour
 	}
 	
 	if req.CardType != nil {
-		entity.CardType = req.CardType
+		entity.CardType = *req.CardType
 	}
 	
 	if req.TransactionId != nil {
-		entity.TransactionId = req.TransactionId
+		entity.TransactionId = *req.TransactionId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = req.AccountNumber
+		entity.AccountNumber = *req.AccountNumber
 	}
 	
 	if req.AccountName != nil {
-		entity.AccountName = req.AccountName
+		entity.AccountName = *req.AccountName
 	}
 	
 	if req.PaymentDate != nil {
-		entity.PaymentDate = req.PaymentDate
+		entity.PaymentDate = *req.PaymentDate
 	}
 	
 	if req.ProcessedAt != nil {

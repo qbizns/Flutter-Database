@@ -278,27 +278,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.EntryNumber != nil {
-		entity.EntryNumber = req.EntryNumber
+		entity.EntryNumber = *req.EntryNumber
 	}
 	
 	if req.EntryTypeId != nil {
-		entity.EntryTypeId = req.EntryTypeId
+		entity.EntryTypeId = *req.EntryTypeId
 	}
 	
 	if req.EntryDate != nil {
-		entity.EntryDate = req.EntryDate
+		entity.EntryDate = *req.EntryDate
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = req.PostingDate
+		entity.PostingDate = *req.PostingDate
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = req.FiscalYearId
+		entity.FiscalYearId = *req.FiscalYearId
 	}
 	
 	if req.Status != nil {
@@ -314,31 +314,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReversalEntryId != nil {
-		entity.ReversalEntryId = req.ReversalEntryId
+		entity.ReversalEntryId = *req.ReversalEntryId
 	}
 	
 	if req.SourceModule != nil {
-		entity.SourceModule = req.SourceModule
+		entity.SourceModule = *req.SourceModule
 	}
 	
 	if req.SourceDocumentType != nil {
-		entity.SourceDocumentType = req.SourceDocumentType
+		entity.SourceDocumentType = *req.SourceDocumentType
 	}
 	
 	if req.SourceDocumentId != nil {
-		entity.SourceDocumentId = req.SourceDocumentId
+		entity.SourceDocumentId = *req.SourceDocumentId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.TotalDebit != nil {
-		entity.TotalDebit = req.TotalDebit
+		entity.TotalDebit = *req.TotalDebit
 	}
 	
 	if req.TotalCredit != nil {
-		entity.TotalCredit = req.TotalCredit
+		entity.TotalCredit = *req.TotalCredit
 	}
 	
 	if req.Description != nil {
@@ -350,11 +350,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = req.RequiresApproval
+		entity.RequiresApproval = *req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
@@ -362,7 +362,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = req.PostedBy
+		entity.PostedBy = *req.PostedBy
 	}
 	
 	if req.PostedAt != nil {
@@ -370,7 +370,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Attachments != nil {
-		entity.Attachments = req.Attachments
+		entity.Attachments = *req.Attachments
 	}
 	
 	if req.Metadata != nil {

@@ -208,11 +208,11 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAssetCate
 	// Update fields
 	
 	if req.CategoryCode != nil {
-		entity.CategoryCode = req.CategoryCode
+		entity.CategoryCode = *req.CategoryCode
 	}
 	
 	if req.CategoryName != nil {
-		entity.CategoryName = req.CategoryName
+		entity.CategoryName = *req.CategoryName
 	}
 	
 	if req.DefaultDepreciationMethod != nil {
@@ -228,15 +228,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAssetCate
 	}
 	
 	if req.AssetAccountId != nil {
-		entity.AssetAccountId = req.AssetAccountId
+		entity.AssetAccountId = *req.AssetAccountId
 	}
 	
 	if req.AccumulatedDepreciationAccountId != nil {
-		entity.AccumulatedDepreciationAccountId = req.AccumulatedDepreciationAccountId
+		entity.AccumulatedDepreciationAccountId = *req.AccumulatedDepreciationAccountId
 	}
 	
 	if req.DepreciationExpenseAccountId != nil {
-		entity.DepreciationExpenseAccountId = req.DepreciationExpenseAccountId
+		entity.DepreciationExpenseAccountId = *req.DepreciationExpenseAccountId
 	}
 	
 	if req.Description != nil {

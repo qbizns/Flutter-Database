@@ -246,35 +246,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PriceListCode != nil {
-		entity.PriceListCode = req.PriceListCode
+		entity.PriceListCode = *req.PriceListCode
 	}
 	
 	if req.PriceListName != nil {
-		entity.PriceListName = req.PriceListName
+		entity.PriceListName = *req.PriceListName
 	}
 	
 	if req.PriceListType != nil {
-		entity.PriceListType = req.PriceListType
+		entity.PriceListType = *req.PriceListType
 	}
 	
 	if req.PriceListType != nil {
-		entity.PriceListType = req.PriceListType
+		entity.PriceListType = *req.PriceListType
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = req.EffectiveTo
+		entity.EffectiveTo = *req.EffectiveTo
 	}
 	
 	if req.BasePriceAdjustmentType != nil {
-		entity.BasePriceAdjustmentType = req.BasePriceAdjustmentType
+		entity.BasePriceAdjustmentType = *req.BasePriceAdjustmentType
 	}
 	
 	if req.BasePriceAdjustmentValue != nil {
-		entity.BasePriceAdjustmentValue = req.BasePriceAdjustmentValue
+		entity.BasePriceAdjustmentValue = *req.BasePriceAdjustmentValue
 	}
 	
 	if req.Priority != nil {

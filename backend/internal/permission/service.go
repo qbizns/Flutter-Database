@@ -206,7 +206,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePermissio
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = req.Slug
+		entity.Slug = *req.Slug
 	}
 	
 	if req.Description != nil {
@@ -214,15 +214,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePermissio
 	}
 	
 	if req.Resource != nil {
-		entity.Resource = req.Resource
+		entity.Resource = *req.Resource
 	}
 	
 	if req.Action != nil {
-		entity.Action = req.Action
+		entity.Action = *req.Action
 	}
 	
 	if req.Category != nil {
-		entity.Category = req.Category
+		entity.Category = *req.Category
 	}
 	
 

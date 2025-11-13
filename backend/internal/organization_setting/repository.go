@@ -188,7 +188,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Organization
 	)
 
 	
-	err := row.Scan(&entity.OrganizationId, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.OrganizationId, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -289,7 +289,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Org
 		&entity.WebhookRetryMaxAttempts,
 		&entity.Features,
 		&entity.CustomSettings,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.UpdatedBy,
 	)
 
@@ -414,7 +414,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.WebhookRetryMaxAttempts,
 			&entity.Features,
 			&entity.CustomSettings,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.UpdatedBy,
 		)
 		if err != nil {
@@ -515,7 +515,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Organization
 		entity.WebhookRetryMaxAttempts,
 		entity.Features,
 		entity.CustomSettings,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.UpdatedBy,
 		entity.OrganizationId,
 	)
@@ -674,7 +674,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.WebhookRetryMaxAttempts,
 			&entity.Features,
 			&entity.CustomSettings,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.UpdatedBy,
 		)
 		if err != nil {

@@ -200,11 +200,11 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingPr
 	// Update fields
 	
 	if req.PostingProfileId != nil {
-		entity.PostingProfileId = req.PostingProfileId
+		entity.PostingProfileId = *req.PostingProfileId
 	}
 	
 	if req.PostingDocumentTypeId != nil {
-		entity.PostingDocumentTypeId = req.PostingDocumentTypeId
+		entity.PostingDocumentTypeId = *req.PostingDocumentTypeId
 	}
 	
 	if req.IsActive != nil {

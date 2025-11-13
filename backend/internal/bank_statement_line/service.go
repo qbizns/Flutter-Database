@@ -218,19 +218,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBankState
 	// Update fields
 	
 	if req.BankStatementId != nil {
-		entity.BankStatementId = req.BankStatementId
+		entity.BankStatementId = *req.BankStatementId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = req.TransactionDate
+		entity.TransactionDate = *req.TransactionDate
 	}
 	
 	if req.ValueDate != nil {
-		entity.ValueDate = req.ValueDate
+		entity.ValueDate = *req.ValueDate
 	}
 	
 	if req.Amount != nil {
@@ -246,19 +246,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBankState
 	}
 	
 	if req.Reference != nil {
-		entity.Reference = req.Reference
+		entity.Reference = *req.Reference
 	}
 	
 	if req.CounterpartyName != nil {
-		entity.CounterpartyName = req.CounterpartyName
+		entity.CounterpartyName = *req.CounterpartyName
 	}
 	
 	if req.CounterpartyAccount != nil {
-		entity.CounterpartyAccount = req.CounterpartyAccount
+		entity.CounterpartyAccount = *req.CounterpartyAccount
 	}
 	
 	if req.BankReference != nil {
-		entity.BankReference = req.BankReference
+		entity.BankReference = *req.BankReference
 	}
 	
 	if req.Status != nil {

@@ -248,15 +248,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.VendorBillId != nil {
-		entity.VendorBillId = req.VendorBillId
+		entity.VendorBillId = *req.VendorBillId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.ExpenseAccountId != nil {
-		entity.ExpenseAccountId = req.ExpenseAccountId
+		entity.ExpenseAccountId = *req.ExpenseAccountId
 	}
 	
 	if req.Description != nil {
@@ -264,11 +264,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = req.UnitPrice
+		entity.UnitPrice = *req.UnitPrice
 	}
 	
 	if req.Amount != nil {
@@ -276,27 +276,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.Department != nil {
-		entity.Department = req.Department
+		entity.Department = *req.Department
 	}
 	
 	if req.ProjectCode != nil {
-		entity.ProjectCode = req.ProjectCode
+		entity.ProjectCode = *req.ProjectCode
 	}
 	
 	if req.TaxCode != nil {
-		entity.TaxCode = req.TaxCode
+		entity.TaxCode = *req.TaxCode
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.Metadata != nil {

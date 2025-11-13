@@ -244,39 +244,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocalizationPackageId != nil {
-		entity.LocalizationPackageId = req.LocalizationPackageId
+		entity.LocalizationPackageId = *req.LocalizationPackageId
 	}
 	
 	if req.ReportCode != nil {
-		entity.ReportCode = req.ReportCode
+		entity.ReportCode = *req.ReportCode
 	}
 	
 	if req.ReportName != nil {
-		entity.ReportName = req.ReportName
+		entity.ReportName = *req.ReportName
 	}
 	
 	if req.Jurisdiction != nil {
-		entity.Jurisdiction = req.Jurisdiction
+		entity.Jurisdiction = *req.Jurisdiction
 	}
 	
 	if req.Authority != nil {
-		entity.Authority = req.Authority
+		entity.Authority = *req.Authority
 	}
 	
 	if req.ReportFrequency != nil {
-		entity.ReportFrequency = req.ReportFrequency
+		entity.ReportFrequency = *req.ReportFrequency
 	}
 	
 	if req.Version != nil {
-		entity.Version = req.Version
+		entity.Version = *req.Version
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = req.EffectiveTo
+		entity.EffectiveTo = *req.EffectiveTo
 	}
 	
 	if req.IsActive != nil {

@@ -238,7 +238,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateOrganizat
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = req.Slug
+		entity.Slug = *req.Slug
 	}
 	
 	if req.Description != nil {
@@ -246,31 +246,31 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateOrganizat
 	}
 	
 	if req.Email != nil {
-		entity.Email = req.Email
+		entity.Email = *req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = req.Phone
+		entity.Phone = *req.Phone
 	}
 	
 	if req.Address != nil {
-		entity.Address = req.Address
+		entity.Address = *req.Address
 	}
 	
 	if req.City != nil {
-		entity.City = req.City
+		entity.City = *req.City
 	}
 	
 	if req.State != nil {
-		entity.State = req.State
+		entity.State = *req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = req.Country
+		entity.Country = *req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = req.PostalCode
+		entity.PostalCode = *req.PostalCode
 	}
 	
 	if req.Status != nil {
@@ -278,7 +278,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateOrganizat
 	}
 	
 	if req.Plan != nil {
-		entity.Plan = req.Plan
+		entity.Plan = *req.Plan
 	}
 	
 	if req.TrialEndsAt != nil {
@@ -294,15 +294,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateOrganizat
 	}
 	
 	if req.MaxUsers != nil {
-		entity.MaxUsers = req.MaxUsers
+		entity.MaxUsers = *req.MaxUsers
 	}
 	
 	if req.MaxProducts != nil {
-		entity.MaxProducts = req.MaxProducts
+		entity.MaxProducts = *req.MaxProducts
 	}
 	
 	if req.MaxLocations != nil {
-		entity.MaxLocations = req.MaxLocations
+		entity.MaxLocations = *req.MaxLocations
 	}
 	
 	if req.Settings != nil {

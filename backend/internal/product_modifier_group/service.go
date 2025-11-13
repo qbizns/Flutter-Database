@@ -238,11 +238,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ModifierGroupId != nil {
-		entity.ModifierGroupId = req.ModifierGroupId
+		entity.ModifierGroupId = *req.ModifierGroupId
 	}
 	
 	if req.IsRequired != nil {
@@ -258,11 +258,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OverrideMinSelections != nil {
-		entity.OverrideMinSelections = req.OverrideMinSelections
+		entity.OverrideMinSelections = *req.OverrideMinSelections
 	}
 	
 	if req.OverrideMaxSelections != nil {
-		entity.OverrideMaxSelections = req.OverrideMaxSelections
+		entity.OverrideMaxSelections = *req.OverrideMaxSelections
 	}
 	
 	if req.Notes != nil {

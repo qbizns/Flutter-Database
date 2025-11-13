@@ -234,19 +234,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DrawerCode != nil {
-		entity.DrawerCode = req.DrawerCode
+		entity.DrawerCode = *req.DrawerCode
 	}
 	
 	if req.DrawerName != nil {
-		entity.DrawerName = req.DrawerName
+		entity.DrawerName = *req.DrawerName
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.DeviceId != nil {
-		entity.DeviceId = req.DeviceId
+		entity.DeviceId = *req.DeviceId
 	}
 	
 	if req.IsActive != nil {

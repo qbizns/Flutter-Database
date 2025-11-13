@@ -94,7 +94,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *SystemHealth
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -122,7 +122,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Sys
 		SELECT
 			id
 			, organization_id
-			, status
 			, last_check_at
 			, last_success_at
 			, last_failure_at
@@ -152,7 +151,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Sys
 		&entity.ThresholdCritical,
 		&entity.Details,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 	)
 
 	if err == pgx.ErrNoRows {
@@ -193,7 +192,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 		SELECT
 			id
 			, organization_id
-			, status
 			, last_check_at
 			, last_success_at
 			, last_failure_at
@@ -233,7 +231,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.ThresholdCritical,
 			&entity.Details,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan system_health: %w", err)
@@ -286,7 +284,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *SystemHealth
 		entity.ThresholdWarning,
 		entity.ThresholdCritical,
 		entity.Details,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.Id,
 	)
 
@@ -360,7 +358,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 		SELECT
 			id
 			, organization_id
-			, status
 			, last_check_at
 			, last_success_at
 			, last_failure_at
@@ -401,7 +398,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.ThresholdCritical,
 			&entity.Details,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan system_health: %w", err)

@@ -268,63 +268,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.TipPoolId != nil {
-		entity.TipPoolId = req.TipPoolId
+		entity.TipPoolId = *req.TipPoolId
 	}
 	
 	if req.DistributionDate != nil {
-		entity.DistributionDate = req.DistributionDate
+		entity.DistributionDate = *req.DistributionDate
 	}
 	
 	if req.PeriodStart != nil {
-		entity.PeriodStart = req.PeriodStart
+		entity.PeriodStart = *req.PeriodStart
 	}
 	
 	if req.PeriodEnd != nil {
-		entity.PeriodEnd = req.PeriodEnd
+		entity.PeriodEnd = *req.PeriodEnd
 	}
 	
 	if req.ShiftId != nil {
-		entity.ShiftId = req.ShiftId
+		entity.ShiftId = *req.ShiftId
 	}
 	
 	if req.EmployeeId != nil {
-		entity.EmployeeId = req.EmployeeId
+		entity.EmployeeId = *req.EmployeeId
 	}
 	
 	if req.SourceType != nil {
-		entity.SourceType = req.SourceType
+		entity.SourceType = *req.SourceType
 	}
 	
 	if req.SourceSaleId != nil {
-		entity.SourceSaleId = req.SourceSaleId
+		entity.SourceSaleId = *req.SourceSaleId
 	}
 	
 	if req.SourceOrderId != nil {
-		entity.SourceOrderId = req.SourceOrderId
+		entity.SourceOrderId = *req.SourceOrderId
 	}
 	
 	if req.TipAmount != nil {
-		entity.TipAmount = req.TipAmount
+		entity.TipAmount = *req.TipAmount
 	}
 	
 	if req.DistributionAmount != nil {
-		entity.DistributionAmount = req.DistributionAmount
+		entity.DistributionAmount = *req.DistributionAmount
 	}
 	
 	if req.DistributionPercentage != nil {
-		entity.DistributionPercentage = req.DistributionPercentage
+		entity.DistributionPercentage = *req.DistributionPercentage
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = req.PaymentStatus
+		entity.PaymentStatus = *req.PaymentStatus
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = req.PaymentMethod
+		entity.PaymentMethod = *req.PaymentMethod
 	}
 	
 	if req.PaidAt != nil {
@@ -332,7 +332,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PaidBy != nil {
-		entity.PaidBy = req.PaidBy
+		entity.PaidBy = *req.PaidBy
 	}
 	
 	if req.Notes != nil {
@@ -360,7 +360,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TipAmount != nil {
-		entity.TipAmount = req.TipAmount
+		entity.TipAmount = *req.TipAmount
 	}
 	
 

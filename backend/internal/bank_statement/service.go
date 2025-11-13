@@ -248,23 +248,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankAccountId != nil {
-		entity.BankAccountId = req.BankAccountId
+		entity.BankAccountId = *req.BankAccountId
 	}
 	
 	if req.StatementNumber != nil {
-		entity.StatementNumber = req.StatementNumber
+		entity.StatementNumber = *req.StatementNumber
 	}
 	
 	if req.StatementDate != nil {
-		entity.StatementDate = req.StatementDate
+		entity.StatementDate = *req.StatementDate
 	}
 	
 	if req.PeriodStartDate != nil {
-		entity.PeriodStartDate = req.PeriodStartDate
+		entity.PeriodStartDate = *req.PeriodStartDate
 	}
 	
 	if req.PeriodEndDate != nil {
-		entity.PeriodEndDate = req.PeriodEndDate
+		entity.PeriodEndDate = *req.PeriodEndDate
 	}
 	
 	if req.OpeningBalance != nil {
@@ -276,15 +276,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ImportSource != nil {
-		entity.ImportSource = req.ImportSource
+		entity.ImportSource = *req.ImportSource
 	}
 	
 	if req.ImportSource != nil {
-		entity.ImportSource = req.ImportSource
+		entity.ImportSource = *req.ImportSource
 	}
 	
 	if req.ImportFileName != nil {
-		entity.ImportFileName = req.ImportFileName
+		entity.ImportFileName = *req.ImportFileName
 	}
 	
 	if req.Status != nil {

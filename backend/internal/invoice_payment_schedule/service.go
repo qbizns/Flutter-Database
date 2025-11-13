@@ -234,27 +234,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceType != nil {
-		entity.SourceType = req.SourceType
+		entity.SourceType = *req.SourceType
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = req.SourceId
+		entity.SourceId = *req.SourceId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.DueDate != nil {
-		entity.DueDate = req.DueDate
+		entity.DueDate = *req.DueDate
 	}
 	
 	if req.AmountDue != nil {
-		entity.AmountDue = req.AmountDue
+		entity.AmountDue = *req.AmountDue
 	}
 	
 	if req.AmountPaid != nil {
-		entity.AmountPaid = req.AmountPaid
+		entity.AmountPaid = *req.AmountPaid
 	}
 	
 	if req.Status != nil {

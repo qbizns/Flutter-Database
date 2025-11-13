@@ -270,31 +270,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DocumentType != nil {
-		entity.DocumentType = req.DocumentType
+		entity.DocumentType = *req.DocumentType
 	}
 	
 	if req.Prefix != nil {
-		entity.Prefix = req.Prefix
+		entity.Prefix = *req.Prefix
 	}
 	
 	if req.Suffix != nil {
-		entity.Suffix = req.Suffix
+		entity.Suffix = *req.Suffix
 	}
 	
 	if req.NextNumber != nil {
-		entity.NextNumber = req.NextNumber
+		entity.NextNumber = *req.NextNumber
 	}
 	
 	if req.Padding != nil {
-		entity.Padding = req.Padding
+		entity.Padding = *req.Padding
 	}
 	
 	if req.IncrementBy != nil {
-		entity.IncrementBy = req.IncrementBy
+		entity.IncrementBy = *req.IncrementBy
 	}
 	
 	if req.ResetFrequency != nil {
-		entity.ResetFrequency = req.ResetFrequency
+		entity.ResetFrequency = *req.ResetFrequency
 	}
 	
 	if req.'never', != nil {
@@ -322,19 +322,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LastResetValue != nil {
-		entity.LastResetValue = req.LastResetValue
+		entity.LastResetValue = *req.LastResetValue
 	}
 	
 	if req.IncludeDate != nil {
-		entity.IncludeDate = req.IncludeDate
+		entity.IncludeDate = *req.IncludeDate
 	}
 	
 	if req.DateFormat != nil {
-		entity.DateFormat = req.DateFormat
+		entity.DateFormat = *req.DateFormat
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.IsActive != nil {
@@ -342,11 +342,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AllowManualOverride != nil {
-		entity.AllowManualOverride = req.AllowManualOverride
+		entity.AllowManualOverride = *req.AllowManualOverride
 	}
 	
 	if req.ExampleNumber != nil {
-		entity.ExampleNumber = req.ExampleNumber
+		entity.ExampleNumber = *req.ExampleNumber
 	}
 	
 	if req.Description != nil {

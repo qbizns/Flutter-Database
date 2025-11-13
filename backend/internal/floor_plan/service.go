@@ -244,11 +244,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.FloorName != nil {
-		entity.FloorName = req.FloorName
+		entity.FloorName = *req.FloorName
 	}
 	
 	if req.FloorLevel != nil {
@@ -260,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LayoutConfig != nil {
-		entity.LayoutConfig = req.LayoutConfig
+		entity.LayoutConfig = *req.LayoutConfig
 	}
 	
 	if req.IsActive != nil {

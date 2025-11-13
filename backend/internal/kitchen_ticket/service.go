@@ -280,31 +280,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.TicketNumber != nil {
-		entity.TicketNumber = req.TicketNumber
+		entity.TicketNumber = *req.TicketNumber
 	}
 	
 	if req.DisplaySequence != nil {
-		entity.DisplaySequence = req.DisplaySequence
+		entity.DisplaySequence = *req.DisplaySequence
 	}
 	
 	if req.OrderId != nil {
-		entity.OrderId = req.OrderId
+		entity.OrderId = *req.OrderId
 	}
 	
 	if req.KitchenStationId != nil {
-		entity.KitchenStationId = req.KitchenStationId
+		entity.KitchenStationId = *req.KitchenStationId
 	}
 	
 	if req.CourseId != nil {
-		entity.CourseId = req.CourseId
+		entity.CourseId = *req.CourseId
 	}
 	
 	if req.TicketType != nil {
-		entity.TicketType = req.TicketType
+		entity.TicketType = *req.TicketType
 	}
 	
 	if req.Priority != nil {
@@ -340,39 +340,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PrepTimeMinutes != nil {
-		entity.PrepTimeMinutes = req.PrepTimeMinutes
+		entity.PrepTimeMinutes = *req.PrepTimeMinutes
 	}
 	
 	if req.TargetPrepTime != nil {
-		entity.TargetPrepTime = req.TargetPrepTime
+		entity.TargetPrepTime = *req.TargetPrepTime
 	}
 	
 	if req.TableNumber != nil {
-		entity.TableNumber = req.TableNumber
+		entity.TableNumber = *req.TableNumber
 	}
 	
 	if req.OrderType != nil {
-		entity.OrderType = req.OrderType
+		entity.OrderType = *req.OrderType
 	}
 	
 	if req.Covers != nil {
-		entity.Covers = req.Covers
+		entity.Covers = *req.Covers
 	}
 	
 	if req.WaiterName != nil {
-		entity.WaiterName = req.WaiterName
+		entity.WaiterName = *req.WaiterName
 	}
 	
 	if req.SpecialInstructions != nil {
-		entity.SpecialInstructions = req.SpecialInstructions
+		entity.SpecialInstructions = *req.SpecialInstructions
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = req.KitchenNotes
+		entity.KitchenNotes = *req.KitchenNotes
 	}
 	
 	if req.DisplayConfig != nil {
-		entity.DisplayConfig = req.DisplayConfig
+		entity.DisplayConfig = *req.DisplayConfig
 	}
 	
 	if req.Metadata != nil {

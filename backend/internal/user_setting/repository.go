@@ -104,7 +104,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *UserSettings
 	)
 
 	
-	err := row.Scan(&entity.UserId, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.UserId, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -164,7 +164,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Use
 		&entity.DefaultLocationId,
 		&entity.QuickActions,
 		&entity.CustomPreferences,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 	)
 
 	if err == pgx.ErrNoRows {
@@ -247,7 +247,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.DefaultLocationId,
 			&entity.QuickActions,
 			&entity.CustomPreferences,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan user_settings: %w", err)
@@ -306,7 +306,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *UserSettings
 		entity.DefaultLocationId,
 		entity.QuickActions,
 		entity.CustomPreferences,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.UserId,
 	)
 

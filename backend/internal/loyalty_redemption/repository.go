@@ -126,7 +126,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *LoyaltyRedem
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -159,7 +159,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Loy
 			, redemption_number
 			, redemption_date
 			, points_redeemed
-			, status
 			, sale_id
 			, used_date
 			, expiry_date
@@ -198,7 +197,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Loy
 		&entity.Notes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 	)
@@ -246,7 +245,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, redemption_number
 			, redemption_date
 			, points_redeemed
-			, status
 			, sale_id
 			, used_date
 			, expiry_date
@@ -295,7 +293,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 		)
@@ -364,7 +362,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *LoyaltyRedem
 		entity.FulfilledAt,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.Id,
@@ -445,7 +443,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, redemption_number
 			, redemption_date
 			, points_redeemed
-			, status
 			, sale_id
 			, used_date
 			, expiry_date
@@ -495,7 +492,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 		)

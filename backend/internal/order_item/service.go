@@ -282,47 +282,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderId != nil {
-		entity.OrderId = req.OrderId
+		entity.OrderId = *req.OrderId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.ItemName != nil {
-		entity.ItemName = req.ItemName
+		entity.ItemName = *req.ItemName
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = req.UnitPrice
+		entity.UnitPrice = *req.UnitPrice
 	}
 	
 	if req.CourseId != nil {
-		entity.CourseId = req.CourseId
+		entity.CourseId = *req.CourseId
 	}
 	
 	if req.CoursePosition != nil {
-		entity.CoursePosition = req.CoursePosition
+		entity.CoursePosition = *req.CoursePosition
 	}
 	
 	if req.FireTime != nil {
-		entity.FireTime = req.FireTime
+		entity.FireTime = *req.FireTime
 	}
 	
 	if req.KitchenStationId != nil {
-		entity.KitchenStationId = req.KitchenStationId
+		entity.KitchenStationId = *req.KitchenStationId
 	}
 	
 	if req.KitchenTicketId != nil {
-		entity.KitchenTicketId = req.KitchenTicketId
+		entity.KitchenTicketId = *req.KitchenTicketId
 	}
 	
 	if req.Status != nil {
@@ -350,31 +350,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ModifiersTotal != nil {
-		entity.ModifiersTotal = req.ModifiersTotal
+		entity.ModifiersTotal = *req.ModifiersTotal
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.LineTotal != nil {
-		entity.LineTotal = req.LineTotal
+		entity.LineTotal = *req.LineTotal
 	}
 	
 	if req.SpecialInstructions != nil {
-		entity.SpecialInstructions = req.SpecialInstructions
+		entity.SpecialInstructions = *req.SpecialInstructions
 	}
 	
 	if req.CustomerNotes != nil {
-		entity.CustomerNotes = req.CustomerNotes
+		entity.CustomerNotes = *req.CustomerNotes
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = req.KitchenNotes
+		entity.KitchenNotes = *req.KitchenNotes
 	}
 	
 	if req.SeatNumber != nil {
-		entity.SeatNumber = req.SeatNumber
+		entity.SeatNumber = *req.SeatNumber
 	}
 	
 	if req.Metadata != nil {
@@ -398,11 +398,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = req.UnitPrice
+		entity.UnitPrice = *req.UnitPrice
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 

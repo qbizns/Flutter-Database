@@ -198,15 +198,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateFiscalPos
 	// Update fields
 	
 	if req.FiscalPositionId != nil {
-		entity.FiscalPositionId = req.FiscalPositionId
+		entity.FiscalPositionId = *req.FiscalPositionId
 	}
 	
 	if req.SourceTaxId != nil {
-		entity.SourceTaxId = req.SourceTaxId
+		entity.SourceTaxId = *req.SourceTaxId
 	}
 	
 	if req.DestinationTaxId != nil {
-		entity.DestinationTaxId = req.DestinationTaxId
+		entity.DestinationTaxId = *req.DestinationTaxId
 	}
 	
 	if req.CreatedBy != nil {

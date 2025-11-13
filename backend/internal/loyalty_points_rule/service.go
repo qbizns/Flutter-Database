@@ -266,11 +266,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RuleCode != nil {
-		entity.RuleCode = req.RuleCode
+		entity.RuleCode = *req.RuleCode
 	}
 	
 	if req.RuleName != nil {
-		entity.RuleName = req.RuleName
+		entity.RuleName = *req.RuleName
 	}
 	
 	if req.Description != nil {
@@ -278,59 +278,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RuleType != nil {
-		entity.RuleType = req.RuleType
+		entity.RuleType = *req.RuleType
 	}
 	
 	if req.PointsPerAmount != nil {
-		entity.PointsPerAmount = req.PointsPerAmount
+		entity.PointsPerAmount = *req.PointsPerAmount
 	}
 	
 	if req.FixedPoints != nil {
-		entity.FixedPoints = req.FixedPoints
+		entity.FixedPoints = *req.FixedPoints
 	}
 	
 	if req.Multiplier != nil {
-		entity.Multiplier = req.Multiplier
+		entity.Multiplier = *req.Multiplier
 	}
 	
 	if req.AppliesTo != nil {
-		entity.AppliesTo = req.AppliesTo
+		entity.AppliesTo = *req.AppliesTo
 	}
 	
 	if req.ApplicableProductIds != nil {
-		entity.ApplicableProductIds = req.ApplicableProductIds
+		entity.ApplicableProductIds = *req.ApplicableProductIds
 	}
 	
 	if req.ApplicableCategoryIds != nil {
-		entity.ApplicableCategoryIds = req.ApplicableCategoryIds
+		entity.ApplicableCategoryIds = *req.ApplicableCategoryIds
 	}
 	
 	if req.ApplicableTierIds != nil {
-		entity.ApplicableTierIds = req.ApplicableTierIds
+		entity.ApplicableTierIds = *req.ApplicableTierIds
 	}
 	
 	if req.MinimumPurchaseAmount != nil {
-		entity.MinimumPurchaseAmount = req.MinimumPurchaseAmount
+		entity.MinimumPurchaseAmount = *req.MinimumPurchaseAmount
 	}
 	
 	if req.MaximumPointsPerTransaction != nil {
-		entity.MaximumPointsPerTransaction = req.MaximumPointsPerTransaction
+		entity.MaximumPointsPerTransaction = *req.MaximumPointsPerTransaction
 	}
 	
 	if req.MaximumPointsPerDay != nil {
-		entity.MaximumPointsPerDay = req.MaximumPointsPerDay
+		entity.MaximumPointsPerDay = *req.MaximumPointsPerDay
 	}
 	
 	if req.MaximumPointsPerMonth != nil {
-		entity.MaximumPointsPerMonth = req.MaximumPointsPerMonth
+		entity.MaximumPointsPerMonth = *req.MaximumPointsPerMonth
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = req.StartDate
+		entity.StartDate = *req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = req.EndDate
+		entity.EndDate = *req.EndDate
 	}
 	
 	if req.IsActive != nil {
@@ -342,7 +342,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = req.TermsAndConditions
+		entity.TermsAndConditions = *req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {

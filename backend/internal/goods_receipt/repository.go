@@ -64,7 +64,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GoodsReceipt
 			, receipt_date
 			, received_by
 			, status
-			, status
 			, notes
 			, created_by
 			, deleted_at
@@ -101,7 +100,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GoodsReceipt
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -135,8 +134,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Goo
 			, location_id
 			, receipt_date
 			, received_by
-			, status
-			, status
 			, notes
 			, created_by
 			, created_at
@@ -162,7 +159,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Goo
 		&entity.Notes,
 		&entity.CreatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -210,8 +207,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, location_id
 			, receipt_date
 			, received_by
-			, status
-			, status
 			, notes
 			, created_by
 			, created_at
@@ -247,7 +242,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -282,7 +277,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *GoodsReceipt
 			, receipt_date = $7
 			, received_by = $8
 			, status = $9
-			, status = $10
 			, notes = $11
 			, created_by = $12
 			, updated_at = $14
@@ -304,7 +298,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *GoodsReceipt
 		entity.Status,
 		entity.Notes,
 		entity.CreatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -391,7 +385,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, receipt_date
 			, received_by
 			, status
-			, status
 			, notes
 			, created_by
 			, created_at
@@ -428,7 +421,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

@@ -242,31 +242,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BatchId != nil {
-		entity.BatchId = req.BatchId
+		entity.BatchId = *req.BatchId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = req.TransactionType
+		entity.TransactionType = *req.TransactionType
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = req.BalanceAfter
+		entity.BalanceAfter = *req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.InventoryTransferId != nil {
-		entity.InventoryTransferId = req.InventoryTransferId
+		entity.InventoryTransferId = *req.InventoryTransferId
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = req.Reason
+		entity.Reason = *req.Reason
 	}
 	
 	if req.Notes != nil {
@@ -278,7 +278,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = req.TransactionDate
+		entity.TransactionDate = *req.TransactionDate
 	}
 	
 	if req.CreatedBy != nil {

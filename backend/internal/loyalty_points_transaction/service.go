@@ -248,31 +248,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = req.TransactionType
+		entity.TransactionType = *req.TransactionType
 	}
 	
 	if req.Points != nil {
-		entity.Points = req.Points
+		entity.Points = *req.Points
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = req.BalanceAfter
+		entity.BalanceAfter = *req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.RedemptionId != nil {
-		entity.RedemptionId = req.RedemptionId
+		entity.RedemptionId = *req.RedemptionId
 	}
 	
 	if req.PointsRuleId != nil {
-		entity.PointsRuleId = req.PointsRuleId
+		entity.PointsRuleId = *req.PointsRuleId
 	}
 	
 	if req.Description != nil {
@@ -280,7 +280,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = req.Reason
+		entity.Reason = *req.Reason
 	}
 	
 	if req.Notes != nil {
@@ -288,7 +288,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = req.ExpiryDate
+		entity.ExpiryDate = *req.ExpiryDate
 	}
 	
 	if req.Metadata != nil {
@@ -296,7 +296,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = req.TransactionDate
+		entity.TransactionDate = *req.TransactionDate
 	}
 	
 	if req.CreatedBy != nil {

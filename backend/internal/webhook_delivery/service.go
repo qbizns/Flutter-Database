@@ -254,15 +254,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.WebhookId != nil {
-		entity.WebhookId = req.WebhookId
+		entity.WebhookId = *req.WebhookId
 	}
 	
 	if req.EventType != nil {
-		entity.EventType = req.EventType
+		entity.EventType = *req.EventType
 	}
 	
 	if req.EventId != nil {
-		entity.EventId = req.EventId
+		entity.EventId = *req.EventId
 	}
 	
 	if req.Status != nil {
@@ -274,35 +274,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequestUrl != nil {
-		entity.RequestUrl = req.RequestUrl
+		entity.RequestUrl = *req.RequestUrl
 	}
 	
 	if req.RequestMethod != nil {
-		entity.RequestMethod = req.RequestMethod
+		entity.RequestMethod = *req.RequestMethod
 	}
 	
 	if req.RequestHeaders != nil {
-		entity.RequestHeaders = req.RequestHeaders
+		entity.RequestHeaders = *req.RequestHeaders
 	}
 	
 	if req.RequestBody != nil {
-		entity.RequestBody = req.RequestBody
+		entity.RequestBody = *req.RequestBody
 	}
 	
 	if req.ResponseStatusCode != nil {
-		entity.ResponseStatusCode = req.ResponseStatusCode
+		entity.ResponseStatusCode = *req.ResponseStatusCode
 	}
 	
 	if req.ResponseHeaders != nil {
-		entity.ResponseHeaders = req.ResponseHeaders
+		entity.ResponseHeaders = *req.ResponseHeaders
 	}
 	
 	if req.ResponseBody != nil {
-		entity.ResponseBody = req.ResponseBody
+		entity.ResponseBody = *req.ResponseBody
 	}
 	
 	if req.AttemptNumber != nil {
-		entity.AttemptNumber = req.AttemptNumber
+		entity.AttemptNumber = *req.AttemptNumber
 	}
 	
 	if req.DurationMs != nil {

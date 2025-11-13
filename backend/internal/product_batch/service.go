@@ -278,23 +278,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.BatchNumber != nil {
-		entity.BatchNumber = req.BatchNumber
+		entity.BatchNumber = *req.BatchNumber
 	}
 	
 	if req.LotNumber != nil {
-		entity.LotNumber = req.LotNumber
+		entity.LotNumber = *req.LotNumber
 	}
 	
 	if req.Status != nil {
@@ -302,63 +302,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.InitialQuantity != nil {
-		entity.InitialQuantity = req.InitialQuantity
+		entity.InitialQuantity = *req.InitialQuantity
 	}
 	
 	if req.CurrentQuantity != nil {
-		entity.CurrentQuantity = req.CurrentQuantity
+		entity.CurrentQuantity = *req.CurrentQuantity
 	}
 	
 	if req.UnitOfMeasure != nil {
-		entity.UnitOfMeasure = req.UnitOfMeasure
+		entity.UnitOfMeasure = *req.UnitOfMeasure
 	}
 	
 	if req.ManufacturingDate != nil {
-		entity.ManufacturingDate = req.ManufacturingDate
+		entity.ManufacturingDate = *req.ManufacturingDate
 	}
 	
 	if req.ExpirationDate != nil {
-		entity.ExpirationDate = req.ExpirationDate
+		entity.ExpirationDate = *req.ExpirationDate
 	}
 	
 	if req.ReceivedDate != nil {
-		entity.ReceivedDate = req.ReceivedDate
+		entity.ReceivedDate = *req.ReceivedDate
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = req.PurchaseOrderId
+		entity.PurchaseOrderId = *req.PurchaseOrderId
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = req.SupplierId
+		entity.SupplierId = *req.SupplierId
 	}
 	
 	if req.SupplierBatchNumber != nil {
-		entity.SupplierBatchNumber = req.SupplierBatchNumber
+		entity.SupplierBatchNumber = *req.SupplierBatchNumber
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = req.UnitCost
+		entity.UnitCost = *req.UnitCost
 	}
 	
 	if req.TotalCost != nil {
-		entity.TotalCost = req.TotalCost
+		entity.TotalCost = *req.TotalCost
 	}
 	
 	if req.QualityStatus != nil {
-		entity.QualityStatus = req.QualityStatus
+		entity.QualityStatus = *req.QualityStatus
 	}
 	
 	if req.QualityCheckDate != nil {
-		entity.QualityCheckDate = req.QualityCheckDate
+		entity.QualityCheckDate = *req.QualityCheckDate
 	}
 	
 	if req.QualityCheckedBy != nil {
-		entity.QualityCheckedBy = req.QualityCheckedBy
+		entity.QualityCheckedBy = *req.QualityCheckedBy
 	}
 	
 	if req.QualityNotes != nil {
-		entity.QualityNotes = req.QualityNotes
+		entity.QualityNotes = *req.QualityNotes
 	}
 	
 	if req.Notes != nil {
@@ -378,19 +378,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.InitialQuantity != nil {
-		entity.InitialQuantity = req.InitialQuantity
+		entity.InitialQuantity = *req.InitialQuantity
 	}
 	
 	if req.CurrentQuantity != nil {
-		entity.CurrentQuantity = req.CurrentQuantity
+		entity.CurrentQuantity = *req.CurrentQuantity
 	}
 	
 	if req.CurrentQuantity != nil {
-		entity.CurrentQuantity = req.CurrentQuantity
+		entity.CurrentQuantity = *req.CurrentQuantity
 	}
 	
 	if req.ExpirationDate != nil {
-		entity.ExpirationDate = req.ExpirationDate
+		entity.ExpirationDate = *req.ExpirationDate
 	}
 	
 

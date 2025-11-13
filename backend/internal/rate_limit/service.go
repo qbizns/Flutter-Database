@@ -216,35 +216,35 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRateLimit
 	// Update fields
 	
 	if req.IdentifierType != nil {
-		entity.IdentifierType = req.IdentifierType
+		entity.IdentifierType = *req.IdentifierType
 	}
 	
 	if req.IdentifierValue != nil {
-		entity.IdentifierValue = req.IdentifierValue
+		entity.IdentifierValue = *req.IdentifierValue
 	}
 	
 	if req.EndpointPath != nil {
-		entity.EndpointPath = req.EndpointPath
+		entity.EndpointPath = *req.EndpointPath
 	}
 	
 	if req.HttpMethod != nil {
-		entity.HttpMethod = req.HttpMethod
+		entity.HttpMethod = *req.HttpMethod
 	}
 	
 	if req.WindowStart != nil {
-		entity.WindowStart = req.WindowStart
+		entity.WindowStart = *req.WindowStart
 	}
 	
 	if req.WindowDurationSeconds != nil {
-		entity.WindowDurationSeconds = req.WindowDurationSeconds
+		entity.WindowDurationSeconds = *req.WindowDurationSeconds
 	}
 	
 	if req.RequestCount != nil {
-		entity.RequestCount = req.RequestCount
+		entity.RequestCount = *req.RequestCount
 	}
 	
 	if req.AllowedCount != nil {
-		entity.AllowedCount = req.AllowedCount
+		entity.AllowedCount = *req.AllowedCount
 	}
 	
 	if req.IsBlocked != nil {
@@ -252,7 +252,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRateLimit
 	}
 	
 	if req.BlockedUntil != nil {
-		entity.BlockedUntil = req.BlockedUntil
+		entity.BlockedUntil = *req.BlockedUntil
 	}
 	
 	if req.FirstRequestAt != nil {

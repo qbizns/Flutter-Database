@@ -252,11 +252,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankAccountId != nil {
-		entity.BankAccountId = req.BankAccountId
+		entity.BankAccountId = *req.BankAccountId
 	}
 	
 	if req.StatementDate != nil {
-		entity.StatementDate = req.StatementDate
+		entity.StatementDate = *req.StatementDate
 	}
 	
 	if req.StatementBalance != nil {
@@ -264,7 +264,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReconciliationDate != nil {
-		entity.ReconciliationDate = req.ReconciliationDate
+		entity.ReconciliationDate = *req.ReconciliationDate
 	}
 	
 	if req.BookBalance != nil {
@@ -276,7 +276,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Difference != nil {
-		entity.Difference = req.Difference
+		entity.Difference = *req.Difference
 	}
 	
 	if req.Status != nil {
@@ -288,7 +288,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.Notes != nil {
@@ -300,7 +300,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReconciledBy != nil {
-		entity.ReconciledBy = req.ReconciledBy
+		entity.ReconciledBy = *req.ReconciledBy
 	}
 	
 	if req.ReconciledAt != nil {

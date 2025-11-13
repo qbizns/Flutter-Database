@@ -204,19 +204,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateDeferredE
 	// Update fields
 	
 	if req.ContractId != nil {
-		entity.ContractId = req.ContractId
+		entity.ContractId = *req.ContractId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.RecognitionDate != nil {
-		entity.RecognitionDate = req.RecognitionDate
+		entity.RecognitionDate = *req.RecognitionDate
 	}
 	
 	if req.RecognitionAmount != nil {
-		entity.RecognitionAmount = req.RecognitionAmount
+		entity.RecognitionAmount = *req.RecognitionAmount
 	}
 	
 	if req.Status != nil {
@@ -224,7 +224,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateDeferredE
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.PostedAt != nil {

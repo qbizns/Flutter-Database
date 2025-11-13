@@ -270,35 +270,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.FloorPlanId != nil {
-		entity.FloorPlanId = req.FloorPlanId
+		entity.FloorPlanId = *req.FloorPlanId
 	}
 	
 	if req.SectionId != nil {
-		entity.SectionId = req.SectionId
+		entity.SectionId = *req.SectionId
 	}
 	
 	if req.TableNumber != nil {
-		entity.TableNumber = req.TableNumber
+		entity.TableNumber = *req.TableNumber
 	}
 	
 	if req.TableName != nil {
-		entity.TableName = req.TableName
+		entity.TableName = *req.TableName
 	}
 	
 	if req.MinCapacity != nil {
-		entity.MinCapacity = req.MinCapacity
+		entity.MinCapacity = *req.MinCapacity
 	}
 	
 	if req.MaxCapacity != nil {
-		entity.MaxCapacity = req.MaxCapacity
+		entity.MaxCapacity = *req.MaxCapacity
 	}
 	
 	if req.TableShape != nil {
-		entity.TableShape = req.TableShape
+		entity.TableShape = *req.TableShape
 	}
 	
 	if req.IsCombinable != nil {
@@ -306,15 +306,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PositionX != nil {
-		entity.PositionX = req.PositionX
+		entity.PositionX = *req.PositionX
 	}
 	
 	if req.PositionY != nil {
-		entity.PositionY = req.PositionY
+		entity.PositionY = *req.PositionY
 	}
 	
 	if req.Rotation != nil {
-		entity.Rotation = req.Rotation
+		entity.Rotation = *req.Rotation
 	}
 	
 	if req.Status != nil {
@@ -322,7 +322,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CurrentCovers != nil {
-		entity.CurrentCovers = req.CurrentCovers
+		entity.CurrentCovers = *req.CurrentCovers
 	}
 	
 	if req.SeatedAt != nil {
@@ -330,7 +330,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CurrentWaiterId != nil {
-		entity.CurrentWaiterId = req.CurrentWaiterId
+		entity.CurrentWaiterId = *req.CurrentWaiterId
 	}
 	
 	if req.IsActive != nil {
@@ -338,7 +338,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AllowOnlineReservation != nil {
-		entity.AllowOnlineReservation = req.AllowOnlineReservation
+		entity.AllowOnlineReservation = *req.AllowOnlineReservation
 	}
 	
 	if req.DisplayOrder != nil {
@@ -346,11 +346,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = req.ColorCode
+		entity.ColorCode = *req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = req.Icon
+		entity.Icon = *req.Icon
 	}
 	
 	if req.Notes != nil {

@@ -252,43 +252,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReturnNumber != nil {
-		entity.ReturnNumber = req.ReturnNumber
+		entity.ReturnNumber = *req.ReturnNumber
 	}
 	
 	if req.OriginalSaleId != nil {
-		entity.OriginalSaleId = req.OriginalSaleId
+		entity.OriginalSaleId = *req.OriginalSaleId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.ReturnDate != nil {
-		entity.ReturnDate = req.ReturnDate
+		entity.ReturnDate = *req.ReturnDate
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.RefundAmount != nil {
-		entity.RefundAmount = req.RefundAmount
+		entity.RefundAmount = *req.RefundAmount
 	}
 	
 	if req.RestockingFee != nil {
-		entity.RestockingFee = req.RestockingFee
+		entity.RestockingFee = *req.RestockingFee
 	}
 	
 	if req.RefundMethod != nil {
-		entity.RefundMethod = req.RefundMethod
+		entity.RefundMethod = *req.RefundMethod
 	}
 	
 	if req.Status != nil {
@@ -300,7 +300,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {

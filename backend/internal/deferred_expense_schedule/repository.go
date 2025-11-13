@@ -84,7 +84,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DeferredExpe
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -115,7 +115,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Def
 			, line_number
 			, recognition_date
 			, recognition_amount
-			, status
 			, journal_entry_id
 			, created_at
 			, posted_at
@@ -180,7 +179,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, line_number
 			, recognition_date
 			, recognition_amount
-			, status
 			, journal_entry_id
 			, created_at
 			, posted_at

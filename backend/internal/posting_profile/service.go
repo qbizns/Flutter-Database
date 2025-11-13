@@ -260,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DefaultFiscalYearId != nil {
-		entity.DefaultFiscalYearId = req.DefaultFiscalYearId
+		entity.DefaultFiscalYearId = *req.DefaultFiscalYearId
 	}
 	
 	if req.Notes != nil {

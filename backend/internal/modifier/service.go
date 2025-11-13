@@ -258,27 +258,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ModifierGroupId != nil {
-		entity.ModifierGroupId = req.ModifierGroupId
+		entity.ModifierGroupId = *req.ModifierGroupId
 	}
 	
 	if req.ModifierName != nil {
-		entity.ModifierName = req.ModifierName
+		entity.ModifierName = *req.ModifierName
 	}
 	
 	if req.ModifierCode != nil {
-		entity.ModifierCode = req.ModifierCode
+		entity.ModifierCode = *req.ModifierCode
 	}
 	
 	if req.DisplayName != nil {
-		entity.DisplayName = req.DisplayName
+		entity.DisplayName = *req.DisplayName
 	}
 	
 	if req.PriceAdjustment != nil {
-		entity.PriceAdjustment = req.PriceAdjustment
+		entity.PriceAdjustment = *req.PriceAdjustment
 	}
 	
 	if req.PriceType != nil {
-		entity.PriceType = req.PriceType
+		entity.PriceType = *req.PriceType
 	}
 	
 	if req.IsAvailable != nil {
@@ -290,15 +290,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TrackInventory != nil {
-		entity.TrackInventory = req.TrackInventory
+		entity.TrackInventory = *req.TrackInventory
 	}
 	
 	if req.CurrentStock != nil {
-		entity.CurrentStock = req.CurrentStock
+		entity.CurrentStock = *req.CurrentStock
 	}
 	
 	if req.LowStockThreshold != nil {
-		entity.LowStockThreshold = req.LowStockThreshold
+		entity.LowStockThreshold = *req.LowStockThreshold
 	}
 	
 	if req.DisplayOrder != nil {
@@ -306,7 +306,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = req.ImageUrl
+		entity.ImageUrl = *req.ImageUrl
 	}
 	
 	if req.Description != nil {
@@ -314,7 +314,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AllergenInfo != nil {
-		entity.AllergenInfo = req.AllergenInfo
+		entity.AllergenInfo = *req.AllergenInfo
 	}
 	
 	if req.Notes != nil {

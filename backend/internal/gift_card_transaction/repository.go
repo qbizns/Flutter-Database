@@ -100,7 +100,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GiftCardTran
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {

@@ -244,23 +244,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.KeyName != nil {
-		entity.KeyName = req.KeyName
+		entity.KeyName = *req.KeyName
 	}
 	
 	if req.KeyPrefix != nil {
-		entity.KeyPrefix = req.KeyPrefix
+		entity.KeyPrefix = *req.KeyPrefix
 	}
 	
 	if req.KeyHash != nil {
-		entity.KeyHash = req.KeyHash
+		entity.KeyHash = *req.KeyHash
 	}
 	
 	if req.Scopes != nil {
-		entity.Scopes = req.Scopes
+		entity.Scopes = *req.Scopes
 	}
 	
 	if req.AllowedIps != nil {
-		entity.AllowedIps = req.AllowedIps
+		entity.AllowedIps = *req.AllowedIps
 	}
 	
 	if req.IsActive != nil {
@@ -272,15 +272,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.UsageCount != nil {
-		entity.UsageCount = req.UsageCount
+		entity.UsageCount = *req.UsageCount
 	}
 	
 	if req.RateLimitPerMinute != nil {
-		entity.RateLimitPerMinute = req.RateLimitPerMinute
+		entity.RateLimitPerMinute = *req.RateLimitPerMinute
 	}
 	
 	if req.RateLimitPerHour != nil {
-		entity.RateLimitPerHour = req.RateLimitPerHour
+		entity.RateLimitPerHour = *req.RateLimitPerHour
 	}
 	
 	if req.ExpiresAt != nil {

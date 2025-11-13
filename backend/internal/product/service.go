@@ -272,11 +272,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Sku != nil {
-		entity.Sku = req.Sku
+		entity.Sku = *req.Sku
 	}
 	
 	if req.Barcode != nil {
-		entity.Barcode = req.Barcode
+		entity.Barcode = *req.Barcode
 	}
 	
 	if req.Name != nil {
@@ -288,23 +288,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CategoryId != nil {
-		entity.CategoryId = req.CategoryId
+		entity.CategoryId = *req.CategoryId
 	}
 	
 	if req.CostPrice != nil {
-		entity.CostPrice = req.CostPrice
+		entity.CostPrice = *req.CostPrice
 	}
 	
 	if req.SellingPrice != nil {
-		entity.SellingPrice = req.SellingPrice
+		entity.SellingPrice = *req.SellingPrice
 	}
 	
 	if req.CompareAtPrice != nil {
-		entity.CompareAtPrice = req.CompareAtPrice
+		entity.CompareAtPrice = *req.CompareAtPrice
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = req.TaxRate
+		entity.TaxRate = *req.TaxRate
 	}
 	
 	if req.IsTaxInclusive != nil {
@@ -312,19 +312,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TrackInventory != nil {
-		entity.TrackInventory = req.TrackInventory
+		entity.TrackInventory = *req.TrackInventory
 	}
 	
 	if req.CurrentStock != nil {
-		entity.CurrentStock = req.CurrentStock
+		entity.CurrentStock = *req.CurrentStock
 	}
 	
 	if req.LowStockThreshold != nil {
-		entity.LowStockThreshold = req.LowStockThreshold
+		entity.LowStockThreshold = *req.LowStockThreshold
 	}
 	
 	if req.Unit != nil {
-		entity.Unit = req.Unit
+		entity.Unit = *req.Unit
 	}
 	
 	if req.IsService != nil {
@@ -340,15 +340,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = req.ImageUrl
+		entity.ImageUrl = *req.ImageUrl
 	}
 	
 	if req.Images != nil {
-		entity.Images = req.Images
+		entity.Images = *req.Images
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.IsActive != nil {
@@ -360,7 +360,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = req.CustomFields
+		entity.CustomFields = *req.CustomFields
 	}
 	
 	if req.Metadata != nil {

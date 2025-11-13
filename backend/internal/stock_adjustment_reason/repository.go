@@ -102,7 +102,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *StockAdjustm
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -163,7 +163,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Sto
 		&entity.SortOrder,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -248,7 +248,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.SortOrder,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -305,7 +305,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *StockAdjustm
 		entity.RequiresNotes,
 		entity.SortOrder,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -429,7 +429,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.SortOrder,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

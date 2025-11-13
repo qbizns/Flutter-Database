@@ -260,55 +260,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.PrinterDeviceId != nil {
-		entity.PrinterDeviceId = req.PrinterDeviceId
+		entity.PrinterDeviceId = *req.PrinterDeviceId
 	}
 	
 	if req.DocumentType != nil {
-		entity.DocumentType = req.DocumentType
+		entity.DocumentType = *req.DocumentType
 	}
 	
 	if req.FilterOrderType != nil {
-		entity.FilterOrderType = req.FilterOrderType
+		entity.FilterOrderType = *req.FilterOrderType
 	}
 	
 	if req.FilterKitchenStationId != nil {
-		entity.FilterKitchenStationId = req.FilterKitchenStationId
+		entity.FilterKitchenStationId = *req.FilterKitchenStationId
 	}
 	
 	if req.FilterProductCategoryId != nil {
-		entity.FilterProductCategoryId = req.FilterProductCategoryId
+		entity.FilterProductCategoryId = *req.FilterProductCategoryId
 	}
 	
 	if req.FilterCourseId != nil {
-		entity.FilterCourseId = req.FilterCourseId
+		entity.FilterCourseId = *req.FilterCourseId
 	}
 	
 	if req.NumberOfCopies != nil {
-		entity.NumberOfCopies = req.NumberOfCopies
+		entity.NumberOfCopies = *req.NumberOfCopies
 	}
 	
 	if req.AutoPrint != nil {
-		entity.AutoPrint = req.AutoPrint
+		entity.AutoPrint = *req.AutoPrint
 	}
 	
 	if req.PrintPriority != nil {
-		entity.PrintPriority = req.PrintPriority
+		entity.PrintPriority = *req.PrintPriority
 	}
 	
 	if req.TemplateConfig != nil {
-		entity.TemplateConfig = req.TemplateConfig
+		entity.TemplateConfig = *req.TemplateConfig
 	}
 	
 	if req.PaperSize != nil {
-		entity.PaperSize = req.PaperSize
+		entity.PaperSize = *req.PaperSize
 	}
 	
 	if req.PrintOrientation != nil {
-		entity.PrintOrientation = req.PrintOrientation
+		entity.PrintOrientation = *req.PrintOrientation
 	}
 	
 	if req.IsActive != nil {

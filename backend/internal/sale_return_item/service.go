@@ -250,59 +250,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleReturnId != nil {
-		entity.SaleReturnId = req.SaleReturnId
+		entity.SaleReturnId = *req.SaleReturnId
 	}
 	
 	if req.OriginalSaleItemId != nil {
-		entity.OriginalSaleItemId = req.OriginalSaleItemId
+		entity.OriginalSaleItemId = *req.OriginalSaleItemId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = req.UnitPrice
+		entity.UnitPrice = *req.UnitPrice
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.ReturnReasonId != nil {
-		entity.ReturnReasonId = req.ReturnReasonId
+		entity.ReturnReasonId = *req.ReturnReasonId
 	}
 	
 	if req.ReturnReasonNotes != nil {
-		entity.ReturnReasonNotes = req.ReturnReasonNotes
+		entity.ReturnReasonNotes = *req.ReturnReasonNotes
 	}
 	
 	if req.ItemCondition != nil {
-		entity.ItemCondition = req.ItemCondition
+		entity.ItemCondition = *req.ItemCondition
 	}
 	
 	if req.ItemCondition != nil {
-		entity.ItemCondition = req.ItemCondition
+		entity.ItemCondition = *req.ItemCondition
 	}
 	
 	if req.IsRestockable != nil {

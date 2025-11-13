@@ -258,27 +258,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.Email != nil {
-		entity.Email = req.Email
+		entity.Email = *req.Email
 	}
 	
 	if req.PasswordHash != nil {
-		entity.PasswordHash = req.PasswordHash
+		entity.PasswordHash = *req.PasswordHash
 	}
 	
 	if req.FirstName != nil {
-		entity.FirstName = req.FirstName
+		entity.FirstName = *req.FirstName
 	}
 	
 	if req.LastName != nil {
-		entity.LastName = req.LastName
+		entity.LastName = *req.LastName
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = req.Phone
+		entity.Phone = *req.Phone
 	}
 	
 	if req.AvatarUrl != nil {
-		entity.AvatarUrl = req.AvatarUrl
+		entity.AvatarUrl = *req.AvatarUrl
 	}
 	
 	if req.Status != nil {
@@ -286,7 +286,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EmailVerified != nil {
-		entity.EmailVerified = req.EmailVerified
+		entity.EmailVerified = *req.EmailVerified
 	}
 	
 	if req.EmailVerifiedAt != nil {
@@ -298,23 +298,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LastLoginIp != nil {
-		entity.LastLoginIp = req.LastLoginIp
+		entity.LastLoginIp = *req.LastLoginIp
 	}
 	
 	if req.FailedLoginAttempts != nil {
-		entity.FailedLoginAttempts = req.FailedLoginAttempts
+		entity.FailedLoginAttempts = *req.FailedLoginAttempts
 	}
 	
 	if req.LockedUntil != nil {
-		entity.LockedUntil = req.LockedUntil
+		entity.LockedUntil = *req.LockedUntil
 	}
 	
 	if req.TwoFactorEnabled != nil {
-		entity.TwoFactorEnabled = req.TwoFactorEnabled
+		entity.TwoFactorEnabled = *req.TwoFactorEnabled
 	}
 	
 	if req.TwoFactorSecret != nil {
-		entity.TwoFactorSecret = req.TwoFactorSecret
+		entity.TwoFactorSecret = *req.TwoFactorSecret
 	}
 	
 	if req.Settings != nil {

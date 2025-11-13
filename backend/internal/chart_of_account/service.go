@@ -272,27 +272,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.AccountCode != nil {
-		entity.AccountCode = req.AccountCode
+		entity.AccountCode = *req.AccountCode
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = req.AccountNumber
+		entity.AccountNumber = *req.AccountNumber
 	}
 	
 	if req.AccountName != nil {
-		entity.AccountName = req.AccountName
+		entity.AccountName = *req.AccountName
 	}
 	
 	if req.AccountTypeId != nil {
-		entity.AccountTypeId = req.AccountTypeId
+		entity.AccountTypeId = *req.AccountTypeId
 	}
 	
 	if req.AccountSubtypeId != nil {
-		entity.AccountSubtypeId = req.AccountSubtypeId
+		entity.AccountSubtypeId = *req.AccountSubtypeId
 	}
 	
 	if req.ParentAccountId != nil {
-		entity.ParentAccountId = req.ParentAccountId
+		entity.ParentAccountId = *req.ParentAccountId
 	}
 	
 	if req.AccountLevel != nil {
@@ -300,7 +300,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AccountPath != nil {
-		entity.AccountPath = req.AccountPath
+		entity.AccountPath = *req.AccountPath
 	}
 	
 	if req.IsActive != nil {
@@ -324,7 +324,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DefaultTaxCode != nil {
-		entity.DefaultTaxCode = req.DefaultTaxCode
+		entity.DefaultTaxCode = *req.DefaultTaxCode
 	}
 	
 	if req.CurrencyCode != nil {
@@ -336,7 +336,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OpeningBalanceDate != nil {
-		entity.OpeningBalanceDate = req.OpeningBalanceDate
+		entity.OpeningBalanceDate = *req.OpeningBalanceDate
 	}
 	
 	if req.CurrentDebitBalance != nil {
@@ -352,7 +352,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LastBalanceUpdate != nil {
-		entity.LastBalanceUpdate = req.LastBalanceUpdate
+		entity.LastBalanceUpdate = *req.LastBalanceUpdate
 	}
 	
 	if req.Description != nil {

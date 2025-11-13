@@ -101,7 +101,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PriceListIte
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -161,7 +161,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pri
 		&entity.MaxPrice,
 		&entity.MinQuantity,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 		&entity.ProductId,
 	)
@@ -246,7 +246,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.MaxPrice,
 			&entity.MinQuantity,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.ProductId,
 		)
@@ -303,7 +303,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *PriceListIte
 		entity.MinPrice,
 		entity.MaxPrice,
 		entity.MinQuantity,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.ProductId,
 		entity.Id,

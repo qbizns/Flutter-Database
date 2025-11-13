@@ -182,7 +182,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *KitchenTicke
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -218,7 +218,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Kit
 			, course_id
 			, ticket_type
 			, priority
-			, status
 			, created_at
 			, fired_at
 			, acknowledged_at
@@ -278,7 +277,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Kit
 		&entity.KitchenNotes,
 		&entity.DisplayConfig,
 		&entity.Metadata,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.DeletedAt,
@@ -333,7 +332,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, course_id
 			, ticket_type
 			, priority
-			, status
 			, created_at
 			, fired_at
 			, acknowledged_at
@@ -403,7 +401,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.KitchenNotes,
 			&entity.DisplayConfig,
 			&entity.Metadata,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
@@ -500,7 +498,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *KitchenTicke
 		entity.KitchenNotes,
 		entity.DisplayConfig,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
@@ -664,7 +662,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.KitchenNotes,
 			&entity.DisplayConfig,
 			&entity.Metadata,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,

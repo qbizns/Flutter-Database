@@ -232,15 +232,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankReconciliationId != nil {
-		entity.BankReconciliationId = req.BankReconciliationId
+		entity.BankReconciliationId = *req.BankReconciliationId
 	}
 	
 	if req.GeneralLedgerId != nil {
-		entity.GeneralLedgerId = req.GeneralLedgerId
+		entity.GeneralLedgerId = *req.GeneralLedgerId
 	}
 	
 	if req.JournalEntryLineId != nil {
-		entity.JournalEntryLineId = req.JournalEntryLineId
+		entity.JournalEntryLineId = *req.JournalEntryLineId
 	}
 	
 	if req.IsCleared != nil {
@@ -248,11 +248,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ClearedDate != nil {
-		entity.ClearedDate = req.ClearedDate
+		entity.ClearedDate = *req.ClearedDate
 	}
 	
 	if req.ClearedBy != nil {
-		entity.ClearedBy = req.ClearedBy
+		entity.ClearedBy = *req.ClearedBy
 	}
 	
 

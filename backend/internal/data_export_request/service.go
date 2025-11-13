@@ -258,23 +258,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ExportType != nil {
-		entity.ExportType = req.ExportType
+		entity.ExportType = *req.ExportType
 	}
 	
 	if req.ExportFormat != nil {
-		entity.ExportFormat = req.ExportFormat
+		entity.ExportFormat = *req.ExportFormat
 	}
 	
 	if req.DateFrom != nil {
-		entity.DateFrom = req.DateFrom
+		entity.DateFrom = *req.DateFrom
 	}
 	
 	if req.DateTo != nil {
-		entity.DateTo = req.DateTo
+		entity.DateTo = *req.DateTo
 	}
 	
 	if req.Filters != nil {
-		entity.Filters = req.Filters
+		entity.Filters = *req.Filters
 	}
 	
 	if req.Status != nil {
@@ -286,19 +286,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.FileName != nil {
-		entity.FileName = req.FileName
+		entity.FileName = *req.FileName
 	}
 	
 	if req.FileSize != nil {
-		entity.FileSize = req.FileSize
+		entity.FileSize = *req.FileSize
 	}
 	
 	if req.FilePath != nil {
-		entity.FilePath = req.FilePath
+		entity.FilePath = *req.FilePath
 	}
 	
 	if req.DownloadUrl != nil {
-		entity.DownloadUrl = req.DownloadUrl
+		entity.DownloadUrl = *req.DownloadUrl
 	}
 	
 	if req.DownloadExpiresAt != nil {
@@ -306,11 +306,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TotalRecords != nil {
-		entity.TotalRecords = req.TotalRecords
+		entity.TotalRecords = *req.TotalRecords
 	}
 	
 	if req.ProcessedRecords != nil {
-		entity.ProcessedRecords = req.ProcessedRecords
+		entity.ProcessedRecords = *req.ProcessedRecords
 	}
 	
 	if req.ErrorMessage != nil {
@@ -318,7 +318,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequestedBy != nil {
-		entity.RequestedBy = req.RequestedBy
+		entity.RequestedBy = *req.RequestedBy
 	}
 	
 	if req.RequestedAt != nil {

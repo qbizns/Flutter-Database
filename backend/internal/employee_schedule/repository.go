@@ -138,7 +138,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EmployeeSche
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -174,7 +174,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Emp
 			, scheduled_start_time
 			, scheduled_end_time
 			, break_duration_minutes
-			, status
 			, requires_approval
 			, approved_by
 			, approved_at
@@ -213,7 +212,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Emp
 		&entity.CancellationReason,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.DeletedAt,
@@ -267,7 +266,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, scheduled_start_time
 			, scheduled_end_time
 			, break_duration_minutes
-			, status
 			, requires_approval
 			, approved_by
 			, approved_at
@@ -316,7 +314,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CancellationReason,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,
@@ -391,7 +389,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *EmployeeSche
 		entity.Notes,
 		entity.CancellationReason,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CreatedBy,
 		entity.UpdatedBy,
 		entity.DeletedAt,
@@ -533,7 +531,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CancellationReason,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.DeletedAt,

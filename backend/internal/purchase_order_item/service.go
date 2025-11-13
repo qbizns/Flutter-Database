@@ -244,47 +244,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = req.PurchaseOrderId
+		entity.PurchaseOrderId = *req.PurchaseOrderId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.QuantityOrdered != nil {
-		entity.QuantityOrdered = req.QuantityOrdered
+		entity.QuantityOrdered = *req.QuantityOrdered
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = req.QuantityReceived
+		entity.QuantityReceived = *req.QuantityReceived
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = req.UnitCost
+		entity.UnitCost = *req.UnitCost
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.ExpectedDeliveryDate != nil {
-		entity.ExpectedDeliveryDate = req.ExpectedDeliveryDate
+		entity.ExpectedDeliveryDate = *req.ExpectedDeliveryDate
 	}
 	
 	if req.Notes != nil {

@@ -248,19 +248,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.StationName != nil {
-		entity.StationName = req.StationName
+		entity.StationName = *req.StationName
 	}
 	
 	if req.StationCode != nil {
-		entity.StationCode = req.StationCode
+		entity.StationCode = *req.StationCode
 	}
 	
 	if req.StationType != nil {
-		entity.StationType = req.StationType
+		entity.StationType = *req.StationType
 	}
 	
 	if req.Description != nil {
@@ -272,11 +272,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = req.ColorCode
+		entity.ColorCode = *req.ColorCode
 	}
 	
 	if req.PrinterId != nil {
-		entity.PrinterId = req.PrinterId
+		entity.PrinterId = *req.PrinterId
 	}
 	
 	if req.IsActive != nil {
@@ -284,15 +284,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AutoPrintTickets != nil {
-		entity.AutoPrintTickets = req.AutoPrintTickets
+		entity.AutoPrintTickets = *req.AutoPrintTickets
 	}
 	
 	if req.AlertSoundEnabled != nil {
-		entity.AlertSoundEnabled = req.AlertSoundEnabled
+		entity.AlertSoundEnabled = *req.AlertSoundEnabled
 	}
 	
 	if req.DisplayConfig != nil {
-		entity.DisplayConfig = req.DisplayConfig
+		entity.DisplayConfig = *req.DisplayConfig
 	}
 	
 	if req.CreatedBy != nil {

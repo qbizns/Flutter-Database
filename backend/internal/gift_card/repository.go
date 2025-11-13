@@ -68,7 +68,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GiftCards) e
 			, issued_date
 			, expiry_date
 			, status
-			, status
 			, issued_by_user_id
 			, issued_location_id
 			, notes
@@ -113,7 +112,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *GiftCards) e
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -148,8 +147,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Gif
 			, current_balance
 			, issued_date
 			, expiry_date
-			, status
-			, status
 			, issued_by_user_id
 			, issued_location_id
 			, notes
@@ -180,7 +177,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Gif
 		&entity.Notes,
 		&entity.CreatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -229,8 +226,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, current_balance
 			, issued_date
 			, expiry_date
-			, status
-			, status
 			, issued_by_user_id
 			, issued_location_id
 			, notes
@@ -271,7 +266,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -307,7 +302,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *GiftCards) e
 			, issued_date = $8
 			, expiry_date = $9
 			, status = $10
-			, status = $11
 			, issued_by_user_id = $12
 			, issued_location_id = $13
 			, notes = $14
@@ -334,7 +328,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *GiftCards) e
 		entity.IssuedLocationId,
 		entity.Notes,
 		entity.CreatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -422,7 +416,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, issued_date
 			, expiry_date
 			, status
-			, status
 			, issued_by_user_id
 			, issued_location_id
 			, notes
@@ -464,7 +457,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

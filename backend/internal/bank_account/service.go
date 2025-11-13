@@ -254,15 +254,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ChartAccountId != nil {
-		entity.ChartAccountId = req.ChartAccountId
+		entity.ChartAccountId = *req.ChartAccountId
 	}
 	
 	if req.BankName != nil {
-		entity.BankName = req.BankName
+		entity.BankName = *req.BankName
 	}
 	
 	if req.AccountNumber != nil {
-		entity.AccountNumber = req.AccountNumber
+		entity.AccountNumber = *req.AccountNumber
 	}
 	
 	if req.AccountType != nil {
@@ -298,11 +298,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OnlineBankingEnabled != nil {
-		entity.OnlineBankingEnabled = req.OnlineBankingEnabled
+		entity.OnlineBankingEnabled = *req.OnlineBankingEnabled
 	}
 	
 	if req.LastSyncDate != nil {
-		entity.LastSyncDate = req.LastSyncDate
+		entity.LastSyncDate = *req.LastSyncDate
 	}
 	
 	if req.Notes != nil {

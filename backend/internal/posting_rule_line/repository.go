@@ -150,7 +150,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PostingRuleL
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -228,7 +228,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pos
 		&entity.Notes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 		&entity.(accountSource,
 		&entity.(accountSource,
@@ -337,7 +337,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.(accountSource,
 			&entity.(accountSource,
@@ -418,7 +418,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *PostingRuleL
 		entity.IsActive,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.(accountSource,
 		entity.(accountSource,

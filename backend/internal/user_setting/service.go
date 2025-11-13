@@ -216,55 +216,55 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUserSetti
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.Theme != nil {
-		entity.Theme = req.Theme
+		entity.Theme = *req.Theme
 	}
 	
 	if req.Language != nil {
-		entity.Language = req.Language
+		entity.Language = *req.Language
 	}
 	
 	if req.Timezone != nil {
-		entity.Timezone = req.Timezone
+		entity.Timezone = *req.Timezone
 	}
 	
 	if req.DefaultDashboard != nil {
-		entity.DefaultDashboard = req.DefaultDashboard
+		entity.DefaultDashboard = *req.DefaultDashboard
 	}
 	
 	if req.DashboardLayout != nil {
-		entity.DashboardLayout = req.DashboardLayout
+		entity.DashboardLayout = *req.DashboardLayout
 	}
 	
 	if req.ItemsPerPage != nil {
-		entity.ItemsPerPage = req.ItemsPerPage
+		entity.ItemsPerPage = *req.ItemsPerPage
 	}
 	
 	if req.DefaultView != nil {
-		entity.DefaultView = req.DefaultView
+		entity.DefaultView = *req.DefaultView
 	}
 	
 	if req.DesktopNotifications != nil {
-		entity.DesktopNotifications = req.DesktopNotifications
+		entity.DesktopNotifications = *req.DesktopNotifications
 	}
 	
 	if req.SoundNotifications != nil {
-		entity.SoundNotifications = req.SoundNotifications
+		entity.SoundNotifications = *req.SoundNotifications
 	}
 	
 	if req.DefaultLocationId != nil {
-		entity.DefaultLocationId = req.DefaultLocationId
+		entity.DefaultLocationId = *req.DefaultLocationId
 	}
 	
 	if req.QuickActions != nil {
-		entity.QuickActions = req.QuickActions
+		entity.QuickActions = *req.QuickActions
 	}
 	
 	if req.CustomPreferences != nil {
-		entity.CustomPreferences = req.CustomPreferences
+		entity.CustomPreferences = *req.CustomPreferences
 	}
 	
 

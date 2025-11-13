@@ -266,59 +266,59 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.InventoryTransferId != nil {
-		entity.InventoryTransferId = req.InventoryTransferId
+		entity.InventoryTransferId = *req.InventoryTransferId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.ProductName != nil {
-		entity.ProductName = req.ProductName
+		entity.ProductName = *req.ProductName
 	}
 	
 	if req.ProductSku != nil {
-		entity.ProductSku = req.ProductSku
+		entity.ProductSku = *req.ProductSku
 	}
 	
 	if req.QuantityRequested != nil {
-		entity.QuantityRequested = req.QuantityRequested
+		entity.QuantityRequested = *req.QuantityRequested
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = req.QuantityShipped
+		entity.QuantityShipped = *req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = req.QuantityReceived
+		entity.QuantityReceived = *req.QuantityReceived
 	}
 	
 	if req.UnitOfMeasure != nil {
-		entity.UnitOfMeasure = req.UnitOfMeasure
+		entity.UnitOfMeasure = *req.UnitOfMeasure
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = req.UnitCost
+		entity.UnitCost = *req.UnitCost
 	}
 	
 	if req.TotalCost != nil {
-		entity.TotalCost = req.TotalCost
+		entity.TotalCost = *req.TotalCost
 	}
 	
 	if req.ItemStatus != nil {
-		entity.ItemStatus = req.ItemStatus
+		entity.ItemStatus = *req.ItemStatus
 	}
 	
 	if req.VarianceQuantity != nil {
-		entity.VarianceQuantity = req.VarianceQuantity
+		entity.VarianceQuantity = *req.VarianceQuantity
 	}
 	
 	if req.VarianceReason != nil {
-		entity.VarianceReason = req.VarianceReason
+		entity.VarianceReason = *req.VarianceReason
 	}
 	
 	if req.Notes != nil {
@@ -330,23 +330,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.QuantityRequested != nil {
-		entity.QuantityRequested = req.QuantityRequested
+		entity.QuantityRequested = *req.QuantityRequested
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = req.QuantityShipped
+		entity.QuantityShipped = *req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = req.QuantityReceived
+		entity.QuantityReceived = *req.QuantityReceived
 	}
 	
 	if req.QuantityShipped != nil {
-		entity.QuantityShipped = req.QuantityShipped
+		entity.QuantityShipped = *req.QuantityShipped
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = req.QuantityReceived
+		entity.QuantityReceived = *req.QuantityReceived
 	}
 	
 	if req.(unitCost != nil {

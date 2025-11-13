@@ -250,23 +250,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CourseName != nil {
-		entity.CourseName = req.CourseName
+		entity.CourseName = *req.CourseName
 	}
 	
 	if req.CourseCode != nil {
-		entity.CourseCode = req.CourseCode
+		entity.CourseCode = *req.CourseCode
 	}
 	
 	if req.CourseType != nil {
-		entity.CourseType = req.CourseType
+		entity.CourseType = *req.CourseType
 	}
 	
 	if req.TypicalDurationMinutes != nil {
-		entity.TypicalDurationMinutes = req.TypicalDurationMinutes
+		entity.TypicalDurationMinutes = *req.TypicalDurationMinutes
 	}
 	
 	if req.FireDelayMinutes != nil {
-		entity.FireDelayMinutes = req.FireDelayMinutes
+		entity.FireDelayMinutes = *req.FireDelayMinutes
 	}
 	
 	if req.DisplayOrder != nil {
@@ -274,11 +274,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = req.ColorCode
+		entity.ColorCode = *req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = req.Icon
+		entity.Icon = *req.Icon
 	}
 	
 	if req.IsActive != nil {

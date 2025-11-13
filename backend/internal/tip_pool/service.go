@@ -246,15 +246,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.PoolName != nil {
-		entity.PoolName = req.PoolName
+		entity.PoolName = *req.PoolName
 	}
 	
 	if req.PoolType != nil {
-		entity.PoolType = req.PoolType
+		entity.PoolType = *req.PoolType
 	}
 	
 	if req.Description != nil {
@@ -262,15 +262,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DistributionMethod != nil {
-		entity.DistributionMethod = req.DistributionMethod
+		entity.DistributionMethod = *req.DistributionMethod
 	}
 	
 	if req.DistributionConfig != nil {
-		entity.DistributionConfig = req.DistributionConfig
+		entity.DistributionConfig = *req.DistributionConfig
 	}
 	
 	if req.EligiblePositions != nil {
-		entity.EligiblePositions = req.EligiblePositions
+		entity.EligiblePositions = *req.EligiblePositions
 	}
 	
 	if req.IsActive != nil {

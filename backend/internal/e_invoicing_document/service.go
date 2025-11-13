@@ -300,35 +300,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = req.SourceTable
+		entity.SourceTable = *req.SourceTable
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = req.SourceId
+		entity.SourceId = *req.SourceId
 	}
 	
 	if req.Authority != nil {
-		entity.Authority = req.Authority
+		entity.Authority = *req.Authority
 	}
 	
 	if req.CountryCode != nil {
-		entity.CountryCode = req.CountryCode
+		entity.CountryCode = *req.CountryCode
 	}
 	
 	if req.DocumentUuid != nil {
-		entity.DocumentUuid = req.DocumentUuid
+		entity.DocumentUuid = *req.DocumentUuid
 	}
 	
 	if req.DocumentType != nil {
-		entity.DocumentType = req.DocumentType
+		entity.DocumentType = *req.DocumentType
 	}
 	
 	if req.DocumentNumber != nil {
-		entity.DocumentNumber = req.DocumentNumber
+		entity.DocumentNumber = *req.DocumentNumber
 	}
 	
 	if req.InternalReference != nil {
-		entity.InternalReference = req.InternalReference
+		entity.InternalReference = *req.InternalReference
 	}
 	
 	if req.Status != nil {
@@ -372,15 +372,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequestPayload != nil {
-		entity.RequestPayload = req.RequestPayload
+		entity.RequestPayload = *req.RequestPayload
 	}
 	
 	if req.ResponsePayload != nil {
-		entity.ResponsePayload = req.ResponsePayload
+		entity.ResponsePayload = *req.ResponsePayload
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = req.ErrorCode
+		entity.ErrorCode = *req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
@@ -388,7 +388,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = req.RetryCount
+		entity.RetryCount = *req.RetryCount
 	}
 	
 	if req.LastRetryAt != nil {
@@ -396,55 +396,55 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ZatcaHashValue != nil {
-		entity.ZatcaHashValue = req.ZatcaHashValue
+		entity.ZatcaHashValue = *req.ZatcaHashValue
 	}
 	
 	if req.ZatcaPreviousHashValue != nil {
-		entity.ZatcaPreviousHashValue = req.ZatcaPreviousHashValue
+		entity.ZatcaPreviousHashValue = *req.ZatcaPreviousHashValue
 	}
 	
 	if req.ZatcaInvoiceCounterValue != nil {
-		entity.ZatcaInvoiceCounterValue = req.ZatcaInvoiceCounterValue
+		entity.ZatcaInvoiceCounterValue = *req.ZatcaInvoiceCounterValue
 	}
 	
 	if req.ZatcaCryptographicStamp != nil {
-		entity.ZatcaCryptographicStamp = req.ZatcaCryptographicStamp
+		entity.ZatcaCryptographicStamp = *req.ZatcaCryptographicStamp
 	}
 	
 	if req.ZatcaQrCodePayload != nil {
-		entity.ZatcaQrCodePayload = req.ZatcaQrCodePayload
+		entity.ZatcaQrCodePayload = *req.ZatcaQrCodePayload
 	}
 	
 	if req.ZatcaComplianceInvoiceNumber != nil {
-		entity.ZatcaComplianceInvoiceNumber = req.ZatcaComplianceInvoiceNumber
+		entity.ZatcaComplianceInvoiceNumber = *req.ZatcaComplianceInvoiceNumber
 	}
 	
 	if req.EtaDocumentTypeVersion != nil {
-		entity.EtaDocumentTypeVersion = req.EtaDocumentTypeVersion
+		entity.EtaDocumentTypeVersion = *req.EtaDocumentTypeVersion
 	}
 	
 	if req.EtaSubmissionUuid != nil {
-		entity.EtaSubmissionUuid = req.EtaSubmissionUuid
+		entity.EtaSubmissionUuid = *req.EtaSubmissionUuid
 	}
 	
 	if req.EtaLongId != nil {
-		entity.EtaLongId = req.EtaLongId
+		entity.EtaLongId = *req.EtaLongId
 	}
 	
 	if req.EtaInternalId != nil {
-		entity.EtaInternalId = req.EtaInternalId
+		entity.EtaInternalId = *req.EtaInternalId
 	}
 	
 	if req.EtaDigitalSignature != nil {
-		entity.EtaDigitalSignature = req.EtaDigitalSignature
+		entity.EtaDigitalSignature = *req.EtaDigitalSignature
 	}
 	
 	if req.EtaSignatureAlgorithm != nil {
-		entity.EtaSignatureAlgorithm = req.EtaSignatureAlgorithm
+		entity.EtaSignatureAlgorithm = *req.EtaSignatureAlgorithm
 	}
 	
 	if req.SubmissionFormat != nil {
-		entity.SubmissionFormat = req.SubmissionFormat
+		entity.SubmissionFormat = *req.SubmissionFormat
 	}
 	
 	if req.Metadata != nil {

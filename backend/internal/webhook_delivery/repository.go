@@ -67,7 +67,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *WebhookDeliv
 			, event_type
 			, event_id
 			, status
-			, status
 			, request_url
 			, request_method
 			, request_headers
@@ -125,7 +124,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *WebhookDeliv
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -156,8 +155,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Web
 			, webhook_id
 			, event_type
 			, event_id
-			, status
-			, status
 			, request_url
 			, request_method
 			, request_headers
@@ -241,8 +238,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, webhook_id
 			, event_type
 			, event_id
-			, status
-			, status
 			, request_url
 			, request_method
 			, request_headers
@@ -323,7 +318,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *WebhookDeliv
 			, event_type = $4
 			, event_id = $5
 			, status = $6
-			, status = $7
 			, request_url = $8
 			, request_method = $9
 			, request_headers = $10
@@ -436,8 +430,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, webhook_id
 			, event_type
 			, event_id
-			, status
-			, status
 			, request_url
 			, request_method
 			, request_headers

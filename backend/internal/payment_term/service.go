@@ -232,15 +232,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TermCode != nil {
-		entity.TermCode = req.TermCode
+		entity.TermCode = *req.TermCode
 	}
 	
 	if req.TermName != nil {
-		entity.TermName = req.TermName
+		entity.TermName = *req.TermName
 	}
 	
 	if req.Note != nil {
-		entity.Note = req.Note
+		entity.Note = *req.Note
 	}
 	
 	if req.IsActive != nil {

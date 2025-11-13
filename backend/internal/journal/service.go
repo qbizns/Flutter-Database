@@ -248,15 +248,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JournalCode != nil {
-		entity.JournalCode = req.JournalCode
+		entity.JournalCode = *req.JournalCode
 	}
 	
 	if req.JournalName != nil {
-		entity.JournalName = req.JournalName
+		entity.JournalName = *req.JournalName
 	}
 	
 	if req.JournalType != nil {
-		entity.JournalType = req.JournalType
+		entity.JournalType = *req.JournalType
 	}
 	
 	if req.'sale', != nil {
@@ -264,23 +264,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.BankAccountId != nil {
-		entity.BankAccountId = req.BankAccountId
+		entity.BankAccountId = *req.BankAccountId
 	}
 	
 	if req.DefaultDebitAccountId != nil {
-		entity.DefaultDebitAccountId = req.DefaultDebitAccountId
+		entity.DefaultDebitAccountId = *req.DefaultDebitAccountId
 	}
 	
 	if req.DefaultCreditAccountId != nil {
-		entity.DefaultCreditAccountId = req.DefaultCreditAccountId
+		entity.DefaultCreditAccountId = *req.DefaultCreditAccountId
 	}
 	
 	if req.SequencePrefix != nil {
-		entity.SequencePrefix = req.SequencePrefix
+		entity.SequencePrefix = *req.SequencePrefix
 	}
 	
 	if req.SequenceNumber != nil {
-		entity.SequenceNumber = req.SequenceNumber
+		entity.SequenceNumber = *req.SequenceNumber
 	}
 	
 	if req.IsActive != nil {

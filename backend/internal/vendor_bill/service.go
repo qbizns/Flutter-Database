@@ -266,51 +266,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BillNumber != nil {
-		entity.BillNumber = req.BillNumber
+		entity.BillNumber = *req.BillNumber
 	}
 	
 	if req.VendorBillNumber != nil {
-		entity.VendorBillNumber = req.VendorBillNumber
+		entity.VendorBillNumber = *req.VendorBillNumber
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = req.SupplierId
+		entity.SupplierId = *req.SupplierId
 	}
 	
 	if req.BillDate != nil {
-		entity.BillDate = req.BillDate
+		entity.BillDate = *req.BillDate
 	}
 	
 	if req.DueDate != nil {
-		entity.DueDate = req.DueDate
+		entity.DueDate = *req.DueDate
 	}
 	
 	if req.PaymentTerms != nil {
-		entity.PaymentTerms = req.PaymentTerms
+		entity.PaymentTerms = *req.PaymentTerms
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.PaidAmount != nil {
-		entity.PaidAmount = req.PaidAmount
+		entity.PaidAmount = *req.PaidAmount
 	}
 	
 	if req.BalanceDue != nil {
-		entity.BalanceDue = req.BalanceDue
+		entity.BalanceDue = *req.BalanceDue
 	}
 	
 	if req.Status != nil {
@@ -318,7 +318,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.IsPosted != nil {
@@ -326,7 +326,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = req.PurchaseOrderId
+		entity.PurchaseOrderId = *req.PurchaseOrderId
 	}
 	
 	if req.Description != nil {
@@ -338,11 +338,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Memo != nil {
-		entity.Memo = req.Memo
+		entity.Memo = *req.Memo
 	}
 	
 	if req.Attachments != nil {
-		entity.Attachments = req.Attachments
+		entity.Attachments = *req.Attachments
 	}
 	
 	if req.Metadata != nil {

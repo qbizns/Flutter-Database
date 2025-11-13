@@ -278,79 +278,79 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerCode != nil {
-		entity.CustomerCode = req.CustomerCode
+		entity.CustomerCode = *req.CustomerCode
 	}
 	
 	if req.FirstName != nil {
-		entity.FirstName = req.FirstName
+		entity.FirstName = *req.FirstName
 	}
 	
 	if req.LastName != nil {
-		entity.LastName = req.LastName
+		entity.LastName = *req.LastName
 	}
 	
 	if req.CompanyName != nil {
-		entity.CompanyName = req.CompanyName
+		entity.CompanyName = *req.CompanyName
 	}
 	
 	if req.Email != nil {
-		entity.Email = req.Email
+		entity.Email = *req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = req.Phone
+		entity.Phone = *req.Phone
 	}
 	
 	if req.AlternatePhone != nil {
-		entity.AlternatePhone = req.AlternatePhone
+		entity.AlternatePhone = *req.AlternatePhone
 	}
 	
 	if req.AddressLine1 != nil {
-		entity.AddressLine1 = req.AddressLine1
+		entity.AddressLine1 = *req.AddressLine1
 	}
 	
 	if req.AddressLine2 != nil {
-		entity.AddressLine2 = req.AddressLine2
+		entity.AddressLine2 = *req.AddressLine2
 	}
 	
 	if req.City != nil {
-		entity.City = req.City
+		entity.City = *req.City
 	}
 	
 	if req.State != nil {
-		entity.State = req.State
+		entity.State = *req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = req.Country
+		entity.Country = *req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = req.PostalCode
+		entity.PostalCode = *req.PostalCode
 	}
 	
 	if req.DateOfBirth != nil {
-		entity.DateOfBirth = req.DateOfBirth
+		entity.DateOfBirth = *req.DateOfBirth
 	}
 	
 	if req.Gender != nil {
-		entity.Gender = req.Gender
+		entity.Gender = *req.Gender
 	}
 	
 	if req.TaxNumber != nil {
-		entity.TaxNumber = req.TaxNumber
+		entity.TaxNumber = *req.TaxNumber
 	}
 	
 	if req.LoyaltyPoints != nil {
-		entity.LoyaltyPoints = req.LoyaltyPoints
+		entity.LoyaltyPoints = *req.LoyaltyPoints
 	}
 	
 	if req.LoyaltyTier != nil {
-		entity.LoyaltyTier = req.LoyaltyTier
+		entity.LoyaltyTier = *req.LoyaltyTier
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = req.CreditLimit
+		entity.CreditLimit = *req.CreditLimit
 	}
 	
 	if req.OutstandingBalance != nil {
@@ -358,11 +358,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TotalPurchases != nil {
-		entity.TotalPurchases = req.TotalPurchases
+		entity.TotalPurchases = *req.TotalPurchases
 	}
 	
 	if req.TotalOrders != nil {
-		entity.TotalOrders = req.TotalOrders
+		entity.TotalOrders = *req.TotalOrders
 	}
 	
 	if req.LastPurchaseAt != nil {
@@ -378,7 +378,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = req.CustomFields
+		entity.CustomFields = *req.CustomFields
 	}
 	
 	if req.Metadata != nil {

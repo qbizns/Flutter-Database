@@ -238,27 +238,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ParentProductId != nil {
-		entity.ParentProductId = req.ParentProductId
+		entity.ParentProductId = *req.ParentProductId
 	}
 	
 	if req.ComponentProductId != nil {
-		entity.ComponentProductId = req.ComponentProductId
+		entity.ComponentProductId = *req.ComponentProductId
 	}
 	
 	if req.ComponentVariantId != nil {
-		entity.ComponentVariantId = req.ComponentVariantId
+		entity.ComponentVariantId = *req.ComponentVariantId
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.InheritPrice != nil {
-		entity.InheritPrice = req.InheritPrice
+		entity.InheritPrice = *req.InheritPrice
 	}
 	
 	if req.PriceOverride != nil {
-		entity.PriceOverride = req.PriceOverride
+		entity.PriceOverride = *req.PriceOverride
 	}
 	
 	if req.DisplayOrder != nil {
@@ -270,7 +270,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ComponentProductId != nil {
-		entity.ComponentProductId = req.ComponentProductId
+		entity.ComponentProductId = *req.ComponentProductId
 	}
 	
 

@@ -71,7 +71,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 			, counterparty_account
 			, bank_reference
 			, status
-			, status
 			, notes
 			, deleted_at
 		) VALUES (
@@ -113,7 +112,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -151,8 +150,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 			, counterparty_name
 			, counterparty_account
 			, bank_reference
-			, status
-			, status
 			, notes
 			, created_at
 			, updated_at
@@ -180,7 +177,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 		&entity.Status,
 		&entity.Notes,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -232,8 +229,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, counterparty_name
 			, counterparty_account
 			, bank_reference
-			, status
-			, status
 			, notes
 			, created_at
 			, updated_at
@@ -271,7 +266,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Status,
 			&entity.Notes,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -310,7 +305,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 			, counterparty_account = $11
 			, bank_reference = $12
 			, status = $13
-			, status = $14
 			, notes = $15
 			, updated_at = $17
 			, deleted_at = $18
@@ -334,7 +328,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 		entity.Status,
 		entity.Status,
 		entity.Notes,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)

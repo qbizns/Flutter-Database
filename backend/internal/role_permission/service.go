@@ -194,11 +194,11 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateRolePermi
 	// Update fields
 	
 	if req.RoleId != nil {
-		entity.RoleId = req.RoleId
+		entity.RoleId = *req.RoleId
 	}
 	
 	if req.PermissionId != nil {
-		entity.PermissionId = req.PermissionId
+		entity.PermissionId = *req.PermissionId
 	}
 	
 

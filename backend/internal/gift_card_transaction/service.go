@@ -240,15 +240,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GiftCardId != nil {
-		entity.GiftCardId = req.GiftCardId
+		entity.GiftCardId = *req.GiftCardId
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = req.TransactionType
+		entity.TransactionType = *req.TransactionType
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = req.TransactionType
+		entity.TransactionType = *req.TransactionType
 	}
 	
 	if req.Amount != nil {
@@ -256,23 +256,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.BalanceAfter != nil {
-		entity.BalanceAfter = req.BalanceAfter
+		entity.BalanceAfter = *req.BalanceAfter
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.PaymentId != nil {
-		entity.PaymentId = req.PaymentId
+		entity.PaymentId = *req.PaymentId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.Notes != nil {

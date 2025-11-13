@@ -94,7 +94,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ProductModif
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -152,7 +152,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pro
 		&entity.Notes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 	)
 
 	if err == pgx.ErrNoRows {
@@ -233,7 +233,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan product_modifier_groups: %w", err)
@@ -286,7 +286,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *ProductModif
 		entity.OverrideMaxSelections,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.Id,
 	)
 
@@ -401,7 +401,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan product_modifier_groups: %w", err)

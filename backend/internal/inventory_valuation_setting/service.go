@@ -288,7 +288,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ValuationMethod != nil {
-		entity.ValuationMethod = req.ValuationMethod
+		entity.ValuationMethod = *req.ValuationMethod
 	}
 	
 	if req.'fifo', != nil {
@@ -316,7 +316,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CostLayerGranularity != nil {
-		entity.CostLayerGranularity = req.CostLayerGranularity
+		entity.CostLayerGranularity = *req.CostLayerGranularity
 	}
 	
 	if req.'product', != nil {
@@ -336,23 +336,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DefaultInventoryAccountId != nil {
-		entity.DefaultInventoryAccountId = req.DefaultInventoryAccountId
+		entity.DefaultInventoryAccountId = *req.DefaultInventoryAccountId
 	}
 	
 	if req.DefaultCogsAccountId != nil {
-		entity.DefaultCogsAccountId = req.DefaultCogsAccountId
+		entity.DefaultCogsAccountId = *req.DefaultCogsAccountId
 	}
 	
 	if req.DefaultInventoryAdjustmentAccountId != nil {
-		entity.DefaultInventoryAdjustmentAccountId = req.DefaultInventoryAdjustmentAccountId
+		entity.DefaultInventoryAdjustmentAccountId = *req.DefaultInventoryAdjustmentAccountId
 	}
 	
 	if req.DefaultInventoryVarianceAccountId != nil {
-		entity.DefaultInventoryVarianceAccountId = req.DefaultInventoryVarianceAccountId
+		entity.DefaultInventoryVarianceAccountId = *req.DefaultInventoryVarianceAccountId
 	}
 	
 	if req.CogsRecognitionTiming != nil {
-		entity.CogsRecognitionTiming = req.CogsRecognitionTiming
+		entity.CogsRecognitionTiming = *req.CogsRecognitionTiming
 	}
 	
 	if req.'onSale', != nil {
@@ -368,19 +368,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AllowNegativeInventory != nil {
-		entity.AllowNegativeInventory = req.AllowNegativeInventory
+		entity.AllowNegativeInventory = *req.AllowNegativeInventory
 	}
 	
 	if req.RevalueOnPurchase != nil {
-		entity.RevalueOnPurchase = req.RevalueOnPurchase
+		entity.RevalueOnPurchase = *req.RevalueOnPurchase
 	}
 	
 	if req.RoundUnitCostToDecimals != nil {
-		entity.RoundUnitCostToDecimals = req.RoundUnitCostToDecimals
+		entity.RoundUnitCostToDecimals = *req.RoundUnitCostToDecimals
 	}
 	
 	if req.RevaluationFrequency != nil {
-		entity.RevaluationFrequency = req.RevaluationFrequency
+		entity.RevaluationFrequency = *req.RevaluationFrequency
 	}
 	
 	if req.'realTime', != nil {
@@ -404,7 +404,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 	if req.Notes != nil {

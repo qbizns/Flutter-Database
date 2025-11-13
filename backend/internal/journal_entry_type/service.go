@@ -200,19 +200,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateJournalEn
 	// Update fields
 	
 	if req.TypeCode != nil {
-		entity.TypeCode = req.TypeCode
+		entity.TypeCode = *req.TypeCode
 	}
 	
 	if req.TypeName != nil {
-		entity.TypeName = req.TypeName
+		entity.TypeName = *req.TypeName
 	}
 	
 	if req.TypeCategory != nil {
-		entity.TypeCategory = req.TypeCategory
+		entity.TypeCategory = *req.TypeCategory
 	}
 	
 	if req.NumberPrefix != nil {
-		entity.NumberPrefix = req.NumberPrefix
+		entity.NumberPrefix = *req.NumberPrefix
 	}
 	
 	if req.Description != nil {

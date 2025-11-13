@@ -224,19 +224,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingDo
 	}
 	
 	if req.SourceSchema != nil {
-		entity.SourceSchema = req.SourceSchema
+		entity.SourceSchema = *req.SourceSchema
 	}
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = req.SourceTable
+		entity.SourceTable = *req.SourceTable
 	}
 	
 	if req.SourcePkColumn != nil {
-		entity.SourcePkColumn = req.SourcePkColumn
+		entity.SourcePkColumn = *req.SourcePkColumn
 	}
 	
 	if req.Category != nil {
-		entity.Category = req.Category
+		entity.Category = *req.Category
 	}
 	
 	if req.IsActive != nil {

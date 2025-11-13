@@ -252,7 +252,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReasonType != nil {
-		entity.ReasonType = req.ReasonType
+		entity.ReasonType = *req.ReasonType
 	}
 	
 	if req.IsSystemReason != nil {
@@ -264,15 +264,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = req.RequiresApproval
+		entity.RequiresApproval = *req.RequiresApproval
 	}
 	
 	if req.RequiresNotes != nil {
-		entity.RequiresNotes = req.RequiresNotes
+		entity.RequiresNotes = *req.RequiresNotes
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.Metadata != nil {

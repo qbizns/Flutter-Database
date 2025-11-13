@@ -234,31 +234,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.Category != nil {
-		entity.Category = req.Category
+		entity.Category = *req.Category
 	}
 	
 	if req.InAppEnabled != nil {
-		entity.InAppEnabled = req.InAppEnabled
+		entity.InAppEnabled = *req.InAppEnabled
 	}
 	
 	if req.EmailEnabled != nil {
-		entity.EmailEnabled = req.EmailEnabled
+		entity.EmailEnabled = *req.EmailEnabled
 	}
 	
 	if req.SmsEnabled != nil {
-		entity.SmsEnabled = req.SmsEnabled
+		entity.SmsEnabled = *req.SmsEnabled
 	}
 	
 	if req.PushEnabled != nil {
-		entity.PushEnabled = req.PushEnabled
+		entity.PushEnabled = *req.PushEnabled
 	}
 	
 	if req.Frequency != nil {
-		entity.Frequency = req.Frequency
+		entity.Frequency = *req.Frequency
 	}
 	
 

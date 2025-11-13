@@ -121,7 +121,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *ApiRequestLo
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -159,7 +159,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Api
 			, request_body
 			, ip_address
 			, user_agent
-			, status_code
 			, response_headers
 			, response_body
 			, duration_ms
@@ -242,7 +241,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, request_body
 			, ip_address
 			, user_agent
-			, status_code
 			, response_headers
 			, response_body
 			, duration_ms
@@ -433,7 +431,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, request_body
 			, ip_address
 			, user_agent
-			, status_code
 			, response_headers
 			, response_body
 			, duration_ms

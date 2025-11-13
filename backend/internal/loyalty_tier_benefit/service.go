@@ -244,31 +244,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TierId != nil {
-		entity.TierId = req.TierId
+		entity.TierId = *req.TierId
 	}
 	
 	if req.BenefitCode != nil {
-		entity.BenefitCode = req.BenefitCode
+		entity.BenefitCode = *req.BenefitCode
 	}
 	
 	if req.BenefitName != nil {
-		entity.BenefitName = req.BenefitName
+		entity.BenefitName = *req.BenefitName
 	}
 	
 	if req.BenefitDescription != nil {
-		entity.BenefitDescription = req.BenefitDescription
+		entity.BenefitDescription = *req.BenefitDescription
 	}
 	
 	if req.BenefitType != nil {
-		entity.BenefitType = req.BenefitType
+		entity.BenefitType = *req.BenefitType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = req.DiscountValue
+		entity.DiscountValue = *req.DiscountValue
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = req.DiscountType
+		entity.DiscountType = *req.DiscountType
 	}
 	
 	if req.IsActive != nil {
@@ -276,15 +276,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = req.Icon
+		entity.Icon = *req.Icon
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = req.TermsAndConditions
+		entity.TermsAndConditions = *req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {

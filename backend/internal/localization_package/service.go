@@ -204,19 +204,19 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateLocalizat
 	// Update fields
 	
 	if req.PackageCode != nil {
-		entity.PackageCode = req.PackageCode
+		entity.PackageCode = *req.PackageCode
 	}
 	
 	if req.PackageName != nil {
-		entity.PackageName = req.PackageName
+		entity.PackageName = *req.PackageName
 	}
 	
 	if req.CountryCode != nil {
-		entity.CountryCode = req.CountryCode
+		entity.CountryCode = *req.CountryCode
 	}
 	
 	if req.Region != nil {
-		entity.Region = req.Region
+		entity.Region = *req.Region
 	}
 	
 	if req.Description != nil {
@@ -224,7 +224,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateLocalizat
 	}
 	
 	if req.Version != nil {
-		entity.Version = req.Version
+		entity.Version = *req.Version
 	}
 	
 	if req.IsActive != nil {

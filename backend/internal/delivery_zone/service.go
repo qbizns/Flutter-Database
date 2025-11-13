@@ -260,15 +260,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.ZoneName != nil {
-		entity.ZoneName = req.ZoneName
+		entity.ZoneName = *req.ZoneName
 	}
 	
 	if req.ZoneCode != nil {
-		entity.ZoneCode = req.ZoneCode
+		entity.ZoneCode = *req.ZoneCode
 	}
 	
 	if req.Description != nil {
@@ -276,39 +276,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Geofence != nil {
-		entity.Geofence = req.Geofence
+		entity.Geofence = *req.Geofence
 	}
 	
 	if req.PostalCodes != nil {
-		entity.PostalCodes = req.PostalCodes
+		entity.PostalCodes = *req.PostalCodes
 	}
 	
 	if req.CoverageNotes != nil {
-		entity.CoverageNotes = req.CoverageNotes
+		entity.CoverageNotes = *req.CoverageNotes
 	}
 	
 	if req.BaseDeliveryFee != nil {
-		entity.BaseDeliveryFee = req.BaseDeliveryFee
+		entity.BaseDeliveryFee = *req.BaseDeliveryFee
 	}
 	
 	if req.FeeType != nil {
-		entity.FeeType = req.FeeType
+		entity.FeeType = *req.FeeType
 	}
 	
 	if req.MinimumOrderAmount != nil {
-		entity.MinimumOrderAmount = req.MinimumOrderAmount
+		entity.MinimumOrderAmount = *req.MinimumOrderAmount
 	}
 	
 	if req.FreeDeliveryThreshold != nil {
-		entity.FreeDeliveryThreshold = req.FreeDeliveryThreshold
+		entity.FreeDeliveryThreshold = *req.FreeDeliveryThreshold
 	}
 	
 	if req.EstimatedDeliveryTimeMinutes != nil {
-		entity.EstimatedDeliveryTimeMinutes = req.EstimatedDeliveryTimeMinutes
+		entity.EstimatedDeliveryTimeMinutes = *req.EstimatedDeliveryTimeMinutes
 	}
 	
 	if req.MaxDeliveryTimeMinutes != nil {
-		entity.MaxDeliveryTimeMinutes = req.MaxDeliveryTimeMinutes
+		entity.MaxDeliveryTimeMinutes = *req.MaxDeliveryTimeMinutes
 	}
 	
 	if req.Priority != nil {
@@ -320,7 +320,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ActiveHours != nil {
-		entity.ActiveHours = req.ActiveHours
+		entity.ActiveHours = *req.ActiveHours
 	}
 	
 	if req.Metadata != nil {
@@ -336,7 +336,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.BaseDeliveryFee != nil {
-		entity.BaseDeliveryFee = req.BaseDeliveryFee
+		entity.BaseDeliveryFee = *req.BaseDeliveryFee
 	}
 	
 

@@ -272,19 +272,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TransferNumber != nil {
-		entity.TransferNumber = req.TransferNumber
+		entity.TransferNumber = *req.TransferNumber
 	}
 	
 	if req.TransferDate != nil {
-		entity.TransferDate = req.TransferDate
+		entity.TransferDate = *req.TransferDate
 	}
 	
 	if req.FromLocationId != nil {
-		entity.FromLocationId = req.FromLocationId
+		entity.FromLocationId = *req.FromLocationId
 	}
 	
 	if req.ToLocationId != nil {
-		entity.ToLocationId = req.ToLocationId
+		entity.ToLocationId = *req.ToLocationId
 	}
 	
 	if req.Status != nil {
@@ -292,39 +292,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequestedDate != nil {
-		entity.RequestedDate = req.RequestedDate
+		entity.RequestedDate = *req.RequestedDate
 	}
 	
 	if req.ApprovedDate != nil {
-		entity.ApprovedDate = req.ApprovedDate
+		entity.ApprovedDate = *req.ApprovedDate
 	}
 	
 	if req.ShippedDate != nil {
-		entity.ShippedDate = req.ShippedDate
+		entity.ShippedDate = *req.ShippedDate
 	}
 	
 	if req.ExpectedDeliveryDate != nil {
-		entity.ExpectedDeliveryDate = req.ExpectedDeliveryDate
+		entity.ExpectedDeliveryDate = *req.ExpectedDeliveryDate
 	}
 	
 	if req.ReceivedDate != nil {
-		entity.ReceivedDate = req.ReceivedDate
+		entity.ReceivedDate = *req.ReceivedDate
 	}
 	
 	if req.Carrier != nil {
-		entity.Carrier = req.Carrier
+		entity.Carrier = *req.Carrier
 	}
 	
 	if req.TrackingNumber != nil {
-		entity.TrackingNumber = req.TrackingNumber
+		entity.TrackingNumber = *req.TrackingNumber
 	}
 	
 	if req.ShippingCost != nil {
-		entity.ShippingCost = req.ShippingCost
+		entity.ShippingCost = *req.ShippingCost
 	}
 	
 	if req.Reason != nil {
-		entity.Reason = req.Reason
+		entity.Reason = *req.Reason
 	}
 	
 	if req.Notes != nil {
@@ -332,7 +332,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RejectionReason != nil {
-		entity.RejectionReason = req.RejectionReason
+		entity.RejectionReason = *req.RejectionReason
 	}
 	
 	if req.Metadata != nil {
@@ -348,19 +348,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequestedBy != nil {
-		entity.RequestedBy = req.RequestedBy
+		entity.RequestedBy = *req.RequestedBy
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ShippedBy != nil {
-		entity.ShippedBy = req.ShippedBy
+		entity.ShippedBy = *req.ShippedBy
 	}
 	
 	if req.ReceivedBy != nil {
-		entity.ReceivedBy = req.ReceivedBy
+		entity.ReceivedBy = *req.ReceivedBy
 	}
 	
 	if req.(approvedDate != nil {

@@ -244,7 +244,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FeatureKey != nil {
-		entity.FeatureKey = req.FeatureKey
+		entity.FeatureKey = *req.FeatureKey
 	}
 	
 	if req.IsEnabled != nil {
@@ -256,11 +256,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Configuration != nil {
-		entity.Configuration = req.Configuration
+		entity.Configuration = *req.Configuration
 	}
 	
 	if req.Limits != nil {
-		entity.Limits = req.Limits
+		entity.Limits = *req.Limits
 	}
 	
 	if req.EnabledAt != nil {

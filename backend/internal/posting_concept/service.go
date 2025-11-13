@@ -214,31 +214,31 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingCo
 	// Update fields
 	
 	if req.ConceptKey != nil {
-		entity.ConceptKey = req.ConceptKey
+		entity.ConceptKey = *req.ConceptKey
 	}
 	
 	if req.DefaultLabel != nil {
-		entity.DefaultLabel = req.DefaultLabel
+		entity.DefaultLabel = *req.DefaultLabel
 	}
 	
 	if req.DefaultDescription != nil {
-		entity.DefaultDescription = req.DefaultDescription
+		entity.DefaultDescription = *req.DefaultDescription
 	}
 	
 	if req.ExpectedAccountTypeId != nil {
-		entity.ExpectedAccountTypeId = req.ExpectedAccountTypeId
+		entity.ExpectedAccountTypeId = *req.ExpectedAccountTypeId
 	}
 	
 	if req.NormalSide != nil {
-		entity.NormalSide = req.NormalSide
+		entity.NormalSide = *req.NormalSide
 	}
 	
 	if req.ExampleCode != nil {
-		entity.ExampleCode = req.ExampleCode
+		entity.ExampleCode = *req.ExampleCode
 	}
 	
 	if req.ExampleAccountName != nil {
-		entity.ExampleAccountName = req.ExampleAccountName
+		entity.ExampleAccountName = *req.ExampleAccountName
 	}
 	
 	if req.IsSystem != nil {
@@ -246,11 +246,11 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingCo
 	}
 	
 	if req.ConceptCategory != nil {
-		entity.ConceptCategory = req.ConceptCategory
+		entity.ConceptCategory = *req.ConceptCategory
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.Notes != nil {

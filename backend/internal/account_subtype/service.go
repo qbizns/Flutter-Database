@@ -201,15 +201,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateAccountSu
 	// Update fields
 	
 	if req.AccountTypeId != nil {
-		entity.AccountTypeId = req.AccountTypeId
+		entity.AccountTypeId = *req.AccountTypeId
 	}
 	
 	if req.SubtypeCode != nil {
-		entity.SubtypeCode = req.SubtypeCode
+		entity.SubtypeCode = *req.SubtypeCode
 	}
 	
 	if req.SubtypeName != nil {
-		entity.SubtypeName = req.SubtypeName
+		entity.SubtypeName = *req.SubtypeName
 	}
 	
 	if req.DisplayOrder != nil {

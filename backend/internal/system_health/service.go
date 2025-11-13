@@ -254,23 +254,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.MetricValue != nil {
-		entity.MetricValue = req.MetricValue
+		entity.MetricValue = *req.MetricValue
 	}
 	
 	if req.MetricUnit != nil {
-		entity.MetricUnit = req.MetricUnit
+		entity.MetricUnit = *req.MetricUnit
 	}
 	
 	if req.ThresholdWarning != nil {
-		entity.ThresholdWarning = req.ThresholdWarning
+		entity.ThresholdWarning = *req.ThresholdWarning
 	}
 	
 	if req.ThresholdCritical != nil {
-		entity.ThresholdCritical = req.ThresholdCritical
+		entity.ThresholdCritical = *req.ThresholdCritical
 	}
 	
 	if req.Details != nil {
-		entity.Details = req.Details
+		entity.Details = *req.Details
 	}
 	
 

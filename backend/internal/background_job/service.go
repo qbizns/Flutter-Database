@@ -55,7 +55,7 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req *CreateBackgr
 
 	// Convert DTO to entity
 	entity := &BackgroundJobs{
-		OrganizationId: &orgID,
+		OrganizationId: orgID,
 		
 		JobType: req.JobType,
 		
@@ -258,11 +258,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JobType != nil {
-		entity.JobType = req.JobType
+		entity.JobType = *req.JobType
 	}
 	
 	if req.JobName != nil {
-		entity.JobName = req.JobName
+		entity.JobName = *req.JobName
 	}
 	
 	if req.QueueName != nil {
@@ -278,7 +278,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Payload != nil {
-		entity.Payload = req.Payload
+		entity.Payload = *req.Payload
 	}
 	
 	if req.Result != nil {
@@ -290,7 +290,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ErrorDetails != nil {
-		entity.ErrorDetails = req.ErrorDetails
+		entity.ErrorDetails = *req.ErrorDetails
 	}
 	
 	if req.Attempts != nil {
@@ -322,7 +322,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.WorkerId != nil {
-		entity.WorkerId = req.WorkerId
+		entity.WorkerId = *req.WorkerId
 	}
 	
 	if req.ProcessingTimeout != nil {

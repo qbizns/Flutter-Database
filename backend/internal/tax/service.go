@@ -244,23 +244,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TaxGroupId != nil {
-		entity.TaxGroupId = req.TaxGroupId
+		entity.TaxGroupId = *req.TaxGroupId
 	}
 	
 	if req.TaxCode != nil {
-		entity.TaxCode = req.TaxCode
+		entity.TaxCode = *req.TaxCode
 	}
 	
 	if req.TaxName != nil {
-		entity.TaxName = req.TaxName
+		entity.TaxName = *req.TaxName
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = req.TaxRate
+		entity.TaxRate = *req.TaxRate
 	}
 	
 	if req.TaxScope != nil {
-		entity.TaxScope = req.TaxScope
+		entity.TaxScope = *req.TaxScope
 	}
 	
 	if req.IsPriceInclusive != nil {
@@ -268,11 +268,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TaxAccountId != nil {
-		entity.TaxAccountId = req.TaxAccountId
+		entity.TaxAccountId = *req.TaxAccountId
 	}
 	
 	if req.TaxRefundAccountId != nil {
-		entity.TaxRefundAccountId = req.TaxRefundAccountId
+		entity.TaxRefundAccountId = *req.TaxRefundAccountId
 	}
 	
 	if req.IsActive != nil {

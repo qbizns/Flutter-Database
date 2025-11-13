@@ -236,35 +236,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GoodsReceiptId != nil {
-		entity.GoodsReceiptId = req.GoodsReceiptId
+		entity.GoodsReceiptId = *req.GoodsReceiptId
 	}
 	
 	if req.PurchaseOrderItemId != nil {
-		entity.PurchaseOrderItemId = req.PurchaseOrderItemId
+		entity.PurchaseOrderItemId = *req.PurchaseOrderItemId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.QuantityReceived != nil {
-		entity.QuantityReceived = req.QuantityReceived
+		entity.QuantityReceived = *req.QuantityReceived
 	}
 	
 	if req.QuantityAccepted != nil {
-		entity.QuantityAccepted = req.QuantityAccepted
+		entity.QuantityAccepted = *req.QuantityAccepted
 	}
 	
 	if req.QuantityRejected != nil {
-		entity.QuantityRejected = req.QuantityRejected
+		entity.QuantityRejected = *req.QuantityRejected
 	}
 	
 	if req.RejectionReason != nil {
-		entity.RejectionReason = req.RejectionReason
+		entity.RejectionReason = *req.RejectionReason
 	}
 	
 

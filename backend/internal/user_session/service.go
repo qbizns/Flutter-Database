@@ -250,15 +250,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.SessionToken != nil {
-		entity.SessionToken = req.SessionToken
+		entity.SessionToken = *req.SessionToken
 	}
 	
 	if req.RefreshToken != nil {
-		entity.RefreshToken = req.RefreshToken
+		entity.RefreshToken = *req.RefreshToken
 	}
 	
 	if req.UserAgent != nil {
@@ -270,27 +270,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DeviceType != nil {
-		entity.DeviceType = req.DeviceType
+		entity.DeviceType = *req.DeviceType
 	}
 	
 	if req.DeviceName != nil {
-		entity.DeviceName = req.DeviceName
+		entity.DeviceName = *req.DeviceName
 	}
 	
 	if req.Browser != nil {
-		entity.Browser = req.Browser
+		entity.Browser = *req.Browser
 	}
 	
 	if req.Os != nil {
-		entity.Os = req.Os
+		entity.Os = *req.Os
 	}
 	
 	if req.CountryCode != nil {
-		entity.CountryCode = req.CountryCode
+		entity.CountryCode = *req.CountryCode
 	}
 	
 	if req.City != nil {
-		entity.City = req.City
+		entity.City = *req.City
 	}
 	
 	if req.IsActive != nil {

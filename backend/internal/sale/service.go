@@ -268,71 +268,71 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleNumber != nil {
-		entity.SaleNumber = req.SaleNumber
+		entity.SaleNumber = *req.SaleNumber
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.TransactionType != nil {
-		entity.TransactionType = req.TransactionType
+		entity.TransactionType = *req.TransactionType
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.CashierId != nil {
-		entity.CashierId = req.CashierId
+		entity.CashierId = *req.CashierId
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.PaidAmount != nil {
-		entity.PaidAmount = req.PaidAmount
+		entity.PaidAmount = *req.PaidAmount
 	}
 	
 	if req.ChangeAmount != nil {
-		entity.ChangeAmount = req.ChangeAmount
+		entity.ChangeAmount = *req.ChangeAmount
 	}
 	
 	if req.OutstandingAmount != nil {
-		entity.OutstandingAmount = req.OutstandingAmount
+		entity.OutstandingAmount = *req.OutstandingAmount
 	}
 	
 	if req.PaymentStatus != nil {
-		entity.PaymentStatus = req.PaymentStatus
+		entity.PaymentStatus = *req.PaymentStatus
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = req.DiscountType
+		entity.DiscountType = *req.DiscountType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = req.DiscountValue
+		entity.DiscountValue = *req.DiscountValue
 	}
 	
 	if req.DiscountReason != nil {
-		entity.DiscountReason = req.DiscountReason
+		entity.DiscountReason = *req.DiscountReason
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = req.TransactionDate
+		entity.TransactionDate = *req.TransactionDate
 	}
 	
 	if req.CompletedAt != nil {
@@ -344,11 +344,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.InternalNotes != nil {
-		entity.InternalNotes = req.InternalNotes
+		entity.InternalNotes = *req.InternalNotes
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = req.CustomFields
+		entity.CustomFields = *req.CustomFields
 	}
 	
 	if req.Metadata != nil {

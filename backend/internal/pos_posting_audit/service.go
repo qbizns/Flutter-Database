@@ -300,19 +300,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceTable != nil {
-		entity.SourceTable = req.SourceTable
+		entity.SourceTable = *req.SourceTable
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = req.SourceId
+		entity.SourceId = *req.SourceId
 	}
 	
 	if req.SourceReference != nil {
-		entity.SourceReference = req.SourceReference
+		entity.SourceReference = *req.SourceReference
 	}
 	
 	if req.PostingStatus != nil {
-		entity.PostingStatus = req.PostingStatus
+		entity.PostingStatus = *req.PostingStatus
 	}
 	
 	if req.'pending', != nil {
@@ -340,15 +340,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.ReversalJournalEntryId != nil {
-		entity.ReversalJournalEntryId = req.ReversalJournalEntryId
+		entity.ReversalJournalEntryId = *req.ReversalJournalEntryId
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = req.PostingDate
+		entity.PostingDate = *req.PostingDate
 	}
 	
 	if req.PostedAt != nil {
@@ -356,15 +356,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = req.PostedBy
+		entity.PostedBy = *req.PostedBy
 	}
 	
 	if req.PostingMethod != nil {
-		entity.PostingMethod = req.PostingMethod
+		entity.PostingMethod = *req.PostingMethod
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = req.ErrorCode
+		entity.ErrorCode = *req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
@@ -372,11 +372,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ErrorDetails != nil {
-		entity.ErrorDetails = req.ErrorDetails
+		entity.ErrorDetails = *req.ErrorDetails
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = req.RetryCount
+		entity.RetryCount = *req.RetryCount
 	}
 	
 	if req.LastRetryAt != nil {
@@ -384,7 +384,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.MaxRetries != nil {
-		entity.MaxRetries = req.MaxRetries
+		entity.MaxRetries = *req.MaxRetries
 	}
 	
 	if req.ReversedAt != nil {
@@ -392,23 +392,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReversedBy != nil {
-		entity.ReversedBy = req.ReversedBy
+		entity.ReversedBy = *req.ReversedBy
 	}
 	
 	if req.ReversalReason != nil {
-		entity.ReversalReason = req.ReversalReason
+		entity.ReversalReason = *req.ReversalReason
 	}
 	
 	if req.TotalDebit != nil {
-		entity.TotalDebit = req.TotalDebit
+		entity.TotalDebit = *req.TotalDebit
 	}
 	
 	if req.TotalCredit != nil {
-		entity.TotalCredit = req.TotalCredit
+		entity.TotalCredit = *req.TotalCredit
 	}
 	
 	if req.LineCount != nil {
-		entity.LineCount = req.LineCount
+		entity.LineCount = *req.LineCount
 	}
 	
 	if req.CurrencyCode != nil {
@@ -416,7 +416,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PostingContext != nil {
-		entity.PostingContext = req.PostingContext
+		entity.PostingContext = *req.PostingContext
 	}
 	
 	if req.Notes != nil {

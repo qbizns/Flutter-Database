@@ -246,15 +246,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.IntegrationType != nil {
-		entity.IntegrationType = req.IntegrationType
+		entity.IntegrationType = *req.IntegrationType
 	}
 	
 	if req.ProviderName != nil {
-		entity.ProviderName = req.ProviderName
+		entity.ProviderName = *req.ProviderName
 	}
 	
 	if req.Credentials != nil {
-		entity.Credentials = req.Credentials
+		entity.Credentials = *req.Credentials
 	}
 	
 	if req.Settings != nil {
@@ -270,7 +270,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ConnectionStatus != nil {
-		entity.ConnectionStatus = req.ConnectionStatus
+		entity.ConnectionStatus = *req.ConnectionStatus
 	}
 	
 	if req.LastSyncAt != nil {
@@ -278,19 +278,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.LastSyncStatus != nil {
-		entity.LastSyncStatus = req.LastSyncStatus
+		entity.LastSyncStatus = *req.LastSyncStatus
 	}
 	
 	if req.SyncFrequency != nil {
-		entity.SyncFrequency = req.SyncFrequency
+		entity.SyncFrequency = *req.SyncFrequency
 	}
 	
 	if req.WebhookUrl != nil {
-		entity.WebhookUrl = req.WebhookUrl
+		entity.WebhookUrl = *req.WebhookUrl
 	}
 	
 	if req.WebhookSecret != nil {
-		entity.WebhookSecret = req.WebhookSecret
+		entity.WebhookSecret = *req.WebhookSecret
 	}
 	
 	if req.CreatedBy != nil {

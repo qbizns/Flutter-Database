@@ -228,19 +228,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CashDrawerId != nil {
-		entity.CashDrawerId = req.CashDrawerId
+		entity.CashDrawerId = *req.CashDrawerId
 	}
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = req.PosSessionId
+		entity.PosSessionId = *req.PosSessionId
 	}
 	
 	if req.OpeningAmount != nil {
-		entity.OpeningAmount = req.OpeningAmount
+		entity.OpeningAmount = *req.OpeningAmount
 	}
 	
 	if req.ClosingAmount != nil {
-		entity.ClosingAmount = req.ClosingAmount
+		entity.ClosingAmount = *req.ClosingAmount
 	}
 	
 

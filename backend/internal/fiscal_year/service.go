@@ -242,15 +242,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FiscalYear != nil {
-		entity.FiscalYear = req.FiscalYear
+		entity.FiscalYear = *req.FiscalYear
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = req.StartDate
+		entity.StartDate = *req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = req.EndDate
+		entity.EndDate = *req.EndDate
 	}
 	
 	if req.Status != nil {

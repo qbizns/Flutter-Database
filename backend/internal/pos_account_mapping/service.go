@@ -306,7 +306,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SourceType != nil {
-		entity.SourceType = req.SourceType
+		entity.SourceType = *req.SourceType
 	}
 	
 	if req.'product', != nil {
@@ -362,15 +362,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SourceId != nil {
-		entity.SourceId = req.SourceId
+		entity.SourceId = *req.SourceId
 	}
 	
 	if req.SourceCode != nil {
-		entity.SourceCode = req.SourceCode
+		entity.SourceCode = *req.SourceCode
 	}
 	
 	if req.Purpose != nil {
-		entity.Purpose = req.Purpose
+		entity.Purpose = *req.Purpose
 	}
 	
 	if req.'revenue', != nil {
@@ -418,7 +418,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = req.AccountId
+		entity.AccountId = *req.AccountId
 	}
 	
 	if req.IsDefault != nil {
@@ -434,15 +434,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Conditions != nil {
-		entity.Conditions = req.Conditions
+		entity.Conditions = *req.Conditions
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = req.EffectiveTo
+		entity.EffectiveTo = *req.EffectiveTo
 	}
 	
 	if req.Description != nil {
@@ -474,7 +474,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 

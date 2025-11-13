@@ -264,47 +264,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CycleCountId != nil {
-		entity.CycleCountId = req.CycleCountId
+		entity.CycleCountId = *req.CycleCountId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.ProductName != nil {
-		entity.ProductName = req.ProductName
+		entity.ProductName = *req.ProductName
 	}
 	
 	if req.ProductSku != nil {
-		entity.ProductSku = req.ProductSku
+		entity.ProductSku = *req.ProductSku
 	}
 	
 	if req.SystemQuantity != nil {
-		entity.SystemQuantity = req.SystemQuantity
+		entity.SystemQuantity = *req.SystemQuantity
 	}
 	
 	if req.CountedQuantity != nil {
-		entity.CountedQuantity = req.CountedQuantity
+		entity.CountedQuantity = *req.CountedQuantity
 	}
 	
 	if req.VarianceQuantity != nil {
-		entity.VarianceQuantity = req.VarianceQuantity
+		entity.VarianceQuantity = *req.VarianceQuantity
 	}
 	
 	if req.VariancePercentage != nil {
-		entity.VariancePercentage = req.VariancePercentage
+		entity.VariancePercentage = *req.VariancePercentage
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = req.UnitCost
+		entity.UnitCost = *req.UnitCost
 	}
 	
 	if req.VarianceValue != nil {
-		entity.VarianceValue = req.VarianceValue
+		entity.VarianceValue = *req.VarianceValue
 	}
 	
 	if req.Status != nil {
@@ -312,27 +312,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RecountRequired != nil {
-		entity.RecountRequired = req.RecountRequired
+		entity.RecountRequired = *req.RecountRequired
 	}
 	
 	if req.RecountQuantity != nil {
-		entity.RecountQuantity = req.RecountQuantity
+		entity.RecountQuantity = *req.RecountQuantity
 	}
 	
 	if req.RecountReason != nil {
-		entity.RecountReason = req.RecountReason
+		entity.RecountReason = *req.RecountReason
 	}
 	
 	if req.AdjustmentApplied != nil {
-		entity.AdjustmentApplied = req.AdjustmentApplied
+		entity.AdjustmentApplied = *req.AdjustmentApplied
 	}
 	
 	if req.AdjustmentDate != nil {
-		entity.AdjustmentDate = req.AdjustmentDate
+		entity.AdjustmentDate = *req.AdjustmentDate
 	}
 	
 	if req.AdjustmentReason != nil {
-		entity.AdjustmentReason = req.AdjustmentReason
+		entity.AdjustmentReason = *req.AdjustmentReason
 	}
 	
 	if req.Notes != nil {
@@ -348,7 +348,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CountedBy != nil {
-		entity.CountedBy = req.CountedBy
+		entity.CountedBy = *req.CountedBy
 	}
 	
 

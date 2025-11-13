@@ -121,7 +121,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DeferredExpe
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -159,7 +159,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Def
 			, recognition_method
 			, deferred_account_id
 			, expense_account_id
-			, status
 			, recognized_amount
 			, notes
 			, created_by
@@ -192,7 +191,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Def
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -244,7 +243,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, recognition_method
 			, deferred_account_id
 			, expense_account_id
-			, status
 			, recognized_amount
 			, notes
 			, created_by
@@ -287,7 +285,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -354,7 +352,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *DeferredExpe
 		entity.Notes,
 		entity.CreatedBy,
 		entity.UpdatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -488,7 +486,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

@@ -234,15 +234,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RateDate != nil {
-		entity.RateDate = req.RateDate
+		entity.RateDate = *req.RateDate
 	}
 	
 	if req.Rate != nil {
-		entity.Rate = req.Rate
+		entity.Rate = *req.Rate
 	}
 	
 	if req.Source != nil {
-		entity.Source = req.Source
+		entity.Source = *req.Source
 	}
 	
 	if req.CreatedBy != nil {

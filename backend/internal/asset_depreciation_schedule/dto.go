@@ -89,22 +89,6 @@ func (r *CreateAssetDepreciationScheduleRequest) Validate() error {
 	// Numeric field validation
 	// TODO: Add validation for numeric fields
 	
-	if r.AccumulatedDepreciationBeginning == nil {
-		return fmt.Errorf("accumulated_depreciation_beginning is required")
-	}
-	
-	if r.AccumulatedDepreciationEnding == nil {
-		return fmt.Errorf("accumulated_depreciation_ending is required")
-	}
-	
-	if r.BookValueBeginning == nil {
-		return fmt.Errorf("book_value_beginning is required")
-	}
-	
-	if r.BookValueEnding == nil {
-		return fmt.Errorf("book_value_ending is required")
-	}
-	
 
 	// Additional validation
 	// TODO: Add business-specific validation rules

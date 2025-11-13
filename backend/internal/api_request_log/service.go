@@ -252,7 +252,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RequestId != nil {
-		entity.RequestId = req.RequestId
+		entity.RequestId = *req.RequestId
 	}
 	
 	if req.Method != nil {
@@ -260,27 +260,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Path != nil {
-		entity.Path = req.Path
+		entity.Path = *req.Path
 	}
 	
 	if req.QueryParams != nil {
-		entity.QueryParams = req.QueryParams
+		entity.QueryParams = *req.QueryParams
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.ApiKeyId != nil {
-		entity.ApiKeyId = req.ApiKeyId
+		entity.ApiKeyId = *req.ApiKeyId
 	}
 	
 	if req.RequestHeaders != nil {
-		entity.RequestHeaders = req.RequestHeaders
+		entity.RequestHeaders = *req.RequestHeaders
 	}
 	
 	if req.RequestBody != nil {
-		entity.RequestBody = req.RequestBody
+		entity.RequestBody = *req.RequestBody
 	}
 	
 	if req.IpAddress != nil {
@@ -292,15 +292,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.StatusCode != nil {
-		entity.StatusCode = req.StatusCode
+		entity.StatusCode = *req.StatusCode
 	}
 	
 	if req.ResponseHeaders != nil {
-		entity.ResponseHeaders = req.ResponseHeaders
+		entity.ResponseHeaders = *req.ResponseHeaders
 	}
 	
 	if req.ResponseBody != nil {
-		entity.ResponseBody = req.ResponseBody
+		entity.ResponseBody = *req.ResponseBody
 	}
 	
 	if req.DurationMs != nil {
@@ -312,7 +312,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ErrorStack != nil {
-		entity.ErrorStack = req.ErrorStack
+		entity.ErrorStack = *req.ErrorStack
 	}
 	
 

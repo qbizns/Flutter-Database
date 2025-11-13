@@ -146,7 +146,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *CycleCountIt
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -185,7 +185,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Cyc
 			, variance_percentage
 			, unit_cost
 			, variance_value
-			, status
 			, recount_required
 			, recount_quantity
 			, recount_reason
@@ -228,7 +227,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Cyc
 		&entity.Notes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.CountedAt,
 		&entity.CountedBy,
 	)
@@ -282,7 +281,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, variance_percentage
 			, unit_cost
 			, variance_value
-			, status
 			, recount_required
 			, recount_quantity
 			, recount_reason
@@ -335,7 +333,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CountedAt,
 			&entity.CountedBy,
 		)
@@ -414,7 +412,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *CycleCountIt
 		entity.AdjustmentReason,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.CountedAt,
 		entity.CountedBy,
 		entity.Id,
@@ -501,7 +499,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, variance_percentage
 			, unit_cost
 			, variance_value
-			, status
 			, recount_required
 			, recount_quantity
 			, recount_reason
@@ -555,7 +552,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.CountedAt,
 			&entity.CountedBy,
 		)

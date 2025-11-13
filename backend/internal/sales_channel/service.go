@@ -242,19 +242,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ChannelCode != nil {
-		entity.ChannelCode = req.ChannelCode
+		entity.ChannelCode = *req.ChannelCode
 	}
 	
 	if req.ChannelName != nil {
-		entity.ChannelName = req.ChannelName
+		entity.ChannelName = *req.ChannelName
 	}
 	
 	if req.ChannelType != nil {
-		entity.ChannelType = req.ChannelType
+		entity.ChannelType = *req.ChannelType
 	}
 	
 	if req.ChannelType != nil {
-		entity.ChannelType = req.ChannelType
+		entity.ChannelType = *req.ChannelType
 	}
 	
 	if req.IsActive != nil {
@@ -262,19 +262,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SyncInventory != nil {
-		entity.SyncInventory = req.SyncInventory
+		entity.SyncInventory = *req.SyncInventory
 	}
 	
 	if req.SyncCustomers != nil {
-		entity.SyncCustomers = req.SyncCustomers
+		entity.SyncCustomers = *req.SyncCustomers
 	}
 	
 	if req.ExternalSystemName != nil {
-		entity.ExternalSystemName = req.ExternalSystemName
+		entity.ExternalSystemName = *req.ExternalSystemName
 	}
 	
 	if req.ApiEndpoint != nil {
-		entity.ApiEndpoint = req.ApiEndpoint
+		entity.ApiEndpoint = *req.ApiEndpoint
 	}
 	
 	if req.Settings != nil {

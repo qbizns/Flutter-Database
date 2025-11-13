@@ -270,7 +270,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PromotionCode != nil {
-		entity.PromotionCode = req.PromotionCode
+		entity.PromotionCode = *req.PromotionCode
 	}
 	
 	if req.Name != nil {
@@ -282,63 +282,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PromotionType != nil {
-		entity.PromotionType = req.PromotionType
+		entity.PromotionType = *req.PromotionType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = req.DiscountValue
+		entity.DiscountValue = *req.DiscountValue
 	}
 	
 	if req.AppliesTo != nil {
-		entity.AppliesTo = req.AppliesTo
+		entity.AppliesTo = *req.AppliesTo
 	}
 	
 	if req.ApplicableProductIds != nil {
-		entity.ApplicableProductIds = req.ApplicableProductIds
+		entity.ApplicableProductIds = *req.ApplicableProductIds
 	}
 	
 	if req.ApplicableCategoryIds != nil {
-		entity.ApplicableCategoryIds = req.ApplicableCategoryIds
+		entity.ApplicableCategoryIds = *req.ApplicableCategoryIds
 	}
 	
 	if req.MinimumPurchaseAmount != nil {
-		entity.MinimumPurchaseAmount = req.MinimumPurchaseAmount
+		entity.MinimumPurchaseAmount = *req.MinimumPurchaseAmount
 	}
 	
 	if req.MinimumQuantity != nil {
-		entity.MinimumQuantity = req.MinimumQuantity
+		entity.MinimumQuantity = *req.MinimumQuantity
 	}
 	
 	if req.BuyQuantity != nil {
-		entity.BuyQuantity = req.BuyQuantity
+		entity.BuyQuantity = *req.BuyQuantity
 	}
 	
 	if req.GetQuantity != nil {
-		entity.GetQuantity = req.GetQuantity
+		entity.GetQuantity = *req.GetQuantity
 	}
 	
 	if req.GetDiscountPercentage != nil {
-		entity.GetDiscountPercentage = req.GetDiscountPercentage
+		entity.GetDiscountPercentage = *req.GetDiscountPercentage
 	}
 	
 	if req.MaxUsesTotal != nil {
-		entity.MaxUsesTotal = req.MaxUsesTotal
+		entity.MaxUsesTotal = *req.MaxUsesTotal
 	}
 	
 	if req.MaxUsesPerCustomer != nil {
-		entity.MaxUsesPerCustomer = req.MaxUsesPerCustomer
+		entity.MaxUsesPerCustomer = *req.MaxUsesPerCustomer
 	}
 	
 	if req.CurrentUses != nil {
-		entity.CurrentUses = req.CurrentUses
+		entity.CurrentUses = *req.CurrentUses
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = req.StartDate
+		entity.StartDate = *req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = req.EndDate
+		entity.EndDate = *req.EndDate
 	}
 	
 	if req.IsActive != nil {
@@ -354,7 +354,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = req.TermsAndConditions
+		entity.TermsAndConditions = *req.TermsAndConditions
 	}
 	
 	if req.Metadata != nil {

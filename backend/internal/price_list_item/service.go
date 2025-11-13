@@ -212,47 +212,47 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePriceList
 	// Update fields
 	
 	if req.PriceListId != nil {
-		entity.PriceListId = req.PriceListId
+		entity.PriceListId = *req.PriceListId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.CategoryId != nil {
-		entity.CategoryId = req.CategoryId
+		entity.CategoryId = *req.CategoryId
 	}
 	
 	if req.OverridePrice != nil {
-		entity.OverridePrice = req.OverridePrice
+		entity.OverridePrice = *req.OverridePrice
 	}
 	
 	if req.DiscountPercentage != nil {
-		entity.DiscountPercentage = req.DiscountPercentage
+		entity.DiscountPercentage = *req.DiscountPercentage
 	}
 	
 	if req.MarkupPercentage != nil {
-		entity.MarkupPercentage = req.MarkupPercentage
+		entity.MarkupPercentage = *req.MarkupPercentage
 	}
 	
 	if req.MinPrice != nil {
-		entity.MinPrice = req.MinPrice
+		entity.MinPrice = *req.MinPrice
 	}
 	
 	if req.MaxPrice != nil {
-		entity.MaxPrice = req.MaxPrice
+		entity.MaxPrice = *req.MaxPrice
 	}
 	
 	if req.MinQuantity != nil {
-		entity.MinQuantity = req.MinQuantity
+		entity.MinQuantity = *req.MinQuantity
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 

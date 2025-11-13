@@ -258,35 +258,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.EmployeeId != nil {
-		entity.EmployeeId = req.EmployeeId
+		entity.EmployeeId = *req.EmployeeId
 	}
 	
 	if req.ScheduleDate != nil {
-		entity.ScheduleDate = req.ScheduleDate
+		entity.ScheduleDate = *req.ScheduleDate
 	}
 	
 	if req.ShiftType != nil {
-		entity.ShiftType = req.ShiftType
+		entity.ShiftType = *req.ShiftType
 	}
 	
 	if req.Position != nil {
-		entity.Position = req.Position
+		entity.Position = *req.Position
 	}
 	
 	if req.ScheduledStartTime != nil {
-		entity.ScheduledStartTime = req.ScheduledStartTime
+		entity.ScheduledStartTime = *req.ScheduledStartTime
 	}
 	
 	if req.ScheduledEndTime != nil {
-		entity.ScheduledEndTime = req.ScheduledEndTime
+		entity.ScheduledEndTime = *req.ScheduledEndTime
 	}
 	
 	if req.BreakDurationMinutes != nil {
-		entity.BreakDurationMinutes = req.BreakDurationMinutes
+		entity.BreakDurationMinutes = *req.BreakDurationMinutes
 	}
 	
 	if req.Status != nil {
@@ -294,11 +294,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = req.RequiresApproval
+		entity.RequiresApproval = *req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
@@ -310,7 +310,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CancellationReason != nil {
-		entity.CancellationReason = req.CancellationReason
+		entity.CancellationReason = *req.CancellationReason
 	}
 	
 	if req.Metadata != nil {

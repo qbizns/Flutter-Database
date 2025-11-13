@@ -258,31 +258,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.GroupName != nil {
-		entity.GroupName = req.GroupName
+		entity.GroupName = *req.GroupName
 	}
 	
 	if req.GroupCode != nil {
-		entity.GroupCode = req.GroupCode
+		entity.GroupCode = *req.GroupCode
 	}
 	
 	if req.DisplayName != nil {
-		entity.DisplayName = req.DisplayName
+		entity.DisplayName = *req.DisplayName
 	}
 	
 	if req.SelectionType != nil {
-		entity.SelectionType = req.SelectionType
+		entity.SelectionType = *req.SelectionType
 	}
 	
 	if req.MinSelections != nil {
-		entity.MinSelections = req.MinSelections
+		entity.MinSelections = *req.MinSelections
 	}
 	
 	if req.MaxSelections != nil {
-		entity.MaxSelections = req.MaxSelections
+		entity.MaxSelections = *req.MaxSelections
 	}
 	
 	if req.ExactSelections != nil {
-		entity.ExactSelections = req.ExactSelections
+		entity.ExactSelections = *req.ExactSelections
 	}
 	
 	if req.IsRequired != nil {
@@ -290,7 +290,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AffectsPrice != nil {
-		entity.AffectsPrice = req.AffectsPrice
+		entity.AffectsPrice = *req.AffectsPrice
 	}
 	
 	if req.DisplayOrder != nil {
@@ -322,7 +322,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.MinSelections != nil {
-		entity.MinSelections = req.MinSelections
+		entity.MinSelections = *req.MinSelections
 	}
 	
 	if req.(maxSelections != nil {

@@ -246,43 +246,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.FixedAssetId != nil {
-		entity.FixedAssetId = req.FixedAssetId
+		entity.FixedAssetId = *req.FixedAssetId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = req.FiscalYearId
+		entity.FiscalYearId = *req.FiscalYearId
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.DepreciationDate != nil {
-		entity.DepreciationDate = req.DepreciationDate
+		entity.DepreciationDate = *req.DepreciationDate
 	}
 	
 	if req.DepreciationAmount != nil {
-		entity.DepreciationAmount = req.DepreciationAmount
+		entity.DepreciationAmount = *req.DepreciationAmount
 	}
 	
 	if req.AccumulatedDepreciationBeginning != nil {
-		entity.AccumulatedDepreciationBeginning = req.AccumulatedDepreciationBeginning
+		entity.AccumulatedDepreciationBeginning = *req.AccumulatedDepreciationBeginning
 	}
 	
 	if req.AccumulatedDepreciationEnding != nil {
-		entity.AccumulatedDepreciationEnding = req.AccumulatedDepreciationEnding
+		entity.AccumulatedDepreciationEnding = *req.AccumulatedDepreciationEnding
 	}
 	
 	if req.BookValueBeginning != nil {
-		entity.BookValueBeginning = req.BookValueBeginning
+		entity.BookValueBeginning = *req.BookValueBeginning
 	}
 	
 	if req.BookValueEnding != nil {
-		entity.BookValueEnding = req.BookValueEnding
+		entity.BookValueEnding = *req.BookValueEnding
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.IsPosted != nil {
@@ -294,7 +294,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PostedBy != nil {
-		entity.PostedBy = req.PostedBy
+		entity.PostedBy = *req.PostedBy
 	}
 	
 

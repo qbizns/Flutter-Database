@@ -236,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = req.Slug
+		entity.Slug = *req.Slug
 	}
 	
 	if req.Description != nil {

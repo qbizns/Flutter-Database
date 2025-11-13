@@ -250,43 +250,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.VendorBillId != nil {
-		entity.VendorBillId = req.VendorBillId
+		entity.VendorBillId = *req.VendorBillId
 	}
 	
 	if req.BillLineId != nil {
-		entity.BillLineId = req.BillLineId
+		entity.BillLineId = *req.BillLineId
 	}
 	
 	if req.ContractName != nil {
-		entity.ContractName = req.ContractName
+		entity.ContractName = *req.ContractName
 	}
 	
 	if req.TotalDeferredAmount != nil {
-		entity.TotalDeferredAmount = req.TotalDeferredAmount
+		entity.TotalDeferredAmount = *req.TotalDeferredAmount
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = req.StartDate
+		entity.StartDate = *req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = req.EndDate
+		entity.EndDate = *req.EndDate
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = req.RecognitionMethod
+		entity.RecognitionMethod = *req.RecognitionMethod
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = req.RecognitionMethod
+		entity.RecognitionMethod = *req.RecognitionMethod
 	}
 	
 	if req.DeferredAccountId != nil {
-		entity.DeferredAccountId = req.DeferredAccountId
+		entity.DeferredAccountId = *req.DeferredAccountId
 	}
 	
 	if req.ExpenseAccountId != nil {
-		entity.ExpenseAccountId = req.ExpenseAccountId
+		entity.ExpenseAccountId = *req.ExpenseAccountId
 	}
 	
 	if req.Status != nil {
@@ -294,7 +294,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RecognizedAmount != nil {
-		entity.RecognizedAmount = req.RecognizedAmount
+		entity.RecognizedAmount = *req.RecognizedAmount
 	}
 	
 	if req.Notes != nil {

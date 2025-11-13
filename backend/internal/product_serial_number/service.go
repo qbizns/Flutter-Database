@@ -262,19 +262,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.SerialNumber != nil {
-		entity.SerialNumber = req.SerialNumber
+		entity.SerialNumber = *req.SerialNumber
 	}
 	
 	if req.Status != nil {
@@ -282,51 +282,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = req.PurchaseOrderId
+		entity.PurchaseOrderId = *req.PurchaseOrderId
 	}
 	
 	if req.PurchaseDate != nil {
-		entity.PurchaseDate = req.PurchaseDate
+		entity.PurchaseDate = *req.PurchaseDate
 	}
 	
 	if req.PurchaseCost != nil {
-		entity.PurchaseCost = req.PurchaseCost
+		entity.PurchaseCost = *req.PurchaseCost
 	}
 	
 	if req.SupplierId != nil {
-		entity.SupplierId = req.SupplierId
+		entity.SupplierId = *req.SupplierId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.SaleDate != nil {
-		entity.SaleDate = req.SaleDate
+		entity.SaleDate = *req.SaleDate
 	}
 	
 	if req.SalePrice != nil {
-		entity.SalePrice = req.SalePrice
+		entity.SalePrice = *req.SalePrice
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.WarrantyStartDate != nil {
-		entity.WarrantyStartDate = req.WarrantyStartDate
+		entity.WarrantyStartDate = *req.WarrantyStartDate
 	}
 	
 	if req.WarrantyEndDate != nil {
-		entity.WarrantyEndDate = req.WarrantyEndDate
+		entity.WarrantyEndDate = *req.WarrantyEndDate
 	}
 	
 	if req.WarrantyProvider != nil {
-		entity.WarrantyProvider = req.WarrantyProvider
+		entity.WarrantyProvider = *req.WarrantyProvider
 	}
 	
 	if req.WarrantyTerms != nil {
-		entity.WarrantyTerms = req.WarrantyTerms
+		entity.WarrantyTerms = *req.WarrantyTerms
 	}
 	
 	if req.Notes != nil {

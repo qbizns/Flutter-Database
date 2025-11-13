@@ -250,15 +250,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ToPhone != nil {
-		entity.ToPhone = req.ToPhone
+		entity.ToPhone = *req.ToPhone
 	}
 	
 	if req.FromPhone != nil {
-		entity.FromPhone = req.FromPhone
+		entity.FromPhone = *req.FromPhone
 	}
 	
 	if req.Message != nil {
-		entity.Message = req.Message
+		entity.Message = *req.Message
 	}
 	
 	if req.Status != nil {
@@ -270,11 +270,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Provider != nil {
-		entity.Provider = req.Provider
+		entity.Provider = *req.Provider
 	}
 	
 	if req.ProviderMessageId != nil {
-		entity.ProviderMessageId = req.ProviderMessageId
+		entity.ProviderMessageId = *req.ProviderMessageId
 	}
 	
 	if req.Attempts != nil {
@@ -290,11 +290,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CostAmount != nil {
-		entity.CostAmount = req.CostAmount
+		entity.CostAmount = *req.CostAmount
 	}
 	
 	if req.CostCurrency != nil {
-		entity.CostCurrency = req.CostCurrency
+		entity.CostCurrency = *req.CostCurrency
 	}
 	
 	if req.ScheduledAt != nil {

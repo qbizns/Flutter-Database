@@ -256,63 +256,63 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductName != nil {
-		entity.ProductName = req.ProductName
+		entity.ProductName = *req.ProductName
 	}
 	
 	if req.ProductSku != nil {
-		entity.ProductSku = req.ProductSku
+		entity.ProductSku = *req.ProductSku
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.Unit != nil {
-		entity.Unit = req.Unit
+		entity.Unit = *req.Unit
 	}
 	
 	if req.UnitPrice != nil {
-		entity.UnitPrice = req.UnitPrice
+		entity.UnitPrice = *req.UnitPrice
 	}
 	
 	if req.CostPrice != nil {
-		entity.CostPrice = req.CostPrice
+		entity.CostPrice = *req.CostPrice
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxRate != nil {
-		entity.TaxRate = req.TaxRate
+		entity.TaxRate = *req.TaxRate
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.Total != nil {
-		entity.Total = req.Total
+		entity.Total = *req.Total
 	}
 	
 	if req.DiscountType != nil {
-		entity.DiscountType = req.DiscountType
+		entity.DiscountType = *req.DiscountType
 	}
 	
 	if req.DiscountValue != nil {
-		entity.DiscountValue = req.DiscountValue
+		entity.DiscountValue = *req.DiscountValue
 	}
 	
 	if req.Notes != nil {
@@ -320,7 +320,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CustomFields != nil {
-		entity.CustomFields = req.CustomFields
+		entity.CustomFields = *req.CustomFields
 	}
 	
 	if req.Metadata != nil {

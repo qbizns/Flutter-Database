@@ -79,7 +79,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PurchaseOrde
 			, payment_terms
 			, payment_due_date
 			, status
-			, status
 			, approved_by
 			, approved_at
 			, notes
@@ -137,7 +136,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *PurchaseOrde
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -177,8 +176,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pur
 			, total_amount
 			, payment_terms
 			, payment_due_date
-			, status
-			, status
 			, approved_by
 			, approved_at
 			, notes
@@ -216,7 +213,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pur
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -270,8 +267,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, total_amount
 			, payment_terms
 			, payment_due_date
-			, status
-			, status
 			, approved_by
 			, approved_at
 			, notes
@@ -319,7 +314,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -360,7 +355,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *PurchaseOrde
 			, payment_terms = $13
 			, payment_due_date = $14
 			, status = $15
-			, status = $16
 			, approved_by = $17
 			, approved_at = $18
 			, notes = $19
@@ -394,7 +388,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *PurchaseOrde
 		entity.Notes,
 		entity.CreatedBy,
 		entity.UpdatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -487,7 +481,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, payment_terms
 			, payment_due_date
 			, status
-			, status
 			, approved_by
 			, approved_at
 			, notes
@@ -536,7 +529,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

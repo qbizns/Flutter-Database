@@ -117,7 +117,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Journals) er
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -185,7 +185,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Jou
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 		&entity.(journalType,
 	)
@@ -278,7 +278,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.(journalType,
 		)
@@ -343,7 +343,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Journals) er
 		entity.Notes,
 		entity.CreatedBy,
 		entity.UpdatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.(journalType,
 		entity.Id,
@@ -475,7 +475,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.(journalType,
 		)

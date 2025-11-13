@@ -260,27 +260,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PosTaxCode != nil {
-		entity.PosTaxCode = req.PosTaxCode
+		entity.PosTaxCode = *req.PosTaxCode
 	}
 	
 	if req.TaxCategoryCode != nil {
-		entity.TaxCategoryCode = req.TaxCategoryCode
+		entity.TaxCategoryCode = *req.TaxCategoryCode
 	}
 	
 	if req.PosTaxRate != nil {
-		entity.PosTaxRate = req.PosTaxRate
+		entity.PosTaxRate = *req.PosTaxRate
 	}
 	
 	if req.AccountingTaxId != nil {
-		entity.AccountingTaxId = req.AccountingTaxId
+		entity.AccountingTaxId = *req.AccountingTaxId
 	}
 	
 	if req.DefaultTaxAccountId != nil {
-		entity.DefaultTaxAccountId = req.DefaultTaxAccountId
+		entity.DefaultTaxAccountId = *req.DefaultTaxAccountId
 	}
 	
 	if req.DefaultTaxExpenseAccountId != nil {
-		entity.DefaultTaxExpenseAccountId = req.DefaultTaxExpenseAccountId
+		entity.DefaultTaxExpenseAccountId = *req.DefaultTaxExpenseAccountId
 	}
 	
 	if req.IsDefault != nil {
@@ -300,19 +300,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AppliesToSales != nil {
-		entity.AppliesToSales = req.AppliesToSales
+		entity.AppliesToSales = *req.AppliesToSales
 	}
 	
 	if req.AppliesToPurchases != nil {
-		entity.AppliesToPurchases = req.AppliesToPurchases
+		entity.AppliesToPurchases = *req.AppliesToPurchases
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 	if req.EffectiveTo != nil {
-		entity.EffectiveTo = req.EffectiveTo
+		entity.EffectiveTo = *req.EffectiveTo
 	}
 	
 	if req.Description != nil {
@@ -336,7 +336,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EffectiveFrom != nil {
-		entity.EffectiveFrom = req.EffectiveFrom
+		entity.EffectiveFrom = *req.EffectiveFrom
 	}
 	
 

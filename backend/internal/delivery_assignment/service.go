@@ -302,31 +302,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderId != nil {
-		entity.OrderId = req.OrderId
+		entity.OrderId = *req.OrderId
 	}
 	
 	if req.DriverId != nil {
-		entity.DriverId = req.DriverId
+		entity.DriverId = *req.DriverId
 	}
 	
 	if req.DriverShiftId != nil {
-		entity.DriverShiftId = req.DriverShiftId
+		entity.DriverShiftId = *req.DriverShiftId
 	}
 	
 	if req.DeliveryZoneId != nil {
-		entity.DeliveryZoneId = req.DeliveryZoneId
+		entity.DeliveryZoneId = *req.DeliveryZoneId
 	}
 	
 	if req.CustomerAddressId != nil {
-		entity.CustomerAddressId = req.CustomerAddressId
+		entity.CustomerAddressId = *req.CustomerAddressId
 	}
 	
 	if req.DeliveryAddress != nil {
-		entity.DeliveryAddress = req.DeliveryAddress
+		entity.DeliveryAddress = *req.DeliveryAddress
 	}
 	
 	if req.DeliveryLocation != nil {
-		entity.DeliveryLocation = req.DeliveryLocation
+		entity.DeliveryLocation = *req.DeliveryLocation
 	}
 	
 	if req.AssignedAt != nil {
@@ -334,7 +334,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AssignedBy != nil {
-		entity.AssignedBy = req.AssignedBy
+		entity.AssignedBy = *req.AssignedBy
 	}
 	
 	if req.Status != nil {
@@ -366,75 +366,75 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.EstimatedPickupTime != nil {
-		entity.EstimatedPickupTime = req.EstimatedPickupTime
+		entity.EstimatedPickupTime = *req.EstimatedPickupTime
 	}
 	
 	if req.EstimatedDeliveryTime != nil {
-		entity.EstimatedDeliveryTime = req.EstimatedDeliveryTime
+		entity.EstimatedDeliveryTime = *req.EstimatedDeliveryTime
 	}
 	
 	if req.DistanceKm != nil {
-		entity.DistanceKm = req.DistanceKm
+		entity.DistanceKm = *req.DistanceKm
 	}
 	
 	if req.RouteInfo != nil {
-		entity.RouteInfo = req.RouteInfo
+		entity.RouteInfo = *req.RouteInfo
 	}
 	
 	if req.DeliveryFee != nil {
-		entity.DeliveryFee = req.DeliveryFee
+		entity.DeliveryFee = *req.DeliveryFee
 	}
 	
 	if req.DriverCommission != nil {
-		entity.DriverCommission = req.DriverCommission
+		entity.DriverCommission = *req.DriverCommission
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = req.PaymentMethod
+		entity.PaymentMethod = *req.PaymentMethod
 	}
 	
 	if req.CashCollected != nil {
-		entity.CashCollected = req.CashCollected
+		entity.CashCollected = *req.CashCollected
 	}
 	
 	if req.SignatureImageUrl != nil {
-		entity.SignatureImageUrl = req.SignatureImageUrl
+		entity.SignatureImageUrl = *req.SignatureImageUrl
 	}
 	
 	if req.DeliveryPhotoUrl != nil {
-		entity.DeliveryPhotoUrl = req.DeliveryPhotoUrl
+		entity.DeliveryPhotoUrl = *req.DeliveryPhotoUrl
 	}
 	
 	if req.RecipientName != nil {
-		entity.RecipientName = req.RecipientName
+		entity.RecipientName = *req.RecipientName
 	}
 	
 	if req.DeliveryNotes != nil {
-		entity.DeliveryNotes = req.DeliveryNotes
+		entity.DeliveryNotes = *req.DeliveryNotes
 	}
 	
 	if req.FailureReason != nil {
-		entity.FailureReason = req.FailureReason
+		entity.FailureReason = *req.FailureReason
 	}
 	
 	if req.FailureNotes != nil {
-		entity.FailureNotes = req.FailureNotes
+		entity.FailureNotes = *req.FailureNotes
 	}
 	
 	if req.RetryCount != nil {
-		entity.RetryCount = req.RetryCount
+		entity.RetryCount = *req.RetryCount
 	}
 	
 	if req.CustomerRating != nil {
-		entity.CustomerRating = req.CustomerRating
+		entity.CustomerRating = *req.CustomerRating
 	}
 	
 	if req.CustomerFeedback != nil {
-		entity.CustomerFeedback = req.CustomerFeedback
+		entity.CustomerFeedback = *req.CustomerFeedback
 	}
 	
 	if req.DriverNotes != nil {
-		entity.DriverNotes = req.DriverNotes
+		entity.DriverNotes = *req.DriverNotes
 	}
 	
 	if req.Metadata != nil {
@@ -458,11 +458,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CustomerRating != nil {
-		entity.CustomerRating = req.CustomerRating
+		entity.CustomerRating = *req.CustomerRating
 	}
 	
 	if req.DeliveryFee != nil {
-		entity.DeliveryFee = req.DeliveryFee
+		entity.DeliveryFee = *req.DeliveryFee
 	}
 	
 

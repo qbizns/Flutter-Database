@@ -268,23 +268,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.ShiftNumber != nil {
-		entity.ShiftNumber = req.ShiftNumber
+		entity.ShiftNumber = *req.ShiftNumber
 	}
 	
 	if req.StartTime != nil {
-		entity.StartTime = req.StartTime
+		entity.StartTime = *req.StartTime
 	}
 	
 	if req.EndTime != nil {
-		entity.EndTime = req.EndTime
+		entity.EndTime = *req.EndTime
 	}
 	
 	if req.Status != nil {
@@ -292,47 +292,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OpeningCash != nil {
-		entity.OpeningCash = req.OpeningCash
+		entity.OpeningCash = *req.OpeningCash
 	}
 	
 	if req.OpeningNotes != nil {
-		entity.OpeningNotes = req.OpeningNotes
+		entity.OpeningNotes = *req.OpeningNotes
 	}
 	
 	if req.ExpectedCash != nil {
-		entity.ExpectedCash = req.ExpectedCash
+		entity.ExpectedCash = *req.ExpectedCash
 	}
 	
 	if req.ActualCash != nil {
-		entity.ActualCash = req.ActualCash
+		entity.ActualCash = *req.ActualCash
 	}
 	
 	if req.CashDifference != nil {
-		entity.CashDifference = req.CashDifference
+		entity.CashDifference = *req.CashDifference
 	}
 	
 	if req.ClosingNotes != nil {
-		entity.ClosingNotes = req.ClosingNotes
+		entity.ClosingNotes = *req.ClosingNotes
 	}
 	
 	if req.TotalSales != nil {
-		entity.TotalSales = req.TotalSales
+		entity.TotalSales = *req.TotalSales
 	}
 	
 	if req.TotalTransactions != nil {
-		entity.TotalTransactions = req.TotalTransactions
+		entity.TotalTransactions = *req.TotalTransactions
 	}
 	
 	if req.TotalRefunds != nil {
-		entity.TotalRefunds = req.TotalRefunds
+		entity.TotalRefunds = *req.TotalRefunds
 	}
 	
 	if req.TotalDiscounts != nil {
-		entity.TotalDiscounts = req.TotalDiscounts
+		entity.TotalDiscounts = *req.TotalDiscounts
 	}
 	
 	if req.PaymentBreakdown != nil {
-		entity.PaymentBreakdown = req.PaymentBreakdown
+		entity.PaymentBreakdown = *req.PaymentBreakdown
 	}
 	
 	if req.Notes != nil {
@@ -352,7 +352,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OpeningCash != nil {
-		entity.OpeningCash = req.OpeningCash
+		entity.OpeningCash = *req.OpeningCash
 	}
 	
 	if req.(expectedCash != nil {

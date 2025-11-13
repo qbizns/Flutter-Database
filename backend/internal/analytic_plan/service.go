@@ -230,11 +230,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PlanCode != nil {
-		entity.PlanCode = req.PlanCode
+		entity.PlanCode = *req.PlanCode
 	}
 	
 	if req.PlanName != nil {
-		entity.PlanName = req.PlanName
+		entity.PlanName = *req.PlanName
 	}
 	
 	if req.IsActive != nil {

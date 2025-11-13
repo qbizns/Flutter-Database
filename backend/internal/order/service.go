@@ -288,39 +288,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.OrderNumber != nil {
-		entity.OrderNumber = req.OrderNumber
+		entity.OrderNumber = *req.OrderNumber
 	}
 	
 	if req.DisplayNumber != nil {
-		entity.DisplayNumber = req.DisplayNumber
+		entity.DisplayNumber = *req.DisplayNumber
 	}
 	
 	if req.OrderType != nil {
-		entity.OrderType = req.OrderType
+		entity.OrderType = *req.OrderType
 	}
 	
 	if req.TableId != nil {
-		entity.TableId = req.TableId
+		entity.TableId = *req.TableId
 	}
 	
 	if req.ReservationId != nil {
-		entity.ReservationId = req.ReservationId
+		entity.ReservationId = *req.ReservationId
 	}
 	
 	if req.Covers != nil {
-		entity.Covers = req.Covers
+		entity.Covers = *req.Covers
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.WaiterId != nil {
-		entity.WaiterId = req.WaiterId
+		entity.WaiterId = *req.WaiterId
 	}
 	
 	if req.Status != nil {
@@ -328,7 +328,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.OrderDate != nil {
-		entity.OrderDate = req.OrderDate
+		entity.OrderDate = *req.OrderDate
 	}
 	
 	if req.SubmittedAt != nil {
@@ -352,43 +352,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.ServiceCharge != nil {
-		entity.ServiceCharge = req.ServiceCharge
+		entity.ServiceCharge = *req.ServiceCharge
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.ShiftId != nil {
-		entity.ShiftId = req.ShiftId
+		entity.ShiftId = *req.ShiftId
 	}
 	
 	if req.CustomerNotes != nil {
-		entity.CustomerNotes = req.CustomerNotes
+		entity.CustomerNotes = *req.CustomerNotes
 	}
 	
 	if req.KitchenNotes != nil {
-		entity.KitchenNotes = req.KitchenNotes
+		entity.KitchenNotes = *req.KitchenNotes
 	}
 	
 	if req.InternalNotes != nil {
-		entity.InternalNotes = req.InternalNotes
+		entity.InternalNotes = *req.InternalNotes
 	}
 	
 	if req.Metadata != nil {
@@ -416,11 +416,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Subtotal != nil {
-		entity.Subtotal = req.Subtotal
+		entity.Subtotal = *req.Subtotal
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 

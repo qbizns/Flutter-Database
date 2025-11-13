@@ -262,11 +262,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TierCode != nil {
-		entity.TierCode = req.TierCode
+		entity.TierCode = *req.TierCode
 	}
 	
 	if req.TierName != nil {
-		entity.TierName = req.TierName
+		entity.TierName = *req.TierName
 	}
 	
 	if req.TierLevel != nil {
@@ -278,35 +278,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PointsThreshold != nil {
-		entity.PointsThreshold = req.PointsThreshold
+		entity.PointsThreshold = *req.PointsThreshold
 	}
 	
 	if req.AnnualSpendThreshold != nil {
-		entity.AnnualSpendThreshold = req.AnnualSpendThreshold
+		entity.AnnualSpendThreshold = *req.AnnualSpendThreshold
 	}
 	
 	if req.PurchaseCountThreshold != nil {
-		entity.PurchaseCountThreshold = req.PurchaseCountThreshold
+		entity.PurchaseCountThreshold = *req.PurchaseCountThreshold
 	}
 	
 	if req.PointsMultiplier != nil {
-		entity.PointsMultiplier = req.PointsMultiplier
+		entity.PointsMultiplier = *req.PointsMultiplier
 	}
 	
 	if req.DiscountPercentage != nil {
-		entity.DiscountPercentage = req.DiscountPercentage
+		entity.DiscountPercentage = *req.DiscountPercentage
 	}
 	
 	if req.TierColor != nil {
-		entity.TierColor = req.TierColor
+		entity.TierColor = *req.TierColor
 	}
 	
 	if req.TierIcon != nil {
-		entity.TierIcon = req.TierIcon
+		entity.TierIcon = *req.TierIcon
 	}
 	
 	if req.BadgeImageUrl != nil {
-		entity.BadgeImageUrl = req.BadgeImageUrl
+		entity.BadgeImageUrl = *req.BadgeImageUrl
 	}
 	
 	if req.IsActive != nil {
@@ -318,7 +318,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.Metadata != nil {
@@ -334,7 +334,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.PointsThreshold != nil {
-		entity.PointsThreshold = req.PointsThreshold
+		entity.PointsThreshold = *req.PointsThreshold
 	}
 	
 	if req.(annualSpendThreshold != nil {

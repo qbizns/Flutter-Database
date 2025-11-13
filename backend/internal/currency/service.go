@@ -204,15 +204,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateCurrencie
 	}
 	
 	if req.CurrencyName != nil {
-		entity.CurrencyName = req.CurrencyName
+		entity.CurrencyName = *req.CurrencyName
 	}
 	
 	if req.CurrencySymbol != nil {
-		entity.CurrencySymbol = req.CurrencySymbol
+		entity.CurrencySymbol = *req.CurrencySymbol
 	}
 	
 	if req.DecimalPlaces != nil {
-		entity.DecimalPlaces = req.DecimalPlaces
+		entity.DecimalPlaces = *req.DecimalPlaces
 	}
 	
 	if req.IsActive != nil {

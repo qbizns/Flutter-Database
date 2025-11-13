@@ -196,15 +196,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateUomConver
 	// Update fields
 	
 	if req.FromUomId != nil {
-		entity.FromUomId = req.FromUomId
+		entity.FromUomId = *req.FromUomId
 	}
 	
 	if req.ToUomId != nil {
-		entity.ToUomId = req.ToUomId
+		entity.ToUomId = *req.ToUomId
 	}
 	
 	if req.ConversionFactor != nil {
-		entity.ConversionFactor = req.ConversionFactor
+		entity.ConversionFactor = *req.ConversionFactor
 	}
 	
 

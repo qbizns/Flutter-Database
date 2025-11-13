@@ -226,15 +226,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.VendorPaymentId != nil {
-		entity.VendorPaymentId = req.VendorPaymentId
+		entity.VendorPaymentId = *req.VendorPaymentId
 	}
 	
 	if req.VendorBillId != nil {
-		entity.VendorBillId = req.VendorBillId
+		entity.VendorBillId = *req.VendorBillId
 	}
 	
 	if req.AppliedAmount != nil {
-		entity.AppliedAmount = req.AppliedAmount
+		entity.AppliedAmount = *req.AppliedAmount
 	}
 	
 

@@ -70,7 +70,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *DataExportRe
 			, date_to
 			, filters
 			, status
-			, status
 			, file_name
 			, file_size
 			, file_path
@@ -165,8 +164,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Dat
 			, date_from
 			, date_to
 			, filters
-			, status
-			, status
 			, file_name
 			, file_size
 			, file_path
@@ -252,8 +249,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, date_from
 			, date_to
 			, filters
-			, status
-			, status
 			, file_name
 			, file_size
 			, file_path
@@ -336,7 +331,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *DataExportRe
 			, date_to = $6
 			, filters = $7
 			, status = $8
-			, status = $9
 			, file_name = $10
 			, file_size = $11
 			, file_path = $12
@@ -453,8 +447,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, date_from
 			, date_to
 			, filters
-			, status
-			, status
 			, file_name
 			, file_size
 			, file_path

@@ -274,39 +274,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.JournalEntryLineId != nil {
-		entity.JournalEntryLineId = req.JournalEntryLineId
+		entity.JournalEntryLineId = *req.JournalEntryLineId
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = req.AccountId
+		entity.AccountId = *req.AccountId
 	}
 	
 	if req.TransactionDate != nil {
-		entity.TransactionDate = req.TransactionDate
+		entity.TransactionDate = *req.TransactionDate
 	}
 	
 	if req.PostingDate != nil {
-		entity.PostingDate = req.PostingDate
+		entity.PostingDate = *req.PostingDate
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.FiscalYearId != nil {
-		entity.FiscalYearId = req.FiscalYearId
+		entity.FiscalYearId = *req.FiscalYearId
 	}
 	
 	if req.DebitAmount != nil {
-		entity.DebitAmount = req.DebitAmount
+		entity.DebitAmount = *req.DebitAmount
 	}
 	
 	if req.CreditAmount != nil {
-		entity.CreditAmount = req.CreditAmount
+		entity.CreditAmount = *req.CreditAmount
 	}
 	
 	if req.RunningDebitBalance != nil {
@@ -322,35 +322,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SourceModule != nil {
-		entity.SourceModule = req.SourceModule
+		entity.SourceModule = *req.SourceModule
 	}
 	
 	if req.SourceDocumentType != nil {
-		entity.SourceDocumentType = req.SourceDocumentType
+		entity.SourceDocumentType = *req.SourceDocumentType
 	}
 	
 	if req.SourceDocumentId != nil {
-		entity.SourceDocumentId = req.SourceDocumentId
+		entity.SourceDocumentId = *req.SourceDocumentId
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.Department != nil {
-		entity.Department = req.Department
+		entity.Department = *req.Department
 	}
 	
 	if req.ProjectCode != nil {
-		entity.ProjectCode = req.ProjectCode
+		entity.ProjectCode = *req.ProjectCode
 	}
 	
 	if req.CostCenter != nil {
-		entity.CostCenter = req.CostCenter
+		entity.CostCenter = *req.CostCenter
 	}
 	
 	if req.Description != nil {
@@ -362,7 +362,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReversalGlId != nil {
-		entity.ReversalGlId = req.ReversalGlId
+		entity.ReversalGlId = *req.ReversalGlId
 	}
 	
 	if req.Metadata != nil {

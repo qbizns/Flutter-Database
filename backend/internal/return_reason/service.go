@@ -234,19 +234,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ReasonCode != nil {
-		entity.ReasonCode = req.ReasonCode
+		entity.ReasonCode = *req.ReasonCode
 	}
 	
 	if req.ReasonName != nil {
-		entity.ReasonName = req.ReasonName
+		entity.ReasonName = *req.ReasonName
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = req.RequiresApproval
+		entity.RequiresApproval = *req.RequiresApproval
 	}
 	
 	if req.AffectsInventory != nil {
-		entity.AffectsInventory = req.AffectsInventory
+		entity.AffectsInventory = *req.AffectsInventory
 	}
 	
 	if req.IsRestockable != nil {

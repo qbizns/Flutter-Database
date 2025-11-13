@@ -262,47 +262,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.LineNumber != nil {
-		entity.LineNumber = req.LineNumber
+		entity.LineNumber = *req.LineNumber
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = req.AccountId
+		entity.AccountId = *req.AccountId
 	}
 	
 	if req.DebitAmount != nil {
-		entity.DebitAmount = req.DebitAmount
+		entity.DebitAmount = *req.DebitAmount
 	}
 	
 	if req.CreditAmount != nil {
-		entity.CreditAmount = req.CreditAmount
+		entity.CreditAmount = *req.CreditAmount
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.Department != nil {
-		entity.Department = req.Department
+		entity.Department = *req.Department
 	}
 	
 	if req.ProjectCode != nil {
-		entity.ProjectCode = req.ProjectCode
+		entity.ProjectCode = *req.ProjectCode
 	}
 	
 	if req.CostCenter != nil {
-		entity.CostCenter = req.CostCenter
+		entity.CostCenter = *req.CostCenter
 	}
 	
 	if req.TaxCode != nil {
-		entity.TaxCode = req.TaxCode
+		entity.TaxCode = *req.TaxCode
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.Description != nil {
@@ -310,7 +310,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Memo != nil {
-		entity.Memo = req.Memo
+		entity.Memo = *req.Memo
 	}
 	
 	if req.IsReconciled != nil {

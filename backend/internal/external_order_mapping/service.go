@@ -236,27 +236,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.SalesChannelId != nil {
-		entity.SalesChannelId = req.SalesChannelId
+		entity.SalesChannelId = *req.SalesChannelId
 	}
 	
 	if req.ExternalOrderId != nil {
-		entity.ExternalOrderId = req.ExternalOrderId
+		entity.ExternalOrderId = *req.ExternalOrderId
 	}
 	
 	if req.ExternalOrderNumber != nil {
-		entity.ExternalOrderNumber = req.ExternalOrderNumber
+		entity.ExternalOrderNumber = *req.ExternalOrderNumber
 	}
 	
 	if req.SyncStatus != nil {
-		entity.SyncStatus = req.SyncStatus
+		entity.SyncStatus = *req.SyncStatus
 	}
 	
 	if req.SyncStatus != nil {
-		entity.SyncStatus = req.SyncStatus
+		entity.SyncStatus = *req.SyncStatus
 	}
 	
 	if req.LastSyncAt != nil {
@@ -264,7 +264,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ExternalData != nil {
-		entity.ExternalData = req.ExternalData
+		entity.ExternalData = *req.ExternalData
 	}
 	
 

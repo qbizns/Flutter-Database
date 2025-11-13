@@ -80,7 +80,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EmailQueue) 
 			, template_name
 			, template_data
 			, status
-			, status
 			, provider
 			, provider_message_id
 			, attempts
@@ -145,7 +144,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EmailQueue) 
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -184,8 +183,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ema
 			, attachment_ids
 			, template_name
 			, template_data
-			, status
-			, status
 			, provider
 			, provider_message_id
 			, attempts
@@ -279,8 +276,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, attachment_ids
 			, template_name
 			, template_data
-			, status
-			, status
 			, provider
 			, provider_message_id
 			, attempts
@@ -371,7 +366,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *EmailQueue) 
 			, template_name = $12
 			, template_data = $13
 			, status = $14
-			, status = $15
 			, provider = $16
 			, provider_message_id = $17
 			, attempts = $18
@@ -494,8 +488,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, attachment_ids
 			, template_name
 			, template_data
-			, status
-			, status
 			, provider
 			, provider_message_id
 			, attempts

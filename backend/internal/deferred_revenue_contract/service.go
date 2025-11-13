@@ -250,43 +250,43 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerInvoiceId != nil {
-		entity.CustomerInvoiceId = req.CustomerInvoiceId
+		entity.CustomerInvoiceId = *req.CustomerInvoiceId
 	}
 	
 	if req.InvoiceLineId != nil {
-		entity.InvoiceLineId = req.InvoiceLineId
+		entity.InvoiceLineId = *req.InvoiceLineId
 	}
 	
 	if req.ContractName != nil {
-		entity.ContractName = req.ContractName
+		entity.ContractName = *req.ContractName
 	}
 	
 	if req.TotalDeferredAmount != nil {
-		entity.TotalDeferredAmount = req.TotalDeferredAmount
+		entity.TotalDeferredAmount = *req.TotalDeferredAmount
 	}
 	
 	if req.StartDate != nil {
-		entity.StartDate = req.StartDate
+		entity.StartDate = *req.StartDate
 	}
 	
 	if req.EndDate != nil {
-		entity.EndDate = req.EndDate
+		entity.EndDate = *req.EndDate
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = req.RecognitionMethod
+		entity.RecognitionMethod = *req.RecognitionMethod
 	}
 	
 	if req.RecognitionMethod != nil {
-		entity.RecognitionMethod = req.RecognitionMethod
+		entity.RecognitionMethod = *req.RecognitionMethod
 	}
 	
 	if req.DeferredAccountId != nil {
-		entity.DeferredAccountId = req.DeferredAccountId
+		entity.DeferredAccountId = *req.DeferredAccountId
 	}
 	
 	if req.RevenueAccountId != nil {
-		entity.RevenueAccountId = req.RevenueAccountId
+		entity.RevenueAccountId = *req.RevenueAccountId
 	}
 	
 	if req.Status != nil {
@@ -294,7 +294,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RecognizedAmount != nil {
-		entity.RecognizedAmount = req.RecognizedAmount
+		entity.RecognizedAmount = *req.RecognizedAmount
 	}
 	
 	if req.Notes != nil {

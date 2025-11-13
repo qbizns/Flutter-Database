@@ -236,55 +236,55 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRu
 	// Update fields
 	
 	if req.PostingRuleId != nil {
-		entity.PostingRuleId = req.PostingRuleId
+		entity.PostingRuleId = *req.PostingRuleId
 	}
 	
 	if req.LineNo != nil {
-		entity.LineNo = req.LineNo
+		entity.LineNo = *req.LineNo
 	}
 	
 	if req.Side != nil {
-		entity.Side = req.Side
+		entity.Side = *req.Side
 	}
 	
 	if req.ConceptKey != nil {
-		entity.ConceptKey = req.ConceptKey
+		entity.ConceptKey = *req.ConceptKey
 	}
 	
 	if req.AccountSource != nil {
-		entity.AccountSource = req.AccountSource
+		entity.AccountSource = *req.AccountSource
 	}
 	
 	if req.FixedAccountId != nil {
-		entity.FixedAccountId = req.FixedAccountId
+		entity.FixedAccountId = *req.FixedAccountId
 	}
 	
 	if req.AccountFieldPath != nil {
-		entity.AccountFieldPath = req.AccountFieldPath
+		entity.AccountFieldPath = *req.AccountFieldPath
 	}
 	
 	if req.AccountExpression != nil {
-		entity.AccountExpression = req.AccountExpression
+		entity.AccountExpression = *req.AccountExpression
 	}
 	
 	if req.AmountSource != nil {
-		entity.AmountSource = req.AmountSource
+		entity.AmountSource = *req.AmountSource
 	}
 	
 	if req.AmountFieldPath != nil {
-		entity.AmountFieldPath = req.AmountFieldPath
+		entity.AmountFieldPath = *req.AmountFieldPath
 	}
 	
 	if req.AmountExpression != nil {
-		entity.AmountExpression = req.AmountExpression
+		entity.AmountExpression = *req.AmountExpression
 	}
 	
 	if req.MappingContext != nil {
-		entity.MappingContext = req.MappingContext
+		entity.MappingContext = *req.MappingContext
 	}
 	
 	if req.DescriptionTemplate != nil {
-		entity.DescriptionTemplate = req.DescriptionTemplate
+		entity.DescriptionTemplate = *req.DescriptionTemplate
 	}
 	
 	if req.IsActive != nil {

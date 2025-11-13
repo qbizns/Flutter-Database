@@ -39,7 +39,6 @@ type BankStatements struct {
 	OpeningBalance float64 `json:"opening_balance" db:"opening_balance"`
 	ClosingBalance float64 `json:"closing_balance" db:"closing_balance"`
 	ImportSource *string `json:"import_source" db:"import_source"`
-	ImportSource *string `json:"import_source" db:"import_source"`
 	ImportFileName *string `json:"import_file_name" db:"import_file_name"`
 	Status *string `json:"status" db:"status"`
 	Notes *string `json:"notes" db:"notes"`
@@ -68,7 +67,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 			, period_end_date
 			, opening_balance
 			, closing_balance
-			, import_source
 			, import_source
 			, import_file_name
 			, status
@@ -117,7 +115,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -152,10 +150,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 			, period_end_date
 			, opening_balance
 			, closing_balance
-			, import_source
-			, import_source
 			, import_file_name
-			, status
 			, notes
 			, created_by
 			, updated_by
@@ -186,7 +181,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -235,10 +230,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, period_end_date
 			, opening_balance
 			, closing_balance
-			, import_source
-			, import_source
 			, import_file_name
-			, status
 			, notes
 			, created_by
 			, updated_by
@@ -279,7 +271,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -315,7 +307,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 			, opening_balance = $8
 			, closing_balance = $9
 			, import_source = $10
-			, import_source = $11
 			, import_file_name = $12
 			, status = $13
 			, notes = $14
@@ -344,7 +335,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BankStatemen
 		entity.Notes,
 		entity.CreatedBy,
 		entity.UpdatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -432,7 +423,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, opening_balance
 			, closing_balance
 			, import_source
-			, import_source
 			, import_file_name
 			, status
 			, notes
@@ -476,7 +466,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

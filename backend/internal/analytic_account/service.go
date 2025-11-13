@@ -238,19 +238,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.AnalyticPlanId != nil {
-		entity.AnalyticPlanId = req.AnalyticPlanId
+		entity.AnalyticPlanId = *req.AnalyticPlanId
 	}
 	
 	if req.AccountCode != nil {
-		entity.AccountCode = req.AccountCode
+		entity.AccountCode = *req.AccountCode
 	}
 	
 	if req.AccountName != nil {
-		entity.AccountName = req.AccountName
+		entity.AccountName = *req.AccountName
 	}
 	
 	if req.ParentAccountId != nil {
-		entity.ParentAccountId = req.ParentAccountId
+		entity.ParentAccountId = *req.ParentAccountId
 	}
 	
 	if req.AccountLevel != nil {

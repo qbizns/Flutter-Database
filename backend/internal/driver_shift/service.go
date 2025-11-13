@@ -254,31 +254,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.DriverId != nil {
-		entity.DriverId = req.DriverId
+		entity.DriverId = *req.DriverId
 	}
 	
 	if req.ShiftDate != nil {
-		entity.ShiftDate = req.ShiftDate
+		entity.ShiftDate = *req.ShiftDate
 	}
 	
 	if req.ScheduledStartTime != nil {
-		entity.ScheduledStartTime = req.ScheduledStartTime
+		entity.ScheduledStartTime = *req.ScheduledStartTime
 	}
 	
 	if req.ScheduledEndTime != nil {
-		entity.ScheduledEndTime = req.ScheduledEndTime
+		entity.ScheduledEndTime = *req.ScheduledEndTime
 	}
 	
 	if req.ActualStartTime != nil {
-		entity.ActualStartTime = req.ActualStartTime
+		entity.ActualStartTime = *req.ActualStartTime
 	}
 	
 	if req.ActualEndTime != nil {
-		entity.ActualEndTime = req.ActualEndTime
+		entity.ActualEndTime = *req.ActualEndTime
 	}
 	
 	if req.Status != nil {
@@ -286,19 +286,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TotalBreakMinutes != nil {
-		entity.TotalBreakMinutes = req.TotalBreakMinutes
+		entity.TotalBreakMinutes = *req.TotalBreakMinutes
 	}
 	
 	if req.TotalDeliveries != nil {
-		entity.TotalDeliveries = req.TotalDeliveries
+		entity.TotalDeliveries = *req.TotalDeliveries
 	}
 	
 	if req.TotalDistanceKm != nil {
-		entity.TotalDistanceKm = req.TotalDistanceKm
+		entity.TotalDistanceKm = *req.TotalDistanceKm
 	}
 	
 	if req.TotalEarnings != nil {
-		entity.TotalEarnings = req.TotalEarnings
+		entity.TotalEarnings = *req.TotalEarnings
 	}
 	
 	if req.Notes != nil {

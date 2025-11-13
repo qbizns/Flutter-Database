@@ -264,7 +264,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.SupplierCode != nil {
-		entity.SupplierCode = req.SupplierCode
+		entity.SupplierCode = *req.SupplierCode
 	}
 	
 	if req.Name != nil {
@@ -272,47 +272,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ContactPerson != nil {
-		entity.ContactPerson = req.ContactPerson
+		entity.ContactPerson = *req.ContactPerson
 	}
 	
 	if req.Email != nil {
-		entity.Email = req.Email
+		entity.Email = *req.Email
 	}
 	
 	if req.Phone != nil {
-		entity.Phone = req.Phone
+		entity.Phone = *req.Phone
 	}
 	
 	if req.Address != nil {
-		entity.Address = req.Address
+		entity.Address = *req.Address
 	}
 	
 	if req.City != nil {
-		entity.City = req.City
+		entity.City = *req.City
 	}
 	
 	if req.State != nil {
-		entity.State = req.State
+		entity.State = *req.State
 	}
 	
 	if req.Country != nil {
-		entity.Country = req.Country
+		entity.Country = *req.Country
 	}
 	
 	if req.PostalCode != nil {
-		entity.PostalCode = req.PostalCode
+		entity.PostalCode = *req.PostalCode
 	}
 	
 	if req.TaxNumber != nil {
-		entity.TaxNumber = req.TaxNumber
+		entity.TaxNumber = *req.TaxNumber
 	}
 	
 	if req.PaymentTerms != nil {
-		entity.PaymentTerms = req.PaymentTerms
+		entity.PaymentTerms = *req.PaymentTerms
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = req.CreditLimit
+		entity.CreditLimit = *req.CreditLimit
 	}
 	
 	if req.OutstandingBalance != nil {
@@ -320,15 +320,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TotalPurchases != nil {
-		entity.TotalPurchases = req.TotalPurchases
+		entity.TotalPurchases = *req.TotalPurchases
 	}
 	
 	if req.TotalOrders != nil {
-		entity.TotalOrders = req.TotalOrders
+		entity.TotalOrders = *req.TotalOrders
 	}
 	
 	if req.LastOrderDate != nil {
-		entity.LastOrderDate = req.LastOrderDate
+		entity.LastOrderDate = *req.LastOrderDate
 	}
 	
 	if req.Status != nil {

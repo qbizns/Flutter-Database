@@ -232,23 +232,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.BankStatementLineId != nil {
-		entity.BankStatementLineId = req.BankStatementLineId
+		entity.BankStatementLineId = *req.BankStatementLineId
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.PaymentId != nil {
-		entity.PaymentId = req.PaymentId
+		entity.PaymentId = *req.PaymentId
 	}
 	
 	if req.MatchedAmount != nil {
-		entity.MatchedAmount = req.MatchedAmount
+		entity.MatchedAmount = *req.MatchedAmount
 	}
 	
 	if req.MatchedBy != nil {
-		entity.MatchedBy = req.MatchedBy
+		entity.MatchedBy = *req.MatchedBy
 	}
 	
 	if req.MatchedAt != nil {

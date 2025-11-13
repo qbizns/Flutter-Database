@@ -70,7 +70,6 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BackgroundJo
 			, job_name
 			, queue_name
 			, status
-			, status
 			, payload
 			, result
 			, error_message
@@ -134,7 +133,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BackgroundJo
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -165,8 +164,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Bac
 			, job_type
 			, job_name
 			, queue_name
-			, status
-			, status
 			, payload
 			, result
 			, error_message
@@ -212,7 +209,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Bac
 		&entity.ProcessingTimeout,
 		&entity.CreatedBy,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 	)
 
 	if err == pgx.ErrNoRows {
@@ -256,8 +253,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, job_type
 			, job_name
 			, queue_name
-			, status
-			, status
 			, payload
 			, result
 			, error_message
@@ -313,7 +308,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.ProcessingTimeout,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan background_jobs: %w", err)
@@ -344,7 +339,6 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BackgroundJo
 			, job_name = $4
 			, queue_name = $5
 			, status = $6
-			, status = $7
 			, payload = $8
 			, result = $9
 			, error_message = $10
@@ -386,7 +380,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BackgroundJo
 		entity.WorkerId,
 		entity.ProcessingTimeout,
 		entity.CreatedBy,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.Id,
 	)
 
@@ -463,8 +457,6 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			, job_type
 			, job_name
 			, queue_name
-			, status
-			, status
 			, payload
 			, result
 			, error_message
@@ -521,7 +513,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.ProcessingTimeout,
 			&entity.CreatedBy,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan background_jobs: %w", err)

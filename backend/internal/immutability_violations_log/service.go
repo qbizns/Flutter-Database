@@ -236,19 +236,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.TableName != nil {
-		entity.TableName = req.TableName
+		entity.TableName = *req.TableName
 	}
 	
 	if req.RecordId != nil {
-		entity.RecordId = req.RecordId
+		entity.RecordId = *req.RecordId
 	}
 	
 	if req.Operation != nil {
-		entity.Operation = req.Operation
+		entity.Operation = *req.Operation
 	}
 	
 	if req.AttemptedBy != nil {
-		entity.AttemptedBy = req.AttemptedBy
+		entity.AttemptedBy = *req.AttemptedBy
 	}
 	
 	if req.AttemptedAt != nil {
@@ -260,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.BlockedData != nil {
-		entity.BlockedData = req.BlockedData
+		entity.BlockedData = *req.BlockedData
 	}
 	
 	if req.Metadata != nil {

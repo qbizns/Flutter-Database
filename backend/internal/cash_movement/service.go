@@ -242,15 +242,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = req.PosSessionId
+		entity.PosSessionId = *req.PosSessionId
 	}
 	
 	if req.CashDrawerId != nil {
-		entity.CashDrawerId = req.CashDrawerId
+		entity.CashDrawerId = *req.CashDrawerId
 	}
 	
 	if req.MovementType != nil {
-		entity.MovementType = req.MovementType
+		entity.MovementType = *req.MovementType
 	}
 	
 	if req.Amount != nil {
@@ -258,23 +258,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReasonCode != nil {
-		entity.ReasonCode = req.ReasonCode
+		entity.ReasonCode = *req.ReasonCode
 	}
 	
 	if req.ReasonDescription != nil {
-		entity.ReasonDescription = req.ReasonDescription
+		entity.ReasonDescription = *req.ReasonDescription
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.RequiresApproval != nil {
-		entity.RequiresApproval = req.RequiresApproval
+		entity.RequiresApproval = *req.RequiresApproval
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {

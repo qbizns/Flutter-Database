@@ -216,43 +216,43 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateTaxReport
 	// Update fields
 	
 	if req.TaxReportDefinitionId != nil {
-		entity.TaxReportDefinitionId = req.TaxReportDefinitionId
+		entity.TaxReportDefinitionId = *req.TaxReportDefinitionId
 	}
 	
 	if req.LineCode != nil {
-		entity.LineCode = req.LineCode
+		entity.LineCode = *req.LineCode
 	}
 	
 	if req.LineName != nil {
-		entity.LineName = req.LineName
+		entity.LineName = *req.LineName
 	}
 	
 	if req.Sequence != nil {
-		entity.Sequence = req.Sequence
+		entity.Sequence = *req.Sequence
 	}
 	
 	if req.ParentLineId != nil {
-		entity.ParentLineId = req.ParentLineId
+		entity.ParentLineId = *req.ParentLineId
 	}
 	
 	if req.FormulaType != nil {
-		entity.FormulaType = req.FormulaType
+		entity.FormulaType = *req.FormulaType
 	}
 	
 	if req.Formula != nil {
-		entity.Formula = req.Formula
+		entity.Formula = *req.Formula
 	}
 	
 	if req.TaxGroupIds != nil {
-		entity.TaxGroupIds = req.TaxGroupIds
+		entity.TaxGroupIds = *req.TaxGroupIds
 	}
 	
 	if req.AccountIds != nil {
-		entity.AccountIds = req.AccountIds
+		entity.AccountIds = *req.AccountIds
 	}
 	
 	if req.TaxIds != nil {
-		entity.TaxIds = req.TaxIds
+		entity.TaxIds = *req.TaxIds
 	}
 	
 	if req.IsSubtotal != nil {

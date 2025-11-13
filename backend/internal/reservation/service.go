@@ -282,47 +282,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.TableId != nil {
-		entity.TableId = req.TableId
+		entity.TableId = *req.TableId
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.ReservationNumber != nil {
-		entity.ReservationNumber = req.ReservationNumber
+		entity.ReservationNumber = *req.ReservationNumber
 	}
 	
 	if req.ReservationDate != nil {
-		entity.ReservationDate = req.ReservationDate
+		entity.ReservationDate = *req.ReservationDate
 	}
 	
 	if req.ReservationTime != nil {
-		entity.ReservationTime = req.ReservationTime
+		entity.ReservationTime = *req.ReservationTime
 	}
 	
 	if req.DurationMinutes != nil {
-		entity.DurationMinutes = req.DurationMinutes
+		entity.DurationMinutes = *req.DurationMinutes
 	}
 	
 	if req.PartySize != nil {
-		entity.PartySize = req.PartySize
+		entity.PartySize = *req.PartySize
 	}
 	
 	if req.CustomerName != nil {
-		entity.CustomerName = req.CustomerName
+		entity.CustomerName = *req.CustomerName
 	}
 	
 	if req.CustomerPhone != nil {
-		entity.CustomerPhone = req.CustomerPhone
+		entity.CustomerPhone = *req.CustomerPhone
 	}
 	
 	if req.CustomerEmail != nil {
-		entity.CustomerEmail = req.CustomerEmail
+		entity.CustomerEmail = *req.CustomerEmail
 	}
 	
 	if req.Status != nil {
@@ -330,7 +330,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AssignedWaiterId != nil {
-		entity.AssignedWaiterId = req.AssignedWaiterId
+		entity.AssignedWaiterId = *req.AssignedWaiterId
 	}
 	
 	if req.AssignedAt != nil {
@@ -346,19 +346,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SpecialRequests != nil {
-		entity.SpecialRequests = req.SpecialRequests
+		entity.SpecialRequests = *req.SpecialRequests
 	}
 	
 	if req.Occasion != nil {
-		entity.Occasion = req.Occasion
+		entity.Occasion = *req.Occasion
 	}
 	
 	if req.DietaryRestrictions != nil {
-		entity.DietaryRestrictions = req.DietaryRestrictions
+		entity.DietaryRestrictions = *req.DietaryRestrictions
 	}
 	
 	if req.ConfirmationCode != nil {
-		entity.ConfirmationCode = req.ConfirmationCode
+		entity.ConfirmationCode = *req.ConfirmationCode
 	}
 	
 	if req.ConfirmedAt != nil {
@@ -366,7 +366,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ConfirmedBy != nil {
-		entity.ConfirmedBy = req.ConfirmedBy
+		entity.ConfirmedBy = *req.ConfirmedBy
 	}
 	
 	if req.ReminderSentAt != nil {
@@ -374,7 +374,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.NotificationPreferences != nil {
-		entity.NotificationPreferences = req.NotificationPreferences
+		entity.NotificationPreferences = *req.NotificationPreferences
 	}
 	
 	if req.CancelledAt != nil {
@@ -382,11 +382,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CancelledBy != nil {
-		entity.CancelledBy = req.CancelledBy
+		entity.CancelledBy = *req.CancelledBy
 	}
 	
 	if req.CancellationReason != nil {
-		entity.CancellationReason = req.CancellationReason
+		entity.CancellationReason = *req.CancellationReason
 	}
 	
 	if req.Notes != nil {

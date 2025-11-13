@@ -250,39 +250,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.PaymentNumber != nil {
-		entity.PaymentNumber = req.PaymentNumber
+		entity.PaymentNumber = *req.PaymentNumber
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.PaymentDate != nil {
-		entity.PaymentDate = req.PaymentDate
+		entity.PaymentDate = *req.PaymentDate
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = req.PaymentMethod
+		entity.PaymentMethod = *req.PaymentMethod
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.PaymentAmount != nil {
-		entity.PaymentAmount = req.PaymentAmount
+		entity.PaymentAmount = *req.PaymentAmount
 	}
 	
 	if req.DepositAccountId != nil {
-		entity.DepositAccountId = req.DepositAccountId
+		entity.DepositAccountId = *req.DepositAccountId
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.IsPosted != nil {
@@ -290,7 +290,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Memo != nil {
-		entity.Memo = req.Memo
+		entity.Memo = *req.Memo
 	}
 	
 	if req.Notes != nil {

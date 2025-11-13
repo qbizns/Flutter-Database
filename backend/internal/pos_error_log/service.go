@@ -254,7 +254,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ErrorCode != nil {
-		entity.ErrorCode = req.ErrorCode
+		entity.ErrorCode = *req.ErrorCode
 	}
 	
 	if req.ErrorMessage != nil {
@@ -262,31 +262,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.DeviceId != nil {
-		entity.DeviceId = req.DeviceId
+		entity.DeviceId = *req.DeviceId
 	}
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.PosSessionId != nil {
-		entity.PosSessionId = req.PosSessionId
+		entity.PosSessionId = *req.PosSessionId
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.StackTrace != nil {
-		entity.StackTrace = req.StackTrace
+		entity.StackTrace = *req.StackTrace
 	}
 	
 	if req.RequestData != nil {
-		entity.RequestData = req.RequestData
+		entity.RequestData = *req.RequestData
 	}
 	
 	if req.ErrorData != nil {
-		entity.ErrorData = req.ErrorData
+		entity.ErrorData = *req.ErrorData
 	}
 	
 	if req.IsResolved != nil {
@@ -294,7 +294,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ResolvedBy != nil {
-		entity.ResolvedBy = req.ResolvedBy
+		entity.ResolvedBy = *req.ResolvedBy
 	}
 	
 	if req.ResolvedAt != nil {
@@ -302,7 +302,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ResolutionNotes != nil {
-		entity.ResolutionNotes = req.ResolutionNotes
+		entity.ResolutionNotes = *req.ResolutionNotes
 	}
 	
 	if req.OccurredAt != nil {

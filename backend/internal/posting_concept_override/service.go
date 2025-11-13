@@ -236,11 +236,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ConceptKey != nil {
-		entity.ConceptKey = req.ConceptKey
+		entity.ConceptKey = *req.ConceptKey
 	}
 	
 	if req.Label != nil {
-		entity.Label = req.Label
+		entity.Label = *req.Label
 	}
 	
 	if req.Description != nil {

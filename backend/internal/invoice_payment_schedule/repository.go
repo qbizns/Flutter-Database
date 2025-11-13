@@ -89,7 +89,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *InvoicePayme
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -123,7 +123,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Inv
 			, due_date
 			, amount_due
 			, amount_paid
-			, status
 			, created_at
 			, updated_at
 			, deleted_at
@@ -144,7 +143,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Inv
 		&entity.AmountPaid,
 		&entity.Status,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 	)
 
@@ -192,7 +191,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, due_date
 			, amount_due
 			, amount_paid
-			, status
 			, created_at
 			, updated_at
 			, deleted_at
@@ -223,7 +221,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.AmountPaid,
 			&entity.Status,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {
@@ -274,7 +272,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *InvoicePayme
 		entity.AmountDue,
 		entity.AmountPaid,
 		entity.Status,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.Id,
 	)
@@ -392,7 +390,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.AmountPaid,
 			&entity.Status,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 		)
 		if err != nil {

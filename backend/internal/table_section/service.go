@@ -248,31 +248,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.FloorPlanId != nil {
-		entity.FloorPlanId = req.FloorPlanId
+		entity.FloorPlanId = *req.FloorPlanId
 	}
 	
 	if req.SectionName != nil {
-		entity.SectionName = req.SectionName
+		entity.SectionName = *req.SectionName
 	}
 	
 	if req.SectionCode != nil {
-		entity.SectionCode = req.SectionCode
+		entity.SectionCode = *req.SectionCode
 	}
 	
 	if req.SectionType != nil {
-		entity.SectionType = req.SectionType
+		entity.SectionType = *req.SectionType
 	}
 	
 	if req.ColorCode != nil {
-		entity.ColorCode = req.ColorCode
+		entity.ColorCode = *req.ColorCode
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = req.Icon
+		entity.Icon = *req.Icon
 	}
 	
 	if req.DisplayOrder != nil {

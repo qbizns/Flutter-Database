@@ -272,31 +272,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.ExpenseNumber != nil {
-		entity.ExpenseNumber = req.ExpenseNumber
+		entity.ExpenseNumber = *req.ExpenseNumber
 	}
 	
 	if req.ExpenseDate != nil {
-		entity.ExpenseDate = req.ExpenseDate
+		entity.ExpenseDate = *req.ExpenseDate
 	}
 	
 	if req.Category != nil {
-		entity.Category = req.Category
+		entity.Category = *req.Category
 	}
 	
 	if req.Subcategory != nil {
-		entity.Subcategory = req.Subcategory
+		entity.Subcategory = *req.Subcategory
 	}
 	
 	if req.PayeeName != nil {
-		entity.PayeeName = req.PayeeName
+		entity.PayeeName = *req.PayeeName
 	}
 	
 	if req.PaymentMethod != nil {
-		entity.PaymentMethod = req.PaymentMethod
+		entity.PaymentMethod = *req.PaymentMethod
 	}
 	
 	if req.Amount != nil {
@@ -304,15 +304,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 	if req.Currency != nil {
-		entity.Currency = req.Currency
+		entity.Currency = *req.Currency
 	}
 	
 	if req.Status != nil {
@@ -320,19 +320,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReferenceNumber != nil {
-		entity.ReferenceNumber = req.ReferenceNumber
+		entity.ReferenceNumber = *req.ReferenceNumber
 	}
 	
 	if req.PurchaseOrderId != nil {
-		entity.PurchaseOrderId = req.PurchaseOrderId
+		entity.PurchaseOrderId = *req.PurchaseOrderId
 	}
 	
 	if req.ReceiptUrl != nil {
-		entity.ReceiptUrl = req.ReceiptUrl
+		entity.ReceiptUrl = *req.ReceiptUrl
 	}
 	
 	if req.AttachmentUrls != nil {
-		entity.AttachmentUrls = req.AttachmentUrls
+		entity.AttachmentUrls = *req.AttachmentUrls
 	}
 	
 	if req.Description != nil {
@@ -356,7 +356,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.ApprovedAt != nil {
@@ -368,11 +368,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TaxAmount != nil {
-		entity.TaxAmount = req.TaxAmount
+		entity.TaxAmount = *req.TaxAmount
 	}
 	
 	if req.TotalAmount != nil {
-		entity.TotalAmount = req.TotalAmount
+		entity.TotalAmount = *req.TotalAmount
 	}
 	
 

@@ -266,19 +266,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.CountNumber != nil {
-		entity.CountNumber = req.CountNumber
+		entity.CountNumber = *req.CountNumber
 	}
 	
 	if req.CountDate != nil {
-		entity.CountDate = req.CountDate
+		entity.CountDate = *req.CountDate
 	}
 	
 	if req.CountType != nil {
-		entity.CountType = req.CountType
+		entity.CountType = *req.CountType
 	}
 	
 	if req.Status != nil {
@@ -286,31 +286,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CategoryId != nil {
-		entity.CategoryId = req.CategoryId
+		entity.CategoryId = *req.CategoryId
 	}
 	
 	if req.IncludeZeroStock != nil {
-		entity.IncludeZeroStock = req.IncludeZeroStock
+		entity.IncludeZeroStock = *req.IncludeZeroStock
 	}
 	
 	if req.TotalItemsPlanned != nil {
-		entity.TotalItemsPlanned = req.TotalItemsPlanned
+		entity.TotalItemsPlanned = *req.TotalItemsPlanned
 	}
 	
 	if req.TotalItemsCounted != nil {
-		entity.TotalItemsCounted = req.TotalItemsCounted
+		entity.TotalItemsCounted = *req.TotalItemsCounted
 	}
 	
 	if req.ItemsWithVariance != nil {
-		entity.ItemsWithVariance = req.ItemsWithVariance
+		entity.ItemsWithVariance = *req.ItemsWithVariance
 	}
 	
 	if req.TotalVarianceValue != nil {
-		entity.TotalVarianceValue = req.TotalVarianceValue
+		entity.TotalVarianceValue = *req.TotalVarianceValue
 	}
 	
 	if req.ScheduledDate != nil {
-		entity.ScheduledDate = req.ScheduledDate
+		entity.ScheduledDate = *req.ScheduledDate
 	}
 	
 	if req.StartedAt != nil {
@@ -338,23 +338,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CountedBy != nil {
-		entity.CountedBy = req.CountedBy
+		entity.CountedBy = *req.CountedBy
 	}
 	
 	if req.ApprovedBy != nil {
-		entity.ApprovedBy = req.ApprovedBy
+		entity.ApprovedBy = *req.ApprovedBy
 	}
 	
 	if req.TotalItemsPlanned != nil {
-		entity.TotalItemsPlanned = req.TotalItemsPlanned
+		entity.TotalItemsPlanned = *req.TotalItemsPlanned
 	}
 	
 	if req.TotalItemsCounted != nil {
-		entity.TotalItemsCounted = req.TotalItemsCounted
+		entity.TotalItemsCounted = *req.TotalItemsCounted
 	}
 	
 	if req.ItemsWithVariance != nil {
-		entity.ItemsWithVariance = req.ItemsWithVariance
+		entity.ItemsWithVariance = *req.ItemsWithVariance
 	}
 	
 

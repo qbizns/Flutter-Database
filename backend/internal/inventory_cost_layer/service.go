@@ -250,51 +250,51 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.LocationId != nil {
-		entity.LocationId = req.LocationId
+		entity.LocationId = *req.LocationId
 	}
 	
 	if req.LotNumber != nil {
-		entity.LotNumber = req.LotNumber
+		entity.LotNumber = *req.LotNumber
 	}
 	
 	if req.SerialNumber != nil {
-		entity.SerialNumber = req.SerialNumber
+		entity.SerialNumber = *req.SerialNumber
 	}
 	
 	if req.LayerDate != nil {
-		entity.LayerDate = req.LayerDate
+		entity.LayerDate = *req.LayerDate
 	}
 	
 	if req.UnitCost != nil {
-		entity.UnitCost = req.UnitCost
+		entity.UnitCost = *req.UnitCost
 	}
 	
 	if req.OriginalQuantity != nil {
-		entity.OriginalQuantity = req.OriginalQuantity
+		entity.OriginalQuantity = *req.OriginalQuantity
 	}
 	
 	if req.RemainingQuantity != nil {
-		entity.RemainingQuantity = req.RemainingQuantity
+		entity.RemainingQuantity = *req.RemainingQuantity
 	}
 	
 	if req.UomCode != nil {
-		entity.UomCode = req.UomCode
+		entity.UomCode = *req.UomCode
 	}
 	
 	if req.SourceTransactionType != nil {
-		entity.SourceTransactionType = req.SourceTransactionType
+		entity.SourceTransactionType = *req.SourceTransactionType
 	}
 	
 	if req.SourceTransactionId != nil {
-		entity.SourceTransactionId = req.SourceTransactionId
+		entity.SourceTransactionId = *req.SourceTransactionId
 	}
 	
 	if req.SourceReference != nil {
-		entity.SourceReference = req.SourceReference
+		entity.SourceReference = *req.SourceReference
 	}
 	
 	if req.IsFullyConsumed != nil {

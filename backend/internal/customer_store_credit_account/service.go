@@ -228,7 +228,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.CurrentBalance != nil {
@@ -236,7 +236,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.CreditLimit != nil {
-		entity.CreditLimit = req.CreditLimit
+		entity.CreditLimit = *req.CreditLimit
 	}
 	
 	if req.IsActive != nil {

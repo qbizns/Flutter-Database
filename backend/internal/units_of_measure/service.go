@@ -230,15 +230,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UomCode != nil {
-		entity.UomCode = req.UomCode
+		entity.UomCode = *req.UomCode
 	}
 	
 	if req.UomName != nil {
-		entity.UomName = req.UomName
+		entity.UomName = *req.UomName
 	}
 	
 	if req.UomType != nil {
-		entity.UomType = req.UomType
+		entity.UomType = *req.UomType
 	}
 	
 	if req.IsBaseUnit != nil {

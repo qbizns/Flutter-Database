@@ -256,15 +256,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.WebhookName != nil {
-		entity.WebhookName = req.WebhookName
+		entity.WebhookName = *req.WebhookName
 	}
 	
 	if req.Url != nil {
-		entity.Url = req.Url
+		entity.Url = *req.Url
 	}
 	
 	if req.Secret != nil {
-		entity.Secret = req.Secret
+		entity.Secret = *req.Secret
 	}
 	
 	if req.Events != nil {
@@ -272,7 +272,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.HttpMethod != nil {
-		entity.HttpMethod = req.HttpMethod
+		entity.HttpMethod = *req.HttpMethod
 	}
 	
 	if req.Headers != nil {
@@ -280,15 +280,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TimeoutSeconds != nil {
-		entity.TimeoutSeconds = req.TimeoutSeconds
+		entity.TimeoutSeconds = *req.TimeoutSeconds
 	}
 	
 	if req.MaxRetries != nil {
-		entity.MaxRetries = req.MaxRetries
+		entity.MaxRetries = *req.MaxRetries
 	}
 	
 	if req.RetryBackoffSeconds != nil {
-		entity.RetryBackoffSeconds = req.RetryBackoffSeconds
+		entity.RetryBackoffSeconds = *req.RetryBackoffSeconds
 	}
 	
 	if req.IsActive != nil {
@@ -300,15 +300,15 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TotalDeliveries != nil {
-		entity.TotalDeliveries = req.TotalDeliveries
+		entity.TotalDeliveries = *req.TotalDeliveries
 	}
 	
 	if req.SuccessfulDeliveries != nil {
-		entity.SuccessfulDeliveries = req.SuccessfulDeliveries
+		entity.SuccessfulDeliveries = *req.SuccessfulDeliveries
 	}
 	
 	if req.FailedDeliveries != nil {
-		entity.FailedDeliveries = req.FailedDeliveries
+		entity.FailedDeliveries = *req.FailedDeliveries
 	}
 	
 	if req.LastDeliveryAt != nil {

@@ -216,15 +216,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRu
 	// Update fields
 	
 	if req.PostingProfileDocumentId != nil {
-		entity.PostingProfileDocumentId = req.PostingProfileDocumentId
+		entity.PostingProfileDocumentId = *req.PostingProfileDocumentId
 	}
 	
 	if req.RuleCode != nil {
-		entity.RuleCode = req.RuleCode
+		entity.RuleCode = *req.RuleCode
 	}
 	
 	if req.RuleName != nil {
-		entity.RuleName = req.RuleName
+		entity.RuleName = *req.RuleName
 	}
 	
 	if req.Description != nil {
@@ -232,7 +232,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRu
 	}
 	
 	if req.Event != nil {
-		entity.Event = req.Event
+		entity.Event = *req.Event
 	}
 	
 	if req.Level != nil {
@@ -244,7 +244,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdatePostingRu
 	}
 	
 	if req.ConditionExpression != nil {
-		entity.ConditionExpression = req.ConditionExpression
+		entity.ConditionExpression = *req.ConditionExpression
 	}
 	
 	if req.IsActive != nil {

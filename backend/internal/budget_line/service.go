@@ -208,31 +208,31 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBudgetLin
 	// Update fields
 	
 	if req.BudgetId != nil {
-		entity.BudgetId = req.BudgetId
+		entity.BudgetId = *req.BudgetId
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = req.AccountId
+		entity.AccountId = *req.AccountId
 	}
 	
 	if req.AnalyticAccountId != nil {
-		entity.AnalyticAccountId = req.AnalyticAccountId
+		entity.AnalyticAccountId = *req.AnalyticAccountId
 	}
 	
 	if req.AccountingPeriodId != nil {
-		entity.AccountingPeriodId = req.AccountingPeriodId
+		entity.AccountingPeriodId = *req.AccountingPeriodId
 	}
 	
 	if req.PeriodStartDate != nil {
-		entity.PeriodStartDate = req.PeriodStartDate
+		entity.PeriodStartDate = *req.PeriodStartDate
 	}
 	
 	if req.PeriodEndDate != nil {
-		entity.PeriodEndDate = req.PeriodEndDate
+		entity.PeriodEndDate = *req.PeriodEndDate
 	}
 	
 	if req.PlannedAmount != nil {
-		entity.PlannedAmount = req.PlannedAmount
+		entity.PlannedAmount = *req.PlannedAmount
 	}
 	
 	if req.Notes != nil {
@@ -240,7 +240,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, req *UpdateBudgetLin
 	}
 	
 	if req.AccountId != nil {
-		entity.AccountId = req.AccountId
+		entity.AccountId = *req.AccountId
 	}
 	
 

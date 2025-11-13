@@ -270,39 +270,39 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.VariantName != nil {
-		entity.VariantName = req.VariantName
+		entity.VariantName = *req.VariantName
 	}
 	
 	if req.Sku != nil {
-		entity.Sku = req.Sku
+		entity.Sku = *req.Sku
 	}
 	
 	if req.Barcode != nil {
-		entity.Barcode = req.Barcode
+		entity.Barcode = *req.Barcode
 	}
 	
 	if req.Attributes != nil {
-		entity.Attributes = req.Attributes
+		entity.Attributes = *req.Attributes
 	}
 	
 	if req.CostPrice != nil {
-		entity.CostPrice = req.CostPrice
+		entity.CostPrice = *req.CostPrice
 	}
 	
 	if req.SellingPrice != nil {
-		entity.SellingPrice = req.SellingPrice
+		entity.SellingPrice = *req.SellingPrice
 	}
 	
 	if req.CompareAtPrice != nil {
-		entity.CompareAtPrice = req.CompareAtPrice
+		entity.CompareAtPrice = *req.CompareAtPrice
 	}
 	
 	if req.CurrentStock != nil {
-		entity.CurrentStock = req.CurrentStock
+		entity.CurrentStock = *req.CurrentStock
 	}
 	
 	if req.ReorderLevel != nil {
@@ -310,19 +310,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ReorderQuantity != nil {
-		entity.ReorderQuantity = req.ReorderQuantity
+		entity.ReorderQuantity = *req.ReorderQuantity
 	}
 	
 	if req.Weight != nil {
-		entity.Weight = req.Weight
+		entity.Weight = *req.Weight
 	}
 	
 	if req.WeightUnit != nil {
-		entity.WeightUnit = req.WeightUnit
+		entity.WeightUnit = *req.WeightUnit
 	}
 	
 	if req.Dimensions != nil {
-		entity.Dimensions = req.Dimensions
+		entity.Dimensions = *req.Dimensions
 	}
 	
 	if req.IsActive != nil {
@@ -334,11 +334,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = req.ImageUrl
+		entity.ImageUrl = *req.ImageUrl
 	}
 	
 	if req.Notes != nil {

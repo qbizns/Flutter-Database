@@ -254,23 +254,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.RewardId != nil {
-		entity.RewardId = req.RewardId
+		entity.RewardId = *req.RewardId
 	}
 	
 	if req.RedemptionNumber != nil {
-		entity.RedemptionNumber = req.RedemptionNumber
+		entity.RedemptionNumber = *req.RedemptionNumber
 	}
 	
 	if req.RedemptionDate != nil {
-		entity.RedemptionDate = req.RedemptionDate
+		entity.RedemptionDate = *req.RedemptionDate
 	}
 	
 	if req.PointsRedeemed != nil {
-		entity.PointsRedeemed = req.PointsRedeemed
+		entity.PointsRedeemed = *req.PointsRedeemed
 	}
 	
 	if req.Status != nil {
@@ -278,27 +278,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.SaleId != nil {
-		entity.SaleId = req.SaleId
+		entity.SaleId = *req.SaleId
 	}
 	
 	if req.UsedDate != nil {
-		entity.UsedDate = req.UsedDate
+		entity.UsedDate = *req.UsedDate
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = req.ExpiryDate
+		entity.ExpiryDate = *req.ExpiryDate
 	}
 	
 	if req.FulfillmentStatus != nil {
-		entity.FulfillmentStatus = req.FulfillmentStatus
+		entity.FulfillmentStatus = *req.FulfillmentStatus
 	}
 	
 	if req.FulfillmentNotes != nil {
-		entity.FulfillmentNotes = req.FulfillmentNotes
+		entity.FulfillmentNotes = *req.FulfillmentNotes
 	}
 	
 	if req.FulfilledBy != nil {
-		entity.FulfilledBy = req.FulfilledBy
+		entity.FulfilledBy = *req.FulfilledBy
 	}
 	
 	if req.FulfilledAt != nil {

@@ -166,7 +166,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *Products) er
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -257,7 +257,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Pro
 		&entity.CustomFields,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
@@ -374,7 +374,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.CustomFields,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
@@ -463,7 +463,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *Products) er
 		entity.IsFeatured,
 		entity.CustomFields,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.CreatedBy,
 		entity.UpdatedBy,
@@ -619,7 +619,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.CustomFields,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.CreatedBy,
 			&entity.UpdatedBy,

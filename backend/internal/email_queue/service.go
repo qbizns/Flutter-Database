@@ -264,47 +264,47 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.ToAddresses != nil {
-		entity.ToAddresses = req.ToAddresses
+		entity.ToAddresses = *req.ToAddresses
 	}
 	
 	if req.CcAddresses != nil {
-		entity.CcAddresses = req.CcAddresses
+		entity.CcAddresses = *req.CcAddresses
 	}
 	
 	if req.BccAddresses != nil {
-		entity.BccAddresses = req.BccAddresses
+		entity.BccAddresses = *req.BccAddresses
 	}
 	
 	if req.FromAddress != nil {
-		entity.FromAddress = req.FromAddress
+		entity.FromAddress = *req.FromAddress
 	}
 	
 	if req.ReplyTo != nil {
-		entity.ReplyTo = req.ReplyTo
+		entity.ReplyTo = *req.ReplyTo
 	}
 	
 	if req.Subject != nil {
-		entity.Subject = req.Subject
+		entity.Subject = *req.Subject
 	}
 	
 	if req.BodyHtml != nil {
-		entity.BodyHtml = req.BodyHtml
+		entity.BodyHtml = *req.BodyHtml
 	}
 	
 	if req.BodyText != nil {
-		entity.BodyText = req.BodyText
+		entity.BodyText = *req.BodyText
 	}
 	
 	if req.AttachmentIds != nil {
-		entity.AttachmentIds = req.AttachmentIds
+		entity.AttachmentIds = *req.AttachmentIds
 	}
 	
 	if req.TemplateName != nil {
-		entity.TemplateName = req.TemplateName
+		entity.TemplateName = *req.TemplateName
 	}
 	
 	if req.TemplateData != nil {
-		entity.TemplateData = req.TemplateData
+		entity.TemplateData = *req.TemplateData
 	}
 	
 	if req.Status != nil {
@@ -316,11 +316,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Provider != nil {
-		entity.Provider = req.Provider
+		entity.Provider = *req.Provider
 	}
 	
 	if req.ProviderMessageId != nil {
-		entity.ProviderMessageId = req.ProviderMessageId
+		entity.ProviderMessageId = *req.ProviderMessageId
 	}
 	
 	if req.Attempts != nil {

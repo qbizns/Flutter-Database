@@ -252,7 +252,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Slug != nil {
-		entity.Slug = req.Slug
+		entity.Slug = *req.Slug
 	}
 	
 	if req.Description != nil {
@@ -260,7 +260,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ParentId != nil {
-		entity.ParentId = req.ParentId
+		entity.ParentId = *req.ParentId
 	}
 	
 	if req.Level != nil {
@@ -268,23 +268,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Path != nil {
-		entity.Path = req.Path
+		entity.Path = *req.Path
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = req.ImageUrl
+		entity.ImageUrl = *req.ImageUrl
 	}
 	
 	if req.Icon != nil {
-		entity.Icon = req.Icon
+		entity.Icon = *req.Icon
 	}
 	
 	if req.Color != nil {
-		entity.Color = req.Color
+		entity.Color = *req.Color
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.IsActive != nil {

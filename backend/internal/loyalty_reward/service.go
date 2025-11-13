@@ -282,11 +282,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.RewardCode != nil {
-		entity.RewardCode = req.RewardCode
+		entity.RewardCode = *req.RewardCode
 	}
 	
 	if req.RewardName != nil {
-		entity.RewardName = req.RewardName
+		entity.RewardName = *req.RewardName
 	}
 	
 	if req.Description != nil {
@@ -294,31 +294,31 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RewardType != nil {
-		entity.RewardType = req.RewardType
+		entity.RewardType = *req.RewardType
 	}
 	
 	if req.PointsCost != nil {
-		entity.PointsCost = req.PointsCost
+		entity.PointsCost = *req.PointsCost
 	}
 	
 	if req.RewardValue != nil {
-		entity.RewardValue = req.RewardValue
+		entity.RewardValue = *req.RewardValue
 	}
 	
 	if req.DiscountPercentage != nil {
-		entity.DiscountPercentage = req.DiscountPercentage
+		entity.DiscountPercentage = *req.DiscountPercentage
 	}
 	
 	if req.DiscountAmount != nil {
-		entity.DiscountAmount = req.DiscountAmount
+		entity.DiscountAmount = *req.DiscountAmount
 	}
 	
 	if req.ProductId != nil {
-		entity.ProductId = req.ProductId
+		entity.ProductId = *req.ProductId
 	}
 	
 	if req.ProductVariantId != nil {
-		entity.ProductVariantId = req.ProductVariantId
+		entity.ProductVariantId = *req.ProductVariantId
 	}
 	
 	if req.IsActive != nil {
@@ -326,23 +326,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AvailableFrom != nil {
-		entity.AvailableFrom = req.AvailableFrom
+		entity.AvailableFrom = *req.AvailableFrom
 	}
 	
 	if req.AvailableTo != nil {
-		entity.AvailableTo = req.AvailableTo
+		entity.AvailableTo = *req.AvailableTo
 	}
 	
 	if req.TotalAvailable != nil {
-		entity.TotalAvailable = req.TotalAvailable
+		entity.TotalAvailable = *req.TotalAvailable
 	}
 	
 	if req.TotalRedeemed != nil {
-		entity.TotalRedeemed = req.TotalRedeemed
+		entity.TotalRedeemed = *req.TotalRedeemed
 	}
 	
 	if req.MaxRedemptionsPerCustomer != nil {
-		entity.MaxRedemptionsPerCustomer = req.MaxRedemptionsPerCustomer
+		entity.MaxRedemptionsPerCustomer = *req.MaxRedemptionsPerCustomer
 	}
 	
 	if req.MinimumTierLevel != nil {
@@ -350,23 +350,23 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TierIds != nil {
-		entity.TierIds = req.TierIds
+		entity.TierIds = *req.TierIds
 	}
 	
 	if req.ImageUrl != nil {
-		entity.ImageUrl = req.ImageUrl
+		entity.ImageUrl = *req.ImageUrl
 	}
 	
 	if req.ThumbnailUrl != nil {
-		entity.ThumbnailUrl = req.ThumbnailUrl
+		entity.ThumbnailUrl = *req.ThumbnailUrl
 	}
 	
 	if req.Featured != nil {
-		entity.Featured = req.Featured
+		entity.Featured = *req.Featured
 	}
 	
 	if req.SortOrder != nil {
-		entity.SortOrder = req.SortOrder
+		entity.SortOrder = *req.SortOrder
 	}
 	
 	if req.IsFeatured != nil {
@@ -374,11 +374,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.TermsAndConditions != nil {
-		entity.TermsAndConditions = req.TermsAndConditions
+		entity.TermsAndConditions = *req.TermsAndConditions
 	}
 	
 	if req.RedemptionInstructions != nil {
-		entity.RedemptionInstructions = req.RedemptionInstructions
+		entity.RedemptionInstructions = *req.RedemptionInstructions
 	}
 	
 	if req.Metadata != nil {
@@ -394,11 +394,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.AvailableTo != nil {
-		entity.AvailableTo = req.AvailableTo
+		entity.AvailableTo = *req.AvailableTo
 	}
 	
 	if req.TotalRedeemed != nil {
-		entity.TotalRedeemed = req.TotalRedeemed
+		entity.TotalRedeemed = *req.TotalRedeemed
 	}
 	
 	if req.(totalAvailable != nil {

@@ -240,27 +240,27 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.OrderItemId != nil {
-		entity.OrderItemId = req.OrderItemId
+		entity.OrderItemId = *req.OrderItemId
 	}
 	
 	if req.ModifierId != nil {
-		entity.ModifierId = req.ModifierId
+		entity.ModifierId = *req.ModifierId
 	}
 	
 	if req.ModifierGroupId != nil {
-		entity.ModifierGroupId = req.ModifierGroupId
+		entity.ModifierGroupId = *req.ModifierGroupId
 	}
 	
 	if req.ModifierName != nil {
-		entity.ModifierName = req.ModifierName
+		entity.ModifierName = *req.ModifierName
 	}
 	
 	if req.Quantity != nil {
-		entity.Quantity = req.Quantity
+		entity.Quantity = *req.Quantity
 	}
 	
 	if req.PriceAdjustment != nil {
-		entity.PriceAdjustment = req.PriceAdjustment
+		entity.PriceAdjustment = *req.PriceAdjustment
 	}
 	
 	if req.DisplayOrder != nil {

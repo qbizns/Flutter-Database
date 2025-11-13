@@ -240,19 +240,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.Action != nil {
-		entity.Action = req.Action
+		entity.Action = *req.Action
 	}
 	
 	if req.ResourceType != nil {
-		entity.ResourceType = req.ResourceType
+		entity.ResourceType = *req.ResourceType
 	}
 	
 	if req.ResourceId != nil {
-		entity.ResourceId = req.ResourceId
+		entity.ResourceId = *req.ResourceId
 	}
 	
 	if req.OldValues != nil {

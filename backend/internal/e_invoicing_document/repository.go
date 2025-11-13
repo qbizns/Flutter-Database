@@ -222,7 +222,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *EInvoicingDo
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -258,7 +258,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*EIn
 			, document_type
 			, document_number
 			, internal_reference
-			, status
 			, 'draft',
 			, 'pending',
 			, 'submitted',
@@ -341,7 +340,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*EIn
 		&entity.EtaSignatureAlgorithm,
 		&entity.SubmissionFormat,
 		&entity.Metadata,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.DeletedAt,
 		&entity.CreatedBy,
 		&entity.UpdatedBy,
@@ -393,7 +392,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, document_type
 			, document_number
 			, internal_reference
-			, status
 			, 'draft',
 			, 'pending',
 			, 'submitted',
@@ -486,7 +484,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.EtaSignatureAlgorithm,
 			&entity.SubmissionFormat,
 			&entity.Metadata,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.CreatedBy,
 			&entity.UpdatedBy,
@@ -603,7 +601,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *EInvoicingDo
 		entity.EtaSignatureAlgorithm,
 		entity.SubmissionFormat,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.DeletedAt,
 		entity.CreatedBy,
 		entity.UpdatedBy,
@@ -787,7 +785,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.EtaSignatureAlgorithm,
 			&entity.SubmissionFormat,
 			&entity.Metadata,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.DeletedAt,
 			&entity.CreatedBy,
 			&entity.UpdatedBy,

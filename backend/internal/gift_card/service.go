@@ -246,19 +246,19 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.CardNumber != nil {
-		entity.CardNumber = req.CardNumber
+		entity.CardNumber = *req.CardNumber
 	}
 	
 	if req.PinCode != nil {
-		entity.PinCode = req.PinCode
+		entity.PinCode = *req.PinCode
 	}
 	
 	if req.CustomerId != nil {
-		entity.CustomerId = req.CustomerId
+		entity.CustomerId = *req.CustomerId
 	}
 	
 	if req.OriginalValue != nil {
-		entity.OriginalValue = req.OriginalValue
+		entity.OriginalValue = *req.OriginalValue
 	}
 	
 	if req.CurrentBalance != nil {
@@ -270,7 +270,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.ExpiryDate != nil {
-		entity.ExpiryDate = req.ExpiryDate
+		entity.ExpiryDate = *req.ExpiryDate
 	}
 	
 	if req.Status != nil {
@@ -282,11 +282,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.IssuedByUserId != nil {
-		entity.IssuedByUserId = req.IssuedByUserId
+		entity.IssuedByUserId = *req.IssuedByUserId
 	}
 	
 	if req.IssuedLocationId != nil {
-		entity.IssuedLocationId = req.IssuedLocationId
+		entity.IssuedLocationId = *req.IssuedLocationId
 	}
 	
 	if req.Notes != nil {

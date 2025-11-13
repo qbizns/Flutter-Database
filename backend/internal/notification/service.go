@@ -248,35 +248,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.UserId != nil {
-		entity.UserId = req.UserId
+		entity.UserId = *req.UserId
 	}
 	
 	if req.NotificationType != nil {
-		entity.NotificationType = req.NotificationType
+		entity.NotificationType = *req.NotificationType
 	}
 	
 	if req.Category != nil {
-		entity.Category = req.Category
+		entity.Category = *req.Category
 	}
 	
 	if req.Title != nil {
-		entity.Title = req.Title
+		entity.Title = *req.Title
 	}
 	
 	if req.Message != nil {
-		entity.Message = req.Message
+		entity.Message = *req.Message
 	}
 	
 	if req.ActionUrl != nil {
-		entity.ActionUrl = req.ActionUrl
+		entity.ActionUrl = *req.ActionUrl
 	}
 	
 	if req.ActionLabel != nil {
-		entity.ActionLabel = req.ActionLabel
+		entity.ActionLabel = *req.ActionLabel
 	}
 	
 	if req.Channels != nil {
-		entity.Channels = req.Channels
+		entity.Channels = *req.Channels
 	}
 	
 	if req.IsRead != nil {
@@ -288,11 +288,11 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.RelatedEntityType != nil {
-		entity.RelatedEntityType = req.RelatedEntityType
+		entity.RelatedEntityType = *req.RelatedEntityType
 	}
 	
 	if req.RelatedEntityId != nil {
-		entity.RelatedEntityId = req.RelatedEntityId
+		entity.RelatedEntityId = *req.RelatedEntityId
 	}
 	
 	if req.Priority != nil {

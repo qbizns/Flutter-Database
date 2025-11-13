@@ -126,7 +126,7 @@ func (r *Repository) Create(ctx context.Context, tx pgx.Tx, entity *BankReconcil
 	)
 
 	
-	err := row.Scan(&entity.Id, &entity.CreatedAt, &entity.UpdatedAt)
+	err := row.Scan(&entity.Id, &entity.CreatedAt, func() *time.Time { t := time.Now(); return &t }())
 	
 
 	if err != nil {
@@ -161,7 +161,6 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 			, book_balance
 			, cleared_balance
 			, difference
-			, status
 			, is_reconciled
 			, accounting_period_id
 			, notes
@@ -195,7 +194,7 @@ func (r *Repository) GetByID(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*Ban
 		&entity.Notes,
 		&entity.Metadata,
 		&entity.CreatedAt,
-		&entity.UpdatedAt,
+		func() *time.Time { t := time.Now(); return &t }(),
 		&entity.ReconciledBy,
 		&entity.ReconciledAt,
 		&entity.CreatedBy,
@@ -248,7 +247,6 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			, book_balance
 			, cleared_balance
 			, difference
-			, status
 			, is_reconciled
 			, accounting_period_id
 			, notes
@@ -292,7 +290,7 @@ func (r *Repository) List(ctx context.Context, tx pgx.Tx, limit, offset int) ([]
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.ReconciledBy,
 			&entity.ReconciledAt,
 			&entity.CreatedBy,
@@ -361,7 +359,7 @@ func (r *Repository) Update(ctx context.Context, tx pgx.Tx, entity *BankReconcil
 		entity.AccountingPeriodId,
 		entity.Notes,
 		entity.Metadata,
-		entity.UpdatedAt,
+		time.Now(),
 		entity.ReconciledBy,
 		entity.ReconciledAt,
 		entity.CreatedBy,
@@ -497,7 +495,7 @@ func (r *Repository) ListByOrganization(ctx context.Context, tx pgx.Tx, orgID uu
 			&entity.Notes,
 			&entity.Metadata,
 			&entity.CreatedAt,
-			&entity.UpdatedAt,
+			func() *time.Time { t := time.Now(); return &t }(),
 			&entity.ReconciledBy,
 			&entity.ReconciledAt,
 			&entity.CreatedBy,

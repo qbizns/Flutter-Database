@@ -244,35 +244,35 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	// Update fields
 	
 	if req.DocumentTypeCode != nil {
-		entity.DocumentTypeCode = req.DocumentTypeCode
+		entity.DocumentTypeCode = *req.DocumentTypeCode
 	}
 	
 	if req.DocumentId != nil {
-		entity.DocumentId = req.DocumentId
+		entity.DocumentId = *req.DocumentId
 	}
 	
 	if req.Event != nil {
-		entity.Event = req.Event
+		entity.Event = *req.Event
 	}
 	
 	if req.JournalEntryId != nil {
-		entity.JournalEntryId = req.JournalEntryId
+		entity.JournalEntryId = *req.JournalEntryId
 	}
 	
 	if req.ValidationRuleId != nil {
-		entity.ValidationRuleId = req.ValidationRuleId
+		entity.ValidationRuleId = *req.ValidationRuleId
 	}
 	
 	if req.Severity != nil {
-		entity.Severity = req.Severity
+		entity.Severity = *req.Severity
 	}
 	
 	if req.MessageCode != nil {
-		entity.MessageCode = req.MessageCode
+		entity.MessageCode = *req.MessageCode
 	}
 	
 	if req.Message != nil {
-		entity.Message = req.Message
+		entity.Message = *req.Message
 	}
 	
 	if req.IsBlocking != nil {
@@ -280,7 +280,7 @@ func (s *Service) Update(ctx context.Context, orgID uuid.UUID, id uuid.UUID, req
 	}
 	
 	if req.Context != nil {
-		entity.Context = req.Context
+		entity.Context = *req.Context
 	}
 	
 	if req.Metadata != nil {
