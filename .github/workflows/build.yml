@@ -125,7 +125,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Flutter artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: flutter-web-build
           path: ./flutter-web
