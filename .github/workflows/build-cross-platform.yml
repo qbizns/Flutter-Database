@@ -156,7 +156,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Linux amd64 artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.PROJECT_NAME }}-linux-amd64
           path: artifacts/
@@ -193,7 +193,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download macOS artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           pattern: ${{ env.PROJECT_NAME }}-macos-*
           path: artifacts/
@@ -218,7 +218,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Windows artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.PROJECT_NAME }}-windows-amd64
           path: artifacts/
@@ -248,7 +248,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: release-artifacts/
 
@@ -338,21 +338,21 @@ jobs:
 
       - name: Download artifacts (Linux)
         if: runner.os == 'Linux'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.PROJECT_NAME }}-linux-amd64
           path: ./
 
       - name: Download artifacts (macOS Intel)
         if: runner.os == 'macOS'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.PROJECT_NAME }}-macos-amd64
           path: ./
 
       - name: Download artifacts (Windows)
         if: runner.os == 'Windows'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.PROJECT_NAME }}-windows-amd64
           path: ./
